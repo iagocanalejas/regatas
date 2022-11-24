@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <a class="navbar-brand" href="" (click)="onNavbarLinkSelected('')">R4L</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+          (click)="navbarOpen = !navbarOpen">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div id="navbarSupportedContent" class="navbar-collapse" [ngClass]="{'collapse': !navbarOpen}">
+    <ul class="navbar-nav me-auto">
+      <li *ngIf="(leagues$ | async) as leagues" ngbDropdown class="nav-item dropdown">
+        <button ngbDropdownToggle type="button" class="btn btn-link nav-link"
+                [ngClass]="{'active': route.includes('races')}">
+          {{ getCurrentLeagueName(leagues) }}
+        </button>
+        <div ngbDropdownMenu>
+          <button ngbDropdownItem (click)="onNavbarLinkSelected('/races', {league_id: -1})">
+            SIN LIGA
+          </button>
+          <button ngbDropdownItem (click)="onNavbarLinkSelected('/races', {league_id: 0})">
+            TODO
+          </button>
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem *ngFor="let league of getLeagues(leagues, 'MALE')"
+                  (click)="onNavbarLinkSelected('/races', {league_id: league.id})">
+            {{ league.name }}
+          </button>
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem *ngFor="let league of getLeagues(leagues, 'FEMALE')"
+                  (click)="onNavbarLinkSelected('/races', {league_id: league.id})">
+            {{ league.name }}
+          </button>
+        </div>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="btn btn-link nav-link"
+                [ngClass]="{'active': route.includes('clubs')}"
+                (click)="onNavbarLinkSelected('/clubs')">
+          Clubs
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <button *ngIf="showRequestButton" type="button" class="btn btn-primary" (click)="onAddSelected()">
+    Crear
+  </button>
+</nav>
+
+<ngx-loading-bar [includeSpinner]="false"></ngx-loading-bar>
+
+<router-outlet></router-outlet>

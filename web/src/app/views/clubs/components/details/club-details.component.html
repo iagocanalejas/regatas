@@ -1,0 +1,9 @@
+<div *ngIf="club$ | async as club" class="container my-3">
+  <race-list [races]="club.races" [offset]="listOffset"
+             (onRaceSelect)="onRaceSelect($event)">
+  </race-list>
+
+  <pagination #pagination [key]="'CLUB_RACES'" [collectionSize]="club.races.count"
+              (pageChange)="onPageChange($event)">
+  </pagination>
+</div>

@@ -1,0 +1,700 @@
+- model: entities.league
+  pk: 1
+  fields:
+    name: ASOCIACIÓN DE CLUBES DE TRAINERAS
+    symbol: ACT
+- model: entities.league
+  pk: 2
+  fields:
+    name: EUSKO LABEL LIGA
+    symbol: ACT
+    gender: MALE
+- model: entities.league
+  pk: 3
+  fields:
+    name: LIGA EUSKOTREN
+    symbol: ACT
+    gender: FEMALE
+- model: entities.league
+  pk: 4
+  fields:
+    name: LIGA GALEGA DE TRAIÑAS
+    symbol: LGT
+- model: entities.league
+  pk: 5
+  fields:
+    name: LIGA GALEGA DE TRAIÑAS A
+    symbol: LGT A
+    gender: MALE
+- model: entities.league
+  pk: 6
+  fields:
+    name: LIGA GALEGA DE TRAIÑAS FEMENINA
+    symbol: LGT FEM
+    gender: FEMALE
+- model: entities.league
+  pk: 7
+  fields:
+    name: LIGA GALEGA DE TRAIÑAS B
+    symbol: LGT B
+    gender: MALE
+- model: entities.league
+  pk: 8
+  fields:
+    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
+    symbol: ARC
+- model: entities.league
+  pk: 9
+  fields:
+    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO 1
+    symbol: ARC 1
+    gender: MALE
+- model: entities.league
+  pk: 10
+  fields:
+    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO 2
+    symbol: ARC 2
+    gender: MALE
+- model: entities.league
+  pk: 11
+  fields:
+    name: EMAKUMEZKO TRAINERUEN ELKARTEA
+    symbol: ETE
+    gender: FEMALE
+
+- model: entities.entity
+  pk: 1
+  fields:
+    name: ASOCIACIÓN DE CLUBES DE TRAINERAS
+    symbol: ACT
+    type: LEAGUE
+- model: entities.entity
+  pk: 2
+  fields:
+    name: LIGA GALEGA DE TRAIÑAS
+    symbol: LGT
+    type: LEAGUE
+- model: entities.entity
+  pk: 3
+  fields:
+    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
+    symbol: ARC
+    type: LEAGUE
+- model: entities.entity
+  pk: 4
+  fields:
+    name: EMAKUMEZKO TRAINERUEN ELKARTEA
+    symbol: ETE
+    type: LEAGUE
+- model: entities.entity
+  pk: 5
+  fields:
+    name: FEDERACIÓN ESPAÑOLA DE REMO
+    symbol: FER
+    type: FEDERATION
+- model: entities.entity
+  pk: 6
+  fields:
+    name: FEDERACIÓN GALEGA DE REMO
+    symbol: FEGAR
+    type: FEDERATION
+- model: entities.entity
+  pk: 7
+  fields:
+    name: FEDERACIÓN CANTABRA DE REMO
+    symbol: FECAN
+    type: FEDERATION
+- model: entities.entity
+  pk: 8
+  fields:
+    name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
+    symbol: REMOASTUR
+    type: FEDERATION
+- model: entities.entity
+  pk: 9
+  fields:
+    name: EUSKAL ARRAU FEDERAKUNTZA
+    symbol: ARRAUNA
+    type: FEDERATION
+- model: entities.entity
+  pk: 10
+  fields:
+    name: DONOSTIA KULTURA
+    type: PRIVATE
+
+- model: entities.entitytitle
+  pk: 1
+  fields:
+    name: CLUB REMO
+- model: entities.entitytitle
+  pk: 2
+  fields:
+    name: CLUB DE REMO
+- model: entities.entitytitle
+  pk: 3
+  fields:
+    name: SOCIEDAD DEPORTIVA
+- model: entities.entitytitle
+  pk: 4
+  fields:
+    name: SOCIEDAD DEPORTIVA DE REMO
+- model: entities.entitytitle
+  pk: 5
+  fields:
+    name: CLUB DO MAR
+- model: entities.entitytitle
+  pk: 6
+  fields:
+    name: CLUB DE MAR
+- model: entities.entitytitle
+  pk: 7
+  fields:
+    name: CLUB DE REGATAS
+- model: entities.entitytitle
+  pk: 8
+  fields:
+    name: ASOCIACIÓN DEPORTIVA
+- model: entities.entitytitle
+  pk: 9
+  fields:
+    name: CIRCULO CULTURAL
+- model: entities.entitytitle
+  pk: 10
+  fields:
+    name: CENTRO DEPORTIVO MARIÑEIRO
+- model: entities.entitytitle
+  pk: 11
+  fields:
+    name: CLUB DE REMO NAUTICO
+- model: entities.entitytitle
+  pk: 12
+  fields:
+    name: CIRCULO CULTURAL DEPORTIVO
+- model: entities.entitytitle
+  pk: 13
+  fields:
+    name: ARRAUN ELKARTEA
+- model: entities.entitytitle
+  pk: 14
+  fields:
+    name: CLUB DEPORTIVO DE REMO
+- model: entities.entitytitle
+  pk: 15
+  fields:
+    name: REMO CLUB
+- model: entities.entitytitle
+  pk: 16
+  fields:
+    name: ARRAUN TALDEA
+- model: entities.entitytitle
+  pk: 17
+  fields:
+    name: CLUB ATLÉTICO
+- model: entities.entitytitle
+  pk: 18
+  fields:
+    name: ARRAUN LAGUNAK
+- model: entities.entitytitle
+  pk: 19
+  fields:
+    name: ARRAUN
+- model: entities.entitytitle
+  pk: 20
+  fields:
+    name: SOCIEDAD CULTURAL Y RECREATIVA
+
+- model: entities.entity
+  pk: 11
+  fields:
+    name: AMEGROVE
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 12
+  fields:
+    name: BUEU
+    type: CLUB
+    title: 5
+- model: entities.entity
+  pk: 13
+  fields:
+    name: CABO DA CRUZ
+    symbol: CRCC
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 14
+  fields:
+    name: CASTROPOL
+    type: CLUB
+    title: 6
+- model: entities.entity
+  pk: 15
+  fields:
+    name: CEDEIRA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 16
+  fields:
+    name: CESANTES
+    type: CLUB
+    title: 12
+- model: entities.entity
+  pk: 17
+  fields:
+    name: CHAPELA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 18
+  fields:
+    name: MECOS
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 19
+  fields:
+    name: MERA
+    type: CLUB
+    title: 10
+- model: entities.entity
+  pk: 20
+  fields:
+    name: MUGARDOS
+    type: CLUB
+    title: 5
+- model: entities.entity
+  pk: 21
+  fields:
+    name: A CABANA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 22
+  fields:
+    name: ARES
+    type: CLUB
+    title: 1
+- model: entities.entity
+  pk: 23
+  fields:
+    name: MUROS
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 24
+  fields:
+    name: NARÓN
+    type: CLUB
+    title: 1
+- model: entities.entity
+  pk: 25
+  fields:
+    name: PUEBLA
+    symbol: CRP
+    type: CLUB
+    title: 1
+- model: entities.entity
+  pk: 26
+  fields:
+    name: RIANXO
+    symbol: CRR
+    type: CLUB
+    title: 1
+- model: entities.entity
+  pk: 27
+  fields:
+    name: RIVEIRA
+    type: CLUB
+    title: 11
+- model: entities.entity
+  pk: 28
+  fields:
+    name: PERILLO
+    type: CLUB
+    title: 7
+- model: entities.entity
+  pk: 29
+  fields:
+    name: SAMERTOLAMEU
+    type: CLUB
+    title: 3
+    other_names:
+      - MEIRA
+- model: entities.entity
+  pk: 30
+  fields:
+    name: TIRÁN
+    type: CLUB
+    title: 3
+- model: entities.entity
+  pk: 31
+  fields:
+    name: VILA DE CANGAS
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 32
+  fields:
+    name: ESTEIRANA
+    type: CLUB
+    title: 8
+- model: entities.entity
+  pk: 33
+  fields:
+    name: VIRXE DA GUÍA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 34
+  fields:
+    name: VILAXOÁN
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 35
+  fields:
+    name: CORUXO
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 36
+  fields:
+    name: ROBALEIRA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 37
+  fields:
+    name: GETARIAKO
+    type: CLUB
+    title: 13
+    other_names:
+      - GETARIA
+- model: entities.entity
+  pk: 38
+  fields:
+    name: CASTRO URDIALES
+    type: CLUB
+    title: 4
+    other_names:
+      - CASTREÑA
+      - CASTRO
+- model: entities.entity
+  pk: 39
+  fields:
+    name: URDAIBAI
+    type: CLUB
+    title: 13
+    other_names:
+      - BERMEO
+- model: entities.entity
+  pk: 40
+  fields:
+    name: KAIKU
+    type: CLUB
+    title: 14
+- model: entities.entity
+  pk: 41
+  fields:
+    name: SANPEDROTARRA
+    type: CLUB
+    title: 13
+    other_names:
+      - SAN PEDRO
+- model: entities.entity
+  pk: 42
+  fields:
+    name: HONDARRIBIA
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 43
+  fields:
+    name: LAREDO
+    type: CLUB
+    title: 15
+- model: entities.entity
+  pk: 44
+  fields:
+    name: SAN NICOLÁS DE PORTUGALETE
+    type: CLUB
+    title: 16
+    other_names:
+      - PORTUGALETE
+- model: entities.entity
+  pk: 45
+  fields:
+    name: ZIERBENA
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 46
+  fields:
+    name: PASAIA DONIBANE KOXTAPE
+    type: CLUB
+    title: 13
+    other_names:
+      - SAN JUAN KOXTAPE
+      - SAN JUAN
+- model: entities.entity
+  pk: 47
+  fields:
+    name: AITA MARI
+    type: CLUB
+    title: 13
+    other_names:
+      - ZUMAIA
+      - ZUMAIAKO
+      - UROLA KOSTA
+- model: entities.entity
+  pk: 48
+  fields:
+    name: ISUNTZA
+    type: CLUB
+    title: 2
+    other_names:
+      - LEKITTARRA
+- model: entities.entity
+  pk: 49
+  fields:
+    name: ZARAUTZ
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 50
+  fields:
+    name: ITSASOKO AMA
+    type: CLUB
+    title: 2
+    other_names:
+      - SANTURTZI
+- model: entities.entity
+  pk: 51
+  fields:
+    name: ORIO
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 52
+  fields:
+    name: VALLE DE CAMARGO
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 53
+  fields:
+    name: ILLUMBE
+    type: CLUB
+    title: 17
+    other_names:
+      - TRINTXERPE
+- model: entities.entity
+  pk: 54
+  fields:
+    name: PEDREÑA
+    type: CLUB
+    title: 4
+- model: entities.entity
+  pk: 55
+  fields:
+    name: KAIARRIBIA DONOSTIARRA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 56
+  fields:
+    name: ASTILLERO
+    type: CLUB
+    title: 4
+- model: entities.entity
+  pk: 57
+  fields:
+    name: ONDARROA
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 58
+  fields:
+    name: DEUSTO
+    type: CLUB
+    title: 16
+- model: entities.entity
+  pk: 59
+  fields:
+    name: ARKOTE
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 60
+  fields:
+    name: DONOSTIA
+    type: CLUB
+    title: 18
+- model: entities.entity
+  pk: 61
+  fields:
+    name: TOLOSA
+    type: CLUB
+    title: 2
+    other_names:
+      - TOLOSALDEA
+- model: entities.entity
+  pk: 62
+  fields:
+    name: GU
+    type: CLUB
+    title: 19
+- model: entities.entity
+  pk: 63
+  fields:
+    name: CIUDAD DE SANTANDER
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 64
+  fields:
+    name: HIBAIKA
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 65
+  fields:
+    name: CANTABRIA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 66
+  fields:
+    name: GIPUZKOA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 67
+  fields:
+    name: CATALUNYA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 68
+  fields:
+    name: BIZKAIA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 69
+  fields:
+    name: GALICIA
+    type: CLUB
+    title: 2
+    other_names:
+      - RIANXEIRA MECALIA
+- model: entities.entity
+  pk: 70
+  fields:
+    name: SANTOÑA
+    type: CLUB
+    title: 3
+- model: entities.entity
+  pk: 71
+  fields:
+    name: HERNANI
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 72
+  fields:
+    name: LEA ARTIBAI
+    type: CLUB
+    title: 16
+- model: entities.entity
+  pk: 73
+  fields:
+    name: MUNDAKA
+    type: CLUB
+    title: 16
+- model: entities.entity
+  pk: 74
+  fields:
+    name: GETXO
+    type: CLUB
+    title: 19
+- model: entities.entity
+  pk: 75
+  fields:
+    name: LUANCO
+    type: CLUB
+    title: 11
+- model: entities.entity
+  pk: 76
+  fields:
+    name: LUTXANA
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 77
+  fields:
+    name: COLINDRES
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 78
+  fields:
+    name: MUTRIKU
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 79
+  fields:
+    name: BUSTURIALDEA
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 80
+  fields:
+    name: LAPURDI
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 81
+  fields:
+    name: IBERIA
+    type: CLUB
+    title: 14
+- model: entities.entity
+  pk: 82
+  fields:
+    name: RASPAS
+    type: CLUB
+    title: 13
+- model: entities.entity
+  pk: 84
+  fields:
+    name: ELANTXOBE
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 85
+  fields:
+    name: OIARTZUN
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 86
+  fields:
+    name: PONTEJOS
+    type: CLUB
+    title: 2
+- model: entities.entity
+  pk: 87
+  fields:
+    name: AMIGOS DE LA MARUCA
+    type: CLUB
+    title: 20
+- model: entities.entity
+  pk: 88
+  fields:
+    name: ALGORTA
+    type: CLUB
+    title: 2

@@ -1,0 +1,40 @@
+<div class="container" [ngClass]="{'w-50': windowsWidth >= 576}">
+  <div class="d-flex justify-content-center align-items-center mt-3">
+    <div class="input-group">
+      <button class="btn btn-outline-secondary" type="button" (click)="showFilters = !showFilters">
+        <i class="material-icons">{{ showFilters ? 'filter_list_off' : 'filter_list' }}</i>
+      </button>
+
+      <input type="text" class="form-control" placeholder="Buscar..." aria-label="Buscar..."
+             [(ngModel)]="keywords" (ngModelChange)="onKeywordsChanged()">
+
+      <button class="btn btn-outline-secondary" type="button" (click)="onKeywordsChanged()">
+        <i class="material-icons">search</i>
+      </button>
+      <button class="btn btn-outline-secondary" type="button" (click)="clearKeywords()">
+        <i class="material-icons">clear</i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="showFilters" [@showAnimation]="!showFilters" class="mt-3">
+    <dropdown class="row text-center margins"
+              [items]="years" [title]="'Año'" [showClear]="true"
+              [selectedItem]="selected(years, 'year')"
+              (onSelect)="select('year', $event?.id)"
+              (onClear)="clear('year')">
+    </dropdown>
+    <dropdown class="row text-center margins"
+              [items]="trophies" [title]="'Trofeo'" [showClear]="true"
+              [selectedItem]="selected(trophies, 'trophy')"
+              (onSelect)="select('trophy', $event?.id)"
+              (onClear)="clear('trophy')">
+    </dropdown>
+    <dropdown class="row text-center margins"
+              [items]="flags" [title]="'Bandera'" [showClear]="true"
+              [selectedItem]="selected(flags, 'flag')"
+              (onSelect)="select('flag', $event?.id)"
+              (onClear)="clear('flag')">
+    </dropdown>
+  </div>
+</div>

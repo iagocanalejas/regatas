@@ -1,0 +1,17 @@
+<div class="btn-group">
+  <div ngbDropdown class="btn-group flex-grow-1" role="group">
+    <button ngbDropdownToggle type="button" class="btn btn-outline-secondary">
+      {{ selectedItem?.name || title }}
+    </button>
+    <div ngbDropdownMenu>
+      <button *ngIf="nullItem" ngbDropdownItem (click)="select(undefined)">{{ nullItem }}</button>
+      <button ngbDropdownItem *ngFor="let item of items" (click)="select(item)">
+        {{item.name}}
+      </button>
+    </div>
+  </div>
+
+  <button *ngIf="showClear" type="button" class="btn btn-outline-secondary flex-grow-0" (click)="clear()">
+    <i class="material-icons">clear</i>
+  </button>
+</div>

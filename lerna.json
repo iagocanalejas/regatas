@@ -1,0 +1,15 @@
+{
+  "version": "0.0.0",
+  "command": {
+    "version": {
+      "allowBranch": "master",
+      "ignoreChanges": [
+        "ignored-file"
+      ],
+      "message": "build(release): publish %v version"
+    }
+  },
+  "packages": [
+    "./*"
+  ]
+}

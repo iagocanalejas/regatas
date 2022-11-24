@@ -1,0 +1,79 @@
+#### Ignore all .idea files
+.idea/**
+
+#### Except:
+# Version Control configurations
+# How IDEA should treat the text files in your project
+# Automatic code formatting
+# Project specifics
+
+!.idea/vcs.xml
+!.idea/encodings.xml
+!.idea/codeStyleSettings.xml
+!.idea/dictionaries
+!.idea/copyrights
+!.idea/misc.xml
+!.idea/sqldialects.xml
+
+/docker/
+node_modules/
+/node_modules/
+
+#### Python
+service/MANIFEST
+service/*.pot
+service/.tox/
+**/__pycache__
+service/dist/
+service/build/
+service/docs/_build/
+service/docs/locale/
+service/venv/
+
+#### Coverage
+service/tests/coverage_html/
+service/tests/.coverage
+service/tests/report/
+service//htmlcov/*
+service/.coverage
+
+#### Environments
+/.env
+/.env.*
+
+#### Media & Logs
+service/media/
+**/logs/*.log
+**/logs/*.log.*
+service/static/
+_backups/*
+_scrapped/*
+
+# Exception for media module
+!/service/apps/modules/media/
+!/service/static/templates
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+/web/dist
+/web/tmp
+/web/out-tsc
+/web/bazel-out
+
+# Node
+web/npm-debug.log
+web/yarn-error.log
+
+# Miscellaneous
+/web/.angular/cache
+web/.sass-cache/
+/web/connect.lock
+/web/coverage
+/web/libpeerconnection.log
+web/testem.log
+/web/typings
+
+# System files
+web/.DS_Store
+web/Thumbs.db

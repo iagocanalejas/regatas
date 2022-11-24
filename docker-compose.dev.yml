@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+  web:
+    container_name: r4l-web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        build_command: 'npm run build:dev'
+        nginx: 'nginx.dev.conf'
+    image: r4l/web
+    networks:
+      - r4l
+    ports:
+      - '8080:8080'
+    volumes:
+      - './docker/nginx:/etc/nginx/conf.d'
+      - './docker/shared:/srv/www/r4l/shared'
+      - './docker/logs:/srv/www/r4l/logs'
+      - './docker/sockets:/run/r4l'
+  service:
+    container_name: r4l-service
+    build:
+      context: ./service
+      dockerfile: Dockerfile
+    image: r4l/service
+    networks:
+      - r4l
+    volumes:
+      - './docker/shared:/srv/www/r4l/shared'
+      - './docker/logs:/srv/www/r4l/logs'
+      - './docker/sockets:/run/r4l'
+    env_file:
+      - '.env.docker'
+networks:
+  r4l:
+    external: false

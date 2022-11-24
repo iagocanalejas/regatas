@@ -1,0 +1,20 @@
+<div *ngIf="race$ | async as race" class="container">
+  <div class="my-3">
+    <race-detail-header [race]="race"></race-detail-header>
+  </div>
+
+  <div *ngIf="!isTimeTrial(race)" class="my-3">
+    <participant-list *ngFor="let s of seriesList(race.participants)"
+                      [participants]="getParticipants(race.participants, s)"
+                      [title]="'Tanda ' + (s + 1)" [headColumn]="'Calle'"
+                      [collapsed]="true">
+    </participant-list>
+  </div>
+
+  <div class="my-3">
+    <participant-list [participants]="race.participants" [distance]="race.distance"
+                      [title]="'Tiempos'" [headColumn]="'Puesto'"
+                      [showDifference]="true">
+    </participant-list>
+  </div>
+</div>

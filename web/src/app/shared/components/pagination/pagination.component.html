@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="row justify-content-sm-between text-center">
+    <div class="col-12 col-sm-6 ps-sm-0">
+      <ngb-pagination class="d-table mx-auto ms-sm-0"
+                      [collectionSize]="collectionSize"
+                      [page]="page.page"
+                      [maxSize]="5"
+                      [pageSize]="page.itemsPerPage"
+                      (pageChange)="onPageChange($event)">
+      </ngb-pagination>
+    </div>
+
+    <div ngbDropdown class="col-12 mt-1 col-sm-2 mt-sm-0 pe-sm-0" role="group">
+      <button ngbDropdownToggle type="button" class="btn btn-outline-secondary">
+        {{ selectedPaginationOption.text }}
+      </button>
+      <div ngbDropdownMenu>
+        <button ngbDropdownItem *ngFor="let option of paginationOptions" (click)="onItemsPerPageChange(option.value)">
+          {{ option.text }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

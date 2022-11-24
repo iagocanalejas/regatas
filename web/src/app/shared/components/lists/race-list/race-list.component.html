@@ -1,0 +1,22 @@
+<div *ngIf="races.results as races">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Liga</th>
+      <th scope="col">Fecha</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let race of races; index as i" (click)="selectRace(race)">
+      <th scope="row">{{ i + offset + 1 }}</th>
+      <td>{{ race.name }}</td>
+      <td>{{ race.league?.name || '' }}</td>
+      <td>{{ race.date }}</td>
+      <td><i class="material-icons">keyboard_arrow_right</i></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

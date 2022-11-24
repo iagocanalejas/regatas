@@ -1,0 +1,2 @@
+class StopProcessing(Exception):
+    pass
