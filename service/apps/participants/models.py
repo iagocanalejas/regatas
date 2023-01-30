@@ -4,6 +4,16 @@ from django.db import models, IntegrityError
 from ai_django.ai_core.models import CreationStampModel
 from apps.entities.models import ENTITY_CLUB
 
+NO_LINE_START = 'NO_LINE_START'
+NULL_START = 'NULL_START'
+BLADE_TOUCH = 'BLADE_TOUCH'
+
+PENALTY_CHOICES = [
+    (NO_LINE_START, 'Salida sin estacha'),
+    (NULL_START, 'Salida nula'),
+    (BLADE_TOUCH, 'Toque de palas'),
+]
+
 
 class Participant(models.Model):
     club_name = models.CharField(null=True, blank=True, default=None, max_length=150)
@@ -62,11 +72,10 @@ class Participant(models.Model):
         ordering = ['race', 'club']
 
 
-# TODO: enum of reasons
 class Penalty(models.Model):
     penalty = models.PositiveIntegerField(blank=True, default=0)
     disqualification = models.BooleanField(default=False)
-    reason = models.CharField(null=True, blank=True, default=None, max_length=500)  # TODO: convert to NON-NULLABLE
+    reason = models.CharField(null=True, blank=True, default=None, max_length=500, choices=PENALTY_CHOICES)  # TODO: convert to NON-NULLABLE
     participant = models.ForeignKey(
         null=False,
         to=Participant, on_delete=models.CASCADE,

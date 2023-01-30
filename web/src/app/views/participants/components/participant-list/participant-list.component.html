@@ -1,14 +1,16 @@
 <div class="card">
-  <div class="card-header bg-dark text-light h5 d-flex justify-content-between align-items-center pointer" (click)="toggleTable()">
+  <div class="card-header bg-dark text-light h5 d-flex justify-content-between align-items-center pointer" (click)="collapsed = !collapsed">
     <span class="card-title">{{ title }}</span>
 
     <div class="d-inline-block">
-      <button *ngIf="hasDisqualifications" type="button" class="btn p-0 m-0"
-              (click)="toggleDisqualification(); $event.stopPropagation()">
-        <i class="material-icons">{{ ignoreDisqualifications ? 'code' : 'code_off' }}</i>
+      <button *ngIf="hasPenalties" type="button" class="btn p-0 m-0"
+              [ngbTooltip]="penaltiesButtonTooltip"
+              (click)="ignorePenalties = !ignorePenalties; $event.stopPropagation()">
+        <i class="material-icons">{{ ignorePenalties ? 'code' : 'code_off' }}</i>
       </button>
       <button type="button" class="btn btn-sm d-none d-sm-inline p-0 m-0"
-              (click)="togglePerLapMode(); $event.stopPropagation()">
+              [ngbTooltip]="lapModeButtonTooltip"
+              (click)="showPerLapTimes = !showPerLapTimes; $event.stopPropagation()">
         <i class="material-icons" [@rotateAnimation]="!showPerLapTimes">change_circle</i>
       </button>
       <button type="button" class="btn btn-sm p-0 m-0">
@@ -31,14 +33,14 @@
     <tbody>
     <tr *ngFor="let participant of displayedParticipants; index as i" [ngClass]="{'bg-danger text-light': participant.disqualified}">
       <th scope="row" class="table-dark d-none d-sm-table-cell">{{ i + 1 }}</th>
-      <td>{{ participant.club_name || participant.club.name }}</td>
+      <td>{{ participant.club_name || participant.club.name }}{{ participant.hast_time_penalty ? ' (*)' : '' }}</td>
       <td *ngIf="distance" class="d-none d-sm-table-cell">{{ getParticipantSpeed(participant) | number:'2.3-3' }} km/h</td>
       <td *ngFor="let l of visibleLaps" class="d-none d-sm-table-cell"
           [ngClass]="{'bg-success text-light': isFastestLap(l, getLaps(participant)[l])}">
         {{ getLaps(participant)[l] }}
       </td>
       <td *ngIf="!showPerLapTimes" [ngClass]="{'bg-success text-light': isFastestTime(participant.time)}">
-        {{ participant.time }}
+        {{ getTime(participant) }}
       </td>
       <td *ngIf="showDifference && !showPerLapTimes">{{ (i === 0) ? '' : getDifferenceTime(participant) }}</td>
     </tr>

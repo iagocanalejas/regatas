@@ -24,6 +24,7 @@ export class ParticipantTransformer {
     // format 'laps' and 'time'
     participant.time = this.formatTime([...participant.laps.slice(-1)][0]);
     participant.laps = participant.laps.map(l => this.formatLap(l));
+    participant.hast_time_penalty = participant.penalties.some(p => !p.disqualification);
     return participant;
   }
 

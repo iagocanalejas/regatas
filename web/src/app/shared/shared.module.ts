@@ -21,7 +21,8 @@ const components = [
     ...components
   ],
   imports: [
-    CommonModule, FormsModule, NgbDropdownModule, NgbPaginationModule,
+    CommonModule, FormsModule,
+    NgbDropdownModule, NgbPaginationModule,
     ReactiveFormsModule, FormlyBootstrapModule,
     FormlyModule.forRoot({
       types: [{ name: 'repeat', component: RepeatTypeComponent }],

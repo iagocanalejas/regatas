@@ -39,4 +39,8 @@ export class RaceDetailsComponent implements OnInit {
     return participants.filter(x => x.series === series + 1).sort((p1, p2) => p1.lane - p2.lane);
   }
 
+  getParticipantsWithPenalties(participants: Participant[]): Participant[] {
+    return participants.filter(p => p.penalties && p.penalties.some(pe => !pe.disqualification))
+  }
+
 }

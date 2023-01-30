@@ -4,6 +4,7 @@ import * as app from "./app.reducers";
 import * as router from '@ngrx/router-store';
 
 export interface State {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   router: router.RouterReducerState<any>;
   [app.featureKey]: app.State;
 }

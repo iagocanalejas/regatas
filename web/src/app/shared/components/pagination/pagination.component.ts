@@ -27,7 +27,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
   debouncer: Subject<PaginationConfig> = new BehaviorSubject(this.page);
 
   get selectedPaginationOption() {
-    return this.paginationOptions.find(x => x.value === this.page.itemsPerPage)!
+    return this.paginationOptions.find(x => x.value === this.page.itemsPerPage)
   }
 
   ngOnInit() {

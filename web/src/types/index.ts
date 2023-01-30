@@ -1,7 +1,15 @@
 import { Gender, League } from "./league";
 import { Trophy } from "./trophy";
 import { Flag } from "./flag";
-import { compareParticipantTimes, Participant, participantSpeed } from "./participant";
+import {
+  compareParticipantTimes,
+  Participant,
+  participantSpeed,
+  participantTime,
+  Penalty,
+  PenaltyReason,
+  readableReason
+} from "./participant";
 import { Club, ClubDetail, Organizers } from "./entity";
 import { Race, RaceDetail, RaceFilter } from "./race";
 import { Request, RequestChange, RequestModel, RequestType } from "./requests";
@@ -17,6 +25,7 @@ export {
   Club, ClubDetail, Organizers,
   Race, RaceFilter, RaceDetail,
   RequestType, RequestModel, RequestChange, Request,
-  Participant, participantSpeed, compareParticipantTimes,
+  Participant, Penalty, PenaltyReason,
+  participantSpeed, participantTime, compareParticipantTimes, readableReason,
   DEFAULT_PAGE, DEFAULT_PAGE_RESULT
 }

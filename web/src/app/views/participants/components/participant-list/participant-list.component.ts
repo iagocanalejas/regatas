@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { compareParticipantTimes, NO_TIME, Participant, participantSpeed, TIME_FORMAT } from "src/types";
+import { compareParticipantTimes, NO_TIME, Participant, participantSpeed, participantTime, TIME_FORMAT } from "src/types";
 import { NG_IF, ROTATE } from "src/app/shared/animations";
 import * as moment from "moment";
 
@@ -19,8 +19,11 @@ export class ParticipantListComponent implements OnChanges {
   @Input() showDifference: boolean = false;
 
   showPerLapTimes: boolean = false;
-  ignoreDisqualifications: boolean = false;
+  hasPenalties: boolean = false;
+  ignorePenalties: boolean = false;
 
+  winner!: Participant
+  numberOfLaps: number[] = []
   fastestTurn: string[] = [];
   fastestLap: string[] = [];
 
@@ -30,39 +33,41 @@ export class ParticipantListComponent implements OnChanges {
         this.fastest(this.participants.map(p => p.laps[current])));
       this.fastestLap = this.numberOfLaps.map(current =>
         this.fastest(this.participants.map(p => p.times_per_lap[current])));
-    }
-  }
 
-  get numberOfLaps(): number[] {
-    const max = Math.max(...this.participants.map(x => x.laps.length));
-    return Array.from(Array(max).keys());
+      this.winner = [...this.participants].sort((p1, p2) => compareParticipantTimes(p1, p2))[0];
+      this.numberOfLaps = Array.from(Array(Math.max(...this.participants.map(x => x.laps.length))).keys());
+      this.hasPenalties = this.participants.some(x => x.penalties);
+    }
   }
 
   get visibleLaps(): number[] {
     return this.showPerLapTimes ? this.numberOfLaps : this.numberOfLaps.slice(0, -1);
   }
 
-  get winner(): Participant {
-    return [...this.participants].sort(
-      (p1, p2) => compareParticipantTimes(p1, p2))[0];
-  }
-
-  get hasDisqualifications(): boolean {
-    return this.participants.some(x => x.disqualified)
-  }
-
   get displayedParticipants(): Participant[] {
-    return this.ignoreDisqualifications
+    return this.ignorePenalties
       ? [...this.participants].sort((p1, p2) => compareParticipantTimes(p1, p2, true))
       : this.participants;
+  }
+
+  get penaltiesButtonTooltip(): string {
+    return this.ignorePenalties ? 'Aplicar penalizaciones' : 'Ignorar penalizaciones'
+  }
+
+  get lapModeButtonTooltip(): string {
+    return this.showPerLapTimes ? 'Tiempos globales' : 'Tiempos por vuelta'
   }
 
   getLaps(participant: Participant): string[] {
     return this.showPerLapTimes ? participant.times_per_lap : participant.laps;
   }
 
+  getTime(participant: Participant): string {
+    return participantTime(participant, this.ignorePenalties)
+  }
+
   getDifferenceTime(participant: Participant): string {
-    if (!this.ignoreDisqualifications && participant.disqualified) return 'DESCALIFICADO'
+    if (!this.ignorePenalties && participant.disqualified) return 'DESCALIFICADO'
     const diff = moment(participant.time, TIME_FORMAT).diff(moment(this.winner.time, TIME_FORMAT));
     const duration = moment.duration(diff, 'milliseconds');
     return moment.utc(duration.asMilliseconds()).format(TIME_FORMAT);
@@ -78,18 +83,6 @@ export class ParticipantListComponent implements OnChanges {
 
   isFastestTime(time: string): boolean {
     return this.winner.time === time;
-  }
-
-  toggleTable() {
-    this.collapsed = !this.collapsed;
-  }
-
-  togglePerLapMode() {
-    this.showPerLapTimes = !this.showPerLapTimes;
-  }
-
-  toggleDisqualification() {
-    this.ignoreDisqualifications = !this.ignoreDisqualifications;
   }
 
   private fastest(values: string[]): string {

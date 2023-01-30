@@ -17,4 +17,10 @@
                       [showDifference]="true">
     </participant-list>
   </div>
+
+  <div class="my-3">
+    <penalty-list [participants]="getParticipantsWithPenalties(race.participants)"
+                  [collapsed]="true">
+    </penalty-list>
+  </div>
 </div>

@@ -2,10 +2,12 @@ import { Entity } from "./entity";
 import * as moment from "moment";
 import { TIME_FORMAT } from "./index";
 
+export type PenaltyReason = 'NO_LINE_START' | 'NULL_START' | 'BLADE_TOUCH'
+
 export interface Penalty {
   penalty: number;
   disqualification: boolean;
-  reason?: string;
+  reason?: PenaltyReason;
 }
 
 export interface Participant {
@@ -18,6 +20,7 @@ export interface Participant {
   lane: number;
   series: number;
   disqualified: boolean;
+  hast_time_penalty: boolean; // computed
   penalties: Penalty[];
 }
 
@@ -34,8 +37,28 @@ export function participantSpeed(participant: Participant, distance: number): nu
   return mS * 3.6; // kmH
 }
 
-export function compareParticipantTimes(p1: Participant, p2: Participant, ignoreDisqualifications: boolean = false): number {
-  if (!ignoreDisqualifications && p1.disqualified) return 100
-  if (!ignoreDisqualifications && p2.disqualified) return -100
-  return moment(p1.time, TIME_FORMAT).diff(moment(p2.time, TIME_FORMAT))
+export function participantTime(participant: Participant, ignorePenalties: boolean = false): string {
+  if (!ignorePenalties) return participant.time
+
+  const penalties = participant.penalties.filter(p => !p.disqualification).reduce((prev, curr) => prev + curr.penalty, 0);
+  return moment(participant.time, TIME_FORMAT).subtract(penalties, "seconds").format(TIME_FORMAT)
+}
+
+export function compareParticipantTimes(p1: Participant, p2: Participant, ignorePenalties: boolean = false): number {
+  if (!ignorePenalties && p1.disqualified) return 100
+  if (!ignorePenalties && p2.disqualified) return -100
+  return moment(participantTime(p1, ignorePenalties), TIME_FORMAT).diff(moment(participantTime(p2, ignorePenalties), TIME_FORMAT))
+}
+
+export function readableReason(reason?: PenaltyReason): string {
+  switch (reason) {
+    case "BLADE_TOUCH":
+      return 'TOQUE DE PALAS'
+    case "NO_LINE_START":
+      return 'SALIDA SIN ESTACHA'
+    case "NULL_START":
+      return 'SALIDA NULA'
+    default:
+      return 'DESCONOCIDO'
+  }
 }
