@@ -219,8 +219,7 @@ else:
     # Force HSTS header in all the requests
     # https://docs.djangoproject.com/en/2.0/ref/middleware/#http-strict-transport-security
     '''
-    # SECURE_HSTS_SECONDS = 31536000  # One year
-    SECURE_HSTS_SECONDS = 3600  # TODO: change to one year once working
+    SECURE_HSTS_SECONDS = 31536000  # One year
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
