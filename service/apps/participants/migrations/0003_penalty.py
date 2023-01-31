@@ -30,9 +30,15 @@ class Migration(migrations.Migration):
                 ('penalty', models.PositiveIntegerField(blank=True, default=0)),
                 ('disqualification', models.BooleanField(default=False)),
                 ('reason', models.CharField(blank=True, default=None, max_length=500, null=True)),
-                ('participant',
-                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='penalties', related_query_name='penalty',
-                                   to='participants.participant')),
+                (
+                    'participant',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='penalties',
+                        related_query_name='penalty',
+                        to='participants.participant'
+                    )
+                ),
             ],
             options={
                 'verbose_name': 'Penalización',

@@ -14,6 +14,8 @@ class Migration(migrations.Migration):
             name='modality',
             field=models.CharField(
                 choices=[('TRAINERA', 'Trainera'), ('VETERAN', 'Veteranos'), ('TRAINERILLA', 'Trainerilla'), ('BATE', 'Batel')],
-                default='TRAINERA', max_length=15),
+                default='TRAINERA',
+                max_length=15
+            ),
         ),
     ]

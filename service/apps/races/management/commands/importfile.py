@@ -18,7 +18,7 @@ from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
 from apps.races.models import Trophy, Race, RACE_TIME_TRIAL, RACE_CONVENTIONAL, Flag
 from apps.races.services import TrophyService, RaceService, FlagService
-from scrappers import ACTScrapper, LGTScrapper
+from digest.scrappers import ACTScrapper, LGTScrapper
 from utils.checks import is_play_off
 from utils.exceptions import StopProcessing
 
@@ -121,13 +121,18 @@ class Command(BaseCommand):
             if options['only_validate']:
                 return
 
-            dfs = self._prepare_dataframe(pd.read_csv(
-                filepath_or_buffer=file, sep=',', header=0, skip_blank_lines=True,
-                converters={
-                    COLUMN_LAPS: lambda v: [time.fromisoformat(i) for i in literal_eval(v) if i != '00:00:00'],
-                    COLUMN_DATE: lambda v: datetime.date.fromisoformat(v)
-                }
-            ).fillna(''))
+            dfs = self._prepare_dataframe(
+                pd.read_csv(
+                    filepath_or_buffer=file,
+                    sep=',',
+                    header=0,
+                    skip_blank_lines=True,
+                    converters={
+                        COLUMN_LAPS: lambda v: [time.fromisoformat(i) for i in literal_eval(v) if i != '00:00:00'],
+                        COLUMN_DATE: lambda v: datetime.date.fromisoformat(v)
+                    }
+                ).fillna('')
+            )
 
             # create missing trophies/flags
             missing_trophies = dfs.loc[dfs[COMPUTED_TROPHY].isnull() & dfs[COMPUTED_FLAG].isnull()][COLUMN_TROPHY].unique()
@@ -191,13 +196,9 @@ class Command(BaseCommand):
     @staticmethod
     def _fix_days(dfs: DataFrame, start: datetime.date, end: datetime.date, column: str):
         for _, row in dfs.loc[(dfs[COLUMN_DATE] == start) & (dfs[COLUMN_DAY] == 1)].iterrows():
-            matches = dfs.loc[
-                (dfs[COLUMN_DATE] == end) &
-                (dfs[column] == row[column]) &
-                (dfs[COLUMN_DAY] == 1) &
-                ((row[COLUMN_LEAGUE] is None) | (dfs[COLUMN_LEAGUE] == row[COLUMN_LEAGUE])) &
-                ((row[COLUMN_GENDER] is None) | (dfs[COLUMN_GENDER] == row[COLUMN_GENDER]))
-                ]
+            matches = dfs.loc[(dfs[COLUMN_DATE] == end) & (dfs[column] == row[column]) & (dfs[COLUMN_DAY] == 1) &
+                              ((row[COLUMN_LEAGUE] is None) | (dfs[COLUMN_LEAGUE] == row[COLUMN_LEAGUE])) &
+                              ((row[COLUMN_GENDER] is None) | (dfs[COLUMN_GENDER] == row[COLUMN_GENDER]))]
 
             if not matches.empty:
                 logger.info(f'updating day for {end}:: {matches.index}')
@@ -375,11 +376,17 @@ class Command(BaseCommand):
             laps=self._get_race_laps(dfs, row),
             type=self._get_race_type(dfs, row),
             cancelled=row[COLUMN_CANCELLED] if COLUMN_CANCELLED in row else False,
-            metadata={"datasource": [{
-                'race_id': row[COLUMN_RACE_ID],
-                'datasource_name': row[COLUMN_DATASOURCE],
-                "values": [{"details_page": row[COLUMN_URL]}] if COLUMN_URL in row and row[COLUMN_URL] else []
-            }]},
+            metadata={
+                "datasource": [
+                    {
+                        'race_id': row[COLUMN_RACE_ID],
+                        'datasource_name': row[COLUMN_DATASOURCE],
+                        "values": [{
+                            "details_page": row[COLUMN_URL]
+                        }] if COLUMN_URL in row and row[COLUMN_URL] else []
+                    }
+                ]
+            },
         )
         created, db_race = RaceService.get_race_or_create(race)
         if not created:
@@ -412,9 +419,7 @@ class Command(BaseCommand):
     #           PRIVATE VALIDATION METHODS             #
     ####################################################
     def _validate(self, file: str, manual: bool = False):
-        dfs = pd.read_csv(
-            filepath_or_buffer=file, sep=',', header=0, dtype=str, parse_dates=[COLUMN_DATE]
-        ).fillna('')
+        dfs = pd.read_csv(filepath_or_buffer=file, sep=',', header=0, dtype=str, parse_dates=[COLUMN_DATE]).fillna('')
 
         errors = {
             # check column types

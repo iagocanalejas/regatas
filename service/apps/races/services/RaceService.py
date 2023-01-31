@@ -31,11 +31,10 @@ def get_filtered(queryset: QuerySet[Race], filters: dict, related: List[str] = N
     if 'keywords' in filters:
         keywords = whitespaces_clean(remove_conjunctions(remove_symbols(filters['keywords'])))
         queryset = queryset.filter(
-            Q(trophy__isnull=False, trophy__name__unaccent__icontains=keywords) |
-            Q(flag__isnull=False, flag__name__unaccent__icontains=keywords) |
-            Q(league__isnull=False, league__name__unaccent__icontains=keywords) |
-            Q(sponsor__isnull=False, sponsor__unaccent__icontains=keywords) |
-            Q(town__isnull=False, town__unaccent__icontains=keywords)
+            Q(trophy__isnull=False, trophy__name__unaccent__icontains=keywords)
+            | Q(flag__isnull=False, flag__name__unaccent__icontains=keywords)
+            | Q(league__isnull=False, league__name__unaccent__icontains=keywords)
+            | Q(sponsor__isnull=False, sponsor__unaccent__icontains=keywords) | Q(town__isnull=False, town__unaccent__icontains=keywords)
         )
 
     queryset = queryset.order_by('date')

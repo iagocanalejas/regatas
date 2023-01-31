@@ -11,9 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             state_operations=[
-                migrations.DeleteModel(
-                    name='Participant',
-                ),
+                migrations.DeleteModel(name='Participant',),
             ],
             # You're reusing the table, so don't drop it
             database_operations=[],

@@ -10,8 +10,7 @@ import apps.entities.models
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -22,14 +21,20 @@ class Migration(migrations.Migration):
                 ('to_date', models.DateTimeField(blank=True, default=None, null=True)),
                 ('is_active', models.BooleanField(blank=True, db_index=True, default=True)),
                 ('name', models.CharField(max_length=150, unique=True)),
-                ('other_names',
-                 django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=150), default=list,
-                                                           size=None)),
-                ('type', models.CharField(choices=[(apps.entities.models.ENTITY_CLUB, 'Club'),
-                                                   (apps.entities.models.ENTITY_LEAGUE, 'Liga'),
-                                                   (apps.entities.models.ENTITY_FEDERATION, 'Federación'),
-                                                   (apps.entities.models.ENTITY_PRIVATE, 'Privada')],
-                                          max_length=50)),
+                (
+                    'other_names',
+                    django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=150), default=list, size=None)
+                ),
+                (
+                    'type',
+                    models.CharField(
+                        choices=[
+                            (apps.entities.models.ENTITY_CLUB, 'Club'), (apps.entities.models.ENTITY_LEAGUE, 'Liga'),
+                            (apps.entities.models.ENTITY_FEDERATION, 'Federación'), (apps.entities.models.ENTITY_PRIVATE, 'Privada')
+                        ],
+                        max_length=50
+                    )
+                ),
                 ('symbol', models.CharField(null=True, blank=True, default=None, max_length=10)),
             ],
             options={
@@ -48,8 +53,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(blank=True, db_index=True, default=True)),
                 ('name', models.CharField(max_length=150, unique=True)),
                 ('symbol', models.CharField(max_length=10)),
-                ('parent', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                             to='entities.league')),
+                ('parent', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.PROTECT, to='entities.league')),
                 ('gender', models.CharField(choices=[('MALE', 'Male'), ('FEMALE', 'Female')], max_length=10)),
             ],
             options={

@@ -28,10 +28,12 @@ class Request(CreationStampModel):
 
     type = models.CharField(max_length=50, choices=REQUEST_TYPE_CHOICES)
 
-    changes = ArrayField(base_field=JSONField(
-        default=dict,
-        validators=[JSONSchemaValidator(schema=KEY_VALUE_SCHEMA)],
-    ), default=list)
+    changes = ArrayField(
+        base_field=JSONField(
+            default=dict,
+            validators=[JSONSchemaValidator(schema=KEY_VALUE_SCHEMA)],
+        ), default=list
+    )
 
     class Meta:
         db_table = 'request'

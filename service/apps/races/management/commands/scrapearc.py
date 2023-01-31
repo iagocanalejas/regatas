@@ -4,7 +4,7 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from scrappers import ScrappedItem, ARCScrapper
+from digest.scrappers import ScrappedItem, ARCScrapper
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)

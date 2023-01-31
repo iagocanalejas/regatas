@@ -19,7 +19,10 @@ class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entity
-        fields = ('id', 'name',)
+        fields = (
+            'id',
+            'name',
+        )
         ordering = ('name',)
 
 

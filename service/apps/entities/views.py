@@ -13,7 +13,6 @@ class LeaguesView(APIView):
     get:
     Return a list of active leagues
     """
-
     @staticmethod
     @extend_schema(responses={200: LeagueSerializer(many=True)})
     def get(request):
@@ -25,7 +24,6 @@ class ClubsView(APIView):
     get:
     Return a list of active clubs
     """
-
     @staticmethod
     @extend_schema(responses={200: ClubSerializer(many=True)})
     def get(request):
@@ -39,7 +37,6 @@ class ClubView(APIView):
     get:
     Return an active club
     """
-
     @staticmethod
     @extend_schema(responses={200: ClubSerializer()})
     def get(request, club_id: int):
@@ -52,14 +49,16 @@ class OrganizersView(APIView):
     get:
     Return a list of active organizers
     """
-
     @staticmethod
     @extend_schema(responses={200: OrganizerSerializer(many=True)})
     def get(request):
         entities = EntityService.get(related=['title'])
-        return Response({
-            'clubs': ClubSerializer([e for e in entities if e.type == ENTITY_CLUB], many=True).data,
-            'leagues': EntitySerializer([e for e in entities if e.type == ENTITY_LEAGUE], many=True).data,
-            'federations': EntitySerializer([e for e in entities if e.type == ENTITY_FEDERATION], many=True).data,
-            'private': EntitySerializer([e for e in entities if e.type == ENTITY_PRIVATE], many=True).data,
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {
+                'clubs': ClubSerializer([e for e in entities if e.type == ENTITY_CLUB], many=True).data,
+                'leagues': EntitySerializer([e for e in entities if e.type == ENTITY_LEAGUE], many=True).data,
+                'federations': EntitySerializer([e for e in entities if e.type == ENTITY_FEDERATION], many=True).data,
+                'private': EntitySerializer([e for e in entities if e.type == ENTITY_PRIVATE], many=True).data,
+            },
+            status=status.HTTP_200_OK
+        )

@@ -12,6 +12,9 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='league',
-            options={'ordering': ['id'], 'verbose_name': 'Liga'},
+            options={
+                'ordering': ['id'],
+                'verbose_name': 'Liga'
+            },
         ),
     ]

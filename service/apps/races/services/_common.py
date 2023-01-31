@@ -46,12 +46,7 @@ def _get_closest_by_name_with_tokens(_model: Type[T], name: str) -> Optional[T]:
     """
     # try search by tokens
     tokens = expand_lemmas(lemmatize(name))
-    trophies = _model.objects.filter(
-        reduce(
-            operator.or_,
-            [Q(tokens__contains=list(n)) for n in tokens]
-        )
-    )
+    trophies = _model.objects.filter(reduce(operator.or_, [Q(tokens__contains=list(n)) for n in tokens]))
 
     count = trophies.count()
     if not count:
@@ -60,12 +55,7 @@ def _get_closest_by_name_with_tokens(_model: Type[T], name: str) -> Optional[T]:
         return trophies.first()
 
     # try to improve if we have many results
-    trophies = trophies.filter(
-        reduce(
-            operator.or_,
-            [Q(tokens__contained_by=list(n)) for n in tokens]
-        )
-    )
+    trophies = trophies.filter(reduce(operator.or_, [Q(tokens__contained_by=list(n)) for n in tokens]))
     if trophies.count() == 1:
         return trophies.first()
 
@@ -77,12 +67,7 @@ def _get_closest_by_name(_model: Type[T], name: str) -> T:
     name = _normalize(name)
     parts = name.split()
 
-    trophies = _model.objects.filter(
-        reduce(
-            operator.and_,
-            [Q(name__unaccent__icontains=n) for n in parts]
-        )
-    )
+    trophies = _model.objects.filter(reduce(operator.and_, [Q(name__unaccent__icontains=n) for n in parts]))
 
     # retrieve the matches and un-flag them
     matches = [(i, _normalize(i)) for i in list(trophies.values_list('name', flat=True))]

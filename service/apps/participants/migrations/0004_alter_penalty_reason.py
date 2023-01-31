@@ -23,8 +23,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='penalty',
             name='reason',
-            field=models.CharField(blank=True, choices=[('NO_LINE_START', 'Salida sin estacha'), ('NULL_START', 'Salida nula'),
-                                                        ('BLADE_TOUCH', 'Toque de palas')], default=None, max_length=500, null=True),
+            field=models.CharField(
+                blank=True,
+                choices=[('NO_LINE_START', 'Salida sin estacha'), ('NULL_START', 'Salida nula'), ('BLADE_TOUCH', 'Toque de palas')],
+                default=None,
+                max_length=500,
+                null=True
+            ),
         ),
         migrations.RunPython(penalty_reason, reverse_code=migrations.RunPython.noop),
     ]

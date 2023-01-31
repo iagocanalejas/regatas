@@ -53,8 +53,7 @@ class Command(BaseCommand):
 
             for option in options:
                 trophy_editions = [
-                    r.trophy_edition for r in races
-                    if (r.league and r.league.gender == option) or (not r.league and r.gender == option)
+                    r.trophy_edition for r in races if (r.league and r.league.gender == option) or (not r.league and r.gender == option)
                 ]
                 missing = self.__missing_elements(trophy_editions)
                 if missing:

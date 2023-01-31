@@ -5,7 +5,8 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from scrappers import ImageScrapper, ScrappedItem
+from digesters import ScrappedItem
+from digesters.ocr import ImageOCR
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +25,10 @@ class Command(BaseCommand):
         parser.add_argument('--optimize', action='store_true', default=False)
 
     def handle(self, *args, **options):
-        assert options['path']
-
         items: List[ScrappedItem] = []
-        scrapper: ImageScrapper = ImageScrapper(source=options['datasource'])
+        scrapper: ImageOCR = ImageOCR(source=options['datasource'])
         for file in self._path_files(options['path']):
-            items.extend(scrapper.scrap(path=file, optimize=options['optimize']))
+            items.extend(scrapper.digest(path=file, optimize=options['optimize']))
 
         scrapper.save(items)
 

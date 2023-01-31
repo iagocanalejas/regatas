@@ -17,7 +17,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='entity',
-            options={'ordering': ['type', 'name'], 'verbose_name': 'Entidad', 'verbose_name_plural': 'Entidades'},
+            options={
+                'ordering': ['type', 'name'],
+                'verbose_name': 'Entidad',
+                'verbose_name_plural': 'Entidades'
+            },
         ),
         migrations.AddField(
             model_name='entity',

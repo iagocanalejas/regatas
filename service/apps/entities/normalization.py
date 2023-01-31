@@ -77,16 +77,14 @@ def remove_club_sponsor(name: str) -> str:
 
         # check if the first part is a club
         query = Entity.queryset_for_search().filter(
-            Q(name__unaccent__icontains=maybe_club) | Q(joined_names__unaccent__icontains=maybe_club),
-            type=ENTITY_CLUB
+            Q(name__unaccent__icontains=maybe_club) | Q(joined_names__unaccent__icontains=maybe_club), type=ENTITY_CLUB
         )
         if not maybe_club or not query.exists():
             maybe_club = None
 
         # check if the second part is a club
         query = Entity.queryset_for_search().filter(
-            Q(name__unaccent__icontains=maybe_sponsor) | Q(joined_names__unaccent__icontains=maybe_sponsor),
-            type=ENTITY_CLUB
+            Q(name__unaccent__icontains=maybe_sponsor) | Q(joined_names__unaccent__icontains=maybe_sponsor), type=ENTITY_CLUB
         )
         if not maybe_sponsor or not query.exists():
             maybe_sponsor = None

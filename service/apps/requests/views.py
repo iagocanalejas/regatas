@@ -15,12 +15,10 @@ class RequestsView(GenericAPIView):
 
     serializer_class = RequestSerializer
 
-    @extend_schema(
-        responses={
-            201: OpenApiTypes.NONE,
-            400: OpenApiTypes.OBJECT,
-        }
-    )
+    @extend_schema(responses={
+        201: OpenApiTypes.NONE,
+        400: OpenApiTypes.OBJECT,
+    })
     def post(self, request):
         req = self.serializer_class(data=request.data)
         req.is_valid(raise_exception=True)

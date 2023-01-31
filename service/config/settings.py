@@ -131,7 +131,9 @@ TEMPLATES = [
 ]
 
 if DEBUG:
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -146,7 +148,6 @@ REST_FRAMEWORK = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
-
 '''
 ** Cross-Origin-Resource-Sharing: CORS is a mechanism that allows restricted resources (e.g. fonts) on a web page to be 
 ** requested from another domain outside the domain from which the first resource was served. A web page may freely 
@@ -156,18 +157,23 @@ INTERNAL_IPS = [
 # Control Cross-Origin-Resource-Sharing to allow access to our service from other sites, it's value depends on
 # https://github.com/ottoyiu/django-cors-headers
 '''
-ALLOWED_HOSTS = ['*'] if DEBUG else [
-    '.tiempostraineras.com',
-    '54.73.193.48',
-    'localhost',
-    '127.0.0.1'
-]
+ALLOWED_HOSTS = ['*'] if DEBUG else ['.tiempostraineras.com', '54.73.193.48', 'localhost', '127.0.0.1']
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOW_METHODS = default_methods
 CORS_ALLOW_HEADERS = [
-    'accept', 'authorization', 'content-type', 'accept-language', 'pragma', 'cache-control', 'accept-encoding', 'dnt', 'origin',
-    'user-agent', 'x-csrftoken', 'x-requested-with',
+    'accept',
+    'authorization',
+    'content-type',
+    'accept-language',
+    'pragma',
+    'cache-control',
+    'accept-encoding',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 CORS_ALLOWED_ORIGINS = [] if DEBUG else [
     'https://tiempostraineras.com',
@@ -176,7 +182,6 @@ CORS_ALLOWED_ORIGINS = [] if DEBUG else [
     'http://localhost',
     'http://127.0.0.1',
 ]
-
 '''
 ** Cross-Site-Request-Forgery: A CSRF hole is when a malicious site can cause a visitor's browser to make a 
 ** request to your server that causes a change on the server. The server thinks that because the request comes with the 

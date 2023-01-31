@@ -60,9 +60,9 @@ class Command(BaseCommand):
         for file in options['path']:
             assert os.path.isfile(file)
 
-            dfs = self.__prepare_dataframe(pd.concat(pd.read_excel(
-                file, sheet_name=None, header=0, parse_dates=[COLUMN_DATE]
-            ), ignore_index=True).fillna(''))
+            dfs = self.__prepare_dataframe(
+                pd.concat(pd.read_excel(file, sheet_name=None, header=0, parse_dates=[COLUMN_DATE]), ignore_index=True).fillna('')
+            )
 
             # create missing trophies
             missing_trophies = dfs.loc[dfs[COMPUTED_TROPHY].isnull()][COLUMN_NAME].unique()
@@ -83,43 +83,21 @@ class Command(BaseCommand):
     def __prepare_dataframe(self, dfs: DataFrame) -> DataFrame:
         dfs.drop(dfs[dfs[COLUMN_NAME].isin(['', '-'])].index, inplace=True)
 
-        dfs[COLUMN_CLUB] = dfs[COLUMN_CLUB].apply(
-            lambda x: self.__get_club(x)
-        )
-        dfs[COLUMN_LEAGUE] = dfs.apply(
-            lambda x: self.__get_league(x[COLUMN_NAME], x[COLUMN_LEAGUE]), axis=1
-        )
-        dfs[COLUMN_ORGANIZER] = dfs[COLUMN_ORGANIZER].apply(
-            lambda x: self.__get_organizer(x)
-        )
-        dfs[COLUMN_EDITION] = dfs[COLUMN_EDITION].apply(
-            lambda x: roman_to_int(x) if x and '-' not in x else 1
-        )
-        dfs[COLUMN_TIME] = dfs[COLUMN_TIME].apply(
-            lambda x: self.__get_laps(x)
-        )
-        dfs[COLUMN_DISTANCE] = dfs[COLUMN_DISTANCE].apply(
-            lambda x: int(x) if x else None
-        )
-        dfs[COLUMN_DAY] = dfs[COLUMN_NAME].apply(
-            lambda x: self.__get_day(x)
-        )
-        dfs[COLUMN_RACE_TYPE] = dfs[COLUMN_RACE_TYPE].apply(
-            lambda x: self.__TYPE_MAP[x] if x else RACE_CONVENTIONAL
-        )
+        dfs[COLUMN_CLUB] = dfs[COLUMN_CLUB].apply(lambda x: self.__get_club(x))
+        dfs[COLUMN_LEAGUE] = dfs.apply(lambda x: self.__get_league(x[COLUMN_NAME], x[COLUMN_LEAGUE]), axis=1)
+        dfs[COLUMN_ORGANIZER] = dfs[COLUMN_ORGANIZER].apply(lambda x: self.__get_organizer(x))
+        dfs[COLUMN_EDITION] = dfs[COLUMN_EDITION].apply(lambda x: roman_to_int(x) if x and '-' not in x else 1)
+        dfs[COLUMN_TIME] = dfs[COLUMN_TIME].apply(lambda x: self.__get_laps(x))
+        dfs[COLUMN_DISTANCE] = dfs[COLUMN_DISTANCE].apply(lambda x: int(x) if x else None)
+        dfs[COLUMN_DAY] = dfs[COLUMN_NAME].apply(lambda x: self.__get_day(x))
+        dfs[COLUMN_RACE_TYPE] = dfs[COLUMN_RACE_TYPE].apply(lambda x: self.__TYPE_MAP[x] if x else RACE_CONVENTIONAL)
 
-        dfs[COMPUTED_TOWN] = dfs.apply(
-            lambda x: self.__normalize_race_name(x[COLUMN_NAME], x[COLUMN_LEAGUE])[1], axis=1
-        )
-        dfs[COLUMN_NAME] = dfs.apply(
-            lambda x: self.__normalize_race_name(x[COLUMN_NAME], x[COLUMN_LEAGUE])[0], axis=1
-        )
+        dfs[COMPUTED_TOWN] = dfs.apply(lambda x: self.__normalize_race_name(x[COLUMN_NAME], x[COLUMN_LEAGUE])[1], axis=1)
+        dfs[COLUMN_NAME] = dfs.apply(lambda x: self.__normalize_race_name(x[COLUMN_NAME], x[COLUMN_LEAGUE])[0], axis=1)
 
         self.__deduplicate_trophies(dfs)
 
-        dfs[COMPUTED_TROPHY] = dfs.apply(
-            lambda x: self.__get_trophy(x[COLUMN_NAME]), axis=1
-        )
+        dfs[COMPUTED_TROPHY] = dfs.apply(lambda x: self.__get_trophy(x[COLUMN_NAME]), axis=1)
 
         return dfs
 
@@ -237,8 +215,13 @@ class Command(BaseCommand):
             # )
         except Race.DoesNotExist:
             race = Race(
-                league=row[COLUMN_LEAGUE], trophy=row[COMPUTED_TROPHY], organizer=row[COLUMN_ORGANIZER],
-                edition=row[COLUMN_EDITION], town=row[COMPUTED_TOWN], date=row[COLUMN_DATE], day=row[COLUMN_DAY],
+                league=row[COLUMN_LEAGUE],
+                trophy=row[COMPUTED_TROPHY],
+                organizer=row[COLUMN_ORGANIZER],
+                edition=row[COLUMN_EDITION],
+                town=row[COMPUTED_TOWN],
+                date=row[COLUMN_DATE],
+                day=row[COLUMN_DAY],
                 lanes=self.__value_or_default(row[COLUMN_RACE_LANES], None),
                 laps=self.__value_or_default(row[COLUMN_RACE_LAPS], None),
                 type=row[COLUMN_RACE_TYPE],
@@ -277,6 +260,4 @@ class Command(BaseCommand):
             raise StopProcessing
 
         Trophy.objects.bulk_create([Trophy(name=e) for e in trophies])
-        dfs[COMPUTED_TROPHY] = dfs.apply(
-            lambda x: self.__get_trophy(x[COLUMN_NAME]), axis=1
-        )
+        dfs[COMPUTED_TROPHY] = dfs.apply(lambda x: self.__get_trophy(x[COLUMN_NAME]), axis=1)

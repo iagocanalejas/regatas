@@ -11,7 +11,6 @@ import os
 from django.core.wsgi import get_wsgi_application
 from environs import Env
 
-
 if not os.environ.get('DOCKER', False):
     import logging
 

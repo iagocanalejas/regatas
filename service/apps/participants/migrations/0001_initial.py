@@ -19,25 +19,35 @@ class Migration(migrations.Migration):
                 migrations.CreateModel(
                     name='Participant',
                     fields=[
-                        ('id',
-                         models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                         ('club_name', models.CharField(blank=True, default=None, max_length=150, null=True)),
                         ('distance', models.PositiveIntegerField(blank=True, default=None, null=True)),
-                        ('laps',
-                         django.contrib.postgres.fields.ArrayField(base_field=models.TimeField(), blank=True,
-                                                                   default=list,
-                                                                   size=None)),
+                        (
+                            'laps',
+                            django.contrib.postgres.fields.ArrayField(base_field=models.TimeField(), blank=True, default=list, size=None)
+                        ),
                         ('lane', models.PositiveSmallIntegerField(blank=True, default=None, null=True)),
                         ('series', models.PositiveSmallIntegerField(blank=True, default=None, null=True)),
                         ('disqualified', models.BooleanField(default=False)),
-                        ('club',
-                         models.ForeignKey(limit_choices_to={'type': 'CLUB'},
-                                           on_delete=django.db.models.deletion.CASCADE,
-                                           related_name='participation', related_query_name='participation',
-                                           to='entities.entity')),
-                        ('race',
-                         models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participants',
-                                           related_query_name='participant', to='races.race')),
+                        (
+                            'club',
+                            models.ForeignKey(
+                                limit_choices_to={'type': 'CLUB'},
+                                on_delete=django.db.models.deletion.CASCADE,
+                                related_name='participation',
+                                related_query_name='participation',
+                                to='entities.entity'
+                            )
+                        ),
+                        (
+                            'race',
+                            models.ForeignKey(
+                                on_delete=django.db.models.deletion.CASCADE,
+                                related_name='participants',
+                                related_query_name='participant',
+                                to='races.race'
+                            )
+                        ),
                     ],
                     options={
                         'verbose_name': 'Participante',

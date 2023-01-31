@@ -13,14 +13,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='flag',
             name='tokens',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=50), blank=True,
-                                                            default=list, size=None, editable=False),
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=50), blank=True, default=list, size=None, editable=False
+            ),
         ),
         migrations.AddField(
             model_name='trophy',
             name='tokens',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=50), blank=True,
-                                                            default=list, size=None, editable=False),
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=50), blank=True, default=list, size=None, editable=False
+            ),
         ),
         migrations.AddField(
             model_name='flag',

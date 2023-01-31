@@ -19,14 +19,18 @@ class Participant(models.Model):
     club_name = models.CharField(null=True, blank=True, default=None, max_length=150)
     club = models.ForeignKey(
         null=False,
-        to='entities.Entity', on_delete=models.CASCADE,
-        related_name='participation', related_query_name='participation',
+        to='entities.Entity',
+        on_delete=models.CASCADE,
+        related_name='participation',
+        related_query_name='participation',
         limit_choices_to={'type': ENTITY_CLUB},
     )
     race = models.ForeignKey(
         null=False,
-        to='races.Race', on_delete=models.CASCADE,
-        related_name='participants', related_query_name='participant',
+        to='races.Race',
+        on_delete=models.CASCADE,
+        related_name='participants',
+        related_query_name='participant',
     )
     distance = models.PositiveIntegerField(null=True, blank=True, default=None)
     laps = ArrayField(blank=True, default=list, base_field=models.TimeField(null=False))
@@ -78,8 +82,10 @@ class Penalty(models.Model):
     reason = models.CharField(null=True, blank=True, default=None, max_length=500, choices=PENALTY_CHOICES)  # TODO: convert to NON-NULLABLE
     participant = models.ForeignKey(
         null=False,
-        to=Participant, on_delete=models.CASCADE,
-        related_name='penalties', related_query_name='penalty',
+        to=Participant,
+        on_delete=models.CASCADE,
+        related_name='penalties',
+        related_query_name='penalty',
     )
 
     class Meta:

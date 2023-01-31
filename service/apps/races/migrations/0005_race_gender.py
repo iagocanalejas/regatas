@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='race',
             name='gender',
-            field=models.CharField(blank=True, choices=[('MALE', 'Male'), ('FEMALE', 'Female')],
-                                   default=None, max_length=10, null=True),
+            field=models.CharField(blank=True, choices=[('MALE', 'Male'), ('FEMALE', 'Female')], default=None, max_length=10, null=True),
         ),
     ]

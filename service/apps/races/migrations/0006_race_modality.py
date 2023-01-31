@@ -13,12 +13,14 @@ class Migration(migrations.Migration):
             model_name='race',
             name='modality',
             field=models.CharField(
-                choices=[('TRAINERA', 'Trainera'), ('TRAINERILLA', 'Trainerilla'), ('BATE', 'Batel')],
-                default='TRAINERA', max_length=15),
+                choices=[('TRAINERA', 'Trainera'), ('TRAINERILLA', 'Trainerilla'), ('BATE', 'Batel')], default='TRAINERA', max_length=15
+            ),
         ),
         migrations.AlterUniqueTogether(
             name='race',
-            unique_together={('trophy', 'league', 'trophy_edition', 'modality', 'day'),
-                             ('flag', 'league', 'flag_edition', 'modality', 'day'), ('league', 'date')},
+            unique_together={
+                ('trophy', 'league', 'trophy_edition', 'modality', 'day'), ('flag', 'league', 'flag_edition', 'modality', 'day'),
+                ('league', 'date')
+            },
         ),
     ]

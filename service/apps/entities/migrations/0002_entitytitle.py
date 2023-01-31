@@ -39,12 +39,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='entity',
             name='title',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='entities', related_query_name='entity', to='entities.entitytitle'),
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='entities',
+                related_query_name='entity',
+                to='entities.entitytitle'
+            ),
         ),
         migrations.AlterModelOptions(
             name='entity',
-            options={'ordering': ['type', 'title', 'name'], 'verbose_name': 'Entidad'},
+            options={
+                'ordering': ['type', 'title', 'name'],
+                'verbose_name': 'Entidad'
+            },
         ),
         migrations.RunPython(insert_entity_titles),
     ]

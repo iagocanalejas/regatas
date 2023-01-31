@@ -27,14 +27,20 @@ class RaceParamsSerializer(serializers.Serializer):
 class TrophySerializer(serializers.ModelSerializer):
     class Meta:
         model = Trophy
-        fields = ('id', 'name',)
+        fields = (
+            'id',
+            'name',
+        )
         ordering = ('name',)
 
 
 class FlagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flag
-        fields = ('id', 'name',)
+        fields = (
+            'id',
+            'name',
+        )
         ordering = ('name',)
 
 
@@ -46,9 +52,19 @@ class SimpleRaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Race
         fields = (
-            'id', 'type', 'modality', 'day', 'date', 'cancelled',
-            'trophy', 'trophy_edition', 'flag', 'flag_edition',
-            'league', 'gender', 'sponsor',
+            'id',
+            'type',
+            'modality',
+            'day',
+            'date',
+            'cancelled',
+            'trophy',
+            'trophy_edition',
+            'flag',
+            'flag_edition',
+            'league',
+            'gender',
+            'sponsor',
         )
 
 

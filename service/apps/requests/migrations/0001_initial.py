@@ -10,8 +10,7 @@ import ai_django.ai_core.validators.schema
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -19,14 +18,39 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('creation_date', models.DateTimeField(blank=True, default=django.utils.timezone.now, editable=False)),
-                ('model', models.CharField(choices=[('Race', 'Regata'), ('Participant', 'Participación'), ('Entity', 'Club')], max_length=50)),
+                (
+                    'model',
+                    models.CharField(choices=[('Race', 'Regata'), ('Participant', 'Participación'), ('Entity', 'Club')], max_length=50)
+                ),
                 ('target_id', models.PositiveIntegerField(blank=True, default=None, null=True)),
                 ('type', models.CharField(choices=[('CREATE', 'Crear'), ('UPDATE', 'Actualizar')], max_length=50)),
-                ('changes', django.contrib.postgres.fields.ArrayField(base_field=models.JSONField(default=dict, validators=[
-                    ai_django.ai_core.validators.schema.JSONSchemaValidator(
-                        schema={'$schema': 'http://json-schema.org/schema#', 'name': 'KeyValue',
-                                'properties': {'key': {'type': 'string'}, 'value': {'type': 'string'}}, 'required': ['key', 'value']})]),
-                                                                      default=list, size=None)),
+                (
+                    'changes',
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.JSONField(
+                            default=dict,
+                            validators=[
+                                ai_django.ai_core.validators.schema.JSONSchemaValidator(
+                                    schema={
+                                        '$schema': 'http://json-schema.org/schema#',
+                                        'name': 'KeyValue',
+                                        'properties': {
+                                            'key': {
+                                                'type': 'string'
+                                            },
+                                            'value': {
+                                                'type': 'string'
+                                            }
+                                        },
+                                        'required': ['key', 'value']
+                                    }
+                                )
+                            ]
+                        ),
+                        default=list,
+                        size=None
+                    )
+                ),
             ],
             options={
                 'verbose_name': 'Petición',

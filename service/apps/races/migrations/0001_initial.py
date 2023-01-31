@@ -48,9 +48,16 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('creation_date', models.DateTimeField(blank=True, default=django.utils.timezone.now, editable=False)),
                 ('town', models.CharField(default=None, blank=True, max_length=100, null=True)),
-                ('type', models.CharField(choices=[(apps.races.models.RACE_CONVENTIONAL, 'Convencional'),
-                                                   (apps.races.models.RACE_TIME_TRIAL, 'Contrarreloj')],
-                                          default='CONVENTIONAL', max_length=50)),
+                (
+                    'type',
+                    models.CharField(
+                        choices=[
+                            (apps.races.models.RACE_CONVENTIONAL, 'Convencional'), (apps.races.models.RACE_TIME_TRIAL, 'Contrarreloj')
+                        ],
+                        default='CONVENTIONAL',
+                        max_length=50
+                    )
+                ),
                 ('date', models.DateField()),
                 ('race_name', models.CharField(blank=True, default=None, max_length=200, null=True)),
                 ('sponsor', models.CharField(blank=True, default=None, max_length=200, null=True)),
@@ -59,26 +66,57 @@ class Migration(migrations.Migration):
                 ('day', models.PositiveSmallIntegerField(default=1)),
                 ('lanes', models.PositiveSmallIntegerField(blank=True, default=None, null=True)),
                 ('laps', models.PositiveSmallIntegerField(blank=True, default=None, null=True)),
-                ('league',
-                 models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                   related_name='races', related_query_name='race', to='entities.league')),
-                ('trophy',
-                 models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                   related_name='editions', related_query_name='edition', to='races.trophy')),
-                ('flag',
-                 models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                   related_name='editions', related_query_name='edition', to='races.flag')),
-                ('organizer',
-                 models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                   to='entities.entity')),
+                (
+                    'league',
+                    models.ForeignKey(
+                        blank=True,
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name='races',
+                        related_query_name='race',
+                        to='entities.league'
+                    )
+                ),
+                (
+                    'trophy',
+                    models.ForeignKey(
+                        blank=True,
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name='editions',
+                        related_query_name='edition',
+                        to='races.trophy'
+                    )
+                ),
+                (
+                    'flag',
+                    models.ForeignKey(
+                        blank=True,
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name='editions',
+                        related_query_name='edition',
+                        to='races.flag'
+                    )
+                ),
+                (
+                    'organizer',
+                    models.ForeignKey(
+                        blank=True, default=None, null=True, on_delete=django.db.models.deletion.PROTECT, to='entities.entity'
+                    )
+                ),
                 ('cancelled', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name': 'Regata',
                 'db_table': 'race',
                 'ordering': ['date', 'league'],
-                'unique_together': {('trophy', 'league', 'trophy_edition', 'day'), ('league', 'date'),
-                                    ('flag', 'league', 'flag_edition', 'day')},
+                'unique_together': {
+                    ('trophy', 'league', 'trophy_edition', 'day'), ('league', 'date'), ('flag', 'league', 'flag_edition', 'day')
+                },
             },
         ),
     ]

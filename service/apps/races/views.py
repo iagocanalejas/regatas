@@ -17,7 +17,6 @@ class TrophiesView(APIView):
     get:
     Return a list of active trophies
     """
-
     @staticmethod
     @extend_schema(responses={200: TrophySerializer(many=True)})
     def get(request):
@@ -29,7 +28,6 @@ class FlagsView(APIView):
     get:
     Return a list of active flags
     """
-
     @staticmethod
     @extend_schema(responses={200: FlagSerializer(many=True)})
     def get(request):
@@ -77,7 +75,6 @@ class RaceView(APIView):
     get:
     Return a race with its details
     """
-
     @staticmethod
     @extend_schema(responses={200: RaceDetailsSerializer()})
     def get(request, race_id: int):
@@ -94,7 +91,6 @@ class RaceParticipantsView(APIView):
     get:
     Return a list of race participants
     """
-
     @staticmethod
     @extend_schema(responses={200: RaceParticipantSerializer(many=True)})
     def get(request, race_id: int):

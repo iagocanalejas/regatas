@@ -92,30 +92,45 @@ class Race(CreationStampModel):
     # 'trophy_edition' and 'trophy' should both be NULL or NOT_NULL
     trophy_edition = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     trophy = models.ForeignKey(
-        null=True, blank=True, default=None,
-        to=Trophy, on_delete=models.PROTECT,
-        related_name='editions', related_query_name='edition',
+        null=True,
+        blank=True,
+        default=None,
+        to=Trophy,
+        on_delete=models.PROTECT,
+        related_name='editions',
+        related_query_name='edition',
     )
     # 'flag_edition' and 'flag' should both be NULL or NOT_NULL
     flag_edition = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     flag = models.ForeignKey(
-        null=True, blank=True, default=None,
-        to=Flag, on_delete=models.PROTECT,
-        related_name='editions', related_query_name='edition',
+        null=True,
+        blank=True,
+        default=None,
+        to=Flag,
+        on_delete=models.PROTECT,
+        related_name='editions',
+        related_query_name='edition',
     )
 
     # only one of 'gender', 'league' should be NOT_NULL, both can be NULL at the same time
     gender = models.CharField(null=True, blank=True, default=None, max_length=10, choices=LEAGUE_GENDER_CHOICES)
     league = models.ForeignKey(
-        null=True, blank=True, default=None,
-        to='entities.League', on_delete=models.PROTECT,
-        related_name='races', related_query_name='race',
+        null=True,
+        blank=True,
+        default=None,
+        to='entities.League',
+        on_delete=models.PROTECT,
+        related_name='races',
+        related_query_name='race',
     )
 
     modality = models.CharField(default=RACE_TRAINERA, max_length=15, choices=RACE_MODALITY_CHOICES)
     organizer = models.ForeignKey(
-        null=True, blank=True, default=None,
-        to='entities.Entity', on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        to='entities.Entity',
+        on_delete=models.PROTECT,
     )
     metadata = JSONField(
         default=default_race_metadata,
@@ -172,8 +187,7 @@ class Race(CreationStampModel):
         db_table = 'race'
         verbose_name = 'Regata'
         unique_together = [
-            ['trophy', 'league', 'trophy_edition', 'modality', 'day'],
-            ['flag', 'league', 'flag_edition', 'modality', 'day'],
+            ['trophy', 'league', 'trophy_edition', 'modality', 'day'], ['flag', 'league', 'flag_edition', 'modality', 'day'],
             ['league', 'date']
         ]
         ordering = ['date', 'league']
