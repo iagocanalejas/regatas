@@ -8,6 +8,7 @@ import requests
 from bs4 import Tag, BeautifulSoup
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
+from apps.entities.models import LEAGUE_GENDER_MALE
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 from digesters._item import ScrappedItem
@@ -61,10 +62,11 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
                         yield ScrappedItem(
                             name=name,
                             trophy_name=trophy_name,
-                            town=None,
+                            town=self.get_town(),
                             league=league,
-                            gender=None,
-                            organizer=None,
+                            gender=self.get_gender(),
+                            modality=self.get_modality(),
+                            organizer=self.get_organizer(),
                             edition=edition,
                             day=day,
                             t_date=t_date,
@@ -174,11 +176,14 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
         times = [t for t in [self.normalize_time(e) for e in times] if t is not None]
         return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
+    def get_gender(self, **kwargs) -> str:
+        return LEAGUE_GENDER_MALE  # no female races previous 2009
+
     def get_town(self, **kwargs) -> Optional[str]:
-        raise NotImplementedError
+        return None
 
     def get_organizer(self, **kwargs) -> Optional[str]:
-        raise NotImplementedError
+        return None
 
     def get_series(self, soup: Tag, **kwargs) -> int:
         raise NotImplementedError
@@ -187,9 +192,6 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
         raise NotImplementedError
 
     def get_race_laps(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
-    def get_gender(self, soup: Tag, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     ####################################################

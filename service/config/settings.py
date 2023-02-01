@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from pathlib import Path
 
 import sentry_sdk
@@ -9,7 +10,9 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from config import version
+from config.common import load_env
 
+load_env()
 env = Env()
 
 # SECURITY WARNING: don't run with debug turned on in production!

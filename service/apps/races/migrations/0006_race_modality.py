@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
             model_name='race',
             name='modality',
             field=models.CharField(
-                choices=[('TRAINERA', 'Trainera'), ('TRAINERILLA', 'Trainerilla'), ('BATE', 'Batel')], default='TRAINERA', max_length=15
+                choices=[('TRAINERA', 'Trainera'), ('TRAINERILLA', 'Trainerilla'), ('BATEL', 'Batel')], default='TRAINERA', max_length=15
             ),
         ),
         migrations.AlterUniqueTogether(

@@ -1,15 +1,15 @@
 import logging
 import re
 from abc import abstractmethod, ABC
-from datetime import time, datetime
-from typing import Optional, List, Any, Tuple
+from typing import List, Any, Tuple
 
 from bs4 import Tag
 
 from ai_django.ai_core.utils.strings import find_roman, roman_to_int
+from apps.entities.models import LEAGUE_GENDER_FEMALE, LEAGUE_GENDER_MALE
+from apps.races.models import RACE_TRAINERA
 from digesters._digester import Digester
 from digesters._item import ScrappedItem
-from utils.checks import is_play_off
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 #   - https://www.ligalgt.com/principal/regata/114
 class Scrapper(Digester, ABC):
     _excluded_ids: List[Any]  # weird races
+    _is_female: bool = False
 
     HEADERS = {
         'Accept': '*/*',
@@ -28,12 +29,15 @@ class Scrapper(Digester, ABC):
         'Cache-Control': 'max-age=0'
     }
 
-    @staticmethod
-    def is_play_off(name: str) -> bool:
-        return is_play_off(name)
-
     def digest(self, **kwargs) -> List[ScrappedItem]:
+        # route 'digest' method to abstract 'scrap'
         return self.scrap(**kwargs)
+
+    def get_gender(self, **kwargs) -> str:
+        return LEAGUE_GENDER_FEMALE if self._is_female else LEAGUE_GENDER_MALE
+
+    def get_modality(self, **kwargs) -> str:
+        return RACE_TRAINERA
 
     @staticmethod
     def get_edition(name: str, **kwargs) -> int:
@@ -59,21 +63,3 @@ class Scrapper(Digester, ABC):
     @abstractmethod
     def get_race_details_soup(self, race_id: str, **kwargs) -> Tuple[Tag, str]:
         raise NotImplementedError
-
-    ####################################################
-    #              NORMALIZATION METHODS               #
-    ####################################################
-
-    @staticmethod
-    def normalize_time(value: str) -> Optional[time]:
-        parts = re.findall(r'\d+', value)
-        if len(parts) == 2:
-            # try to fix '2102:48' | '25:2257' page errors
-            if len(parts[0]) == 4:
-                return datetime.strptime(f'{parts[0][0:2]}:{parts[0][2:]},{parts[1]}', '%M:%S,%f').time()
-            if len(parts[1]) == 4:
-                return datetime.strptime(f'{parts[0]}:{parts[1][0:2]},{parts[1][2:]}', '%M:%S,%f').time()
-            return datetime.strptime(f'{parts[0]}:{parts[1]}', '%M:%S').time()
-        if len(parts) == 3:
-            return datetime.strptime(f'{parts[0]}:{parts[1]},{parts[2]}', '%M:%S,%f').time()
-        return None

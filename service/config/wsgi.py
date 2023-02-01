@@ -9,16 +9,10 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-from environs import Env
 
-if not os.environ.get('DOCKER', False):
-    import logging
+from config.common import load_env
 
-    logger = logging.getLogger(__name__)
-
-    env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env')
-    Env().read_env(env_file, override=True)
-    logger.info(f'Using env: {env_file}')
+load_env()
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 

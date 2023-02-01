@@ -7,7 +7,8 @@ from typing import List, Optional
 class ScrappedItem:
     league: Optional[str]
     name: str
-    gender: Optional[str]
+    gender: str
+    modality: str
     edition: int
     day: int
     t_date: date

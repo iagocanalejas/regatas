@@ -6,6 +6,7 @@ import requests
 from bs4 import Tag, BeautifulSoup
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
+from apps.entities.models import LEAGUE_GENDER_MALE, LEAGUE_GENDER_FEMALE
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 from digesters._item import ScrappedItem
@@ -59,7 +60,8 @@ class LGTScrapper(Scrapper):
                 trophy_name=trophy_name,
                 town=town,
                 league=league,
-                gender=None,
+                gender=self.get_gender(name=name),
+                modality=self.get_modality(),
                 organizer=organizer,
                 edition=edition,
                 day=day,
@@ -114,6 +116,9 @@ class LGTScrapper(Scrapper):
 
         return name
 
+    def get_gender(self, name: str, **kwargs) -> str:
+        return LEAGUE_GENDER_FEMALE if any(e in name for e in ['FEMENINA', 'FEMININA']) else LEAGUE_GENDER_MALE
+
     def get_day(self, name: str, t_date: date = None, **kwargs) -> int:
         if self.is_play_off(name):  # exception case
             if '1' in name:
@@ -158,9 +163,6 @@ class LGTScrapper(Scrapper):
         raise NotImplementedError
 
     def get_race_laps(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
-    def get_gender(self, soup: Tag, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     ####################################################

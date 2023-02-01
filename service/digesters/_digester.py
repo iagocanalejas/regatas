@@ -1,7 +1,8 @@
 import csv
 import logging
+import re
 from abc import abstractmethod, ABC
-from datetime import date
+from datetime import time, datetime, date
 from typing import Optional, List
 
 from digesters._item import ScrappedItem
@@ -28,6 +29,20 @@ class Digester(ABC):
     def is_play_off(name: str) -> bool:
         return is_play_off(name)
 
+    @staticmethod
+    def normalize_time(value: str) -> Optional[time]:
+        parts = re.findall(r'\d+', value)
+        if len(parts) == 2:
+            # try to fix '2102:48' | '25:2257' page errors
+            if len(parts[0]) == 4:
+                return datetime.strptime(f'{parts[0][0:2]}:{parts[0][2:]},{parts[1]}', '%M:%S,%f').time()
+            if len(parts[1]) == 4:
+                return datetime.strptime(f'{parts[0]}:{parts[1][0:2]},{parts[1][2:]}', '%M:%S,%f').time()
+            return datetime.strptime(f'{parts[0]}:{parts[1]}', '%M:%S').time()
+        if len(parts) == 3:
+            return datetime.strptime(f'{parts[0]}:{parts[1]},{parts[2]}', '%M:%S,%f').time()
+        return None
+
     ####################################################
     #                     ABSTRACT                     #
     ####################################################
@@ -38,12 +53,17 @@ class Digester(ABC):
     ####################################################
     #                 ABSTRACT GETTERS                 #
     ####################################################
+
     @abstractmethod
     def get_league(self, soup, trophy: str, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     @abstractmethod
-    def get_gender(self, soup, **kwargs) -> Optional[str]:
+    def get_gender(self, **kwargs) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_modality(self, **kwargs) -> str:
         raise NotImplementedError
 
     @abstractmethod

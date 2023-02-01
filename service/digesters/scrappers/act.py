@@ -67,7 +67,8 @@ class ACTScrapper(Scrapper):
                         trophy_name=trophy_name,
                         town=town,
                         league=league,
-                        gender=None,
+                        gender=self.get_gender(),
+                        modality=self.get_modality(),
                         organizer=organizer,
                         edition=edition,
                         day=day,
@@ -159,9 +160,6 @@ class ACTScrapper(Scrapper):
         raise NotImplementedError
 
     def get_race_laps(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
-    def get_gender(self, soup: Tag, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     ####################################################

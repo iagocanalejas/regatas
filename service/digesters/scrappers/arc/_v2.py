@@ -63,8 +63,9 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
                         trophy_name=trophy_name,
                         town=town,
                         league=league,
-                        gender=None,
-                        organizer=None,
+                        gender=self.get_gender(),
+                        modality=self.get_modality(),
+                        organizer=self.get_organizer(),
                         edition=edition,
                         day=day,
                         t_date=t_date,
@@ -180,13 +181,10 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
     def get_race_laps(soup: Tag, **kwargs) -> int:
         return int(re.findall(r'\d+', soup.find_all('li')[2].text)[1])
 
-    def get_organizer(self, soup: Tag, **kwargs) -> Optional[str]:
-        raise NotImplementedError
+    def get_organizer(self, **kwargs) -> Optional[str]:
+        return None
 
     def get_series(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
-    def get_gender(self, soup: Tag, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     ####################################################
