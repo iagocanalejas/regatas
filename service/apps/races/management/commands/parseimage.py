@@ -22,11 +22,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('path', nargs='+', type=str)
         parser.add_argument('--datasource', type=str)
+        parser.add_argument('--plot', action='store_true', default=False)
         parser.add_argument('--optimize', action='store_true', default=False)
 
     def handle(self, *args, **options):
         items: List[ScrappedItem] = []
-        scrapper: ImageOCR = ImageOCR(source=options['datasource'])
+        scrapper: ImageOCR = ImageOCR(source=options['datasource'], allow_plot=options['plot'])
         for file in self._path_files(options['path']):
             items.extend(scrapper.digest(path=file, optimize=options['optimize']))
 

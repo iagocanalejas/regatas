@@ -1,11 +1,15 @@
 import logging
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
+from datetime import date
+from typing import Tuple, Optional
 
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt
 from pandas import DataFrame
-from pytesseract import pytesseract
 
+from apps.entities.normalization import normalize_club_name
+from apps.races.normalization import normalize_trophy_name
 from digesters._digester import Digester
 
 logger = logging.getLogger(__name__)
@@ -17,47 +21,64 @@ IMAGE_KONTXAKO = 'kontxako'
 class ImageOCR(Digester, ABC):
     _registry = {}
 
+    img: str  # grayscale loaded image
+    img_bin: str  # binary representation of the image
+    img_vh: str  # vertical and horizontal lines found in the image
+    bitnot: str  # binary images with remarked vertical and horizontal lines
+
     def __init_subclass__(cls, **kwargs):
         source = kwargs.pop('source')
         super().__init_subclass__(**kwargs)
         cls._registry[source] = cls
 
-    def __new__(cls, source: str, **kwargs):  # pragma: no cover
+    def __new__(cls, source: str, allow_plot: bool = False, **kwargs):  # pragma: no cover
         subclass = cls._registry[source]
         final_obj = object.__new__(subclass)
+        final_obj.allow_plot = allow_plot
 
         return final_obj
+
+    def plot(self, img: str, cmap='gray'):
+        if self.allow_plot:
+            plt.imshow(img, cmap=cmap)
+            plt.show()
+
+    @abstractmethod
+    def prepare_image(self, path: str, optimize: bool = False, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
+    def prepare_dataframe(self, optimize: bool = False, **kwargs) -> DataFrame:
+        raise NotImplementedError
+
+    @abstractmethod
+    def parse_header(self, **kwargs) -> Tuple[str, date, Optional[str]]:
+        raise NotImplementedError
 
     @abstractmethod
     def clean_dataframe(self, df: DataFrame) -> DataFrame:
         raise NotImplementedError
 
-    def get_image_dataframe(self, img: np.ndarray, img_vh: np.ndarray, optimize: bool, **kwargs) -> DataFrame:
-        bitnot = self._retrieve_image_image_vh_bitnot(img, img_vh)
-        row, count_col = self._retrieve_grid(img_vh)
-        final_boxes = self._retrieve_final_boxes(row, count_col)
-        outer = self._process_boxes(final_boxes, bitnot, optimize=optimize)
+    ####################################################
+    #                     OVERRIDES                    #
+    ####################################################
 
-        # Creating a dataframe of the generated OCR list
-        arr = np.array(outer)
-        return self.clean_dataframe(DataFrame(arr.reshape(len(row), count_col)))
+    def normalized_name(self, name: str, **kwargs) -> str:
+        return normalize_trophy_name(name, False)
 
-    def get_parsed_image(self, img_bin: np.ndarray, optimize: bool = False, **kwargs) -> str:
-        image = self._optimize_image(img_bin) if optimize else img_bin
-
-        out = pytesseract.image_to_string(image)
-        if not len(out):
-            out = pytesseract.image_to_string(image, config='--psm 3')
-        return out
+    def normalized_club_name(self, name: str, **kwargs) -> str:
+        return normalize_club_name(name)
 
     ####################################################
     #                 IMAGE PROCESSING                 #
     ####################################################
 
     @staticmethod
-    def _retrieve_image_vh(img):
-        thresh, img_bin = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-        img_bin = 255 - img_bin
+    def get_vh_lines(img: np.array) -> np.array:
+        """
+        :param img: a binary image representation
+        :return: image with vertical and horizontal lines
+        """
 
         # countcol(width) of kernel as 100th of total width
         kernel_len = np.array(img).shape[1] // 100
@@ -68,29 +89,32 @@ class ImageOCR(Digester, ABC):
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
 
         # Use vertical kernel to detect and save the vertical lines in a jpg
-        image_1 = cv2.erode(img_bin, ver_kernel, iterations=3)
+        image_1 = cv2.erode(img, ver_kernel, iterations=3)
         vertical_lines = cv2.dilate(image_1, ver_kernel, iterations=3)
 
         # Use horizontal kernel to detect and save the horizontal lines in a jpg
-        image_2 = cv2.erode(img_bin, hor_kernel, iterations=3)
+        image_2 = cv2.erode(img, hor_kernel, iterations=3)
         horizontal_lines = cv2.dilate(image_2, hor_kernel, iterations=3)
 
         # Combine horizontal and vertical lines in a new third image, with both having same weight.
         img_vh = cv2.addWeighted(vertical_lines, 0.5, horizontal_lines, 0.5, 0.0)
         img_vh = cv2.erode(~img_vh, kernel, iterations=2)
-        thresh, img_vh = cv2.threshold(img_vh, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        _, img_vh = cv2.threshold(img_vh, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
-        return img_vh, img_bin
-
-    @staticmethod
-    def _retrieve_image_image_vh_bitnot(img, img_vh):
-        bitxor = cv2.bitwise_xor(img, img_vh)
-        bitnot = cv2.bitwise_not(bitxor)
-
-        return bitnot
+        return img_vh
 
     @staticmethod
-    def _retrieve_boxes(img_vh):
+    def get_image_header(img: np.array, size: int = 25) -> np.array:
+        """
+        :param img: an image representation
+        :param size: wanted % (1-100)
+        :return: cropped image
+        """
+        width, height = img.shape
+        return img[:int(height * (size / 100)), :]
+
+    @staticmethod
+    def get_boxes(img_vh: np.array) -> Tuple[np.array, Tuple[int, int]]:
         # Detect contours for following box detection
         contours, hierarchy = cv2.findContours(img_vh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -105,10 +129,8 @@ class ImageOCR(Digester, ABC):
             if w < 1000 and h < 500:
                 boxes.append([x, y, w, h])
 
-        return boxes, np.mean([bounding_boxes[i][3] for i in range(len(bounding_boxes))])
+        height_mean = np.mean([bounding_boxes[i][3] for i in range(len(bounding_boxes))])
 
-    def _retrieve_grid(self, img_vh):
-        boxes, height_mean = self._retrieve_boxes(img_vh)
         # Creating two lists to define row and column in which cell is located
         row = []
         column = [boxes[0]]
@@ -134,10 +156,6 @@ class ImageOCR(Digester, ABC):
             if count_col > count_col:
                 count_col = count_col
 
-        return row, count_col
-
-    @staticmethod
-    def _retrieve_final_boxes(row, count_col):
         last = len(row) - 1
 
         # Retrieving the center of each column
@@ -154,33 +172,15 @@ class ImageOCR(Digester, ABC):
                 idx = list(diff).index(min(diff))
                 lis[idx].append(row[i][j])
             final_boxes.append(lis)
-        return final_boxes
 
-    def _process_boxes(self, final_boxes, bitnot, optimize: bool):
-        # from every single image-based cell/box the strings are extracted via pytesseract and stored in a list
-        outer = []
-        for i in range(len(final_boxes)):
-            for j in range(len(final_boxes[i])):
-                inner = ''
-                if len(final_boxes[i][j]) == 0:
-                    outer.append(' ')
-                    continue
-
-                for k in range(len(final_boxes[i][j])):
-                    y, x, w, h = final_boxes[i][j][k][0], final_boxes[i][j][k][1], final_boxes[i][j][k][2], final_boxes[i][j][k][3]
-                    finalimg = bitnot[x:x + h, y:y + w]
-                    border = cv2.copyMakeBorder(finalimg, 2, 2, 2, 2, cv2.BORDER_CONSTANT, value=[255, 255])
-                    image = self._optimize_image(border) if optimize else border
-
-                    out = pytesseract.image_to_string(image, config='--psm 4')
-                    if len(out) == 0:
-                        out = pytesseract.image_to_string(image, config='--psm 10')
-                    inner = inner + " " + out
-                outer.append(inner)
-        return outer
+        return final_boxes, (count_col, len(row))
 
     @staticmethod
-    def _optimize_image(img: np.ndarray) -> np.ndarray:
+    def process_image(img: np.ndarray) -> np.ndarray:
+        """
+        :param img: an image representation
+        :return: the image with some optimizations applied
+        """
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 1))
         resizing = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
         dilation = cv2.dilate(resizing, kernel, iterations=1)

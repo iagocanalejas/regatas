@@ -31,6 +31,9 @@ class Digester(ABC):
 
     @staticmethod
     def normalize_time(value: str) -> Optional[time]:
+        if value.startswith(':'):
+            # try to fix ':18,62' | ':45' page errors
+            value = '00' + value
         parts = re.findall(r'\d+', value)
         if len(parts) == 2:
             # try to fix '2102:48' | '25:2257' page errors
