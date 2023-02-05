@@ -18,7 +18,7 @@ from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
 from apps.races.models import Trophy, Race, RACE_TIME_TRIAL, RACE_CONVENTIONAL, Flag
 from apps.races.services import TrophyService, RaceService, FlagService
-from digest.scrappers import ACTScrapper, LGTScrapper
+from digesters.scrappers import ACTScrapper, LGTScrapper
 from utils.checks import is_play_off
 from utils.exceptions import StopProcessing
 
@@ -72,7 +72,8 @@ class Command(BaseCommand):
         t_date: date                || Used to find or create a #Race - (YYYY-MM-DD).
 
         league: Optional[str]       || The name of the league #League.name.
-        gender: Optional[str]       || (#Race.gender) 'FEMALE' | 'MALE'.
+        gender: str                 || (#League.gender) 'FEMALE' | 'MALE'.
+        modality: str               || (#Race.modality) 'TRAINERA' | 'VETERAN' 'TRAINERILLA' | 'BATEL'.
         edition: int                || The edition of the race if known, will be used for #Trophy, #Flag or both.
         day: int                    || #Race.day for races that happen in multiple days.
         town: Optional[str]         || The town where the race was celebrated.

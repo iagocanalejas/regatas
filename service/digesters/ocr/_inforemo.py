@@ -26,17 +26,16 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
         LEAGUE_GENDER_FEMALE: ['FEMENINO', 'VETERANA'],
     }
 
-    def digest(self, path: str, optimize: bool = False) -> List[ScrappedItem]:
+    def digest(self, path: str) -> List[ScrappedItem]:
         logger.info(f'processing {path}')
 
-        self.prepare_image(path, optimize=optimize)
+        self.prepare_image(path)
         name, t_date, town = self.parse_header()
         if not name or not t_date:
             logger.error(f'unable to process: {path}')
             return []
 
-        df = self.prepare_dataframe(optimize=optimize)
-        print(df)
+        df = self.prepare_dataframe()
 
         if self.allow_plot:
             logger.info(df)
@@ -73,7 +72,7 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
     #                 IMAGE PROCESSING                 #
     ####################################################
 
-    def prepare_image(self, path: str, optimize: bool = False, **kwargs):
+    def prepare_image(self, path: str, **kwargs):
         img = cv2.imread(path, 0)
         self.plot(img)
 
@@ -93,6 +92,7 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
         self.img, self.img_vh, self.img_bin, self.bitnot = img, img_vh, img_bin, bitnot
 
     def parse_header(self, **kwargs) -> Tuple[str, date, Optional[str]]:
+        # TODO: improve name detection
         header = self.get_image_header(self.img_bin)
         self.plot(header)
 
@@ -104,7 +104,7 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
     #              DATAFRAME PROCESSING                #
     ####################################################
 
-    def prepare_dataframe(self, optimize: bool = False, **kwargs) -> DataFrame:
+    def prepare_dataframe(self, **kwargs) -> DataFrame:
         final_boxes, (count_col, count_row) = self.get_boxes(self.img_vh)
 
         # from every single image-based cell/box the strings are extracted via pytesseract and stored in a list
@@ -120,11 +120,10 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
                     y, x, w, h = final_boxes[i][j][k][0], final_boxes[i][j][k][1], final_boxes[i][j][k][2], final_boxes[i][j][k][3]
                     finalimg = self.bitnot[x:x + h, y:y + w]
                     border = cv2.copyMakeBorder(finalimg, 2, 2, 2, 2, cv2.BORDER_CONSTANT, value=[255, 255])
-                    image = self.process_image(border) if optimize else border
 
-                    out = pytesseract.image_to_string(image, config='--psm 4')
+                    out = pytesseract.image_to_string(border, config='--psm 4')
                     if len(out) == 0:
-                        out = pytesseract.image_to_string(image, config='--psm 10')
+                        out = pytesseract.image_to_string(border, config='--psm 10')
                     inner = inner + " " + out
                 outer.append(inner)
 
@@ -204,11 +203,17 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
         return data[1]
 
     def get_lane(self, data, **kwargs) -> int:
-        # if : means we are in a TIME_TRIAL image so all the boats will be in the same lane
-        return 1 if ':' in data[4] else data[4]
+        try:
+            # if : means we are in a TIME_TRIAL image so all the boats will be in the same lane
+            return 1 if ':' in data[4] else int(data[4])
+        except ValueError:
+            return 1
 
     def get_series(self, data, **kwargs) -> int:
-        return data[3]
+        try:
+            return int(data[3])
+        except ValueError:
+            return 1
 
     @staticmethod
     def clean_lap(maybe_tyme: str) -> str:

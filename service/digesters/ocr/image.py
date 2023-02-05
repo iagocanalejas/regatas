@@ -1,3 +1,4 @@
+import locale
 import logging
 from abc import ABC, abstractmethod
 from datetime import date
@@ -43,12 +44,20 @@ class ImageOCR(Digester, ABC):
             plt.imshow(img, cmap=cmap)
             plt.show()
 
+    @staticmethod
+    def set_language(language: str | Tuple[str, str] = 'es_ES.utf8'):
+        locale.setlocale(locale.LC_TIME, language)
+
+    ####################################################
+    #                 ABSTRACT METHODS                 #
+    ####################################################
+
     @abstractmethod
-    def prepare_image(self, path: str, optimize: bool = False, **kwargs):
+    def prepare_image(self, path: str, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    def prepare_dataframe(self, optimize: bool = False, **kwargs) -> DataFrame:
+    def prepare_dataframe(self, **kwargs) -> DataFrame:
         raise NotImplementedError
 
     @abstractmethod
@@ -174,15 +183,3 @@ class ImageOCR(Digester, ABC):
             final_boxes.append(lis)
 
         return final_boxes, (count_col, len(row))
-
-    @staticmethod
-    def process_image(img: np.ndarray) -> np.ndarray:
-        """
-        :param img: an image representation
-        :return: the image with some optimizations applied
-        """
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 1))
-        resizing = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-        dilation = cv2.dilate(resizing, kernel, iterations=1)
-        erosion = cv2.erode(dilation, kernel, iterations=1)
-        return erosion

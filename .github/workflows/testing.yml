@@ -9,11 +9,6 @@ on:
 jobs:
   test_service:
     runs-on: ubuntu-latest
-    env:  # TODO: check if we can remove it and use .testenv
-      DATABASE_NAME: postgres
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_HOST: localhost
     strategy:
       matrix: # current + last versions
         python-version: [ '3.11' ]
@@ -40,6 +35,9 @@ jobs:
       - name: Install requirements
         run: |
           pip install -r service/config/requirements/ci.txt
+      - name: Copy environment variables (CI requires .env file)
+        run: |
+          cat .testenv > .env
       - name: Ensure migrations are consistent
         run: |
           cd service
