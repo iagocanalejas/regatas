@@ -12,7 +12,7 @@
 
     <div ngbDropdown class="col-12 mt-1 col-sm-2 mt-sm-0 pe-sm-0" role="group">
       <button ngbDropdownToggle type="button" class="btn btn-outline-secondary">
-        {{ selectedPaginationOption.text }}
+        {{ selectedPaginationOption?.text }}
       </button>
       <div ngbDropdownMenu>
         <button ngbDropdownItem *ngFor="let option of paginationOptions" (click)="onItemsPerPageChange(option.value)">
