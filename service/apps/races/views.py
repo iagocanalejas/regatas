@@ -61,7 +61,9 @@ class RacesView(GenericAPIView):
         if not data.is_valid():
             return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        races = RaceService.get_filtered(self.get_queryset(), data.validated_data, related=['trophy', 'flag', 'league'])
+        races = RaceService.get_filtered(
+            self.get_queryset(), data.validated_data, related=['trophy', 'flag', 'league'], prefetch=['participants']
+        )
         page = self.paginate_queryset(races)
         if page is not None:
             serialized_races = SimpleRaceSerializer(page, many=True)

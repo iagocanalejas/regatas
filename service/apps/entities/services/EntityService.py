@@ -8,7 +8,8 @@ from unidecode import unidecode
 
 from ai_django.ai_core.utils.lists import flatten
 from ai_django.ai_core.utils.strings import closest_result, remove_conjunctions, remove_symbols
-from apps.entities.models import Entity, ENTITY_CLUB, ENTITY_TYPES
+from apps.entities.models import Entity
+from utils.choices import ENTITY_CLUB, ENTITY_TYPES
 
 
 def get(related: List[str] = None) -> List[Entity]:

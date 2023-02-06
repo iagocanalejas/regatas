@@ -6,11 +6,11 @@ import requests
 from bs4 import Tag, BeautifulSoup
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
-from apps.entities.models import LEAGUE_GENDER_MALE, LEAGUE_GENDER_FEMALE
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 from digesters._item import ScrappedItem
 from digesters.scrappers._scrapper import Scrapper
+from utils.choices import GENDER_FEMALE, GENDER_MALE
 from utils.exceptions import StopProcessing
 
 
@@ -62,6 +62,7 @@ class LGTScrapper(Scrapper):
                 league=league,
                 gender=self.get_gender(name=name),
                 modality=self.get_modality(),
+                category=self.get_category(),
                 organizer=organizer,
                 edition=edition,
                 day=day,
@@ -117,7 +118,7 @@ class LGTScrapper(Scrapper):
         return name
 
     def get_gender(self, name: str, **kwargs) -> str:
-        return LEAGUE_GENDER_FEMALE if any(e in name for e in ['FEMENINA', 'FEMININA']) else LEAGUE_GENDER_MALE
+        return GENDER_FEMALE if any(e in name for e in ['FEMENINA', 'FEMININA']) else GENDER_MALE
 
     def get_day(self, name: str, t_date: date = None, **kwargs) -> int:
         if self.is_play_off(name):  # exception case

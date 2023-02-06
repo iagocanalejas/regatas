@@ -6,31 +6,9 @@ from ai_django.ai_core.models import CreationStampModel
 from ai_django.ai_core.utils.shortcuts import all_or_none
 from ai_django.ai_core.utils.strings import int_to_roman, whitespaces_clean
 from ai_django.ai_core.validators import JSONSchemaValidator
-from apps.entities.models import LEAGUE_GENDER_FEMALE, LEAGUE_GENDER_CHOICES
 from apps.races.schemas import RACE_METADATA_SCHEMA, default_race_metadata
+from utils.choices import RACE_CONVENTIONAL, RACE_TYPE_CHOICES, RACE_TRAINERA, RACE_MODALITY_CHOICES
 from utils.synonyms import lemmatize
-
-RACE_CONVENTIONAL = 'CONVENTIONAL'
-RACE_TIME_TRIAL = 'TIME_TRIAL'
-
-RACE_TYPES = [RACE_CONVENTIONAL, RACE_TIME_TRIAL]
-RACE_TYPE_CHOICES = [
-    (RACE_CONVENTIONAL, 'Convencional'),
-    (RACE_TIME_TRIAL, 'Contrarreloj'),
-]
-
-RACE_TRAINERA = 'TRAINERA'
-RACE_VETERANS = 'VETERAN'
-RACE_TRAINERILLA = 'TRAINERILLA'
-RACE_BATEL = 'BATEL'
-
-RACE_MODALITIES = [RACE_TRAINERA, RACE_VETERANS, RACE_TRAINERILLA, RACE_BATEL]
-RACE_MODALITY_CHOICES = [
-    (RACE_TRAINERA, 'Trainera'),
-    (RACE_VETERANS, 'Veteranos'),
-    (RACE_TRAINERILLA, 'Trainerilla'),
-    (RACE_BATEL, 'Batel'),
-]
 
 
 class Trophy(CreationStampModel):
@@ -112,8 +90,6 @@ class Race(CreationStampModel):
         related_query_name='edition',
     )
 
-    # only one of 'gender', 'league' should be NOT_NULL, both can be NULL at the same time
-    gender = models.CharField(null=True, blank=True, default=None, max_length=10, choices=LEAGUE_GENDER_CHOICES)
     league = models.ForeignKey(
         null=True,
         blank=True,
@@ -142,19 +118,13 @@ class Race(CreationStampModel):
         return f'{self.date} :: {self.name} {league}'.strip()
 
     @property
-    def is_female(self):
-        return (self.league and self.league.gender == LEAGUE_GENDER_FEMALE) or self.gender == LEAGUE_GENDER_FEMALE
-
-    @property
     def name(self) -> str:
         day = f'XORNADA {self.day}' if self.day > 1 else ''
-        gender = f'(FEMENINA)' if self.is_female else ''
-        modality = f'(VETERANOS)' if self.modality == RACE_VETERANS else ''
 
         trophy = f'{int_to_roman(self.trophy_edition)} - {self.trophy}' if self.trophy else ''
         flag = f'{int_to_roman(self.flag_edition)} - {self.flag}' if self.flag else ''
         name = ' - '.join([i for i in [trophy, flag, self.sponsor] if i])
-        return whitespaces_clean(f'{name} {day} {gender} {modality}')
+        return whitespaces_clean(f'{name} {day}')
 
     def validate_editions(self):
         """
@@ -171,23 +141,16 @@ class Race(CreationStampModel):
                 f'current: (trophy_id:{self.trophy_id}, trophy_edition:{self.trophy_edition})'
             )
 
-    def validate_gender(self):
-        if len([x for x in [self.league, self.gender] if x]) > 1:
-            raise IntegrityError(
-                f'Instance needs to have only one value for  \'league\' and \'gender\' filled. '
-                f'current: (league:{self.league}, gender:{self.gender})'
-            )
-
     def save(self, *args, **kwargs):
         self.validate_editions()
-        self.validate_gender()
         super(Race, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'race'
         verbose_name = 'Regata'
         unique_together = [
-            ['trophy', 'league', 'trophy_edition', 'modality', 'day'], ['flag', 'league', 'flag_edition', 'modality', 'day'],
+            ['trophy', 'league', 'trophy_edition', 'modality', 'day'],
+            ['flag', 'league', 'flag_edition', 'modality', 'day'],
             ['league', 'date']
         ]
         ordering = ['date', 'league']

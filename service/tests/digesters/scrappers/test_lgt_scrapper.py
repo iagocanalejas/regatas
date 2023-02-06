@@ -3,8 +3,7 @@ import unittest
 
 import responses
 
-from apps.entities.models import LEAGUE_GENDER_MALE
-from apps.races.models import RACE_TRAINERA
+from utils.choices import RACE_TRAINERA, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 from digesters import ScrappedItem
 from digesters.scrappers import LGTScrapper
 from tests.utils import add_html_response
@@ -24,8 +23,9 @@ class LGTScrapperTest(unittest.TestCase):
                 ScrappedItem(
                     league='LIGA A',
                     name='IX BANDEIRA VIRXE DO CARME',
-                    gender=LEAGUE_GENDER_MALE,
+                    gender=GENDER_MALE,
                     modality=RACE_TRAINERA,
+                    category=PARTICIPANT_CATEGORY_ABSOLUT,
                     edition=9,
                     day=1,
                     t_date=datetime.date(2020, 7, 25),
@@ -48,8 +48,9 @@ class LGTScrapperTest(unittest.TestCase):
                 ScrappedItem(
                     league='LIGA A',
                     name='IX BANDEIRA VIRXE DO CARME',
-                    gender=LEAGUE_GENDER_MALE,
+                    gender=GENDER_MALE,
                     modality=RACE_TRAINERA,
+                    category=PARTICIPANT_CATEGORY_ABSOLUT,
                     edition=9,
                     day=1,
                     t_date=datetime.date(2020, 7, 25),
@@ -72,8 +73,9 @@ class LGTScrapperTest(unittest.TestCase):
                 ScrappedItem(
                     league='LIGA A',
                     name='IX BANDEIRA VIRXE DO CARME',
-                    gender=LEAGUE_GENDER_MALE,
+                    gender=GENDER_MALE,
                     modality=RACE_TRAINERA,
+                    category=PARTICIPANT_CATEGORY_ABSOLUT,
                     edition=9,
                     day=1,
                     t_date=datetime.date(2020, 7, 25),

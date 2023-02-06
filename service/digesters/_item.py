@@ -9,6 +9,7 @@ class ScrappedItem:
     name: str
     gender: str
     modality: str
+    category: str
     edition: int
     day: int
     t_date: date

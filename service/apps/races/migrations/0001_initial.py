@@ -4,6 +4,7 @@ import django.utils.timezone
 from django.db import migrations, models
 
 import apps.races.models
+import utils.choices
 
 
 class Migration(migrations.Migration):
@@ -51,9 +52,7 @@ class Migration(migrations.Migration):
                 (
                     'type',
                     models.CharField(
-                        choices=[
-                            (apps.races.models.RACE_CONVENTIONAL, 'Convencional'), (apps.races.models.RACE_TIME_TRIAL, 'Contrarreloj')
-                        ],
+                        choices=[(utils.choices.RACE_CONVENTIONAL, 'Convencional'), (utils.choices.RACE_TIME_TRIAL, 'Contrarreloj')],
                         default='CONVENTIONAL',
                         max_length=50
                     )

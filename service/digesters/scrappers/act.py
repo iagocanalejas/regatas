@@ -69,6 +69,7 @@ class ACTScrapper(Scrapper):
                         league=league,
                         gender=self.get_gender(),
                         modality=self.get_modality(),
+                        category=self.get_category(),
                         organizer=organizer,
                         edition=edition,
                         day=day,

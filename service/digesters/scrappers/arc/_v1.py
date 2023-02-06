@@ -8,11 +8,11 @@ import requests
 from bs4 import Tag, BeautifulSoup
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
-from apps.entities.models import LEAGUE_GENDER_MALE
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 from digesters._item import ScrappedItem
 from digesters.scrappers.arc.arc import ARCScrapper, ARC_V1
+from utils.choices import GENDER_MALE
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
@@ -66,6 +66,7 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
                             league=league,
                             gender=self.get_gender(),
                             modality=self.get_modality(),
+                            category=self.get_category(),
                             organizer=self.get_organizer(),
                             edition=edition,
                             day=day,
@@ -177,7 +178,7 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
         return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
     def get_gender(self, **kwargs) -> str:
-        return LEAGUE_GENDER_MALE  # no female races previous 2009
+        return GENDER_MALE  # no female races previous 2009
 
     def get_town(self, **kwargs) -> Optional[str]:
         return None

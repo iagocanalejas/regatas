@@ -10,7 +10,7 @@ from pandas import DataFrame, Series
 from ai_django.ai_core.utils.strings import whitespaces_clean
 from apps.entities.normalization import normalize_club_name
 from digesters._item import ScrappedItem
-from digesters.ocr.image import ImageOCR, IMAGE_KONTXAKO
+from digesters.ocr._image import ImageOCR, IMAGE_KONTXAKO
 from utils.synonyms import TIME_TRIAL_SYNONYMS, FEMALE_SYNONYMS, CLASSIFICATION_SYNONYMS
 
 logger = logging.getLogger(__name__)

@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.entities.models import ENTITY_CLUB, ENTITY_PRIVATE, ENTITY_FEDERATION, ENTITY_LEAGUE
+from utils.choices import ENTITY_CLUB, ENTITY_LEAGUE, ENTITY_FEDERATION, ENTITY_PRIVATE
 from apps.entities.serializers import LeagueSerializer, ClubSerializer, OrganizerSerializer, EntitySerializer
 from apps.entities.services import LeagueService, EntityService
 

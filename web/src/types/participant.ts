@@ -1,8 +1,7 @@
 import { Entity } from "./entity";
 import * as moment from "moment";
 import { TIME_FORMAT } from "./index";
-
-export type PenaltyReason = 'NO_LINE_START' | 'NULL_START' | 'BLADE_TOUCH'
+import { Gender, ParticipantCategory, PenaltyReason } from "./types";
 
 export interface Penalty {
   penalty: number;
@@ -22,6 +21,8 @@ export interface Participant {
   disqualified: boolean;
   hast_time_penalty: boolean; // computed
   penalties: Penalty[];
+  gender: Gender;
+  category: ParticipantCategory;
 }
 
 const timeReg = /^[0-9]{2}:[0-9]{2}.[0-9]*$/;

@@ -73,6 +73,10 @@ class Digester(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_category(self, **kwargs) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
     def get_name(self, soup, **kwargs) -> str:
         raise NotImplementedError
 

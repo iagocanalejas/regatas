@@ -6,8 +6,7 @@ from typing import List, Any, Tuple
 from bs4 import Tag
 
 from ai_django.ai_core.utils.strings import find_roman, roman_to_int
-from apps.entities.models import LEAGUE_GENDER_FEMALE, LEAGUE_GENDER_MALE
-from apps.races.models import RACE_TRAINERA
+from utils.choices import RACE_TRAINERA, GENDER_FEMALE, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 from digesters._digester import Digester
 from digesters._item import ScrappedItem
 
@@ -34,10 +33,13 @@ class Scrapper(Digester, ABC):
         return self.scrap(**kwargs)
 
     def get_gender(self, **kwargs) -> str:
-        return LEAGUE_GENDER_FEMALE if self._is_female else LEAGUE_GENDER_MALE
+        return GENDER_FEMALE if self._is_female else GENDER_MALE
 
     def get_modality(self, **kwargs) -> str:
         return RACE_TRAINERA
+
+    def get_category(self, **kwargs) -> str:
+        return PARTICIPANT_CATEGORY_ABSOLUT
 
     @staticmethod
     def get_edition(name: str, **kwargs) -> int:

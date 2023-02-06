@@ -12,11 +12,12 @@ import pandas as pd
 from django.core.management import BaseCommand
 from pandas import DataFrame, Series
 
-from apps.entities.models import League, Entity, LEAGUE_GENDERS
+from apps.entities.models import League, Entity
 from apps.entities.services import LeagueService, EntityService
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
-from apps.races.models import Trophy, Race, RACE_TIME_TRIAL, RACE_CONVENTIONAL, Flag
+from apps.races.models import Trophy, Race, Flag
+from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL, GENDERS
 from apps.races.services import TrophyService, RaceService, FlagService
 from digesters.scrappers import ACTScrapper, LGTScrapper
 from utils.checks import is_play_off
@@ -58,7 +59,8 @@ _KNOWN_MAPPINGS = {
 }
 
 
-# noinspection Assert
+# TODO: review distance
+# TODO: use ScrappedItem to import the dataframe
 class Command(BaseCommand):
     """
     Options:
@@ -231,15 +233,8 @@ class Command(BaseCommand):
         return RACE_TIME_TRIAL if lanes == 1 else RACE_CONVENTIONAL
 
     @staticmethod
-    def _get_distance(row: Series, race: Race) -> int:
-        if COLUMN_DISTANCE in row:
-            return row[COLUMN_DISTANCE]
-
-        short_leagues = ['LIGA EUSKOTREN', 'EMAKUMEZKO TRAINERUEN ELKARTEA', 'ASOCIACIÓN DE CLUBES DE TRAINERAS']
-        is_short = race.is_female and race.league and race.league.name in short_leagues
-        if is_short:
-            logger.warning(f'distance might be incorrect for {race} races')
-        return 2778 if is_short else 5556
+    def _get_distance(row: Series) -> int:
+        return row[COLUMN_DISTANCE]
 
     ####################################################
     #                DB ACCESS METHODS                 #
@@ -406,7 +401,7 @@ class Command(BaseCommand):
             club=row[COLUMN_CLUB],
             club_name=row[COLUMN_CNAME],  # un-normalized used club name
             race=row[COMPUTED_RACE],
-            distance=self._get_distance(row, row[COMPUTED_RACE]),
+            distance=self._get_distance(row),
             lane=row[COLUMN_LANE],
             laps=row[COLUMN_LAPS],
             series=row[COLUMN_SERIES],
@@ -480,7 +475,7 @@ class Command(BaseCommand):
     def _check_valid_gender(dfs: DataFrame) -> List[Any]:
         invalid = []
         for itx, item in enumerate(dfs[COLUMN_GENDER]):
-            if item and item not in LEAGUE_GENDERS:
+            if item and item not in GENDERS:
                 invalid.append(f'Invalid gender for race {itx + 1}')
         return invalid
 

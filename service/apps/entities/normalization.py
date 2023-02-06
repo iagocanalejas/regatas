@@ -5,7 +5,8 @@ from django.db.models.functions import Length
 from unidecode import unidecode
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, remove_parenthesis
-from apps.entities.models import EntityTitle, Entity, ENTITY_CLUB
+from apps.entities.models import EntityTitle, Entity
+from utils.choices import ENTITY_CLUB
 
 logger = logging.getLogger(__name__)
 

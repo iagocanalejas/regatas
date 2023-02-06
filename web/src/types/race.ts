@@ -8,7 +8,6 @@ export interface Race {
   id: number;
   type: 'TIME_TRIAL' | 'CONVENTIONAL';
   name: string; // computed
-  modality: 'TRAINERA' | 'VETERAN';
   day: number;
   date: string;
   cancelled: boolean;

@@ -2,7 +2,8 @@ from typing import Optional
 
 from rest_framework import serializers
 
-from apps.entities.models import League, Entity, ENTITY_CLUB
+from apps.entities.models import League, Entity
+from utils.choices import ENTITY_CLUB
 from apps.entities.serializers import LeagueSerializer, EntitySerializer, ClubSerializer
 from apps.participants.models import Participant, Penalty
 from apps.races.models import Trophy, Flag, Race
@@ -48,6 +49,14 @@ class SimpleRaceSerializer(serializers.ModelSerializer):
     trophy = TrophySerializer()
     flag = FlagSerializer()
     league = LeagueSerializer(allow_null=True)
+    gender = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_gender(race: Race) -> Optional[str]:
+        if race.league:
+            return race.league.gender
+        genders = list({p.gender for p in list(race.participants.all())})
+        return genders[0] if len(genders) == 1 else None
 
     class Meta:
         model = Race
@@ -55,6 +64,7 @@ class SimpleRaceSerializer(serializers.ModelSerializer):
             'id',
             'type',
             'modality',
+            'gender',
             'day',
             'date',
             'cancelled',
@@ -63,7 +73,6 @@ class SimpleRaceSerializer(serializers.ModelSerializer):
             'flag',
             'flag_edition',
             'league',
-            'gender',
             'sponsor',
         )
 
@@ -119,4 +128,4 @@ class RaceParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ('id', 'club', 'laps', 'lane', 'series', 'disqualified', 'penalties', 'club_name')
+        fields = ('id', 'club', 'laps', 'lane', 'series', 'disqualified', 'penalties', 'club_name', 'gender', 'category')

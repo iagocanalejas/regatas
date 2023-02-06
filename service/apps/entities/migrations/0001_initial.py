@@ -5,6 +5,7 @@ import django.utils.timezone
 from django.db import migrations, models
 
 import apps.entities.models
+import utils.choices
 
 
 class Migration(migrations.Migration):
@@ -29,8 +30,8 @@ class Migration(migrations.Migration):
                     'type',
                     models.CharField(
                         choices=[
-                            (apps.entities.models.ENTITY_CLUB, 'Club'), (apps.entities.models.ENTITY_LEAGUE, 'Liga'),
-                            (apps.entities.models.ENTITY_FEDERATION, 'Federación'), (apps.entities.models.ENTITY_PRIVATE, 'Privada')
+                            (utils.choices.ENTITY_CLUB, 'Club'), (utils.choices.ENTITY_LEAGUE, 'Liga'),
+                            (utils.choices.ENTITY_FEDERATION, 'Federación'), (utils.choices.ENTITY_PRIVATE, 'Privada')
                         ],
                         max_length=50
                     )

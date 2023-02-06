@@ -2,17 +2,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models, IntegrityError
 
 from ai_django.ai_core.models import CreationStampModel
-from apps.entities.models import ENTITY_CLUB
-
-NO_LINE_START = 'NO_LINE_START'
-NULL_START = 'NULL_START'
-BLADE_TOUCH = 'BLADE_TOUCH'
-
-PENALTY_CHOICES = [
-    (NO_LINE_START, 'Salida sin estacha'),
-    (NULL_START, 'Salida nula'),
-    (BLADE_TOUCH, 'Toque de palas'),
-]
+from utils.choices import PENALTY_CHOICES, PARTICIPANT_CATEGORY_ABSOLUT, PARTICIPANT_CATEGORIES_CHOICES, ENTITY_CLUB, GENDER_MALE, \
+    GENDER_CHOICES
 
 
 class Participant(models.Model):
@@ -36,6 +27,9 @@ class Participant(models.Model):
     laps = ArrayField(blank=True, default=list, base_field=models.TimeField(null=False))
     lane = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     series = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
+
+    gender = models.CharField(default=GENDER_MALE, max_length=10, choices=GENDER_CHOICES)
+    category = models.CharField(default=PARTICIPANT_CATEGORY_ABSOLUT, max_length=10, choices=PARTICIPANT_CATEGORIES_CHOICES)
 
     def __str__(self):
         title = f'{self.club.title.name}' if self.club.title else ''

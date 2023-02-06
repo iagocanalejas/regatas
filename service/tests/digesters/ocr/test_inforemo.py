@@ -7,7 +7,8 @@ from django.conf import settings
 
 from digesters import ScrappedItem
 from digesters.ocr import ImageOCRInforemo
-from digesters.ocr.image import IMAGE_INFOREMO
+from digesters.ocr._image import IMAGE_INFOREMO
+from utils.choices import GENDER_FEMALE, RACE_TRAINERA, PARTICIPANT_CATEGORY_ABSOLUT, GENDER_MALE, PARTICIPANT_CATEGORY_VETERAN
 
 
 @unittest.skipIf(os.getenv("CI") == "true", "Skipping in the CI")
@@ -26,8 +27,9 @@ class InforemoOCRTest(unittest.TestCase):
             ScrappedItem(
                 league=None,
                 name='CAMPEONATO GALEGO DE TRAINERAS',
-                gender='FEMALE',
-                modality='TRAINERA',
+                gender=GENDER_FEMALE,
+                modality=RACE_TRAINERA,
+                category=PARTICIPANT_CATEGORY_ABSOLUT,
                 edition=1,
                 day=1,
                 t_date=datetime.datetime(2022, 7, 25, 0, 0),
@@ -52,8 +54,9 @@ class InforemoOCRTest(unittest.TestCase):
             ScrappedItem(
                 league=None,
                 name='CAMPEONATO GALEGO DE TRAINERAS',
-                gender='FEMALE',
-                modality='TRAINERA',
+                gender=GENDER_FEMALE,
+                modality=RACE_TRAINERA,
+                category=PARTICIPANT_CATEGORY_ABSOLUT,
                 edition=1,
                 day=1,
                 t_date=datetime.datetime(2022, 7, 25, 0, 0),
@@ -87,8 +90,9 @@ class InforemoOCRTest(unittest.TestCase):
             ScrappedItem(
                 league=None,
                 name='PRETEMPORADA DE TRAINERAS',
-                gender='MALE',
-                modality='TRAINERA',
+                gender=GENDER_MALE,
+                modality=RACE_TRAINERA,
+                category=PARTICIPANT_CATEGORY_ABSOLUT,
                 edition=1,
                 day=1,
                 t_date=datetime.datetime(2023, 1, 29, 0, 0),
@@ -113,8 +117,9 @@ class InforemoOCRTest(unittest.TestCase):
             ScrappedItem(
                 league=None,
                 name='PRETEMPORADA DE TRAINERAS',
-                gender='MALE',
-                modality='VETERAN',
+                gender=GENDER_MALE,
+                modality=RACE_TRAINERA,
+                category=PARTICIPANT_CATEGORY_VETERAN,
                 edition=1,
                 day=1,
                 t_date=datetime.datetime(2023, 1, 29, 0, 0),

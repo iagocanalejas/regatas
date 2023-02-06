@@ -65,6 +65,7 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
                         league=league,
                         gender=self.get_gender(),
                         modality=self.get_modality(),
+                        category=self.get_category(),
                         organizer=self.get_organizer(),
                         edition=edition,
                         day=day,

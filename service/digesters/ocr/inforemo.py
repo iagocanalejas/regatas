@@ -10,10 +10,9 @@ from pandas import DataFrame
 from pytesseract import pytesseract
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, remove_symbols
-from apps.entities.models import LEAGUE_GENDER_MALE, LEAGUE_GENDER_FEMALE
-from apps.races.models import RACE_VETERANS, RACE_TRAINERA
 from digesters import ScrappedItem
-from digesters.ocr.image import ImageOCR, IMAGE_INFOREMO
+from digesters.ocr._image import ImageOCR, IMAGE_INFOREMO
+from utils.choices import RACE_TRAINERA, GENDER_MALE, GENDER_FEMALE, GENDER_MIX, PARTICIPANT_CATEGORY_VETERAN, PARTICIPANT_CATEGORY_ABSOLUT
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +21,9 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
     DATASOURCE = IMAGE_INFOREMO
 
     _GENDERS = {
-        LEAGUE_GENDER_MALE: ['MASCULINO', 'ABSOLUTO', 'VETERANO'],
-        LEAGUE_GENDER_FEMALE: ['FEMENINO', 'VETERANA'],
+        GENDER_MALE: ['MASCULINO', 'ABSOLUTO', 'VETERANO'],
+        GENDER_FEMALE: ['FEMENINO', 'VETERANA'],
+        GENDER_MIX: ['MIXTO'],
     }
 
     def digest(self, path: str) -> List[ScrappedItem]:
@@ -53,7 +53,8 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
                 t_date=t_date,
                 town=town,
                 gender=self.get_gender(row),
-                modality=self.get_modality(row),
+                modality=self.get_modality(),
+                category=self.get_category(row),
                 league=self.get_league(),
                 organizer=self.get_organizer(),
                 club_name=club_name,
@@ -193,11 +194,14 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
                 break
         return gender
 
-    def get_modality(self, data, **kwargs) -> str:
+    def get_modality(self, **kwargs) -> str:
+        return RACE_TRAINERA
+
+    def get_category(self, data, **kwargs) -> str:
         modality = data[2]
         if 'VETERANO' in modality:
-            return RACE_VETERANS
-        return RACE_TRAINERA
+            return PARTICIPANT_CATEGORY_VETERAN
+        return PARTICIPANT_CATEGORY_ABSOLUT
 
     def get_club_name(self, data, **kwargs) -> str:
         return data[1]

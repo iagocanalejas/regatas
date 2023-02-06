@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-from apps.participants.models import NO_LINE_START
+from utils.choices import NO_LINE_START
 
 
 def penalty_reason(apps, schema):
