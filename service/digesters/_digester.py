@@ -61,27 +61,11 @@ class Digester(ABC):
     ####################################################
 
     @abstractmethod
-    def get_league(self, soup, trophy: str, **kwargs) -> Optional[str]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_gender(self, **kwargs) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_modality(self, **kwargs) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_category(self, **kwargs) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
     def get_name(self, soup, **kwargs) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def normalized_name(self, name: str, **kwargs) -> str:
+    def get_date(self, soup, **kwargs) -> date:
         raise NotImplementedError
 
     @staticmethod
@@ -93,7 +77,11 @@ class Digester(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_date(self, soup, **kwargs) -> date:
+    def get_modality(self, **kwargs) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_league(self, soup, trophy: str, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     @abstractmethod
@@ -104,12 +92,18 @@ class Digester(ABC):
     def get_organizer(self, soup, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
+    ####################################################
+
     @abstractmethod
-    def get_club_name(self, soup, **kwargs) -> str:
+    def get_gender(self, **kwargs) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def normalized_club_name(self, name: str, **kwargs) -> str:
+    def get_category(self, **kwargs) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_club_name(self, soup, **kwargs) -> str:
         raise NotImplementedError
 
     @abstractmethod
@@ -123,6 +117,22 @@ class Digester(ABC):
     @abstractmethod
     def get_laps(self, soup, **kwargs) -> List[str]:
         raise NotImplementedError
+
+    @abstractmethod
+    def get_distance(self, **kwargs) -> int:
+        raise NotImplementedError
+
+    ####################################################
+
+    @abstractmethod
+    def normalized_name(self, name: str, **kwargs) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def normalized_club_name(self, name: str, **kwargs) -> str:
+        raise NotImplementedError
+
+    ####################################################
 
     @abstractmethod
     def get_race_lanes(self, soup, **kwargs) -> int:

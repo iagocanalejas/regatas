@@ -57,21 +57,22 @@ class LGTScrapper(Scrapper):
 
             yield ScrappedItem(
                 name=name,
-                trophy_name=trophy_name,
-                town=town,
-                league=league,
-                gender=self.get_gender(name=name),
-                modality=self.get_modality(),
-                category=self.get_category(),
-                organizer=organizer,
+                t_date=t_date,
                 edition=edition,
                 day=day,
-                t_date=t_date,
+                modality=self.get_modality(),
+                league=league,
+                town=town,
+                organizer=organizer,
+                gender=self.get_gender(name=name),
+                category=self.get_category(),
                 club_name=club_name,
-                participant=self.normalized_club_name(club_name),
-                series=series,
                 lane=self.get_lane(row),
+                series=series,
                 laps=self.get_laps(row),
+                distance=self.get_distance(),
+                trophy_name=trophy_name,
+                participant=self.normalized_club_name(club_name),
                 race_id=str(race_id),
                 url=url,
                 datasource=self.DATASOURCE,
@@ -99,6 +100,9 @@ class LGTScrapper(Scrapper):
             return 'LGT'
         value = soup.find('div', {'id': 'regata'}).find('div', {'class': 'row'}).find_all('p')[2].find('span').text
         return whitespaces_clean(value)
+
+    def get_distance(self, **kwargs) -> int:
+        return 5556
 
     def get_name(self, soup: Tag, **kwargs) -> str:
         return whitespaces_clean(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[0].text).upper()

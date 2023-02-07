@@ -32,21 +32,24 @@ class Scrapper(Digester, ABC):
         # route 'digest' method to abstract 'scrap'
         return self.scrap(**kwargs)
 
-    def get_gender(self, **kwargs) -> str:
-        return GENDER_FEMALE if self._is_female else GENDER_MALE
-
-    def get_modality(self, **kwargs) -> str:
-        return RACE_TRAINERA
-
-    def get_category(self, **kwargs) -> str:
-        return PARTICIPANT_CATEGORY_ABSOLUT
-
     @staticmethod
     def get_edition(name: str, **kwargs) -> int:
         name = re.sub(r'[\'\".:]', ' ', name)
 
         roman_options = [find_roman(w) for w in name.split() if find_roman(w)]
         return roman_to_int(roman_options[0]) if roman_options else 1
+
+    def get_modality(self, **kwargs) -> str:
+        return RACE_TRAINERA
+
+    def get_gender(self, **kwargs) -> str:
+        return GENDER_FEMALE if self._is_female else GENDER_MALE
+
+    def get_category(self, **kwargs) -> str:
+        return PARTICIPANT_CATEGORY_ABSOLUT
+
+    def get_distance(self, **kwargs) -> int:
+        return 2778 if self._is_female else 5556
 
     ####################################################
     #                     ABSTRACT                     #

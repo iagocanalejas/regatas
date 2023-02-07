@@ -47,21 +47,22 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
             club_name = self.get_club_name(row)
             yield ScrappedItem(
                 name=name,
-                trophy_name=trophy_name,
+                t_date=t_date,
                 edition=self.get_edition(),
                 day=self.get_day(),
-                t_date=t_date,
-                town=town,
-                gender=self.get_gender(row),
                 modality=self.get_modality(),
-                category=self.get_category(row),
                 league=self.get_league(),
+                town=town,
                 organizer=self.get_organizer(),
+                gender=self.get_gender(row),
+                category=self.get_category(row),
                 club_name=club_name,
-                participant=self.normalized_club_name(club_name),
-                series=self.get_series(row),
                 lane=self.get_lane(row),
+                series=self.get_series(row),
                 laps=self.get_laps(row),
+                distance=self.get_distance(),
+                trophy_name=trophy_name,
+                participant=self.normalized_club_name(club_name),
                 race_id=os.path.basename(path),
                 url=None,
                 datasource=self.DATASOURCE,
@@ -162,6 +163,9 @@ class ImageOCRInforemo(ImageOCR, source=IMAGE_INFOREMO):
             match = re.match(r'^[a-zA-ZñÑ ]+$', whitespaces_clean(remove_symbols(line)))
             if match and len(match.group(0)) > 5:
                 return match.group(0)
+
+    def get_distance(self, **kwargs) -> int:
+        return 5556
 
     def get_date(self, image: str, **kwargs) -> date:
         for line in image.split('\n'):
