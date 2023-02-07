@@ -1,126 +1,39 @@
 import datetime
-import itertools
-import logging
-import os
-import sys
 from ast import literal_eval
-from datetime import time
-from typing import Optional, Dict, List, Tuple, Any
+from datetime import time, date
+from typing import Optional, Dict, Tuple
 
 import inquirer
-import pandas as pd
-from django.core.management import BaseCommand
-from pandas import DataFrame, Series
+from pandas import Series
 
-from apps.entities.models import League, Entity
-from apps.entities.services import LeagueService, EntityService
-from apps.participants.models import Participant
+from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
-from apps.races.models import Trophy, Race, Flag
-from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL, GENDERS
-from apps.races.services import TrophyService, RaceService, FlagService
-from digesters.scrappers import ACTScrapper, LGTScrapper
-from utils.checks import is_play_off
+from apps.races.management.commands.validate import *
+from apps.races.models import Flag
+from apps.races.services import RaceService, FlagService
+from digesters import Digester
+from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
-
-COLUMN_LEAGUE = 'league'
-COLUMN_GENDER = 'gender'
-COLUMN_NAME = 'name'
-COLUMN_TROPHY = 'trophy_name'
-COLUMN_EDITION = 'edition'
-COLUMN_DAY = 'day'
-COLUMN_DATE = 't_date'
-COLUMN_TOWN = 'town'
-COLUMN_ORGANIZER = 'organizer'
-COLUMN_CANCELLED = 'cancelled'
-COLUMN_CNAME = 'club_name'
-COLUMN_CLUB = 'participant'
-COLUMN_LANE = 'lane'
-COLUMN_DISQUALIFIED = 'disqualified'
-COLUMN_RACE_LANES = 'race_lanes'
-COLUMN_SERIES = 'series'
-COLUMN_LAPS = 'laps'
-COLUMN_RACE_LAPS = 'race_laps'
-COLUMN_DISTANCE = 'distance'
-COLUMN_RACE_ID = 'race_id'
-COLUMN_URL = 'url'
-COLUMN_DATASOURCE = 'datasource'
-
-# computed columns
-COMPUTED_TROPHY = 'db_trophy'
-COMPUTED_FLAG = 'db_flag'
-COMPUTED_RACE = 'db_race'
-COMPUTED_GENDER = 'db_gender'
 
 _KNOWN_MAPPINGS = {
     'BANDEIRA XUNTA DE GALICIA': ['CAMPEONATO GALEGO DE TRAINERAS'],
 }
 
 
-# TODO: review distance
-# TODO: use ScrappedItem to import the dataframe
-class Command(BaseCommand):
-    """
-    Options:
-        --manual: Allows non existing trophies/flags that will be created with user input.
-        --validate: Do a simple validation of the file.
-    Valid CSV columns:
-        name: str                   || Will be saved in the database as is (#Race.race_name).
-        trophy_name: Optional[str]  || Will be used for search the #Trophy or #Flag and for normalization (defaults to name).
-        club_name: str              || Will be saved in the database as is (#Participant.club_name).
-        participant: Optional[str]  || Will be used for search #Entity[type=CLUB] and normalization (defaults to club_name).
-        t_date: date                || Used to find or create a #Race - (YYYY-MM-DD).
-
-        league: Optional[str]       || The name of the league #League.name.
-        gender: str                 || (#League.gender) 'FEMALE' | 'MALE'.
-        modality: str               || (#Race.modality) 'TRAINERA' | 'VETERAN' 'TRAINERILLA' | 'BATEL'.
-        edition: int                || The edition of the race if known, will be used for #Trophy, #Flag or both.
-        day: int                    || #Race.day for races that happen in multiple days.
-        town: Optional[str]         || The town where the race was celebrated.
-        organizer: Optional[str]    || The #Entity organizing the event.
-        race_laps: Optional[int]    || Precomputed number of laps for the #Race.laps
-        race_lanes: Optional[int]   || Precomputed number of lanes for the #Race.lanes
-        cancelled: Optional[bool]   || If the race was cancelled for some reason
-
-        series: int                 || #Participant.series
-        lane: int                   || #Participant.lane
-        laps: List[str]             || #Participant.laps (HH:mm:ss.xxx)
-        disqualified: Optional[bool]|| If the participant was disqualified for some reason
-
-        race_id: str                || The ID of the race in the datasource
-        url: Optional[str]          || Datasource URL where the race was found
-        datasource: str             || Datasource where the race was found
-    NOTES:
-        - One of 'league', 'gender' is required.
-        - Only one of 'league', 'gender' is accepted.
-    DEFAULTS:
-        - cancelled = False
-        - disqualified = False
-    """
-
+# TODO: create getters
+class Command(BaseCommand, Digester):
     help = 'Import CSV file into the DB'
-
-    __CACHE: Dict[str, List[Tuple[str, Any]]] = {
-        'leagues': [],
-        'clubs': [],
-        'trophies': [],
-        'flags': [],
-    }
 
     def add_arguments(self, parser):
         parser.add_argument('path', nargs='+', type=str)
-        parser.add_argument('--manual', action='store_true', default=False)
+        parser.add_argument('--no-input', action='store_true', default=False)
         parser.add_argument('--only-validate', action='store_true', default=False)
 
     def handle(self, *args, **options):
-        assert options['path']
-
         for file in options['path']:
-            assert os.path.isfile(file)
-
-            self._validate(file, manual=options['manual'])
+            validate_file(file, manual=not options['no_input'])
             if options['only_validate']:
                 return
 
@@ -137,29 +50,122 @@ class Command(BaseCommand):
                 ).fillna('')
             )
 
-            # create missing trophies/flags
-            missing_trophies = dfs.loc[dfs[COMPUTED_TROPHY].isnull() & dfs[COMPUTED_FLAG].isnull()][COLUMN_TROPHY].unique()
-            if len(missing_trophies) > 0:
-                if not options['manual']:
-                    raise StopProcessing(f'missing: {missing_trophies}')
-                self._create_trophy_or_flag(dfs, missing_trophies)
-
-            # check all missing trophies/flags where created
-            if len(dfs.loc[dfs[COMPUTED_TROPHY].isnull() & dfs[COMPUTED_FLAG].isnull()][COLUMN_TROPHY].unique()) > 0:
-                raise StopProcessing
-
-            for race_id, gender in list(itertools.product(dfs[COLUMN_RACE_ID].unique(), dfs[COMPUTED_GENDER].unique())):
-                if dfs.loc[(dfs[COLUMN_RACE_ID] == race_id) & (dfs[COMPUTED_GENDER] == gender)].empty:
-                    continue
-                logger.debug(f'processing race {race_id}')
-                self._get_race_or_create(dfs, dfs.loc[(dfs[COLUMN_RACE_ID] == race_id) & (dfs[COMPUTED_GENDER] == gender)].iloc[0])
-
-            for index, row in dfs.iterrows():
-                logger.debug(f'processing row {index}')
-                self._create_or_update_participant(row)
+            self.digest(dfs, manual=not options['no_input'])
 
     ####################################################
-    #                 PRIVATE METHODS                  #
+    #                  DIGEST METHODS                  #
+    ####################################################
+
+    def digest(self, dfs: DataFrame, manual: bool = False, **kwargs):
+        # create missing trophies/flags
+        missing_trophies = dfs.loc[dfs[COMPUTED_TROPHY].isnull() & dfs[COMPUTED_FLAG].isnull()][COLUMN_TROPHY].unique()
+        if len(missing_trophies) > 0:
+            if not manual:
+                raise StopProcessing(f'missing: {missing_trophies}')
+            self._create_trophy_or_flag(dfs, missing_trophies)
+
+        # check all missing trophies/flags where created
+        if len(dfs.loc[dfs[COMPUTED_TROPHY].isnull() & dfs[COMPUTED_FLAG].isnull()][COLUMN_TROPHY].unique()) > 0:
+            raise StopProcessing
+
+        # create or get all races
+        for race_id in dfs[COLUMN_RACE_ID].unique():
+            logger.debug(f'processing race {race_id}')
+            self._get_race_or_create(dfs, dfs.loc[(dfs[COLUMN_RACE_ID] == race_id)].iloc[0])
+
+        for index, row in dfs.iterrows():
+            logger.debug(f'processing row {index}')
+            self._create_or_update_participant(row)
+
+    def get_name(self, row: Series, **kwargs) -> str:
+        return row[COLUMN_NAME]
+
+    def get_date(self, row: Series, **kwargs) -> date:
+        return row[COLUMN_DATE]
+
+    @staticmethod
+    def get_edition(row: Series, **kwargs) -> int:
+        return row[COLUMN_EDITION]
+
+    def get_day(self, row: Series, **kwargs) -> int:
+        return row[COLUMN_DAY]
+
+    def get_modality(self, row: Series, **kwargs) -> str:
+        return row[COLUMN_MODALITY]
+
+    def get_league(self, row: Series, **kwargs) -> Optional[League]:
+        return row[COLUMN_LEAGUE]
+
+    def get_town(self, row: Series, **kwargs) -> Optional[str]:
+        return row[COLUMN_TOWN]
+
+    def get_organizer(self, row: Series, **kwargs) -> Optional[str]:
+        return row[COLUMN_ORGANIZER]
+
+    def get_gender(self, row: Series, **kwargs) -> str:
+        return row[COLUMN_GENDER]
+
+    def get_category(self, row: Series, **kwargs) -> str:
+        return row[COLUMN_CATEGORY]
+
+    def get_club_name(self, row: Series, **kwargs) -> str:
+        return row[COLUMN_CNAME]
+
+    def get_lane(self, row: Series, **kwargs) -> int:
+        return row[COLUMN_LANE]
+
+    def get_series(self, row: Series, **kwargs) -> int:
+        return row[COLUMN_SERIES]
+
+    def get_laps(self, row: Series, **kwargs) -> List[str]:
+        return row[COLUMN_LAPS]
+
+    def get_distance(self, row: Series, **kwargs) -> int:
+        return row[COLUMN_DISTANCE]
+
+    @staticmethod
+    def get_club(row: Series) -> Entity:
+        return row[COMPUTED_PARTICIPANT]
+
+    def get_race_lanes(self, dfs: DataFrame, row: Series, **kwargs) -> int:
+        lanes = row[COLUMN_RACE_LANES]
+        if not lanes:
+            lanes = dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LANE].max()
+        if lanes > 5:
+            logger.warning(f'race found with more than 5 lanes: {row[COLUMN_RACE_ID]}')
+        return lanes
+
+    def get_race_laps(self, dfs: DataFrame, row: Series, **kwargs) -> int:
+        laps = row[COLUMN_RACE_LAPS]
+        if not laps:
+            laps = max([len(e) for e in dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LAPS]])
+        if laps > 6:
+            logger.warning(f'race found with more than 6 laps: {row[COLUMN_RACE_ID]}')
+        return laps
+
+    @staticmethod
+    def get_race_type(dfs: DataFrame, row: Series) -> str:
+        lanes = row[COLUMN_RACE_LANES]
+        if not lanes:
+            lanes = dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LANE].max()
+        return RACE_TIME_TRIAL if lanes == 1 else RACE_CONVENTIONAL
+
+    @staticmethod
+    def is_cancelled(row: Series) -> bool:
+        return row[COLUMN_CANCELLED] if COLUMN_CANCELLED in row else False
+
+    @staticmethod
+    def is_disqualified(row: Series) -> bool:
+        return row[COLUMN_DISQUALIFIED] if COLUMN_DISQUALIFIED in row else False
+
+    def normalized_name(self, name: str, **kwargs) -> str:
+        raise NotImplementedError
+
+    def normalized_club_name(self, name: str, **kwargs) -> str:
+        raise NotImplementedError
+
+    ####################################################
+    #                 DATAFRAME METHODS                #
     ####################################################
 
     def _prepare_dataframe(self, dfs: DataFrame) -> DataFrame:
@@ -167,18 +173,18 @@ class Command(BaseCommand):
         dfs[COLUMN_TROPHY] = dfs[COLUMN_TROPHY] if COLUMN_TROPHY in dfs else dfs[COLUMN_NAME]
         dfs[COLUMN_CLUB] = dfs[COLUMN_CLUB] if COLUMN_CLUB in dfs else dfs[COLUMN_CNAME]
 
-        # computed columns
-        dfs[COLUMN_RACE_ID] = dfs.apply(lambda x: x[COLUMN_RACE_ID] if COLUMN_RACE_ID in x else self._get_datasource_id(x), axis=1)
-        dfs[COLUMN_LEAGUE] = dfs.apply(lambda x: x[COLUMN_LEAGUE] if is_play_off(x[COLUMN_TROPHY]) else None, axis=1)
+        # remove leagues for play-off races
+        dfs[COLUMN_LEAGUE] = dfs.apply(
+            lambda x: self._get_league(x[COLUMN_LEAGUE]) if not self.is_play_off(x[COLUMN_TROPHY]) else None, axis=1
+        )
 
         # find already existing data
         dfs[COMPUTED_TROPHY] = dfs.apply(lambda x: self._get_trophy(x[COLUMN_TROPHY]), axis=1)
         dfs[COMPUTED_FLAG] = dfs.apply(lambda x: self._get_flag(x[COLUMN_TROPHY]), axis=1)
         dfs[COMPUTED_RACE] = dfs.apply(lambda x: None, axis=1)
-        dfs[COLUMN_LEAGUE] = dfs.apply(lambda x: self._get_league(x[COLUMN_LEAGUE]), axis=1)
-        dfs[COLUMN_CLUB] = dfs.apply(lambda x: self._get_club(x[COLUMN_CLUB]), axis=1)
+        dfs[COMPUTED_PARTICIPANT] = dfs.apply(lambda x: self._get_club(x[COLUMN_CLUB]), axis=1)
         dfs[COLUMN_ORGANIZER] = dfs.apply(lambda x: self._get_organizer(x[COLUMN_ORGANIZER]), axis=1)
-        dfs[COMPUTED_GENDER] = dfs.apply(lambda x: x[COLUMN_LEAGUE].gender if x[COLUMN_LEAGUE] else x[COLUMN_GENDER], axis=1)
+        dfs[COLUMN_GENDER] = dfs.apply(lambda x: x[COLUMN_LEAGUE].gender if x[COLUMN_LEAGUE] else x[COLUMN_GENDER], axis=1)
 
         date_pairs = self._date_pairs(dfs.loc[dfs[COLUMN_DAY] == 1][COLUMN_DATE].unique())
         for start, end in date_pairs:
@@ -188,16 +194,10 @@ class Command(BaseCommand):
         return dfs
 
     @staticmethod
-    def _get_datasource_id(dfs: DataFrame) -> str:
-        match dfs[COLUMN_DATASOURCE]:
-            case ACTScrapper.DATASOURCE:
-                return dfs[COLUMN_URL].split('r=')[-1]
-            case LGTScrapper.DATASOURCE:
-                return dfs[COLUMN_URL].split('/')[-1]
-        return ''
-
-    @staticmethod
     def _fix_days(dfs: DataFrame, start: datetime.date, end: datetime.date, column: str):
+        """
+        Tries to fix two-day races with wrong 'day' columns
+        """
         for _, row in dfs.loc[(dfs[COLUMN_DATE] == start) & (dfs[COLUMN_DAY] == 1)].iterrows():
             matches = dfs.loc[(dfs[COLUMN_DATE] == end) & (dfs[column] == row[column]) & (dfs[COLUMN_DAY] == 1) &
                               ((row[COLUMN_LEAGUE] is None) | (dfs[COLUMN_LEAGUE] == row[COLUMN_LEAGUE])) &
@@ -208,33 +208,20 @@ class Command(BaseCommand):
                 dfs.loc[matches.index, [COLUMN_DAY]] = 2
 
     @staticmethod
-    def _get_race_laps(dfs: DataFrame, row: Series) -> int:
-        laps = row[COLUMN_RACE_LAPS]
-        if not laps:
-            laps = max([len(e) for e in dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LAPS]])
-        if laps > 6:
-            logger.warning(f'race found with more than 6 laps: {row[COLUMN_RACE_ID]}')
-        return laps
+    def _date_pairs(dates: List[datetime.date]) -> List[Tuple[datetime.date, datetime.date]]:
+        """
+        Returns a list of sorted date pairs trying
+        """
+        pairs = []
 
-    @staticmethod
-    def _get_race_lanes(dfs: DataFrame, row: Series) -> int:
-        lanes = row[COLUMN_RACE_LANES]
-        if not lanes:
-            lanes = dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LANE].max()
-        if lanes > 5:
-            logger.warning(f'race found with more than 5 lanes: {row[COLUMN_RACE_ID]}')
-        return lanes
+        dates = sorted(dates)
+        start = dates[0]
+        for i in range(1, len(dates)):
+            if dates[i] == start + datetime.timedelta(days=1):
+                pairs.append((start, dates[i]))
+            start = dates[i]
 
-    @staticmethod
-    def _get_race_type(dfs: DataFrame, row: Series) -> str:
-        lanes = row[COLUMN_RACE_LANES]
-        if not lanes:
-            lanes = dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LANE].max()
-        return RACE_TIME_TRIAL if lanes == 1 else RACE_CONVENTIONAL
-
-    @staticmethod
-    def _get_distance(row: Series) -> int:
-        return row[COLUMN_DISTANCE]
+        return pairs
 
     ####################################################
     #                DB ACCESS METHODS                 #
@@ -245,25 +232,23 @@ class Command(BaseCommand):
             return None
 
         # try to find in the memory cache
-        for key, value in self.__CACHE['leagues']:
-            if key == league:
-                return value
+        cached = self.cache_get('leagues', league)
+        if cached:
+            return cached
 
         found_league = LeagueService.get_by_name(league)
-        self.__CACHE['leagues'].append((league, found_league))
+        self.cache_put('leagues', league, found_league)
         return found_league
 
     def _get_club(self, club: str) -> Entity:
-        assert club
-
         # try to find in the memory cache
-        for key, value in self.__CACHE['clubs']:
-            if key == club:
-                return value
+        cached = self.cache_get('clubs', club)
+        if cached:
+            return cached
 
         # search in database
         found_club = EntityService.get_closest_club_by_name(club)
-        self.__CACHE['clubs'].append((club, found_club))
+        self.cache_put('clubs', club, found_club)
         return found_club
 
     def _get_organizer(self, club: Optional[str]) -> Optional[Entity]:
@@ -271,13 +256,13 @@ class Command(BaseCommand):
             return None
 
         # try to find in the memory cache
-        for key, value in self.__CACHE['clubs']:
-            if key == club:
-                return value
+        cached = self.cache_get('clubs', club)
+        if cached:
+            return cached
 
         # search in database
         found_organizer = EntityService.get_closest_by_name_type(club)
-        self.__CACHE['clubs'].append((club, found_organizer))
+        self.cache_put('clubs', club, found_organizer)
         return found_organizer
 
     # noinspection DuplicatedCode
@@ -288,14 +273,14 @@ class Command(BaseCommand):
                 break
 
         # try to find in the memory cache
-        for key, value in self.__CACHE['trophies']:
-            if key == trophy:
-                return value
+        cached = self.cache_get('trophies', trophy)
+        if cached:
+            return cached
 
         # search in database
         try:
             found_trophy = TrophyService.get_closest_by_name(trophy)
-            self.__CACHE['trophies'].append((trophy, found_trophy))
+            self.cache_put('trophies', trophy, found_trophy)
             return found_trophy
         except Trophy.DoesNotExist:
             return None
@@ -307,14 +292,14 @@ class Command(BaseCommand):
                 break
 
         # try to find in the memory cache
-        for key, value in self.__CACHE['flags']:
-            if key == flag:
-                return value
+        cached = self.cache_get('flags', flag)
+        if cached:
+            return cached
 
         # search in database
         try:
             found_flag = FlagService.get_closest_by_name(flag)
-            self.__CACHE['flags'].append((flag, found_flag))
+            self.cache_put('flags', flag, found_flag)
             return found_flag
         except Flag.DoesNotExist:
             return None
@@ -331,47 +316,46 @@ class Command(BaseCommand):
         for t_name in trophies:
             name = t_name[2:] if t_name[1].isspace() else t_name
             menu = inquirer.list_input(message=f'What to do with {name}?', choices=['Create Trophy', 'Create Flag', 'Cancel'])
-            match menu.lower():
-                case 'create trophy':
-                    new_name = inquirer.text(f'Rename trophy {name} to:')
-                    if new_name:
-                        trophy = TrophyService.get_closest_by_name_or_create(name=new_name)
-                    else:
-                        trophy = Trophy(name=name.upper())
-                        trophy.save()
-                        logger.info(f'created:: {trophy}')
+            if menu.lower() == 'create trophy':
+                new_name = inquirer.text(f'Rename trophy {name} to:')
+                if new_name:
+                    trophy = TrophyService.get_closest_by_name_or_create(name=new_name)
+                else:
+                    trophy = Trophy(name=name.upper())
+                    trophy.save()
+                    logger.info(f'created:: {trophy}')
 
-                    dfs[COMPUTED_TROPHY].mask(dfs[COLUMN_TROPHY] == t_name, trophy, inplace=True)
-                case 'create flag':
-                    new_name = inquirer.text(f'Rename flag {name} to:')
-                    if new_name:
-                        flag = FlagService.get_closest_by_name_or_create(name=new_name)
-                    else:
-                        flag = Flag(name=name.upper())
-                        flag.save()
-                        logger.info(f'created:: {flag}')
+                dfs[COMPUTED_TROPHY].mask(dfs[COLUMN_TROPHY] == t_name, trophy, inplace=True)
+            elif menu.lower() == 'create flag':
+                new_name = inquirer.text(f'Rename flag {name} to:')
+                if new_name:
+                    flag = FlagService.get_closest_by_name_or_create(name=new_name)
+                else:
+                    flag = Flag(name=name.upper())
+                    flag.save()
+                    logger.info(f'created:: {flag}')
 
-                    dfs[COMPUTED_FLAG].mask(dfs[COLUMN_TROPHY] == t_name, flag, inplace=True)
-                case _:
-                    raise StopProcessing
+                dfs[COMPUTED_FLAG].mask(dfs[COLUMN_TROPHY] == t_name, flag, inplace=True)
+            else:
+                raise StopProcessing
 
     def _get_race_or_create(self, dfs: DataFrame, row: Series):
         race = Race(
-            date=row[COLUMN_DATE],
-            league=row[COLUMN_LEAGUE],
-            gender=row[COLUMN_GENDER],
+            laps=self.get_race_laps(dfs, row),
+            lanes=self.get_race_lanes(dfs, row),
+            town=self.get_town(row),
+            type=self.get_race_type(dfs, row),
+            date=self.get_date(row),
+            day=self.get_day(row),
+            cancelled=self.is_cancelled(row),
+            race_name=self.get_name(row),  # un-normalized race name
             trophy=row[COMPUTED_TROPHY],
-            trophy_edition=row[COLUMN_EDITION] if row[COMPUTED_TROPHY] else None,
+            trophy_edition=self.get_edition(row) if row[COMPUTED_TROPHY] else None,
             flag=row[COMPUTED_FLAG],
-            flag_edition=row[COLUMN_EDITION] if row[COMPUTED_FLAG] else None,
-            day=row[COLUMN_DAY],
-            race_name=row[COLUMN_NAME],  # un-normalized race name
-            town=row[COLUMN_TOWN],
-            organizer=row[COLUMN_ORGANIZER],
-            lanes=self._get_race_lanes(dfs, row),
-            laps=self._get_race_laps(dfs, row),
-            type=self._get_race_type(dfs, row),
-            cancelled=row[COLUMN_CANCELLED] if COLUMN_CANCELLED in row else False,
+            flag_edition=self.get_edition(row) if row[COMPUTED_FLAG] else None,
+            league=self.get_league(row),
+            modality=self.get_modality(row),
+            organizer=self.get_organizer(row),
             metadata={
                 "datasource": [
                     {
@@ -388,151 +372,32 @@ class Command(BaseCommand):
         if not created:
             self._compare(race, db_race)
 
+            # fill data sources if we are updating a race
             if not any(x['datasource_name'] == row[COLUMN_DATASOURCE] for x in db_race.metadata["datasource"]):
                 db_race.metadata['datasource'].append(race.metadata['datasource'].pop())
                 db_race.save()
-        # TODO: fix 'editions', we should probably do it here
 
-        condition = (dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]) & (dfs[COMPUTED_GENDER] == row[COMPUTED_GENDER])
-        dfs[COMPUTED_RACE].mask(condition, db_race, inplace=True)
+        dfs[COMPUTED_RACE].mask((dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]), db_race, inplace=True)
 
     def _create_or_update_participant(self, row: Series):
         participant = Participant(
-            club=row[COLUMN_CLUB],
-            club_name=row[COLUMN_CNAME],  # un-normalized used club name
+            club_name=self.get_club_name(row),  # un-normalized used club name
+            club=self.get_club(row),
             race=row[COMPUTED_RACE],
-            distance=self._get_distance(row),
-            lane=row[COLUMN_LANE],
-            laps=row[COLUMN_LAPS],
-            series=row[COLUMN_SERIES],
-            disqualified=row[COLUMN_DISQUALIFIED] if COLUMN_DISQUALIFIED in row else False,
+            distance=self.get_distance(row),
+            laps=self.get_laps(row),
+            lane=self.get_lane(row),
+            series=self.get_series(row),
+            gender=self.get_gender(row),
+            category=self.get_category(row),
         )
-        created, db_participant = ParticipantService.get_participant_or_create(participant)
+        created, db_participant = ParticipantService.get_participant_or_create(participant, maybe_branch=True)
         if not created:
             self._compare(participant, db_participant)
 
-    ####################################################
-    #           PRIVATE VALIDATION METHODS             #
-    ####################################################
-    def _validate(self, file: str, manual: bool = False):
-        dfs = pd.read_csv(filepath_or_buffer=file, sep=',', header=0, dtype=str, parse_dates=[COLUMN_DATE]).fillna('')
-
-        errors = {
-            # check column types
-            'invalid_series': self._check_type(dfs, COLUMN_SERIES, int),
-            'invalid_lane': self._check_type(dfs, COLUMN_LANE, int),
-            'invalid_edition': self._check_type(dfs, COLUMN_EDITION, int),
-            'invalid_day': self._check_type(dfs, COLUMN_DAY, int),
-            'invalid_race_lanes': self._check_type(dfs, COLUMN_RACE_LANES, int) if COLUMN_RACE_LANES in dfs else [],
-            'invalid_race_laps': self._check_type(dfs, COLUMN_RACE_LAPS, int) if COLUMN_RACE_LAPS in dfs else [],
-            'invalid_gender': self._check_valid_gender(dfs),
-            'invalid_town': self._check_valid_town(dfs),
-            # check race miss matches
-            'race_lanes_values': self._check_single_value(dfs, COLUMN_RACE_LANES),
-            'race_laps_values': self._check_single_value(dfs, COLUMN_RACE_LAPS),
-            'organizer_values': self._check_single_value(dfs, COLUMN_ORGANIZER),
-            'town_values': self._check_single_value(dfs, COLUMN_TOWN),
-            # check null values
-            'null_trophy': self._check_null_values(dfs, COLUMN_NAME),
-            'null_club': self._check_null_values(dfs, COLUMN_CLUB),
-            'null_date': self._check_null_values(dfs, COLUMN_DATE),
-            'null_race_id': self._check_null_values(dfs, COLUMN_RACE_ID) if COLUMN_RACE_ID in dfs else [],
-            # check non-existing values
-            'league_not_found': self._check_leagues(dfs[COLUMN_LEAGUE].unique()),
-            'league_gender_error': self._check_gender(dfs),
-            'club_not_found': self._check_clubs(dfs[COLUMN_CLUB].unique()),
-            'organizer_not_found': self._check_clubs(dfs[COLUMN_ORGANIZER].unique()),
-            'trophies_not_found': self._check_trophies(dfs[COLUMN_NAME].unique()),
-        }
-
-        self._check_trophies(dfs[COLUMN_TROPHY].unique())
-
-        ignored_errors = ['trophies_not_found'] if manual else []
-        if any(len(errors[k]) and k not in ignored_errors for k in errors.keys()):  # check we don't have breaking errors
-            [logger.error(f'{k}: {errors[k]}') for k in errors.keys() if k not in ignored_errors]
-            sys.exit(1)
-
-    @staticmethod
-    def _check_type(dfs: DataFrame, column: str, ttype) -> List[Any]:
-        invalid = []
-        for index, item in enumerate(dfs[column]):
-            try:
-                ttype(item)
-            except ValueError:
-                invalid.append(f'Invalid type {type(item)} found in column {column} in row {index + 2}. {ttype} required')
-        return invalid
-
-    @staticmethod
-    def _check_single_value(dfs: DataFrame, column: str) -> List[Any]:
-        invalid = []
-        race_ids = dfs[COLUMN_RACE_ID].unique() if COLUMN_RACE_ID in dfs else []
-        for race_id in race_ids:
-            if len(dfs.loc[dfs[COLUMN_RACE_ID] == race_id][column].unique()) > 1:
-                invalid.append(f'Invalid values found in column {column} for race {race_id}')
-        return invalid
-
-    @staticmethod
-    def _check_valid_gender(dfs: DataFrame) -> List[Any]:
-        invalid = []
-        for itx, item in enumerate(dfs[COLUMN_GENDER]):
-            if item and item not in GENDERS:
-                invalid.append(f'Invalid gender for race {itx + 1}')
-        return invalid
-
-    @staticmethod
-    def _check_valid_town(dfs: DataFrame) -> List[Any]:
-        invalid = []
-        towns = Race.objects.distinct('town').order_by('town').values_list('town', flat=True)
-        for itx, item in enumerate(dfs[COLUMN_TOWN]):
-            if item and item not in towns:
-                invalid.append(f'Invalid town for race {itx + 1}')
-        return invalid
-
-    @staticmethod
-    def _check_null_values(dfs: DataFrame, column: str) -> List[Any]:
-        null = []
-        for index, item in enumerate(dfs[column]):
-            if not item:
-                null.append(f'Null {column} found in row {index + 2}')
-        return null
-
-    @staticmethod
-    def _check_leagues(names: List[str]) -> List[str]:
-        not_found = []
-        for name in [n for n in names if n]:
-            try:
-                LeagueService.get_by_name(name)
-            except League.DoesNotExist:
-                not_found.append(name)
-        return not_found
-
-    @staticmethod
-    def _check_gender(dfs: DataFrame) -> List[str]:
-        errors = []
-        for _, row in dfs.iterrows():
-            if all(x for x in [row[COLUMN_LEAGUE], row[COLUMN_GENDER]]) or all(not x for x in [row[COLUMN_LEAGUE], row[COLUMN_GENDER]]):
-                errors.append(f'league: {row[COLUMN_LEAGUE]} || gender: {row[COLUMN_GENDER]}')
-        return errors
-
-    @staticmethod
-    def _check_clubs(names: List[str]) -> List[str]:
-        not_found = []
-        for name in [n for n in names if n]:
-            try:
-                EntityService.get_closest_by_name_type(name)
-            except Entity.DoesNotExist:
-                not_found.append(name)
-        return not_found
-
-    @staticmethod
-    def _check_trophies(names: List[str]) -> List[str]:
-        not_found = []
-        for name in [n for n in names if n]:
-            try:
-                TrophyService.get_closest_by_name(name)
-            except Trophy.DoesNotExist:
-                not_found.append(name)
-        return not_found
+        if self.is_disqualified(row):
+            penalty = Penalty.objects.create(disqualification=True, participant=db_participant)
+            logger.info(f'created penalty {penalty}')
 
     @staticmethod
     def _compare(e1: Race | Participant, e2: Race | Participant):
@@ -542,15 +407,18 @@ class Command(BaseCommand):
             if e1.__dict__[k] != e2.__dict__[k]:
                 logger.warning(f'mismatch({k}) between: {e1}({e1.__dict__[k]}) and {e2}({e2.__dict__[k]})')
 
-    @staticmethod
-    def _date_pairs(dates: List[datetime.date]) -> List[Tuple[datetime.date, datetime.date]]:
-        dates = sorted(dates)
+    ####################################################
+    #                   CACHE METHODS                  #
+    ####################################################
+    _CACHE: Dict[str, Dict[str, League | Entity | Trophy | Flag]] = {
+        'leagues': {},
+        'clubs': {},
+        'trophies': {},
+        'flags': {},
+    }
 
-        pairs = []
-        start = dates[0]
-        for i in range(1, len(dates)):
-            if dates[i] == start + datetime.timedelta(days=1):
-                pairs.append((start, dates[i]))
-            start = dates[i]
+    def cache_get(self, ttype: str, key: str) -> League | Entity | Trophy | Flag:
+        return getattr(self._CACHE[ttype], key, None)
 
-        return pairs
+    def cache_put(self, ttype: str, key: str, value: League | Entity | Trophy | Flag):
+        self._CACHE[ttype][key] = value

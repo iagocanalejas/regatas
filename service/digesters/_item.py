@@ -5,18 +5,24 @@ from typing import List, Optional
 
 @dataclass
 class ScrappedItem:
-    league: Optional[str]
+    # race data
     name: str
-    gender: str
-    modality: str
-    category: str
+    t_date: date
     edition: int
     day: int
-    t_date: date
+    modality: str
+    league: Optional[str]
+    town: Optional[str]
+    organizer: Optional[str]
+
+    # participant data
+    gender: str
+    category: str
     club_name: str
     lane: int
     series: int
     laps: List[str]
+    distance: Optional[int]
 
     # normalized data
     trophy_name: str
@@ -28,8 +34,6 @@ class ScrappedItem:
     datasource: str
 
     # not available in all the datasource
-    town: Optional[str]
-    organizer: Optional[str]
     race_laps: Optional[int] = None
     race_lanes: Optional[int] = None
     cancelled: bool = False

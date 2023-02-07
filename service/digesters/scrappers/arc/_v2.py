@@ -60,26 +60,27 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
                     club_name = self.get_club_name(result)
                     yield ScrappedItem(
                         name=name,
-                        trophy_name=trophy_name,
-                        town=town,
-                        league=league,
-                        gender=self.get_gender(),
-                        modality=self.get_modality(),
-                        category=self.get_category(),
-                        organizer=self.get_organizer(),
+                        t_date=t_date,
                         edition=edition,
                         day=day,
-                        t_date=t_date,
+                        modality=self.get_modality(),
+                        league=league,
+                        town=town,
+                        organizer=self.get_organizer(),
+                        gender=self.get_gender(),
+                        category=self.get_category(),
                         club_name=club_name,
-                        participant=self.normalized_club_name(club_name),
-                        series=series,
                         lane=self.get_lane(result),
+                        series=series,
                         laps=self.get_laps(result),
-                        race_lanes=race_lanes,
-                        race_laps=race_laps,
+                        distance=self.get_distance(),
+                        trophy_name=trophy_name,
+                        participant=self.normalized_club_name(club_name),
                         race_id=race_id,
                         url=url,
                         datasource=self.DATASOURCE,
+                        race_laps=race_laps,
+                        race_lanes=race_lanes,
                     )
                 series += 1
 
@@ -103,6 +104,22 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
         response.encoding = 'utf-8'
         return BeautifulSoup(response.text, 'html5lib'), url
 
+    @staticmethod
+    def get_name(soup: Tag, **kwargs) -> str:
+        return soup.select_one('div[class*="resultado"]').find('h2').text.strip().upper()
+
+    @staticmethod
+    def get_date(soup: Tag, **kwargs) -> date:
+        text = soup.find_all('li')[0].text.upper().replace('FECHA', '')
+        text = text.replace('AGO', 'AUG')  # want to avoid changing the locale
+        return datetime.strptime(text.strip(), '%d %b %Y').date()
+
+    def get_day(self, name: str, **kwargs) -> int:
+        if self.is_play_off(name):  # exception case
+            return 1 if '1' in name else 2
+        matches = re.findall(r'\d+ª día|\(\d+ª? JORNADA\)', name)
+        return int(re.findall(r'\d+', matches[0])[0].strip()) if matches else 1
+
     def get_league(self, soup: Tag, **kwargs) -> str:
         if self._is_female:
             return 'EMAKUMEZKO TRAINERUEN ELKARTEA'
@@ -112,8 +129,29 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
         return re.sub(r'TEMPORADA \d+ GRUPO', 'ASOCIACIÓN DE REMO DEL CANTÁBRICO', text)
 
     @staticmethod
-    def get_name(soup: Tag, **kwargs) -> str:
-        return soup.select_one('div[class*="resultado"]').find('h2').text.strip().upper()
+    def get_town(soup: Tag, **kwargs) -> Optional[str]:
+        li = soup.find_all('li')
+        if len(li) < 4:
+            return None  # no town
+        text = remove_parenthesis(li[3].text)
+        text = text.replace(' Ver mapaOcultar mapa', '')
+        return whitespaces_clean(text).upper()
+
+    def get_organizer(self, **kwargs) -> Optional[str]:
+        return None
+
+    @staticmethod
+    def get_club_name(soup: Tag, **kwargs) -> str:
+        return soup.find_all('td')[0].text
+
+    @staticmethod
+    def get_lane(soup: Tag, **kwargs) -> int:
+        return int(soup.find_all('th')[0].text)
+
+    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
+        times = [e.text for e in soup.find_all('td')[1:] if e.text]
+        times = [t for t in [self.normalize_time(e) for e in times] if t is not None]
+        return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
     def normalized_name(self, name: str, **kwargs) -> str:
         name = name.replace('AYTO', 'AYUNTAMIENTO')
@@ -133,43 +171,9 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
 
         return name
 
-    def get_day(self, name: str, **kwargs) -> int:
-        if self.is_play_off(name):  # exception case
-            return 1 if '1' in name else 2
-        matches = re.findall(r'\d+ª día|\(\d+ª? JORNADA\)', name)
-        return int(re.findall(r'\d+', matches[0])[0].strip()) if matches else 1
-
-    @staticmethod
-    def get_date(soup: Tag, **kwargs) -> date:
-        text = soup.find_all('li')[0].text.upper().replace('FECHA', '')
-        text = text.replace('AGO', 'AUG')  # want to avoid changing the locale
-        return datetime.strptime(text.strip(), '%d %b %Y').date()
-
-    @staticmethod
-    def get_town(soup: Tag, **kwargs) -> Optional[str]:
-        li = soup.find_all('li')
-        if len(li) < 4:
-            return None  # no town
-        text = remove_parenthesis(li[3].text)
-        text = text.replace(' Ver mapaOcultar mapa', '')
-        return whitespaces_clean(text).upper()
-
-    @staticmethod
-    def get_club_name(soup: Tag, **kwargs) -> str:
-        return soup.find_all('td')[0].text
-
     @staticmethod
     def normalized_club_name(name: str, **kwargs) -> str:
         return normalize_club_name(name)
-
-    @staticmethod
-    def get_lane(soup: Tag, **kwargs) -> int:
-        return int(soup.find_all('th')[0].text)
-
-    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
-        times = [e.text for e in soup.find_all('td')[1:] if e.text]
-        times = [t for t in [self.normalize_time(e) for e in times] if t is not None]
-        return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
     @staticmethod
     def get_race_lanes(soup: Tag, **kwargs) -> int:
@@ -181,9 +185,6 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
     @staticmethod
     def get_race_laps(soup: Tag, **kwargs) -> int:
         return int(re.findall(r'\d+', soup.find_all('li')[2].text)[1])
-
-    def get_organizer(self, **kwargs) -> Optional[str]:
-        return None
 
     def get_series(self, soup: Tag, **kwargs) -> int:
         raise NotImplementedError

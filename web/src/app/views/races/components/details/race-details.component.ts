@@ -7,16 +7,23 @@ import { selectRace } from "../../reducers";
 import * as RaceActions from "../../reducers/races.actions";
 import { ActivatedRoute } from "@angular/router";
 
+// TODO: race distance
 @Component({
   selector: 'app-race-details',
   templateUrl: './race-details.component.html',
   styleUrls: ['./race-details.component.scss']
 })
 export class RaceDetailsComponent implements OnInit {
+  CATEGORIES: Array<[ParticipantCategory, Gender | null]> = [
+    ['ABSOLUT', 'MALE'], ['ABSOLUT', 'FEMALE'], ['ABSOLUT', 'MIX'],
+    ['VETERAN', 'MALE'], ['VETERAN', 'FEMALE'], ['VETERAN', 'MIX'],
+    ['SCHOOL', null],
+  ];
+
   race$: Observable<RaceDetail | undefined> = this._store.select(selectRace);
 
   series: number[] = []
-  categories: Array<[ParticipantCategory, Gender]> = []
+  categories: Array<[ParticipantCategory, Gender | null]> = []
 
   constructor(private _route: ActivatedRoute, private _store: Store<State>) {
   }
@@ -29,11 +36,7 @@ export class RaceDetailsComponent implements OnInit {
         if (!race) return;
 
         if (this.isTimeTrial(race)) {
-          // pre-compute categories
-          const genders = [...new Set(race.participants.map(p => p.gender))];
-          const categories = [...new Set(race.participants.map(p => p.category))];
-          this.categories = this.combineArrays(categories, genders)
-            .filter(([c, g]) => race.participants.some(p => p.gender === g && p.category === c));
+          this.categories = this.CATEGORIES.filter(([c, g]) => race.participants.some(p => p.category === c && (!g || p.gender === g)));
         } else {
           // pre-compute series
           const max = Math.max(...race.participants.map(x => x.series));
@@ -55,8 +58,8 @@ export class RaceDetailsComponent implements OnInit {
     return participants.filter(x => x.series === series + 1).sort((p1, p2) => p1.lane - p2.lane);
   }
 
-  participantsByCategory(participants: Participant[], [category, gender]: [ParticipantCategory, Gender]): Participant[] {
-    return participants.filter(x => x.category === category && x.gender === gender);
+  participantsByCategory(participants: Participant[], [category, gender]: [ParticipantCategory, Gender | null]): Participant[] {
+    return participants.filter(x => x.category === category && (!gender || x.gender === gender));
   }
 
   participantsWithPenalties(participants: Participant[]): Participant[] {
@@ -67,17 +70,7 @@ export class RaceDetailsComponent implements OnInit {
     return value ? `Tanda ${value}` : 'Tiempos'
   }
 
-  readableTimeTrialTitle([category, gender]: [ParticipantCategory, Gender]): string {
-    return `${readableCategory(category)} ${readableGender(gender)}`
-  }
-
-  private combineArrays<T, U>(arr1: T[], arr2: U[]): Array<[T, U]> {
-    const result: Array<[T, U]> = [];
-    for (let i = 0; i < arr1.length; i++) {
-      for (let j = 0; j < arr2.length; j++) {
-        result.push([arr1[i], arr2[j]]);
-      }
-    }
-    return result;
+  readableTimeTrialTitle([category, gender]: [ParticipantCategory, Gender | null]): string {
+    return gender ? `${readableCategory(category)} ${readableGender(gender)}` : `${readableCategory(category)}`
   }
 }

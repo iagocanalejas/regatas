@@ -149,8 +149,7 @@ class Race(CreationStampModel):
         db_table = 'race'
         verbose_name = 'Regata'
         unique_together = [
-            ['trophy', 'league', 'trophy_edition', 'modality', 'day'],
-            ['flag', 'league', 'flag_edition', 'modality', 'day'],
+            ['trophy', 'league', 'trophy_edition', 'modality', 'day'], ['flag', 'league', 'flag_edition', 'modality', 'day'],
             ['league', 'date']
         ]
         ordering = ['date', 'league']

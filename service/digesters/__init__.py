@@ -1,3 +1,4 @@
+from digesters._digester import Digester
 from digesters._item import ScrappedItem
 
-__all__ = [ScrappedItem]
+__all__ = [ScrappedItem, Digester]

@@ -10,7 +10,7 @@ from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 from digesters._item import ScrappedItem
-from digesters.scrappers._scrapper import Scrapper
+from digesters.scrappers import Scrapper
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
@@ -64,21 +64,22 @@ class ACTScrapper(Scrapper):
                     league = self.get_league(trophy=trophy_name)
                     yield ScrappedItem(
                         name=name,
-                        trophy_name=trophy_name,
-                        town=town,
-                        league=league,
-                        gender=self.get_gender(),
-                        modality=self.get_modality(),
-                        category=self.get_category(),
-                        organizer=organizer,
+                        t_date=t_date,
                         edition=edition,
                         day=day,
-                        t_date=t_date,
+                        modality=self.get_modality(),
+                        league=league,
+                        town=town,
+                        organizer=organizer,
+                        gender=self.get_gender(),
+                        category=self.get_category(),
                         club_name=club_name,
-                        participant=self.normalized_club_name(club_name),
-                        series=series,
                         lane=self.get_lane(result),
+                        series=series,
                         laps=self.get_laps(result),
+                        distance=self.get_distance(),
+                        trophy_name=trophy_name,
+                        participant=self.normalized_club_name(club_name),
                         race_id=race_id,
                         url=url,
                         datasource=self.DATASOURCE,
@@ -104,13 +105,38 @@ class ACTScrapper(Scrapper):
 
         return BeautifulSoup(response.text, 'html5lib'), url
 
+    def get_name(self, soup: Tag, **kwargs) -> str:
+        return whitespaces_clean(soup.find('td', {'class': 'race_name'}).find('a').text).upper()
+
+    def get_date(self, soup: Tag, **kwargs) -> date:
+        return datetime.strptime(soup.find_all('td', {'class': 'place'})[1].text.strip(), '%d-%m-%Y').date()
+
+    def get_day(self, name: str, **kwargs) -> int:
+        if self.is_play_off(name):  # exception case
+            return 1 if '1' in name else 2
+        matches = re.findall(r'\(?(\dJ|J\d)\)?', name)
+        return int(re.findall(r'\d+', matches[0])[0].strip()) if matches else 1
+
     def get_league(self, trophy: str, **kwargs) -> str:
         if self.is_play_off(trophy):
             return 'ACT'
         return 'LIGA EUSKOTREN' if self._is_female else 'EUSKO LABEL LIGA'
 
-    def get_name(self, soup: Tag, **kwargs) -> str:
-        return whitespaces_clean(soup.find('td', {'class': 'race_name'}).find('a').text).upper()
+    def get_town(self, soup: Tag, **kwargs) -> Optional[str]:
+        return whitespaces_clean(soup.find_all('td', {'class': 'place'})[0].text).upper()
+
+    def get_organizer(self, soup: Tag, **kwargs) -> Optional[str]:
+        return None
+
+    def get_club_name(self, soup: Tag, **kwargs) -> str:
+        return soup.find_all('td')[1].text
+
+    def get_lane(self, soup: Tag, **kwargs) -> int:
+        return int(soup.find_all('td')[0].text)
+
+    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
+        times = [t for t in [self.normalize_time(e.text) for e in soup.find_all('td')[2:-1] if e] if t is not None]
+        return [t.isoformat() for t in times]
 
     def normalized_name(self, name: str, **kwargs) -> str:
         name = whitespaces_clean(name)
@@ -126,33 +152,8 @@ class ACTScrapper(Scrapper):
 
         return name
 
-    def get_day(self, name: str, **kwargs) -> int:
-        if self.is_play_off(name):  # exception case
-            return 1 if '1' in name else 2
-        matches = re.findall(r'\(?(\dJ|J\d)\)?', name)
-        return int(re.findall(r'\d+', matches[0])[0].strip()) if matches else 1
-
-    def get_date(self, soup: Tag, **kwargs) -> date:
-        return datetime.strptime(soup.find_all('td', {'class': 'place'})[1].text.strip(), '%d-%m-%Y').date()
-
-    def get_town(self, soup: Tag, **kwargs) -> Optional[str]:
-        return whitespaces_clean(soup.find_all('td', {'class': 'place'})[0].text).upper()
-
-    def get_organizer(self, soup: Tag, **kwargs) -> Optional[str]:
-        return None
-
-    def get_club_name(self, soup: Tag, **kwargs) -> str:
-        return soup.find_all('td')[1].text
-
     def normalized_club_name(self, name: str, **kwargs) -> str:
         return normalize_club_name(name)
-
-    def get_lane(self, soup: Tag, **kwargs) -> int:
-        return int(soup.find_all('td')[0].text)
-
-    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
-        times = [t for t in [self.normalize_time(e.text) for e in soup.find_all('td')[2:-1] if e] if t is not None]
-        return [t.isoformat() for t in times]
 
     def get_series(self, soup: Tag, **kwargs) -> int:
         raise NotImplementedError
