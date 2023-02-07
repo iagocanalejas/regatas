@@ -3,10 +3,11 @@ import { Flag } from "./flag";
 import { League } from "./league";
 import { Participant } from "./participant";
 import { Entity } from "./entity";
+import { Gender, RaceType } from "./types";
 
 export interface Race {
   id: number;
-  type: 'TIME_TRIAL' | 'CONVENTIONAL';
+  type: RaceType;
   name: string; // computed
   day: number;
   date: string;
@@ -17,7 +18,7 @@ export interface Race {
   flag?: Flag;
   flag_edition?: number;
   league?: League;
-  gender?: string;
+  gender?: Gender;
   sponsor?: string;
 }
 

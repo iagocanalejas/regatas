@@ -51,15 +51,3 @@ export function compareParticipantTimes(p1: Participant, p2: Participant, ignore
   return moment(participantTime(p1, ignorePenalties), TIME_FORMAT).diff(moment(participantTime(p2, ignorePenalties), TIME_FORMAT))
 }
 
-export function readableReason(reason?: PenaltyReason): string {
-  switch (reason) {
-    case "BLADE_TOUCH":
-      return 'TOQUE DE PALAS'
-    case "NO_LINE_START":
-      return 'SALIDA SIN ESTACHA'
-    case "NULL_START":
-      return 'SALIDA NULA'
-    default:
-      return 'DESCONOCIDO'
-  }
-}

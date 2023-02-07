@@ -4,22 +4,28 @@
   </div>
 
   <div *ngIf="!isTimeTrial(race)" class="my-3">
-    <participant-list *ngFor="let s of seriesList(race.participants)"
-                      [participants]="getParticipants(race.participants, s)"
-                      [title]="'Tanda ' + (s + 1)" [headColumn]="'Calle'"
+    <participant-list *ngFor="let s of series"
+                      [participants]="participantsBySeries(race.participants, s)"
+                      [title]="readableTitle(s+1)" [headColumn]="'Calle'"
                       [collapsed]="true">
     </participant-list>
-  </div>
 
-  <div class="my-3">
     <participant-list [participants]="race.participants" [distance]="race.distance"
-                      [title]="'Tiempos'" [headColumn]="'Puesto'"
+                      [title]="readableTitle()" [headColumn]="'Puesto'"
                       [showDifference]="true">
     </participant-list>
   </div>
 
-  <div *ngIf="getParticipantsWithPenalties(race.participants).length" class="my-3">
-    <penalty-list [participants]="getParticipantsWithPenalties(race.participants)"
+  <div *ngIf="isTimeTrial(race)" class="my-3">
+    <participant-list *ngFor="let cg of categories; let i = index;"
+                      [participants]="participantsByCategory(race.participants, cg)"
+                      [title]="readableTimeTrialTitle(cg)" [headColumn]="'Puesto'"
+                      [showDifference]="true" [collapsed]="i !== 0">
+    </participant-list>
+  </div>
+
+  <div *ngIf="hasPenalties(race.participants)" class="my-3">
+    <penalty-list [participants]="participantsWithPenalties(race.participants)"
                   [collapsed]="true">
     </penalty-list>
   </div>
