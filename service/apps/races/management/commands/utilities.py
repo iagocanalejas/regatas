@@ -2,8 +2,8 @@ import logging
 
 from django.core.management import BaseCommand
 
-from apps.entities.models import LEAGUE_GENDERS
 from apps.races.models import Trophy, Flag, Race
+from utils.choices import GENDERS
 from utils.synonyms import lemmatize
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class Command(BaseCommand):
             races = Race.objects.filter(trophy=trophy) \
                 .order_by('trophy_edition')
 
-            options = LEAGUE_GENDERS + [None]
+            options = GENDERS + [None]
 
             for option in options:
                 trophy_editions = [

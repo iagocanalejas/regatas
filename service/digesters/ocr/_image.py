@@ -11,7 +11,7 @@ from pandas import DataFrame
 
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
-from digesters._digester import Digester
+from digesters import Digester
 
 logger = logging.getLogger(__name__)
 

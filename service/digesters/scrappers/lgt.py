@@ -9,7 +9,7 @@ from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 from digesters._item import ScrappedItem
-from digesters.scrappers._scrapper import Scrapper
+from digesters.scrappers import Scrapper
 from utils.choices import GENDER_FEMALE, GENDER_MALE
 from utils.exceptions import StopProcessing
 
@@ -57,21 +57,22 @@ class LGTScrapper(Scrapper):
 
             yield ScrappedItem(
                 name=name,
-                trophy_name=trophy_name,
-                town=town,
-                league=league,
-                gender=self.get_gender(name=name),
-                modality=self.get_modality(),
-                category=self.get_category(),
-                organizer=organizer,
+                t_date=t_date,
                 edition=edition,
                 day=day,
-                t_date=t_date,
+                modality=self.get_modality(),
+                league=league,
+                town=town,
+                organizer=organizer,
+                gender=self.get_gender(name=name),
+                category=self.get_category(),
                 club_name=club_name,
-                participant=self.normalized_club_name(club_name),
-                series=series,
                 lane=self.get_lane(row),
+                series=series,
                 laps=self.get_laps(row),
+                distance=self.get_distance(),
+                trophy_name=trophy_name,
+                participant=self.normalized_club_name(club_name),
                 race_id=str(race_id),
                 url=url,
                 datasource=self.DATASOURCE,
@@ -94,14 +95,54 @@ class LGTScrapper(Scrapper):
 
         return BeautifulSoup(response.text, 'html5lib'), url
 
+    def get_name(self, soup: Tag, **kwargs) -> str:
+        return whitespaces_clean(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[0].text).upper()
+
+    def get_date(self, soup: Tag, **kwargs) -> date:
+        return datetime.strptime(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[1].text, '%d/%m/%Y').date()
+
+    def get_day(self, name: str, t_date: date = None, **kwargs) -> int:
+        if self.is_play_off(name):  # exception case
+            if '1' in name:
+                return 1
+            if '2' in name:
+                return 2
+            return 2 if t_date.isoweekday() == 7 else 1  # 2 for sunday
+        if 'XORNADA' in name:
+            day = int(re.findall(r' \d+', name)[0].strip())
+            return day
+        return 1
+
     def get_league(self, soup: Tag, trophy: str, **kwargs) -> str:
         if self.is_play_off(trophy):
             return 'LGT'
         value = soup.find('div', {'id': 'regata'}).find('div', {'class': 'row'}).find_all('p')[2].find('span').text
         return whitespaces_clean(value)
 
-    def get_name(self, soup: Tag, **kwargs) -> str:
-        return whitespaces_clean(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[0].text).upper()
+    def get_town(self, soup: Tag, **kwargs) -> Optional[str]:
+        value = soup.find('div', {'id': 'regata'}).find('div', {'class': 'row'}).find_all('p')[0].text
+        return whitespaces_clean(value).upper().replace('PORTO DE ', '')
+
+    def get_organizer(self, soup: Tag, **kwargs) -> Optional[str]:
+        organizer = soup.find('div', {'class': 'col-md-2 col-xs-3 txt_center pics100'})
+        organizer = whitespaces_clean(organizer.text).upper().replace('ORGANIZA:', '').strip() if organizer else None
+        return self.normalized_club_name(organizer) if organizer else None
+
+    def get_gender(self, name: str, **kwargs) -> str:
+        return GENDER_FEMALE if any(e in name for e in ['FEMENINA', 'FEMININA']) else GENDER_MALE
+
+    def get_distance(self, **kwargs) -> int:
+        return 5556
+
+    def get_club_name(self, soup: Tag, **kwargs) -> str:
+        return soup.find_all('td')[1].text
+
+    def get_lane(self, soup: Tag, **kwargs) -> int:
+        return int(soup.find_all('td')[0].text)
+
+    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
+        times = [t for t in [self.normalize_time(e.text) for e in soup.find_all('td')[2:] if e] if t is not None]
+        return [t.isoformat() for t in times]
 
     def normalized_name(self, name: str, is_female: bool = False, **kwargs) -> str:
         name = whitespaces_clean(name)
@@ -117,45 +158,8 @@ class LGTScrapper(Scrapper):
 
         return name
 
-    def get_gender(self, name: str, **kwargs) -> str:
-        return GENDER_FEMALE if any(e in name for e in ['FEMENINA', 'FEMININA']) else GENDER_MALE
-
-    def get_day(self, name: str, t_date: date = None, **kwargs) -> int:
-        if self.is_play_off(name):  # exception case
-            if '1' in name:
-                return 1
-            if '2' in name:
-                return 2
-            return 2 if t_date.isoweekday() == 7 else 1  # 2 for sunday
-        if 'XORNADA' in name:
-            day = int(re.findall(r' \d+', name)[0].strip())
-            return day
-        return 1
-
-    def get_date(self, soup: Tag, **kwargs) -> date:
-        return datetime.strptime(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[1].text, '%d/%m/%Y').date()
-
-    def get_town(self, soup: Tag, **kwargs) -> Optional[str]:
-        value = soup.find('div', {'id': 'regata'}).find('div', {'class': 'row'}).find_all('p')[0].text
-        return whitespaces_clean(value).upper().replace('PORTO DE ', '')
-
-    def get_organizer(self, soup: Tag, **kwargs) -> Optional[str]:
-        organizer = soup.find('div', {'class': 'col-md-2 col-xs-3 txt_center pics100'})
-        organizer = whitespaces_clean(organizer.text).upper().replace('ORGANIZA:', '').strip() if organizer else None
-        return self.normalized_club_name(organizer) if organizer else None
-
-    def get_club_name(self, soup: Tag, **kwargs) -> str:
-        return soup.find_all('td')[1].text
-
     def normalized_club_name(self, name: str, **kwargs) -> str:
         return normalize_club_name(name)
-
-    def get_lane(self, soup: Tag, **kwargs) -> int:
-        return int(soup.find_all('td')[0].text)
-
-    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
-        times = [t for t in [self.normalize_time(e.text) for e in soup.find_all('td')[2:] if e] if t is not None]
-        return [t.isoformat() for t in times]
 
     def get_series(self, soup: Tag, **kwargs) -> int:
         raise NotImplementedError
