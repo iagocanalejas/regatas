@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { compareParticipantTimes, NO_TIME, Participant, participantSpeed, participantTime, TIME_FORMAT } from "src/types";
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { compareParticipantTimes, LAP_FORMAT, NO_TIME, Participant, participantSpeed, participantTime, TIME_FORMAT } from "src/types";
 import { NG_IF, ROTATE } from "src/app/shared/animations";
-import * as moment from "moment";
+import * as dayjs from "dayjs";
 
 @Component({
   selector: 'participant-list',
@@ -10,7 +10,7 @@ import * as moment from "moment";
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [...ROTATE, ...NG_IF],
 })
-export class ParticipantListComponent implements OnChanges {
+export class ParticipantListComponent implements OnInit, OnChanges {
   @Input() participants!: Participant[];
   @Input() title!: string;
   @Input() headColumn!: string;
@@ -27,16 +27,24 @@ export class ParticipantListComponent implements OnChanges {
   fastestTurn: string[] = [];
   fastestLap: string[] = [];
 
+  private init() {
+    this.fastestTurn = this.numberOfLaps.map(current =>
+      this.fastest(this.participants.map(p => p.laps[current])));
+    this.fastestLap = this.numberOfLaps.map(current =>
+      this.fastest(this.participants.map(p => p.times_per_lap[current])));
+
+    this.winner = [...this.participants].sort((p1, p2) => compareParticipantTimes(p1, p2))[0];
+    this.numberOfLaps = Array.from(Array(Math.max(...this.participants.map(x => x.laps.length))).keys());
+    this.hasPenalties = this.participants.some(x => x.penalties.length);
+  }
+
+  ngOnInit() {
+    this.init()
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['participants']) {
-      this.fastestTurn = this.numberOfLaps.map(current =>
-        this.fastest(this.participants.map(p => p.laps[current])));
-      this.fastestLap = this.numberOfLaps.map(current =>
-        this.fastest(this.participants.map(p => p.times_per_lap[current])));
-
-      this.winner = [...this.participants].sort((p1, p2) => compareParticipantTimes(p1, p2))[0];
-      this.numberOfLaps = Array.from(Array(Math.max(...this.participants.map(x => x.laps.length))).keys());
-      this.hasPenalties = this.participants.some(x => x.penalties);
+      this.init()
     }
   }
 
@@ -68,9 +76,9 @@ export class ParticipantListComponent implements OnChanges {
 
   getDifferenceTime(participant: Participant): string {
     if (!this.ignorePenalties && participant.disqualified) return 'DESCALIFICADO'
-    const diff = moment(participant.time, TIME_FORMAT).diff(moment(this.winner.time, TIME_FORMAT));
-    const duration = moment.duration(diff, 'milliseconds');
-    return moment.utc(duration.asMilliseconds()).format(TIME_FORMAT);
+    const diff = dayjs(participant.time, TIME_FORMAT).diff(dayjs(this.winner.time, TIME_FORMAT));
+    const duration = dayjs.duration({ milliseconds: diff });
+    return dayjs(duration.asMilliseconds()).format(TIME_FORMAT);
   }
 
   getParticipantSpeed(participant: Participant): number {
@@ -89,7 +97,7 @@ export class ParticipantListComponent implements OnChanges {
     return values.sort((a, b) => {
       if (a === NO_TIME) return 100
       if (b === NO_TIME) return -100
-      return moment(a, TIME_FORMAT).diff(moment(b, TIME_FORMAT))
+      return dayjs(a, LAP_FORMAT).diff(dayjs(b, LAP_FORMAT))
     })[0];
   }
 }

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Flag, RaceFilter, Trophy } from "src/types";
-import * as moment from "moment/moment";
 import { DropdownItem } from "src/app/shared/components/dropdown/dropdown.component";
 import { BehaviorSubject, debounceTime, distinctUntilChanged, takeWhile } from "rxjs";
 import { NG_IF } from "src/app/shared/animations";
+import * as dayjs from "dayjs";
 
 type ValidFilters = 'trophy' | 'flag' | 'year';
 const FILTERS_KEY = 'RACE_FILTERS';
@@ -29,7 +29,7 @@ export class RaceFiltersComponent implements OnInit, OnDestroy {
   showFilters: boolean = false
 
   get years() {
-    const y = moment().year();
+    const y = dayjs().year();
     return Array.from(Array(y - 2003 + 1).keys()).map(x => x + 2003).map(x => ({ id: x, name: x.toString() }));
   }
 

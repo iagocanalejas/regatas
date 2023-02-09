@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { Request } from "src/types";
 import { AbstractControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import * as moment from "moment/moment";
+import * as dayjs from "dayjs";
 
 interface FormModel {
   name: string;
@@ -86,8 +86,8 @@ export class FormParticipantComponent {
         },
         validators: {
           laps: {
-            expression: (c: AbstractControl) => moment(c.value, 'mm:ss', true).isValid()
-              || moment(c.value, 'mm:ss.SSS', true).isValid(),
+            expression: (c: AbstractControl) => dayjs(c.value, 'mm:ss', true).isValid()
+              || dayjs(c.value, 'mm:ss.SSS', true).isValid(),
             message: () => "Vuelta no valida",
           },
         },

@@ -31,7 +31,7 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "moment/moment"
+              "dayjs"
             ]
           },
           "configurations": {

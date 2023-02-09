@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { Request } from "src/types";
 import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import * as moment from "moment";
+import * as dayjs from "dayjs";
 
 interface FormModel {
   name: string;
@@ -18,7 +18,7 @@ interface FormModel {
 }
 
 export function DateValidator(control: AbstractControl): ValidationErrors | null {
-  return moment(control.value, 'DD/MM/YYYY') ? null : { 'date': true }
+  return dayjs(control.value, 'DD/MM/YYYY') ? null : { 'date': true }
 }
 
 @Component({
@@ -56,7 +56,7 @@ export class FormRaceComponent {
           },
           validators: {
             date: {
-              expression: (c: AbstractControl) => moment(c.value, 'DD/MM/YYYY', true).isValid(),
+              expression: (c: AbstractControl) => dayjs(c.value, 'DD/MM/YYYY', true).isValid(),
               message: () => "Fecha no valida",
             },
           },

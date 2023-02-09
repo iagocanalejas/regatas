@@ -8,7 +8,10 @@ import { Request, RequestChange, RequestModel, RequestType } from "./requests";
 import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, Page, PaginationConfig } from "./page";
 import { Gender, ParticipantCategory, PenaltyReason, RaceType, readableCategory, readableReason, readableGender } from "./types";
 
-export const TIME_FORMAT = 'mm:ss.SS';
+// TODO: .SS format is currently broken
+// https://github.com/iamkun/dayjs/issues/1331
+// https://github.com/iamkun/dayjs/pull/1914
+export const TIME_FORMAT = 'mm:ss.SSS';
 export const LAP_FORMAT = 'mm:ss';
 export const NO_TIME = '- - - - -';
 

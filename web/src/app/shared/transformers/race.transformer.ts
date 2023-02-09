@@ -1,12 +1,13 @@
 import { Race, RaceDetail } from "src/types";
-import * as moment from "moment/moment";
 import { int2roman } from "../strings";
+import * as dayjs from "dayjs";
+import "dayjs/locale/es";
 
 export class RaceTransformer {
   static transformRace(race: Race): Race {
-    moment.locale("es");
+    dayjs.locale("es");
 
-    race.date = moment(race.date).format('L')
+    race.date = dayjs(race.date).format('DD/MM/YYYY')
     race.is_female = race.gender == 'FEMALE';
     race.name = this.formatRace(race)
     return race;

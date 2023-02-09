@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from "@ngrx/store";
 import { State } from "src/app/reducers";
-import { Gender, Participant, ParticipantCategory, Race, RaceDetail, readableCategory, readableGender } from "src/types";
+import {
+  compareParticipantTimes,
+  Gender,
+  Participant,
+  ParticipantCategory,
+  Race,
+  RaceDetail,
+  readableCategory,
+  readableGender
+} from "src/types";
 import { Observable } from "rxjs";
 import { selectRace } from "../reducers";
 import * as RaceDetailsActions from "../reducers/race-details.actions";
@@ -54,12 +63,18 @@ export class RaceDetailsComponent implements OnInit {
     return participants.some(p => p.penalties.some(pe => !pe.disqualification))
   }
 
+  participants(participants: Participant[]): Participant[] {
+    return [...participants].sort((p1, p2) => compareParticipantTimes(p1, p2));
+  }
+
   participantsBySeries(participants: Participant[], series: number): Participant[] {
-    return participants.filter(x => x.series === series + 1).sort((p1, p2) => p1.lane - p2.lane);
+    return participants.filter(x => x.series === series + 1)
+      .sort((p1, p2) => p1.lane - p2.lane);
   }
 
   participantsByCategory(participants: Participant[], [category, gender]: [ParticipantCategory, Gender | null]): Participant[] {
-    return participants.filter(x => x.category === category && (!gender || x.gender === gender));
+    return participants.filter(x => x.category === category && (!gender || x.gender === gender))
+      .sort((p1, p2) => compareParticipantTimes(p1, p2));
   }
 
   participantsWithPenalties(participants: Participant[]): Participant[] {

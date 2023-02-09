@@ -1,25 +1,19 @@
-import { compareParticipantTimes, LAP_FORMAT, NO_TIME, Participant, TIME_FORMAT } from "src/types";
-import * as moment from "moment/moment";
+import { LAP_FORMAT, NO_TIME, Participant, TIME_FORMAT } from "src/types";
+import * as dayjs from "dayjs";
 
 export class ParticipantTransformer {
   static transformParticipants(participants: Participant[]): Participant[] {
-    moment.locale("es");
-
     this.fillMissingLaps(participants);
 
-    return participants
-      .map(p => this.transformParticipant(p))
-      .sort((p1, p2) => compareParticipantTimes(p1, p2))
+    return participants.map(p => this.transformParticipant(p))
   }
 
   static transformParticipant(participant: Participant): Participant {
-    moment.locale("es");
-
-    const laps = participant.laps.map(l => moment(l, 'hh:mm:ss.SS').valueOf());
+    const laps = participant.laps.map(l => this.parseLap(l).valueOf())
     // compute 'times_per_lap'
     participant.times_per_lap = laps.map((lap, itx) => {
       if (!lap || (itx > 0 && !laps[itx - 1])) return NO_TIME
-      return moment.utc(lap - ((itx > 0) ? laps[itx - 1] : 0)).format(LAP_FORMAT)
+      return dayjs(lap - ((itx > 0) ? laps[itx - 1] : 0)).format(LAP_FORMAT)
     })
     // format 'laps' and 'time'
     participant.time = this.formatTime([...participant.laps.slice(-1)][0]);
@@ -28,14 +22,20 @@ export class ParticipantTransformer {
     return participant;
   }
 
+  private static parseLap(lap: string): dayjs.Dayjs {
+    return lap.includes('.')
+      ? dayjs(lap, 'hh:mm:ss.SS')
+      : dayjs(lap, 'hh:mm:ss')
+  }
+
   private static formatLap(lap: string): string {
     if (lap === NO_TIME) return lap;
-    return moment(lap, 'hh:mm:ss.SS').format(LAP_FORMAT)
+    return this.parseLap(lap).format(LAP_FORMAT)
   }
 
   private static formatTime(time: string): string {
     if (time === NO_TIME) return time;
-    return moment(time, 'hh:mm:ss.SS').format(TIME_FORMAT)
+    return this.parseLap(time).format(TIME_FORMAT)
   }
 
   private static fillMissingLaps(participants: Participant[]) {
@@ -47,7 +47,7 @@ export class ParticipantTransformer {
       for (let i = 0; i < numberOfLaps; i++) { // compute a list of valid minutes for each lap
         lapsOptions.push(
           participantsAllLaps
-            .map(l => moment(l[i], 'hh:mm:ss.SS').minutes())
+            .map(l => dayjs(l[i], 'hh:mm:ss.SS').minute())
             .filter((value, index, self) => self.indexOf(value) === index)
         );
       }
@@ -55,7 +55,7 @@ export class ParticipantTransformer {
       participantsMissingLaps.forEach(participant => { // for each participant without all the laps, fill in the missing ones with '---'
         const completedLaps = [];
         for (let i = 0, j = 0; i < numberOfLaps; i++) {
-          if (lapsOptions[i].includes(moment(participant.laps[j], 'hh:mm:ss.SS').minutes())) {
+          if (lapsOptions[i].includes(dayjs(participant.laps[j], 'hh:mm:ss.SS').minute())) {
             completedLaps.push(participant.laps[j]);
             j++;
           } else {
