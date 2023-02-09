@@ -10,23 +10,20 @@ import { EffectsModule } from '@ngrx/effects';
 import { RacesEffects } from './reducers/races.effects';
 import { featureKey } from "./reducers/races.reducers";
 import { RaceFiltersComponent } from './components/race-filters/race-filters.component';
-import { SharedModule } from "src/app/shared/shared.module";
 import { FormsModule } from "@angular/forms";
-import { RaceDetailsComponent } from './components/details/race-details.component';
-import { ParticipantsModule } from "../participants/participants.module";
-import { RaceDetailHeaderComponent } from './components/details/race-detail-header/race-detail-header.component';
+import { RaceListModule } from "../../shared/components/lists/race-list/race-list.module";
+import { PaginationModule } from "../../shared/components/pagination/pagination.module";
+import { DropdownModule } from "../../shared/components/dropdown/dropdown.module";
 
 
 @NgModule({
   declarations: [
     RacesComponent,
     RaceFiltersComponent,
-    RaceDetailsComponent,
-    RaceDetailHeaderComponent,
   ],
   imports: [
     FormsModule, CommonModule,
-    SharedModule, ParticipantsModule,
+    RaceListModule, PaginationModule, DropdownModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(featureKey, FEATURE_REDUCER_TOKEN),
     EffectsModule.forFeature([RacesEffects]),

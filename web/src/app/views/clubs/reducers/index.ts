@@ -22,6 +22,5 @@ export const FEATURE_REDUCER_TOKEN = new InjectionToken<ActionReducerMap<ClubsSt
 export const selectClubsFeatureState = createFeatureSelector<ClubsState>(clubsFeatureKey);
 export const selectClubsState = createSelector(selectClubsFeatureState, state => state[clubs.featureKey]);
 export const selectClubs = createSelector(selectClubsState, clubs.selectClubs);
-export const selectClub = createSelector(selectClubsState, clubs.selectClub);
 
 export { clubs }

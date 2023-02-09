@@ -22,6 +22,5 @@ export const FEATURE_REDUCER_TOKEN = new InjectionToken<ActionReducerMap<RacesSt
 export const selectRacesFeatureState = createFeatureSelector<RacesState>(racesFeatureKey);
 export const selectRacesState = createSelector(selectRacesFeatureState, state => state[races.featureKey]);
 export const selectRaces = createSelector(selectRacesState, races.selectRaces);
-export const selectRace = createSelector(selectRacesState, races.selectRace);
 
 export { races }

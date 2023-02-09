@@ -3,10 +3,10 @@ import { BehaviorSubject, combineLatest, debounceTime, filter, Observable, takeW
 import { ActivatedRoute, Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { State } from "src/app/reducers";
-import * as ClubActions from "../../reducers/clubs.actions";
+import * as ClubDetailsActions from "../reducers/club-details.actions";
 import { ClubDetail, DEFAULT_PAGE, PaginationConfig, Race } from "src/types";
-import { selectClub } from "../../reducers";
-import { PaginationComponent } from "../../../../shared/components/pagination/pagination.component";
+import { selectClub } from "../reducers";
+import { PaginationComponent } from "../../../shared/components/pagination/pagination.component";
 
 interface QueryParams {
   clubId?: number;
@@ -52,7 +52,7 @@ export class ClubDetailsComponent implements OnInit, OnDestroy {
       ([params, page]) => {
         this.listOffset = (page.page - 1) * page.itemsPerPage;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this._store.dispatch(ClubActions.LOAD_DETAILS({ clubId: params.clubId!, page: page }));
+        return this._store.dispatch(ClubDetailsActions.LOAD_DETAILS({ clubId: params.clubId!, page: page }));
       }
     );
   }

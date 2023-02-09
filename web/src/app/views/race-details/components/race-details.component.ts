@@ -3,8 +3,8 @@ import { Store } from "@ngrx/store";
 import { State } from "src/app/reducers";
 import { Gender, Participant, ParticipantCategory, Race, RaceDetail, readableCategory, readableGender } from "src/types";
 import { Observable } from "rxjs";
-import { selectRace } from "../../reducers";
-import * as RaceActions from "../../reducers/races.actions";
+import { selectRace } from "../reducers";
+import * as RaceDetailsActions from "../reducers/race-details.actions";
 import { ActivatedRoute } from "@angular/router";
 
 // TODO: race distance
@@ -30,7 +30,7 @@ export class RaceDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const raceId = this._route.snapshot.paramMap.get('race_id')
-    if (raceId) this._store.dispatch(RaceActions.LOAD_DETAILS({ raceId: +raceId }))
+    if (raceId) this._store.dispatch(RaceDetailsActions.LOAD_DETAILS({ raceId: +raceId }))
 
     this.race$.subscribe((race) => {
         if (!race) return;
