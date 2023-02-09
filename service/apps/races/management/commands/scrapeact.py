@@ -20,10 +20,10 @@ class Command(BaseCommand):
         parser.add_argument('--all', action='store_true', default=False)
 
     def handle(self, *args, **options):
+        if not options['year'] and not options['all']:
+            raise Exception
+
         scrapper = ACTScrapper(is_female=options['female'])
-
-        assert options['year'] or options['all']
-
         if options['all']:
             i = 2009 if options['female'] else 2003
             items: List[ScrappedItem] = []

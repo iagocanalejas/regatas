@@ -20,7 +20,8 @@ class Command(BaseCommand):
         parser.add_argument('--all', action='store_true', default=False)
 
     def handle(self, *args, **options):
-        assert options['year'] or options['all']
+        if not options['year'] and not options['all']:
+            raise Exception
 
         if options['all']:
             i = 2018 if options['female'] else 2006

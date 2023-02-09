@@ -50,45 +50,6 @@ COMPUTED_PARTICIPANT = 'db_club'
 
 
 class Command(BaseCommand):
-    """
-    Options:
-        --manual: Allows non existing trophies/flags that will be created with user input.
-        --validate: Do a simple validation of the file.
-    Valid CSV columns:
-        name: str                   || Will be saved in the database as is (#Race.race_name).
-        t_date: date                || Used to find or create a #Race - (YYYY-MM-DD).
-        edition: int                || The edition of the race if known, will be used for #Trophy, #Flag or both.
-        day: int                    || #Race.day for races that happen in multiple days.
-        modality: str               || (#Race.modality) 'TRAINERA' | 'TRAINERILLA' | 'BATEL'.
-        league: Optional[str]       || The name of the league #League.name.
-        town: Optional[str]         || The town where the race was celebrated.
-        organizer: Optional[str]    || The #Entity organizing the event.
-        cancelled: Optional[bool]   || If the race was cancelled for some reason
-
-        gender: str                 || (#League.gender) if 'league' is set the league gender will be prioritized.
-        category: str               || (#Particpant.category) 'FEMALE' | 'MALE'.
-        club_name: str              || Will be saved in the database as is (#Participant.club_name).
-        lane: int                   || #Participant.lane
-        series: int                 || #Participant.series
-        laps: List[str]             || #Participant.laps (HH:mm:ss.xxx)
-        distance: int               || #Participant.distance
-        disqualified: Optional[bool]|| If the participant was disqualified for some reason
-
-        trophy_name: Optional[str]  || Will be used for search the #Trophy or #Flag and for normalization (defaults to name).
-        participant: Optional[str]  || Will be used for search #Entity[type=CLUB] and normalization (defaults to club_name).
-        race_laps: Optional[int]    || Precomputed number of laps for the #Race.laps
-        race_lanes: Optional[int]   || Precomputed number of lanes for the #Race.lanes
-
-        race_id: str                || The ID of the race in the datasource
-        url: Optional[str]          || Datasource URL where the race was found
-        datasource: str             || Datasource where the race was found
-    NOTES:
-        - One of 'league', 'gender' is required.
-        - Only one of 'league', 'gender' is accepted.
-    DEFAULTS:
-        - cancelled = False
-        - disqualified = False
-    """
     help = 'Validate CSV file to be imported'
 
     def add_arguments(self, parser):
