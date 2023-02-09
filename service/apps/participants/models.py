@@ -34,7 +34,7 @@ class Participant(models.Model):
     def __str__(self):
         title = f'{self.club.title.name}' if self.club.title else ''
         club = f'{title} {self.club_name}'.strip() if self.club_name else self.club
-        return f'{self.race.date} :: {club} -> {self.race.name}'
+        return f'{self.race.date} :: {club} ({self.gender}) ({self.category}) -> {self.race.name}'
 
     @property
     def time(self):
@@ -81,6 +81,11 @@ class Penalty(models.Model):
         related_name='penalties',
         related_query_name='penalty',
     )
+
+    def __str__(self):
+        if self.disqualification:
+            return f'Disqualified: {self.participant}'
+        return f'Penalty ({self.reason}: {self.penalty}) -> {self.participant}'
 
     class Meta:
         db_table = 'penalty'

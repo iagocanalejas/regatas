@@ -2,18 +2,20 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     directory: "/service/config/requirements"
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 5
     schedule:
       interval: "monthly"
 
   - package-ecosystem: "npm"
     directory: "/web"
-    open-pull-requests-limit: 1
+    ignore:
+      - dependency-name: "typescript"
+    open-pull-requests-limit: 5
     schedule:
       interval: "monthly"
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 5
     schedule:
       interval: "monthly"
