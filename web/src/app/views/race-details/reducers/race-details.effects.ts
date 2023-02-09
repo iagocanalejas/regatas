@@ -23,7 +23,6 @@ export class RaceDetailsEffects {
           map(([race, participants]) => RaceActions.LOAD_DETAILS_SUCCESS({
             race: {
               ...race,
-              winner: participants[0],
               participants: participants
             }
           })),

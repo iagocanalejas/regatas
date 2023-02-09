@@ -24,8 +24,6 @@ export interface Race {
 
 export interface RaceDetail extends Race {
   participants: Participant[];
-  distance: number;
-  winner: Participant; // computed
   laps?: number;
   lanes?: number;
   series?: number;

@@ -18,6 +18,7 @@ export interface Participant {
   time: string; // computed
   lane: number;
   series: number;
+  distance: number;
   disqualified: boolean;
   hast_time_penalty: boolean; // computed
   penalties: Penalty[];

@@ -27,7 +27,7 @@
             <th scope="col" class="px-2">Largos</th>
             <th scope="col" class="px-2">Calles</th>
             <th scope="col" class="px-2">Participantes</th>
-            <th scope="col" class="px-2">Distancia</th>
+            <th *ngIf="winner" scope="col" class="px-2">Distancia</th>
           </tr>
           </thead>
           <tbody>
@@ -36,7 +36,7 @@
             <th>{{ race.laps }}</th>
             <th>{{ race.lanes }}</th>
             <th>{{ race.participants.length }}</th>
-            <th>{{ race.distance }}</th>
+            <th *ngIf="winner">{{ winner.distance }}</th>
           </tr>
           </tbody>
         </table>
@@ -44,12 +44,12 @@
     </div>
   </div>
 
-  <div *ngIf="race.town" class="card-footer">
+  <div *ngIf="winner" class="card-footer">
     <div class="d-flex justify-content-center">
       <div class="badge rounded-pill bg-light text-dark font-weight-bold p-2">
-        <span>{{ race.winner.club.name }}</span>
+        <span>{{ winner.club.name }}</span>
         <div class="vr"></div>
-        <span>{{ race.winner.time }}</span>
+        <span>{{ winner.time }}</span>
         <div class="vr"></div>
         <span>{{ winnerSpeed | number }} m/s</span>
       </div>

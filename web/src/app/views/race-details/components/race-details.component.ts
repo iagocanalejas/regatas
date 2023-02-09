@@ -16,7 +16,6 @@ import { selectRace } from "../reducers";
 import * as RaceDetailsActions from "../reducers/race-details.actions";
 import { ActivatedRoute } from "@angular/router";
 
-// TODO: race distance
 @Component({
   selector: 'app-race-details',
   templateUrl: './race-details.component.html',
@@ -63,6 +62,12 @@ export class RaceDetailsComponent implements OnInit {
     return participants.some(p => p.penalties.some(pe => !pe.disqualification))
   }
 
+  winner(race: RaceDetail): Participant | undefined {
+    if (!this.isTimeTrial(race))
+      return this.participants(race.participants)[0];
+    return undefined;
+  }
+
   participants(participants: Participant[]): Participant[] {
     return [...participants].sort((p1, p2) => compareParticipantTimes(p1, p2));
   }
@@ -79,6 +84,11 @@ export class RaceDetailsComponent implements OnInit {
 
   participantsWithPenalties(participants: Participant[]): Participant[] {
     return participants.filter(p => p.penalties.some(pe => !pe.disqualification))
+  }
+
+  distance(participants: Participant[]): number {
+    const valid_distances = participants.filter(p => p.distance).map(p => p.distance);
+    return valid_distances.reduce((p, c) => p + c, 0) / valid_distances.length;
   }
 
   readableTitle(value?: number): string {
