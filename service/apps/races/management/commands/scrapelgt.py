@@ -19,10 +19,10 @@ class Command(BaseCommand):
         parser.add_argument('--all', action='store_true', default=False)
 
     def handle(self, *args, **options):
+        if not options['race_id'] and not options['all']:
+            raise Exception
+
         scrapper = LGTScrapper()
-
-        assert options['race_id'] or options['all']
-
         if options['all']:
             i = 9  # 8 first IDs are test races
             empty_count = 0
