@@ -79,17 +79,7 @@ class SimpleRaceSerializer(serializers.ModelSerializer):
 
 class RaceDetailsSerializer(SimpleRaceSerializer):
     organizer = EntitySerializer(allow_null=True)
-    distance = serializers.SerializerMethodField()
     series = serializers.SerializerMethodField()
-
-    @staticmethod
-    def get_distance(race: Race) -> Optional[int]:
-        if not race.participants.count():
-            return None
-
-        participants = list(race.participants.all())
-        valid_distances = [p.distance for p in participants if p.distance]
-        return round(sum(valid_distances) / len(valid_distances))
 
     @staticmethod
     def get_series(race: Race) -> Optional[int]:
@@ -101,7 +91,7 @@ class RaceDetailsSerializer(SimpleRaceSerializer):
         return max(series) if series else None
 
     class Meta(SimpleRaceSerializer.Meta):
-        fields = SimpleRaceSerializer.Meta.fields + ('laps', 'lanes', 'series', 'town', 'organizer', 'distance')
+        fields = SimpleRaceSerializer.Meta.fields + ('laps', 'lanes', 'series', 'town', 'organizer')
 
 
 class PenaltySerializer(serializers.ModelSerializer):
@@ -128,4 +118,4 @@ class RaceParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = ('id', 'club', 'laps', 'lane', 'series', 'disqualified', 'penalties', 'club_name', 'gender', 'category')
+        fields = ('id', 'club', 'laps', 'lane', 'series', 'disqualified', 'penalties', 'club_name', 'gender', 'category', 'distance')

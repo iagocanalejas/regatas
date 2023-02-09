@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { participantSpeed, RaceDetail } from "src/types";
+import { Participant, participantSpeed, RaceDetail } from "src/types";
 
 @Component({
   selector: 'race-detail-header',
@@ -10,8 +10,10 @@ import { participantSpeed, RaceDetail } from "src/types";
 export class RaceDetailHeaderComponent {
   // TODO: Show cancelled races
   @Input() race!: RaceDetail
+  @Input() winner?: Participant
 
   get winnerSpeed(): number {
-    return participantSpeed(this.race.winner, this.race.distance);
+    if (!this.winner) return 0
+    return participantSpeed(this.winner, this.winner.distance);
   }
 }

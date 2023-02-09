@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header bg-dark text-light h5 d-flex justify-content-between align-items-center pointer" (click)="collapsed = !collapsed">
-    <span class="card-title">{{ title }}</span>
+    <span class="card-title">{{ cardTitle | titlecase }}</span>
 
     <div class="d-inline-block">
       <button *ngIf="hasPenalties" type="button" class="btn p-0 m-0"

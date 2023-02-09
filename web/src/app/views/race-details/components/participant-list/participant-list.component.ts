@@ -14,7 +14,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
   @Input() participants!: Participant[];
   @Input() title!: string;
   @Input() headColumn!: string;
-  @Input() distance!: number;
+  @Input() distance?: number;
   @Input() collapsed: boolean = false;
   @Input() showDifference: boolean = false;
 
@@ -46,6 +46,10 @@ export class ParticipantListComponent implements OnInit, OnChanges {
     if (changes['participants']) {
       this.init()
     }
+  }
+
+  get cardTitle(): string {
+    return this.distance ? `${this.title} (${this.distance}m)` : this.title
   }
 
   get visibleLaps(): number[] {
@@ -82,6 +86,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
   }
 
   getParticipantSpeed(participant: Participant): number {
+    if (!this.distance) return 0  // should never happen
     return participantSpeed(participant, this.distance);
   }
 

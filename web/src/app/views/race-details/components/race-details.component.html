@@ -1,6 +1,6 @@
 <div *ngIf="race$ | async as race" class="container">
   <div class="my-3">
-    <race-detail-header [race]="race"></race-detail-header>
+    <race-detail-header [race]="race" [winner]="winner(race)"></race-detail-header>
   </div>
 
   <div *ngIf="!isTimeTrial(race)" class="my-3">
@@ -10,7 +10,7 @@
                       [collapsed]="true">
     </participant-list>
 
-    <participant-list [participants]="participants(race.participants)" [distance]="race.distance"
+    <participant-list [participants]="participants(race.participants)"
                       [title]="readableTitle()" [headColumn]="'Puesto'"
                       [showDifference]="true">
     </participant-list>
@@ -19,6 +19,7 @@
   <div *ngIf="isTimeTrial(race)" class="my-3">
     <participant-list *ngFor="let cg of categories; let i = index;"
                       [participants]="participantsByCategory(race.participants, cg)"
+                      [distance]="distance(participantsByCategory(race.participants, cg))"
                       [title]="readableTimeTrialTitle(cg)" [headColumn]="'Puesto'"
                       [showDifference]="true" [collapsed]="i !== 0">
     </participant-list>

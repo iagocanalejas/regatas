@@ -22,7 +22,6 @@ _KNOWN_MAPPINGS = {
 }
 
 
-# TODO: create getters
 class Command(BaseCommand, Digester):
     help = 'Import CSV file into the DB'
 
