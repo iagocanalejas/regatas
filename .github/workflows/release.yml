@@ -33,4 +33,4 @@ jobs:
           name: ${{ env.RELEASE_VERSION }}
           tag: ${{ github.ref }}
           bodyFile: CHANGELOG.md
-          artifacts: "docker-compose.yml,environment.gpg,docker/r4l-web,docker/r4l-service,scripts/launch.sh"
+          artifacts: "docker-compose.yml,environment.gpg,docker/r4l-web,docker/r4l-service,scripts/launch.sh,scripts/upgrade.sh"
