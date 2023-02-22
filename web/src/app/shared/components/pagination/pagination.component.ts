@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DEFAULT_PAGE, PaginationConfig } from "src/types";
 import { BehaviorSubject, distinct, Subject, takeWhile } from "rxjs";
+import { z } from "zod";
 
 const PAGINATION_KEY = 'PAGINATION';
 
@@ -35,7 +36,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
 
     // load saved pagination
     const p = sessionStorage.getItem(`${this.key}_${PAGINATION_KEY}`);
-    this.page = p ? JSON.parse(p) : this.page
+    this.page = p ? this.retrievePage(p) : this.page
 
     this.debouncer.next(this.page);
     this.debouncer.pipe(
@@ -57,5 +58,13 @@ export class PaginationComponent implements OnInit, OnDestroy {
   onItemsPerPageChange(itemsPerPage: number) {
     this.page = { ...this.page, itemsPerPage }
     this.debouncer.next(this.page)
+  }
+
+  private retrievePage(page: string): PaginationConfig {
+    const pageSchema = z.object({
+      itemsPerPage: z.number().min(1),
+      page: z.number().min(0),
+    });
+    return pageSchema.parse(JSON.parse(page))
   }
 }

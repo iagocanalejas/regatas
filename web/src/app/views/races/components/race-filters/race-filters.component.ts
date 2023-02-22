@@ -4,6 +4,7 @@ import { DropdownItem } from "src/app/shared/components/dropdown/dropdown.compon
 import { BehaviorSubject, debounceTime, distinctUntilChanged, takeWhile } from "rxjs";
 import { NG_IF } from "src/app/shared/animations";
 import * as dayjs from "dayjs";
+import { z } from "zod";
 
 type ValidFilters = 'trophy' | 'flag' | 'year';
 const FILTERS_KEY = 'RACE_FILTERS';
@@ -42,7 +43,7 @@ export class RaceFiltersComponent implements OnInit, OnDestroy {
 
     // load saved session filters
     const f = sessionStorage.getItem(FILTERS_KEY);
-    this._filters = f ? JSON.parse(f) : {}
+    this._filters = f ? this.retrieveFilters(f) : {}
     this.onFilterChange.emit(this._filters);
 
     // subscribe to searchin behaviour
@@ -84,5 +85,17 @@ export class RaceFiltersComponent implements OnInit, OnDestroy {
   clearKeywords() {
     this.keywords = '';
     this.onKeywordsChanged();
+  }
+
+  private retrieveFilters(filters: string): RaceFilter {
+    const filterSchema = z.object({
+      trophy: z.number().min(1).optional(),
+      flag: z.number().min(1).optional(),
+      league: z.number().min(1).optional(),
+      year: z.number().min(1).optional(),
+      participant_club: z.number().min(1).optional(),
+      keywords: z.string().optional(),
+    });
+    return filterSchema.parse(JSON.parse(filters))
   }
 }
