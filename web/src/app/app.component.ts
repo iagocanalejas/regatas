@@ -25,11 +25,6 @@ export class AppComponent implements OnInit, OnDestroy {
     return this._router.url;
   }
 
-  get showRequestButton() {
-    // Only show the navbar request button for root pages
-    return this.route.slice(1).split('/').length === 1 && false // TODO
-  }
-
   getCurrentLeagueName(leagues: League[]): string {
     const league = this._router.url.split('league_id=')[1]
     const leagueName = league ? leagues.find(l => l.id === +league)?.name : 'Regatas'
@@ -51,10 +46,5 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onNavbarLinkSelected(link: string, params?: { [key: string]: number }) {
     this._router.navigate([link], { ...(params ? { queryParams: params } : {}) }).then();
-  }
-
-  onAddSelected() {
-    const type = this.route.includes('clubs') ? 'club' : 'race';
-    this._router.navigate(['/requests'], { queryParams: { type } }).then();
   }
 }

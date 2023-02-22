@@ -1,7 +1,0 @@
-<div class="container">
-  <div [ngSwitch]="(params$ | async)?.type" class="mx-auto mt-3 w-50">
-    <form-entity *ngSwitchCase="'club'"></form-entity>
-    <form-race *ngSwitchCase="'race'"></form-race>
-    <form-participant *ngSwitchCase="'participant'"></form-participant>
-  </div>
-</div>

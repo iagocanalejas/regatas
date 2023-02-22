@@ -4,7 +4,6 @@ import { Flag } from "./flag";
 import { compareParticipantTimes, Participant, participantSpeed, participantTime, Penalty } from "./participant";
 import { Club, ClubDetail, Organizers } from "./entity";
 import { Race, RaceDetail, RaceFilter } from "./race";
-import { Request, RequestChange, RequestModel, RequestType } from "./requests";
 import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, Page, PaginationConfig } from "./page";
 import { Gender, ParticipantCategory, PenaltyReason, RaceType, readableCategory, readableReason, readableGender } from "./types";
 
@@ -22,7 +21,6 @@ export {
   Club, ClubDetail, Organizers,
   Race, RaceFilter, RaceDetail,
   Participant, Penalty,
-  RequestType, RequestModel, RequestChange, Request,
   participantSpeed, participantTime, compareParticipantTimes,
   readableReason, readableCategory, readableGender,
   DEFAULT_PAGE, DEFAULT_PAGE_RESULT

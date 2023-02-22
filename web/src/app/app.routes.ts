@@ -8,7 +8,6 @@ const APP_ROUTES: Routes = [
   { path: 'races/:race_id', loadChildren: () => import('./views/race-details/race-details.module').then(m => m.RaceDetailsModule) },
   { path: 'clubs', loadChildren: () => import('./views/clubs/clubs.module').then(m => m.ClubsModule) },
   { path: 'clubs/:club_id', loadChildren: () => import('./views/club-details/club-details.module').then(m => m.ClubDetailsModule) },
-  { path: 'requests', loadChildren: () => import('./views/requests/requests.module').then(m => m.RequestsModule) },
 ];
 // @formatter:on
 

@@ -98,7 +98,6 @@ INSTALLED_APPS = [
     'apps.entities',
     'apps.races',
     'apps.participants',
-    'apps.requests',
 ]
 
 if DEBUG:
