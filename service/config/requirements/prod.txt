@@ -2,7 +2,7 @@ Django==4.1.7
 Pillow==9.4.0
 argon2_cffi==21.3.0
 beautifulsoup4==4.11.2
-django-cors-headers==3.13.0
+django-cors-headers==3.14.0
 django-crontab==0.7.1
 django-extensions==3.2.1
 django-stdimage==6.0.1
