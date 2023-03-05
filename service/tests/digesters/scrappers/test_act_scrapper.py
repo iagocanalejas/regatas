@@ -3,8 +3,8 @@ import unittest
 
 import responses
 
-from apps.actions.digesters import ScrappedItem
-from apps.actions.digesters.scrappers import ACTScrapper
+from apps.actions.management.digesters import ScrappedItem
+from apps.actions.management.digesters.scrappers import ACTScrapper
 from tests.utils import add_html_response
 from utils.choices import RACE_TRAINERA, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 
@@ -15,8 +15,8 @@ class ACTScrapperTest(unittest.TestCase):
 
     @responses.activate
     def test_scrap_act(self):
-        add_html_response("https://www.euskolabelliga.com/resultados/index.php?id=es&t=2022", 'euskolabelliga.html')
-        add_html_response("https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858", 'euskolabelliga_details.html')
+        add_html_response("https://www.euskolabelliga.com/resultados/index.php?t=2022", 'euskolabelliga.html')
+        add_html_response("https://www.euskolabelliga.com/resultados/ver.php?r=1647864858", 'euskolabelliga_details.html')
 
         self.assertEqual(
             [
@@ -37,7 +37,7 @@ class ACTScrapperTest(unittest.TestCase):
                     trophy_name='BANDERA PETRONOR',
                     participant='GETARIA',
                     race_id='1647864858',
-                    url='https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858',
+                    url='https://www.euskolabelliga.com/resultados/ver.php?r=1647864858',
                     datasource='act',
                     town='ZIERBENA',
                     organizer=None,
@@ -63,7 +63,7 @@ class ACTScrapperTest(unittest.TestCase):
                     trophy_name='BANDERA PETRONOR',
                     participant='ZIERBENA BAHIAS DE BIZKAIA',
                     race_id='1647864858',
-                    url='https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858',
+                    url='https://www.euskolabelliga.com/resultados/ver.php?r=1647864858',
                     datasource='act',
                     town='ZIERBENA',
                     organizer=None,
@@ -89,7 +89,7 @@ class ACTScrapperTest(unittest.TestCase):
                     trophy_name='BANDERA PETRONOR',
                     participant='MATRIX HONDARRIBIA',
                     race_id='1647864858',
-                    url='https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858',
+                    url='https://www.euskolabelliga.com/resultados/ver.php?r=1647864858',
                     datasource='act',
                     town='ZIERBENA',
                     organizer=None,

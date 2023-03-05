@@ -8,9 +8,10 @@ import cv2
 from pandas import DataFrame, Series
 
 from ai_django.ai_core.utils.strings import whitespaces_clean
-from apps.actions.digesters._item import ScrappedItem
-from apps.actions.digesters.ocr._image import ImageOCR
+from apps.actions.management.digesters._item import ScrappedItem
+from apps.actions.management.digesters.ocr._image import ImageOCR
 from apps.entities.normalization import normalize_club_name
+from apps.participants.normalization import normalize_lap_time
 from utils.synonyms import TIME_TRIAL_SYNONYMS, FEMALE_SYNONYMS, CLASSIFICATION_SYNONYMS
 
 logger = logging.getLogger(__name__)
@@ -117,7 +118,7 @@ class ImageOCRKontxako(ImageOCR, source='kontxako'):
         return soup[4]
 
     def get_laps(self, soup, **kwargs) -> List[str]:
-        return [t.isoformat() for t in [self.normalize_time(t) for t in soup.iloc[6:]] if t]
+        return [t.isoformat() for t in [normalize_lap_time(t) for t in soup.iloc[6:]] if t]
 
     def get_race_lanes(self, soup, **kwargs) -> int:
         return 1 if any(x in soup for x in TIME_TRIAL_SYNONYMS()) else 4

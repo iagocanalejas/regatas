@@ -10,15 +10,17 @@ from pandas import DataFrame
 from pytesseract import pytesseract
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, remove_symbols
-from apps.actions.digesters import ScrappedItem
-from apps.actions.digesters.ocr._image import ImageOCR, OCRDatasource
+from apps.actions.datasource import Datasource
+from apps.actions.management.digesters import ScrappedItem
+from apps.actions.management.digesters.ocr._image import ImageOCR
+from apps.participants.normalization import normalize_lap_time
 from utils.choices import RACE_TRAINERA, GENDER_MALE, GENDER_FEMALE, GENDER_MIX, PARTICIPANT_CATEGORY_VETERAN, PARTICIPANT_CATEGORY_ABSOLUT
 
 logger = logging.getLogger(__name__)
 
 
-class ImageOCRInforemo(ImageOCR, source=OCRDatasource.INFOREMO):
-    DATASOURCE = OCRDatasource.INFOREMO
+class ImageOCRInforemo(ImageOCR, source=Datasource.INFOREMO):
+    DATASOURCE = Datasource.INFOREMO
 
     _GENDERS = {
         GENDER_MALE: ['MASCULINO', 'ABSOLUTO', 'VETERANO'],
@@ -233,7 +235,7 @@ class ImageOCRInforemo(ImageOCR, source=OCRDatasource.INFOREMO):
 
     def get_laps(self, data, **kwargs) -> List[str]:
         idx = 3 if ':' in data[4] else 4
-        return [t.isoformat() for t in [self.normalize_time(self.clean_lap(t)) for t in data.iloc[idx:]] if t]
+        return [t.isoformat() for t in [normalize_lap_time(self.clean_lap(t)) for t in data.iloc[idx:]] if t]
 
     def get_race_lanes(self, df: DataFrame, **kwargs) -> int:
         lanes = max(row[4] for _, row in df.iterrows())

@@ -3,8 +3,8 @@ import unittest
 
 import responses
 
-from apps.actions.digesters import ScrappedItem
-from apps.actions.digesters.scrappers import LGTScrapper
+from apps.actions.management.digesters import ScrappedItem
+from apps.actions.management.digesters.scrappers import LGTScrapper
 from tests.utils import add_html_response
 from utils.choices import RACE_TRAINERA, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 

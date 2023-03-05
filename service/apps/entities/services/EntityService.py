@@ -48,8 +48,8 @@ def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> En
     """
     :return: closest found @entity_type in the database
     """
-    assert name
-    assert not entity_type or entity_type in ENTITY_TYPES
+    if entity_type and entity_type not in ENTITY_TYPES:
+        raise ValueError(f'{entity_type=} should be one of {ENTITY_TYPES=}')
 
     parts = unidecode(remove_conjunctions(remove_symbols(name))).split()
 

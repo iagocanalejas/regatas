@@ -3,18 +3,18 @@ import unittest
 
 import responses
 
-from apps.actions.digesters import ScrappedItem
-from apps.actions.digesters.scrappers import ARCScrapper
+from apps.actions.management.digesters import ScrappedItem
+from apps.actions.management.digesters.scrappers import ARCScrapper
 from tests.utils import add_html_response
 from utils.choices import RACE_TRAINERA, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 
 
 class ARCScrapperTest(unittest.TestCase):
     def setUp(self):
-        self.scrapper_v1 = ARCScrapper(2008)
+        self.scrapper_v1 = ARCScrapper(year=2008)
         self.scrapper_v1._GROUPS = ['1']
 
-        self.scrapper_v2 = ARCScrapper(2009)
+        self.scrapper_v2 = ARCScrapper(year=2009)
 
     @responses.activate
     def test_scrap_arc_v1(self):

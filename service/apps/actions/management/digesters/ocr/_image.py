@@ -9,15 +9,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from pandas import DataFrame
 
-from apps.actions.digesters import Digester
+from apps.actions.management.digesters import Digester
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 
 logger = logging.getLogger(__name__)
-
-
-class OCRDatasource:
-    INFOREMO = 'inforemo'
 
 
 class ImageOCR(Digester, ABC):
@@ -33,7 +29,7 @@ class ImageOCR(Digester, ABC):
         super().__init_subclass__(**kwargs)
         cls._registry[source] = cls
 
-    def __new__(cls, source: str, allow_plot: bool = False, **kwargs):  # pragma: no cover
+    def __new__(cls, source: str, allow_plot: bool = False, **kwargs) -> 'ImageOCR':  # pragma: no cover
         subclass = cls._registry[source]
         final_obj = object.__new__(subclass)
         final_obj.allow_plot = allow_plot

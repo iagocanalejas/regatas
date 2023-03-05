@@ -11,7 +11,7 @@ from apps.participants.services import ParticipantService
 from apps.actions.management.commands.validate import *
 from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
-from apps.actions.digesters import Digester
+from apps.actions.management.digesters import Digester
 from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
 from utils.exceptions import StopProcessing
 
@@ -358,7 +358,7 @@ class Command(BaseCommand, Digester):
             metadata={
                 "datasource": [
                     {
-                        'race_id': row[COLUMN_RACE_ID],
+                        'race_id': str(row[COLUMN_RACE_ID]),
                         'datasource_name': row[COLUMN_DATASOURCE],
                         "values": [{
                             "details_page": row[COLUMN_URL]

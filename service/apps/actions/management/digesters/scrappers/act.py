@@ -1,24 +1,27 @@
 import logging
 import re
 from datetime import date, datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
-import requests
-from bs4 import Tag, BeautifulSoup
+from bs4 import Tag
 
-from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
+from ai_django.ai_core.utils.strings import whitespaces_clean
+from apps.actions.clients import ACTClient
+from apps.actions.datasource import Datasource
+from apps.actions.management.digesters._item import ScrappedItem
+from apps.actions.management.digesters.scrappers import Scrapper
 from apps.entities.normalization import normalize_club_name
-from apps.races.normalization import normalize_trophy_name
-from apps.actions.digesters._item import ScrappedItem
-from apps.actions.digesters.scrappers import Scrapper
+from apps.participants.normalization import normalize_lap_time
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
 
 
 class ACTScrapper(Scrapper):
+    DATASOURCE = Datasource.ACT
+
     _excluded_ids = ['1301302999', '1301303104']
-    DATASOURCE: str = 'act'
+    _client: ACTClient = ACTClient(source=DATASOURCE)
 
     def __init__(self, is_female: bool = False):
         self._is_female = is_female
@@ -27,9 +30,8 @@ class ACTScrapper(Scrapper):
         if year > date.today().year:
             raise StopProcessing
 
-        soup, summary_url = self.get_summary_soup(year=year)
-
-        race_ids = self.__get_race_ids(soup)
+        soup, summary_url = self._client.get_races_summary_soup(year=year, is_female=self._is_female)
+        race_ids = self._client.get_ids_by_season(season=year, is_female=self._is_female)
         if len(race_ids) == 0:
             raise StopProcessing
 
@@ -47,12 +49,12 @@ class ACTScrapper(Scrapper):
             day = self.get_day(name)
 
             # known hardcoded mappings too specific to be implemented
-            trophy_name, edition, town = self.__hardcoded_mappings(year, trophy_name, edition, town)
+            trophy_name, edition = self._client.normalize('edition', trophy_name, self._is_female, t_date=t_date, edition=edition)
             if trophy_name == 'BANDEIRA CONCELLO MOAÑA - GRAN PREMIO FANDICOSTA' and year == 2009:
                 day = 2
 
             # data retrieved from the details page
-            details_soup, url = self.get_race_details_soup(race_id)
+            details_soup, url = self._client.get_race_details_soup(race_id=race_id, is_female=self._is_female)
             tables = details_soup.find_all('table', {'class': 'taula tablepadding'})
             organizer = self.get_organizer(details_soup)
 
@@ -90,21 +92,6 @@ class ACTScrapper(Scrapper):
     ####################################################
     #                      GETTERS                     #
     ####################################################
-
-    def get_summary_soup(self, year: int, **kwargs) -> Tuple[Tag, str]:
-        female = '/femenina' if self._is_female else ''
-        url = f"https://www.euskolabelliga.com{female}/resultados/index.php?id=es&t={year}"
-        response = requests.get(url=url, headers=self.HEADERS)
-
-        return BeautifulSoup(response.text, 'html5lib'), url
-
-    def get_race_details_soup(self, race_id: str, **kwargs) -> Tuple[Tag, str]:
-        female = '/femenina' if self._is_female else ''
-        url = f"https://www.euskolabelliga.com{female}/resultados/ver.php?id=es&r={race_id}"
-        response = requests.get(url=url, headers=self.HEADERS)
-
-        return BeautifulSoup(response.text, 'html5lib'), url
-
     def get_name(self, soup: Tag, **kwargs) -> str:
         return whitespaces_clean(soup.find('td', {'class': 'race_name'}).find('a').text).upper()
 
@@ -135,22 +122,11 @@ class ACTScrapper(Scrapper):
         return int(soup.find_all('td')[0].text)
 
     def get_laps(self, soup: Tag, **kwargs) -> List[str]:
-        times = [t for t in [self.normalize_time(e.text) for e in soup.find_all('td')[2:-1] if e] if t is not None]
+        times = [t for t in [normalize_lap_time(e.text) for e in soup.find_all('td')[2:-1] if e] if t is not None]
         return [t.isoformat() for t in times]
 
     def normalized_name(self, name: str, **kwargs) -> str:
-        name = whitespaces_clean(name)
-
-        # remove edition
-        edition = int_to_roman(self.get_edition(name))
-        name = ' '.join(n for n in re.sub(r'[\'\".:]', ' ', name).split() if n != edition)
-        # remove day
-        name = re.sub(r'\(?(\dJ|J\d)\)?', '', name)
-
-        name = self.__remove_waste_name_parts(name)
-        name = normalize_trophy_name(name, self._is_female)
-
-        return name
+        return self._client.normalize(field='race_name', value=name, is_female=self._is_female)
 
     def normalized_club_name(self, name: str, **kwargs) -> str:
         return normalize_club_name(name)
@@ -168,28 +144,6 @@ class ACTScrapper(Scrapper):
     #                 PRIVATE METHODS                  #
     ####################################################
 
-    def __hardcoded_mappings(self, year: int, name: str, edition: int, town: str) -> Tuple[str, int, str]:
-        if 'ASTILLERO' in name:
-            name, edition = 'BANDERA AYUNTAMIENTO DE ASTILLERO', (year - 1970)
-            town = 'ASTILLERO'
-
-        if 'ORIOKO' in name:
-            name = 'ORIOKO ESTROPADAK'
-
-        if 'CORREO IKURRIÑA' in name:
-            name, edition = 'EL CORREO IKURRIÑA', (year - 1986)
-            town = 'LEKEITIO'
-
-        if 'EL CORTE' in name:
-            name, edition = 'GRAN PREMIO EL CORTE INGLÉS', (year - 1970)
-            town = 'PORTUGALETE'
-
-        if self.is_play_off(name):
-            name, edition = ('PLAY-OFF ACT (FEMENINO)', (year - 2017)) if self._is_female \
-                else ('PLAY-OFF ACT', (year - 2002))
-
-        return name, edition, town
-
     @staticmethod
     def __get_row_for_race_id(soup: Tag, race_id: str) -> Tag:
         rows = soup.find('table', {'class': 'taula tablepadding'}).find('tbody').find_all('tr')
@@ -197,30 +151,3 @@ class ACTScrapper(Scrapper):
             if row.find('td', {'class': 'race_name'}).find('a')['href'].split('=')[-1] == race_id:
                 return row
         raise StopProcessing(f'row for race {race_id} not found')
-
-    @staticmethod
-    def __remove_waste_name_parts(name: str) -> str:
-        if '-' not in name:
-            return name
-        part1, part2 = whitespaces_clean(name.split('-')[0]), whitespaces_clean(name.split('-')[1])
-
-        if 'OMENALDIA' in part2:  # tributes
-            return part1
-        if 'BILBAO' in part2:
-            return 'BANDERA DE BILBAO' if 'BANDERA DE BILBAO' == part2 else 'GRAN PREMIO VILLA DE BILBAO'
-
-        if any(w in part1 for w in ['BANDERA', 'BANDEIRA', 'IKURRIÑA']):
-            return part1
-
-        return name
-
-    @staticmethod
-    def __get_race_ids(soup: Tag) -> List[str]:
-        if not soup.find('div', {'class': 'zutabe_ezkerra'}):
-            logger.error(f'not races found')
-            return []
-
-        table = soup.find('table', {'class': 'taula tablepadding'})
-        rows = table.find('tbody').find_all('tr')
-
-        return [row.find('td', {'class': 'race_name'}).find('a')['href'].split('=')[-1] for row in rows]

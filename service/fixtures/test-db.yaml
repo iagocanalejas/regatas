@@ -1272,11 +1272,25 @@
     tokens: '["trofeo", "herrera", "teresa", "clasificatorio"]'
     verified: true
 - model: races.flag
+  pk: 2
+  fields:
+    creation_date: 2022-11-07 15:05:43.502208+00:00
+    name: BANDEIRA VIRXE DO CARME
+    tokens: '["bandera", "carme", "virxe"]'
+    verified: true
+- model: races.flag
   pk: 39
   fields:
     creation_date: 2022-11-07 15:05:43.532504+00:00
     name: BANDEIRA TERESA HERRERA (CLASIFICATORIA)
     tokens: '["bandera", "teresa", "herrera", "clasificatorio"]'
+    verified: true
+- model: races.flag
+  pk: 85
+  fields:
+    creation_date: 2022-11-07 15:05:43.572140+00:00
+    name: BANDERA PETRONOR
+    tokens: '["bandera", "petronor"]'
     verified: true
 - model: races.flag
   pk: 133
@@ -1285,3 +1299,91 @@
     name: BANDEIRA DEPUTACIÓN DA CORUÑA
     tokens: '["bandera", "diputacion", "coruna", "masculino"]'
     verified: true
+- model: races.flag
+  pk: 198
+  fields:
+    creation_date: 2022-11-07 15:05:43.858917+00:00
+    name: BANDERA RÍA DEL ASÓN
+    tokens: '["bandera", "ason", "ria"]'
+    verified: true
+- model: races.race
+  pk: 1
+  fields:
+    creation_date: 2022-11-07 15:05:44.319219+00:00
+    laps: 4
+    lanes: 4
+    town: ZIERBENA
+    type: CONVENTIONAL
+    date: 2022-07-17
+    day: 1
+    cancelled: false
+    cancellation_reasons: '[]'
+    race_name: XXXIX BANDERA PETRONOR
+    sponsor: null
+    trophy_edition: null
+    trophy: null
+    flag_edition: 39
+    flag: 85
+    league: 2
+    modality: TRAINERA
+    organizer: null
+    metadata:
+      datasource:
+      - values:
+        - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
+        race_id: '1647864858'
+        datasource_name: act
+- model: races.race
+  pk: 2
+  fields:
+    creation_date: 2022-11-07 15:05:43.956393+00:00
+    laps: 4
+    lanes: 4
+    town: O GROVE
+    type: CONVENTIONAL
+    date: 2022-07-25
+    day: 1
+    cancelled: false
+    cancellation_reasons: '[]'
+    race_name: IX BANDEIRA VIRXE DO CARME
+    sponsor: null
+    trophy_edition: null
+    trophy: null
+    flag_edition: 9
+    flag: 2
+    league: 5
+    modality: TRAINERA
+    organizer: 18
+    metadata:
+      datasource:
+      - values:
+        - details_page: https://www.ligalgt.com/principal/regata/11
+        race_id: '11'
+        datasource_name: lgt
+- model: races.race
+  pk: 3
+  fields:
+    creation_date: 2022-11-07 15:05:44.603093+00:00
+    laps: 4
+    lanes: 1
+    town: COLINDRES
+    type: TIME_TRIAL
+    date: 2009-08-22
+    day: 1
+    cancelled: false
+    cancellation_reasons: '[]'
+    race_name: XIV BANDERA RIA DEL ASON
+    sponsor: null
+    trophy_edition: null
+    trophy: null
+    flag_edition: 17
+    flag: 198
+    league: 10
+    modality: TRAINERA
+    organizer: null
+    metadata:
+      datasource:
+      - values:
+        - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
+        race_id: '158'
+        datasource_name: arc

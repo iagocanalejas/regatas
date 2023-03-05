@@ -1,35 +1,37 @@
-import re
 from datetime import date, datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
-import requests
-from bs4 import Tag, BeautifulSoup
+from bs4 import Tag
 
-from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
+from ai_django.ai_core.utils.strings import whitespaces_clean
+from apps.actions.clients import LGTClient
+from apps.actions.datasource import Datasource
+from apps.actions.management.digesters._item import ScrappedItem
+from apps.actions.management.digesters.scrappers import Scrapper
 from apps.entities.normalization import normalize_club_name
-from apps.races.normalization import normalize_trophy_name
-from apps.actions.digesters._item import ScrappedItem
-from apps.actions.digesters.scrappers import Scrapper
+from apps.participants.normalization import normalize_lap_time
 from utils.choices import GENDER_FEMALE, GENDER_MALE
 from utils.exceptions import StopProcessing
 
 
 class LGTScrapper(Scrapper):
+    DATASOURCE = Datasource.LGT
+
     _excluded_ids = [
         1, 2, 3, 4, 5, 6, 7, 8, 13, 14, 15, 23, 25, 26, 27, 28, 31, 32, 33, 34, 36, 37, 40, 41, 44, 50, 51, 54, 55, 56, 57, 58, 59, 75, 88,
         94, 95, 96, 97, 98, 99, 103, 104, 105, 106, 108, 125, 131, 137, 138, 147, 151
     ]  # weird races
-    DATASOURCE: str = 'lgt'
+    _client: LGTClient = LGTClient(source=DATASOURCE)
 
     def scrap(self, race_id: int, **kwargs) -> List[ScrappedItem]:
         if race_id in self._excluded_ids:
             raise StopProcessing
 
-        soup, _ = self.get_summary_soup(race_id=race_id)
+        soup, _ = self._client.get_race_results_soup(race_id=str(race_id))
         if not soup.find('table', {'id': 'tabla-tempos'}):
             raise StopProcessing
 
-        details_soup, url = self.get_race_details_soup(race_id=str(race_id))
+        details_soup, url = self._client.get_race_details_soup(race_id=str(race_id))
 
         name = self.get_name(soup)
         trophy_name = self.normalized_name(name, is_female=any(e in name for e in ['FEMENINA', 'FEMININA']))
@@ -42,7 +44,7 @@ class LGTScrapper(Scrapper):
         organizer = self.get_organizer(details_soup)
 
         # known hardcoded mappings too specific to be implemented
-        trophy_name, edition = self.__hardcoded_mappings(t_date.year, trophy_name, edition)
+        trophy_name, edition = self._client.normalize('edition', trophy_name, t_date=t_date, edition=edition)
 
         series = 1
         for row in soup.find('table', {'id': 'tabla-tempos'}).find_all('tr')[1:]:
@@ -81,20 +83,6 @@ class LGTScrapper(Scrapper):
     ####################################################
     #                      GETTERS                     #
     ####################################################
-
-    def get_summary_soup(self, race_id: int = None, **kwargs) -> Tuple[Tag, str]:
-        url = 'https://www.ligalgt.com/ajax/principal/ver_resultados.php'
-        data = {'liga_id': 1, 'regata_id': race_id}
-        response = requests.post(url=url, headers=self.HEADERS, data=data)
-
-        return BeautifulSoup(response.text, 'html5lib'), url
-
-    def get_race_details_soup(self, race_id: str, **kwargs) -> Tuple[Tag, str]:
-        url = f"https://www.ligalgt.com/principal/regata/{race_id}"
-        response = requests.get(url=url, headers=self.HEADERS)
-
-        return BeautifulSoup(response.text, 'html5lib'), url
-
     def get_name(self, soup: Tag, **kwargs) -> str:
         return whitespaces_clean(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[0].text).upper()
 
@@ -102,16 +90,7 @@ class LGTScrapper(Scrapper):
         return datetime.strptime(soup.find_all('table')[1].find_all('tr')[-1].find_all('td')[1].text, '%d/%m/%Y').date()
 
     def get_day(self, name: str, t_date: date = None, **kwargs) -> int:
-        if self.is_play_off(name):  # exception case
-            if '1' in name:
-                return 1
-            if '2' in name:
-                return 2
-            return 2 if t_date.isoweekday() == 7 else 1  # 2 for sunday
-        if 'XORNADA' in name:
-            day = int(re.findall(r' \d+', name)[0].strip())
-            return day
-        return 1
+        return self._client.normalize(field='day', value=name, t_date=t_date)
 
     def get_league(self, soup: Tag, trophy: str, **kwargs) -> str:
         if self.is_play_off(trophy):
@@ -141,22 +120,11 @@ class LGTScrapper(Scrapper):
         return int(soup.find_all('td')[0].text)
 
     def get_laps(self, soup: Tag, **kwargs) -> List[str]:
-        times = [t for t in [self.normalize_time(e.text) for e in soup.find_all('td')[2:] if e] if t is not None]
+        times = [t for t in [normalize_lap_time(e.text) for e in soup.find_all('td')[2:] if e] if t is not None]
         return [t.isoformat() for t in times]
 
     def normalized_name(self, name: str, is_female: bool = False, **kwargs) -> str:
-        name = whitespaces_clean(name)
-
-        # remove edition
-        edition = int_to_roman(self.get_edition(name))
-        name = ' '.join(n for n in re.sub(r'[\'\".:]', ' ', name).split() if n != edition)
-        # remove day
-        name = re.sub(r'(XORNADA )\d+|\d+( XORNADA)', '', name)
-
-        name = self.__remove_waste_name_parts(name)
-        name = normalize_trophy_name(name, is_female)
-
-        return name
+        return self._client.normalize(field='race_name', value=name, is_female=is_female)
 
     def normalized_club_name(self, name: str, **kwargs) -> str:
         return normalize_club_name(name)
@@ -169,24 +137,3 @@ class LGTScrapper(Scrapper):
 
     def get_race_laps(self, soup: Tag, **kwargs) -> int:
         raise NotImplementedError
-
-    ####################################################
-    #                 PRIVATE METHODS                  #
-    ####################################################
-
-    def __hardcoded_mappings(self, year: int, name: str, edition: int) -> Tuple[str, int]:
-        if self.is_play_off(name):
-            return name, (year - 2011)
-        return name, edition
-
-    @staticmethod
-    def __remove_waste_name_parts(name: str) -> str:
-        if name == 'EREWEWEWERW' or name == 'REGATA' or '?' in name:  # wtf
-            raise StopProcessing
-
-        if 'TERESA HERRERA' in name:  # lgt never saves the final
-            return 'TROFEO TERESA HERRERA (CLASIFICATORIA)'
-
-        if 'PLAY' in name:
-            return 'PLAY-OFF LGT'
-        return name

@@ -89,7 +89,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'corsheaders',
     'stdimage',
-    'django_crontab',
     'django_extensions',
     'rest_framework',
     'drf_spectacular',
@@ -98,6 +97,7 @@ INSTALLED_APPS = [
     'apps.entities',
     'apps.races',
     'apps.participants',
+    'apps.actions',
 ]
 
 if DEBUG:
@@ -230,11 +230,6 @@ else:
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
-    # # CRONTAB
-    # CRONTAB_LOCK_JOBS = True
-    # CRONTAB_EXECUTABLE = '/usr/bin/crontab'
-    # CRONJOBS = []
-    #
     # # SENTRY
     # sentry_logging = LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)
     # sentry_sdk.init(

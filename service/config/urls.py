@@ -18,6 +18,7 @@ api_urls = [
     path('', include(base_urls)),
     path('races/', include('apps.races.urls', namespace='races')),
     path('clubs/', include('apps.entities.urls', namespace='clubs')),
+    path('actions/', include('apps.actions.urls', namespace='actions')),
 ]
 
 # noinspection PyUnresolvedReferences

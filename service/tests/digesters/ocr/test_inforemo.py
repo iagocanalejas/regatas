@@ -5,17 +5,17 @@ import unittest
 
 from django.conf import settings
 
-from apps.actions.digesters import ScrappedItem
-from apps.actions.digesters.ocr import OCRDatasource
-from apps.actions.digesters.ocr.inforemo import ImageOCRInforemo
+from apps.actions.datasource import Datasource
+from apps.actions.management.digesters import ScrappedItem
+from apps.actions.management.digesters.ocr.inforemo import ImageOCRInforemo
 from utils.choices import GENDER_FEMALE, RACE_TRAINERA, PARTICIPANT_CATEGORY_ABSOLUT, GENDER_MALE, PARTICIPANT_CATEGORY_VETERAN
 
 
-@unittest.skipIf(os.getenv("CI") == "true", "Skipping in the CI")
+@unittest.skipIf(os.getenv("CI") == "true" or not os.getenv("TEST_OCR", "false") == "true", "Skipping in the CI")
 class InforemoOCRTest(unittest.TestCase):
     def setUp(self):
         self.original_locale = locale.getlocale()  # ('en_US', 'UTF-8')
-        self.digester = ImageOCRInforemo(source=OCRDatasource.INFOREMO)
+        self.digester = ImageOCRInforemo(source=Datasource.INFOREMO)
 
     def test_digest_tournament_image(self):
         path = os.path.join(settings.BASE_DIR, 'fixtures', 'img', '20220725_gallego.jpg')

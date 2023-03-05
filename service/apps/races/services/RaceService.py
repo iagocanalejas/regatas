@@ -1,10 +1,10 @@
 import logging
 from typing import List, Tuple
 
-from ai_django.ai_core.utils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
 from django.db.models import QuerySet, Q
 from rest_framework.generics import get_object_or_404
 
+from ai_django.ai_core.utils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
 from apps.races.models import Race
 
 logger = logging.getLogger(__name__)
@@ -28,6 +28,8 @@ def get_filtered(queryset: QuerySet[Race], filters: dict, related: List[str] = N
         queryset = queryset.filter(league=filters['league'])
     if 'participant_club' in filters:
         queryset = queryset.filter(participant__club=filters['participant_club'])
+    if 'metadata' in filters:
+        queryset = queryset.filter(metadata__datasource__contains=filters['metadata'])
     if 'keywords' in filters:
         keywords = whitespaces_clean(remove_conjunctions(remove_symbols(filters['keywords'])))
         queryset = queryset.filter(

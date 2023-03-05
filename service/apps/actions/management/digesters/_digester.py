@@ -1,11 +1,10 @@
 import csv
 import logging
-import re
 from abc import abstractmethod, ABC
-from datetime import time, datetime, date
+from datetime import date
 from typing import Optional, List
 
-from apps.actions.digesters._item import ScrappedItem
+from apps.actions.management.digesters._item import ScrappedItem
 from utils.checks import is_play_off
 
 logger = logging.getLogger(__name__)
@@ -28,26 +27,6 @@ class Digester(ABC):
     @staticmethod
     def is_play_off(name: str) -> bool:
         return is_play_off(name)
-
-    @staticmethod
-    def normalize_time(value: str) -> Optional[time]:
-        if value.startswith(':'):
-            # try to fix ':18,62' | ':45' page errors
-            value = '00' + value
-        parts = re.findall(r'\d+', value)
-        if len(parts) == 2:
-            # try to fix '2102:48' | '25:2257' page errors
-            if len(parts[0]) == 3:
-                # try to fix '028:24' page errors
-                parts[0] = '0' + parts[0]
-            if len(parts[0]) == 4:
-                return datetime.strptime(f'{parts[0][0:2]}:{parts[0][2:]},{parts[1]}', '%M:%S,%f').time()
-            if len(parts[1]) == 4:
-                return datetime.strptime(f'{parts[0]}:{parts[1][0:2]},{parts[1][2:]}', '%M:%S,%f').time()
-            return datetime.strptime(f'{parts[0]}:{parts[1]}', '%M:%S').time()
-        if len(parts) == 3:
-            return datetime.strptime(f'{parts[0]}:{parts[1]},{parts[2]}', '%M:%S,%f').time()
-        return None
 
     ####################################################
     #                     ABSTRACT                     #
@@ -81,7 +60,7 @@ class Digester(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_league(self, trophy: str, **kwargs) -> Optional[str]:
+    def get_league(self, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     @abstractmethod

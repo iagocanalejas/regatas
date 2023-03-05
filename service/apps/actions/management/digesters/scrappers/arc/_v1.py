@@ -2,33 +2,53 @@ import logging
 import re
 import time
 from datetime import date, datetime
-from typing import List, Optional, Tuple
+from typing import Tuple, Optional, List
 
 import requests
-from bs4 import Tag, BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
+from apps.actions.clients import Client
+from apps.actions.datasource import Datasource
+from apps.actions.management.digesters._item import ScrappedItem
+from apps.actions.management.digesters.scrappers.arc.arc import ARCScrapper
 from apps.entities.normalization import normalize_club_name
+from apps.participants.normalization import normalize_lap_time
 from apps.races.normalization import normalize_trophy_name
-from apps.actions.digesters._item import ScrappedItem
-from apps.actions.digesters.scrappers.arc.arc import ARCScrapper, ARC_V1
 from utils.choices import GENDER_MALE
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
 
 
-class ARCScrapperV1(ARCScrapper, version=ARC_V1):
-    _GROUPS = ['1', '2', 'playoff', 'playoffact']
+class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
+    DATASOURCE = Datasource.ARCVersions.V1
 
+    _GROUPS = ['1', '2', 'playoff', 'playoffact']
     _excluded_ids = ['164', '167', '199']
+    _client = None
+
+    @staticmethod
+    def get_race_details_soup(race_id: str) -> Tuple[Tag, str]:
+        # noinspection HttpUrlsUsage
+        url = f'http://www.liga-arc.com/historico/resultados_detalle.php?id={race_id}'
+
+        response = requests.get(url=url, headers=Client.HEADERS)
+        return BeautifulSoup(response.text, 'html5lib'), url
+
+    @staticmethod
+    def get_races_summary_soup(year: int, group: str) -> Tuple[Tag, str]:
+        url = f'https://www.liga-arc.com/historico/resultados.php?temporada={year}&grupo={group}'
+
+        response = requests.get(url=url, headers=Client.HEADERS)
+        return BeautifulSoup(response.text, 'html5lib'), url
 
     def scrap(self) -> List[ScrappedItem]:
         if self._year > 2008:
             raise StopProcessing
 
         for group in self._GROUPS:
-            soup, summary_url = self.get_summary_soup(group=group)
+            soup, summary_url = self.get_races_summary_soup(year=self._year, group=group)
 
             race_ids = self.__get_race_ids(soup)
             if len(race_ids) == 0:
@@ -48,7 +68,7 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
                 # known hardcoded mappings too specific to be implemented
                 trophy_name, edition, day = self.__hardcoded_mappings(trophy_name, edition, day)
 
-                details_soup, url = self.get_race_details_soup(race_id)
+                details_soup, url = self.get_race_details_soup(race_id=race_id)
                 tables = details_soup.find_all('table', {'class': 'resultados'})
 
                 series = 1
@@ -79,7 +99,7 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
                             participant=self.normalized_club_name(club_name),
                             race_id=race_id,
                             url=url,
-                            datasource=self.DATASOURCE,
+                            datasource=Datasource.ARC,
                         )
 
                     series += 1
@@ -90,20 +110,6 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
     ####################################################
     #                      GETTERS                     #
     ####################################################
-
-    def get_summary_soup(self, group: str = None) -> Tuple[Tag, str]:
-        url = f'https://www.liga-arc.com/historico/resultados.php?temporada={self._year}&grupo={group}'
-
-        response = requests.get(url=url, headers=self.HEADERS)
-        return BeautifulSoup(response.text, 'html5lib'), url
-
-    def get_race_details_soup(self, race_id: str, **kwargs) -> Tuple[Tag, str]:
-        # noinspection HttpUrlsUsage
-        url = f'http://www.liga-arc.com/historico/resultados_detalle.php?id={race_id}'
-
-        response = requests.get(url=url, headers=self.HEADERS)
-        return BeautifulSoup(response.text, 'html5lib'), url
-
     @staticmethod
     def get_name(soup: Tag, race_id: str = None, **kwargs) -> str:
         rows = [row.find('a') for row in soup.find_all('div', {'class': 'listado_regatas_nombre'})]
@@ -115,8 +121,8 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
         row = [row for row in rows if row['href'].split('=')[-1] == race_id][-1]
         return datetime.strptime(row.previous_element.find_previous_sibling('div').text.strip(), '%d-%m-%Y').date()
 
-    def get_edition(self, name: str) -> int:
-        edition = super(ARCScrapperV1, self).get_edition(name)
+    def get_edition(self, name: str, **kwargs) -> int:
+        edition = Client.get_edition(name)
         if edition != 1 or self.is_play_off(name) or 'ORDENACION GRUPOS' in name:  # already valid edition
             return edition
         if name[0].isdigit():
@@ -160,7 +166,7 @@ class ARCScrapperV1(ARCScrapper, version=ARC_V1):
         times = ['21:53.20' if t == '21:63.20' else t for t in times]  # page error
         times = ['17:08,00' if t == '147:08,00' else t for t in times]  # page error
 
-        times = [t for t in [self.normalize_time(e) for e in times] if t is not None]
+        times = [t for t in [normalize_lap_time(e) for e in times] if t is not None]
         return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
     @staticmethod

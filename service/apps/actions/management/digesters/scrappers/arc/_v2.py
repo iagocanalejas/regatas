@@ -3,34 +3,37 @@ import re
 from datetime import date, datetime
 from typing import List, Optional, Tuple
 
-import requests
-from bs4 import Tag, BeautifulSoup
+from bs4 import Tag
 
-from ai_django.ai_core.utils.strings import whitespaces_clean, remove_parenthesis, int_to_roman
+from ai_django.ai_core.utils.strings import whitespaces_clean, remove_parenthesis
+from apps.actions.clients import ARCClient
+from apps.actions.datasource import Datasource
+from apps.actions.management.digesters._item import ScrappedItem
+from apps.actions.management.digesters.scrappers.arc.arc import ARCScrapper
 from apps.entities.normalization import normalize_club_name
-from apps.races.normalization import normalize_trophy_name
-from apps.actions.digesters._item import ScrappedItem
-from apps.actions.digesters.scrappers.arc.arc import ARCScrapper, ARC_V2
+from apps.participants.normalization import normalize_lap_time
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
 
 
-class ARCScrapperV2(ARCScrapper, version=ARC_V2):
+class ARCScrapperV2(ARCScrapper, version=Datasource.ARCVersions.V2):
+    DATASOURCE = Datasource.ARCVersions.V2
     _excluded_ids = []
+    _client: ARCClient = ARCClient(source=Datasource.ARC)
 
     def scrap(self) -> List[ScrappedItem]:
         if self._year > date.today().year:
             raise StopProcessing
 
-        soup, summary_url = self.get_summary_soup()
+        soup, summary_url = self._client.get_races_summary_soup(year=self._year)
 
         race_ids = self.__get_race_ids(soup)
         if len(race_ids) == 0:
             raise StopProcessing
 
         for race_id, race_name in [(r, n) for (r, n) in race_ids if r not in self._excluded_ids]:
-            details_soup, url = self.get_race_details_soup(race_id, race_name=race_name)
+            details_soup, url = self._client.get_race_details_soup(race_id=race_id, race_name=race_name, is_female=self._is_female)
 
             name = self.get_name(details_soup)
             league = self.get_league(details_soup)
@@ -50,7 +53,7 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
             race_laps = self.get_race_laps(race_summary)
 
             # known hardcoded mappings too specific to be implemented
-            trophy_name, edition, day = self.__hardcoded_mappings(trophy_name, edition, day)
+            trophy_name, edition, day = self._client.normalize('edition', trophy_name, year=self._year, edition=edition, day=day)
 
             tables = details_soup.find_all('table', {'class': 'clasificacion tanda'})
             series = 1
@@ -78,7 +81,7 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
                         participant=self.normalized_club_name(club_name),
                         race_id=race_id,
                         url=url,
-                        datasource=self.DATASOURCE,
+                        datasource=Datasource.ARC,
                         race_laps=race_laps,
                         race_lanes=race_lanes,
                     )
@@ -87,23 +90,6 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
     ####################################################
     #                      GETTERS                     #
     ####################################################
-
-    def get_summary_soup(self) -> Tuple[Tag, str]:
-        female = 'ligaete' if self._is_female else 'liga-arc'
-        url = f"https://www.{female}.com/es/resultados/{self._year}"
-
-        response = requests.get(url=url, headers=self.HEADERS)
-        response.encoding = 'utf-8'
-        return BeautifulSoup(response.text, 'html5lib'), url
-
-    def get_race_details_soup(self, race_id: str, race_name: str = None) -> Tuple[Tag, str]:
-        female = 'ligaete' if self._is_female else 'liga-arc'
-        url = f"https://www.{female}.com/es/regata/{race_id}/{race_name}"
-
-        response = requests.get(url=url, headers=self.HEADERS)
-        response.encoding = 'utf-8'
-        return BeautifulSoup(response.text, 'html5lib'), url
-
     @staticmethod
     def get_name(soup: Tag, **kwargs) -> str:
         return soup.select_one('div[class*="resultado"]').find('h2').text.strip().upper()
@@ -150,26 +136,11 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
 
     def get_laps(self, soup: Tag, **kwargs) -> List[str]:
         times = [e.text for e in soup.find_all('td')[1:] if e.text]
-        times = [t for t in [self.normalize_time(e) for e in times] if t is not None]
+        times = [t for t in [normalize_lap_time(e) for e in times] if t is not None]
         return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
     def normalized_name(self, name: str, **kwargs) -> str:
-        name = name.replace('AYTO', 'AYUNTAMIENTO')
-        name = name.replace('IKURRINA', 'IKURRIÑA')
-        name = name.replace(' AE ', '')
-        name = re.sub(r'EXCMO|ILTMO', '', name)
-        name = whitespaces_clean(name)
-
-        # remove edition
-        edition = int_to_roman(self.get_edition(name))
-        name = ' '.join(n for n in re.sub(r'[\'\".:]', ' ', name).split() if n != edition)
-        # remove day
-        name = re.sub(r'\d+ª día|\(\d+ª? JORNADA\)', '', name)
-
-        name = self.__remove_waste_name_parts(name)
-        name = normalize_trophy_name(name, self._is_female)
-
-        return name
+        return self._client.normalize('race_name', name, is_female=self._is_female)
 
     @staticmethod
     def normalized_club_name(name: str, **kwargs) -> str:
@@ -192,41 +163,6 @@ class ARCScrapperV2(ARCScrapper, version=ARC_V2):
     ####################################################
     #                 PRIVATE METHODS                  #
     ####################################################
-
-    def __hardcoded_mappings(self, name: str, edition: int, day: int) -> Tuple[str, int, int]:
-        if 'AMBILAMP' in name:
-            return 'BANDERA AMBILAMP', edition, day
-        if 'BANDERA DE CASTRO' in name or 'BANDERA CIUDAD DE CASTRO' in name:
-            return 'BANDERA DE CASTRO', edition, day
-        if 'CORREO' in name and 'IKURRIÑA' in name:
-            return 'EL CORREO IKURRIÑA', (self._year - 1986), day
-        if 'DONIBANE ZIBURUKO' in name:
-            return 'DONIBANE ZIBURUKO ESTROPADAK', int(re.findall(r'\d+', name)[0]), 1
-        if 'SAN VICENTE DE LA BARQUERA' in name:
-            return 'BANDERA SAN VICENTE DE LA BARQUERA', edition, day
-
-        match = re.match(r'\d+ª? JORNADA|JORNADA \d+', name)
-        if match:
-            arc = 1 if '1' in name else '2'
-            return f'REGATA LIGA ARC {arc}', edition, int(re.findall(r'\d+', match.group(0))[0])
-
-        if self.is_play_off(name):
-            return 'PLAY-OFF ARC', (self._year - 2005), day
-
-        return name, edition, day
-
-    @staticmethod
-    def __remove_waste_name_parts(name: str) -> str:
-        if '-' not in name:
-            return name
-        part1, part2 = whitespaces_clean(name.split('-')[0]), whitespaces_clean(name.split('-')[1])
-
-        if any(e in part2 for e in ['OMENALDIA', 'MEMORIAL']):  # tributes
-            return part1
-        if any(w in part1 for w in ['BANDERA', 'BANDEIRA', 'IKURRIÑA']):
-            return part1
-
-        return name
 
     @staticmethod
     def __get_race_ids(soup: Tag) -> List[Tuple[int, str]]:
