@@ -1,7 +1,7 @@
 import logging
 from abc import ABC
 
-from digesters.scrappers import Scrapper
+from apps.actions.digesters.scrappers import Scrapper
 
 logger = logging.getLogger(__name__)
 

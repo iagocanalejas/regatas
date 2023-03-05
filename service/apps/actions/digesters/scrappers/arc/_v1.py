@@ -10,8 +10,8 @@ from bs4 import Tag, BeautifulSoup
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
-from digesters._item import ScrappedItem
-from digesters.scrappers.arc.arc import ARCScrapper, ARC_V1
+from apps.actions.digesters._item import ScrappedItem
+from apps.actions.digesters.scrappers.arc.arc import ARCScrapper, ARC_V1
 from utils.choices import GENDER_MALE
 from utils.exceptions import StopProcessing
 

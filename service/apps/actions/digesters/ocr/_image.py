@@ -9,14 +9,15 @@ import numpy as np
 from matplotlib import pyplot as plt
 from pandas import DataFrame
 
+from apps.actions.digesters import Digester
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
-from digesters import Digester
 
 logger = logging.getLogger(__name__)
 
-IMAGE_INFOREMO = 'inforemo'
-IMAGE_KONTXAKO = 'kontxako'
+
+class OCRDatasource:
+    INFOREMO = 'inforemo'
 
 
 class ImageOCR(Digester, ABC):

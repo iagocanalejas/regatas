@@ -3,8 +3,8 @@ import unittest
 
 import responses
 
-from digesters import ScrappedItem
-from digesters.scrappers import ARCScrapper
+from apps.actions.digesters import ScrappedItem
+from apps.actions.digesters.scrappers import ARCScrapper
 from tests.utils import add_html_response
 from utils.choices import RACE_TRAINERA, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 

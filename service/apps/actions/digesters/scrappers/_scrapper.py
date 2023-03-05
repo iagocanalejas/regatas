@@ -7,8 +7,8 @@ from bs4 import Tag
 
 from ai_django.ai_core.utils.strings import find_roman, roman_to_int
 from utils.choices import RACE_TRAINERA, GENDER_FEMALE, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
-from digesters import Digester
-from digesters._item import ScrappedItem
+from apps.actions.digesters import Digester
+from apps.actions.digesters._item import ScrappedItem
 
 logger = logging.getLogger(__name__)
 

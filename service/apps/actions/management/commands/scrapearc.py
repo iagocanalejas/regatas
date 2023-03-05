@@ -4,8 +4,8 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from digesters import ScrappedItem
-from digesters.scrappers import ACTScrapper
+from apps.actions.digesters import ScrappedItem
+from apps.actions.digesters import ARCScrapper
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
@@ -23,23 +23,21 @@ class Command(BaseCommand):
         if not options['year'] and not options['all']:
             raise Exception
 
-        scrapper = ACTScrapper(is_female=options['female'])
         if options['all']:
-            i = 2009 if options['female'] else 2003
+            i = 2018 if options['female'] else 2006
             items: List[ScrappedItem] = []
             while True:
                 try:
-                    items.extend(scrapper.scrap(year=i))
+                    items.extend(ARCScrapper(is_female=options['female'], year=i).scrap())
                 except StopProcessing:
                     break
 
                 i += 1
-                time.sleep(5)
+                time.sleep(2)
 
-            scrapper.save(items)
+            # we can use any scrapper for this
+            ARCScrapper(is_female=options['female'], year=i).save(items)
 
         if options['year']:
-            scrapper.save(
-                list(scrapper.scrap(year=options['year'])),
-                file_name=f'{options["year"]}.csv',
-            )
+            scrapper = ARCScrapper(is_female=options['female'], year=int(options['year']))
+            scrapper.save(list(scrapper.scrap()), file_name=f'{options["year"]}.csv')

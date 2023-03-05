@@ -5,7 +5,7 @@ from abc import abstractmethod, ABC
 from datetime import time, datetime, date
 from typing import Optional, List
 
-from digesters._item import ScrappedItem
+from apps.actions.digesters._item import ScrappedItem
 from utils.checks import is_play_off
 
 logger = logging.getLogger(__name__)

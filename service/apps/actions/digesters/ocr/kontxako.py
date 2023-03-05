@@ -8,16 +8,16 @@ import cv2
 from pandas import DataFrame, Series
 
 from ai_django.ai_core.utils.strings import whitespaces_clean
+from apps.actions.digesters._item import ScrappedItem
+from apps.actions.digesters.ocr._image import ImageOCR
 from apps.entities.normalization import normalize_club_name
-from digesters._item import ScrappedItem
-from digesters.ocr._image import ImageOCR, IMAGE_KONTXAKO
 from utils.synonyms import TIME_TRIAL_SYNONYMS, FEMALE_SYNONYMS, CLASSIFICATION_SYNONYMS
 
 logger = logging.getLogger(__name__)
 
 
-class ImageOCRKontxako(ImageOCR, source=IMAGE_KONTXAKO):
-    DATASOURCE = IMAGE_KONTXAKO
+class ImageOCRKontxako(ImageOCR, source='kontxako'):
+    DATASOURCE = 'kontxako'
 
     def digest(self, path: str, optimize: bool = False) -> List[ScrappedItem]:
         logger.info(f'processing {path}')

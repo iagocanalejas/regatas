@@ -8,10 +8,10 @@ from pandas import Series
 
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
-from apps.races.management.commands.validate import *
+from apps.actions.management.commands.validate import *
 from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
-from digesters import Digester
+from apps.actions.digesters import Digester
 from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
 from utils.exceptions import StopProcessing
 

@@ -4,8 +4,8 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from digesters import ScrappedItem
-from digesters.ocr import ImageOCR
+from apps.actions.digesters import ScrappedItem
+from apps.actions.digesters import ImageOCR
 
 logger = logging.getLogger(__name__)
 
