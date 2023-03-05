@@ -1,6 +1,6 @@
 import logging
 import re
-from datetime import datetime, date
+from datetime import datetime, date, time
 from typing import Tuple, Optional, List
 
 import requests
@@ -68,6 +68,7 @@ class ARCClient(Client, source=Datasource.ARC):
 
         lanes = self.get_number_of_lanes(details_soup)
         race = Race(
+            creation_date=None,
             laps=self.get_number_of_laps(details_soup),
             lanes=lanes,
             town=self.get_town(details_soup),
@@ -85,13 +86,7 @@ class ARCClient(Client, source=Datasource.ARC):
             league=self.get_league(soup, is_female=is_female),
             modality=RACE_TRAINERA,
             organizer=None,
-            metadata={"datasource": [{
-                'race_id': str(race_id),
-                'datasource_name': self.DATASOURCE,
-                "values": [{
-                    "details_page": url
-                }]
-            }]},
+            metadata=Race.MetadataBuilder().race_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build(),
         )
 
         return race, self._find_race_participants(race, results_soup, is_female)
@@ -183,10 +178,10 @@ class ARCClient(Client, source=Datasource.ARC):
         return int(re.findall(r'\d+', soup.find_all('li')[2].text)[1])
 
     @staticmethod
-    def get_laps(soup: Tag) -> List[str]:
+    def get_laps(soup: Tag) -> List[time]:
         times = [e.text for e in soup.find_all('td')[1:] if e.text]
         times = [t for t in [normalize_lap_time(e) for e in times] if t is not None]
-        return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
+        return [t for t in times if t.isoformat() != '00:00:00']
 
     @staticmethod
     def get_number_of_lanes(soup: Tag) -> int:

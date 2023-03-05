@@ -72,6 +72,7 @@ class LGTClient(Client, source=Datasource.LGT):
 
         lanes = self.get_number_of_lanes(results_soup)
         race = Race(
+            creation_date=None,
             laps=self.get_number_of_laps(results_soup),
             lanes=lanes,
             town=self.get_town(details_soup),
@@ -89,13 +90,7 @@ class LGTClient(Client, source=Datasource.LGT):
             league=self.get_league(details_soup, name),
             modality=RACE_TRAINERA,
             organizer=self.get_organizer(details_soup),
-            metadata={"datasource": [{
-                'race_id': str(race_id),
-                'datasource_name': self.DATASOURCE,
-                "values": [{
-                    "details_page": url
-                }]
-            }]},
+            metadata=Race.MetadataBuilder().race_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build(),
         )
 
         return race, self._find_race_participants(race, results_soup, is_female)
@@ -205,9 +200,8 @@ class LGTClient(Client, source=Datasource.LGT):
         return max([int(v.text) for v in values if v != 'BOIA'])
 
     @staticmethod
-    def get_laps(soup: Tag) -> List[str]:
-        times = [t for t in [normalize_lap_time(e.text) for e in soup.find_all('td')[2:] if e] if t is not None]
-        return [t.isoformat() for t in times]
+    def get_laps(soup: Tag) -> List[time]:
+        return [t for t in [normalize_lap_time(e.text) for e in soup.find_all('td')[2:] if e] if t is not None]
 
     @staticmethod
     def is_cancelled(soup: Tag) -> bool:

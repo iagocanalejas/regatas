@@ -6,12 +6,12 @@ from typing import Optional, Dict, Tuple
 import inquirer
 from pandas import Series
 
+from apps.actions.management.commands.validate import *
+from apps.actions.management.digesters import Digester
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
-from apps.actions.management.commands.validate import *
 from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
-from apps.actions.management.digesters import Digester
 from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
 from utils.exceptions import StopProcessing
 
@@ -339,6 +339,12 @@ class Command(BaseCommand, Digester):
                 raise StopProcessing
 
     def _get_race_or_create(self, dfs: DataFrame, row: Series):
+        metadata = Race.MetadataBuilder() \
+            .race_id(row[COLUMN_RACE_ID]) \
+            .datasource_name(row[COLUMN_DATASOURCE])
+        if COLUMN_URL in row and row[COLUMN_URL]:
+            metadata = metadata.values('details_page', row[COLUMN_URL])
+
         race = Race(
             laps=self.get_race_laps(dfs, row),
             lanes=self.get_race_lanes(dfs, row),
@@ -355,17 +361,7 @@ class Command(BaseCommand, Digester):
             league=self.get_league(row),
             modality=self.get_modality(row),
             organizer=self.get_organizer(row),
-            metadata={
-                "datasource": [
-                    {
-                        'race_id': str(row[COLUMN_RACE_ID]),
-                        'datasource_name': row[COLUMN_DATASOURCE],
-                        "values": [{
-                            "details_page": row[COLUMN_URL]
-                        }] if COLUMN_URL in row and row[COLUMN_URL] else []
-                    }
-                ]
-            },
+            metadata=metadata.build(),
         )
         created, db_race = RaceService.get_race_or_create(race)
         if not created:

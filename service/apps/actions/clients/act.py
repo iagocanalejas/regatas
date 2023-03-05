@@ -68,6 +68,7 @@ class ACTClient(Client, source=Datasource.ACT):
             raise ValidationError({'name': f"no matching trophy/flag found for {name=}"})
 
         race = Race(
+            creation_date=None,
             laps=self.get_number_of_laps(series[0]),
             lanes=1 if ttype == RACE_TIME_TRIAL else self.get_lanes(participant_rows),
             town=self.get_town(header),
@@ -85,13 +86,7 @@ class ACTClient(Client, source=Datasource.ACT):
             league=self.get_league(name, is_female),
             modality=RACE_TRAINERA,
             organizer=self.get_organizer(header),
-            metadata={"datasource": [{
-                'race_id': str(race_id),
-                'datasource_name': self.DATASOURCE,
-                "values": [{
-                    "details_page": url
-                }]
-            }]},
+            metadata=Race.MetadataBuilder().race_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build(),
         )
         return race, self._find_race_participants(race, series, is_female=is_female)
 
@@ -201,9 +196,8 @@ class ACTClient(Client, source=Datasource.ACT):
         return len([col for col in series.find('thead').find_all('th') if 'Cia' in col.text]) + 1
 
     @staticmethod
-    def get_laps(participant: Tag) -> List[str]:
-        times = [t for t in [normalize_lap_time(e.text) for e in participant.find_all('td')[2:-1] if e] if t is not None]
-        return [t.isoformat() for t in times]
+    def get_laps(participant: Tag) -> List[datetime.time]:
+        return [t for t in [normalize_lap_time(e.text) for e in participant.find_all('td')[2:-1] if e] if t is not None]
 
     @staticmethod
     def is_cancelled(soup: Tag) -> bool:

@@ -8,7 +8,7 @@ from apps.actions.clients import ACTClient
 from apps.actions.datasource import Datasource
 from apps.entities.models import League
 from apps.races.models import Race, Flag
-from config import settings
+from django.conf import settings
 from tests.utils import add_html_response
 from utils.choices import RACE_CONVENTIONAL, RACE_TRAINERA
 

@@ -36,10 +36,6 @@ class Participant(models.Model):
         club = f'{title} {self.club_name}'.strip() if self.club_name else self.club
         return f'{self.race.date} :: {club} ({self.gender}) ({self.category}) -> {self.race.name}'
 
-    @property
-    def time(self):
-        return self.laps[-1]
-
     def validate_unique(self, exclude=None):
         """
         Validate a club can't participate twice in a race unless it's in different leagues.
