@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import List, Optional, Tuple
 
 import cv2
+import inquirer
 import numpy as np
 from pandas import DataFrame
 from pytesseract import pytesseract
@@ -32,7 +33,11 @@ class ImageOCRInforemo(ImageOCR, source=Datasource.INFOREMO):
         logger.info(f'processing {path}')
 
         self.prepare_image(path)
+
         name, t_date, town = self.parse_header()
+        name = inquirer.text(message='Race name:', default=name)
+        t_date = inquirer.text(message='Race date (YYYY-MM-DD):', default=t_date)
+
         if not name or not t_date:
             logger.error(f'unable to process: {path}')
             return []
