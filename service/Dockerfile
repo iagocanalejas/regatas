@@ -17,9 +17,7 @@ RUN chmod +x /entrypoint.sh
 
 # Install and start redis for Django jobs
 RUN apt-get update \
-    && apt-get install -y redis \
-    && apt-get autoremove -y \
-RUN service redis start
+    && apt-get autoremove -y
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD exec gunicorn config.wsgi:application \

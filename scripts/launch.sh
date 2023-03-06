@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -o errexit
+set -o nounset
+
 DOMAIN=tiempostraineras.com
 CERTBOT_PATH="./docker/certbot"
 

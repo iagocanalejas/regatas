@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -o errexit
+set -o nounset
+
 echo "### Remove old images"
 rm r4l-service
 rm r4l-web
