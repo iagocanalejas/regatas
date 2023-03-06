@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import sentry_sdk
+from celery.schedules import crontab
 from corsheaders.defaults import default_methods
 from environs import Env
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -89,6 +90,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'corsheaders',
     'stdimage',
+    'prettyjson',
     'django_extensions',
     'rest_framework',
     'drf_spectacular',
@@ -229,6 +231,18 @@ else:
     SECURE_HSTS_SECONDS = 31536000  # One year
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    # celery tasks
+    CELERY_BEAT_SCHEDULE = {
+        'get_new_races': {  # crontab() runs the tasks every month
+            'task': 'apps.actions.tasks.get_new_races',
+            'schedule': crontab(minute='0', hour='0', day_of_week='*', day_of_month='1', month_of_year='*'),
+        },
+        'process_tasks': {  # crontab() runs the tasks every monday
+            'task': 'apps.actions.tasks.process_tasks',
+            'schedule': crontab(minute='0', hour='0', day_of_week='1', day_of_month='*', month_of_year='*'),
+        },
+    }
 
     # # SENTRY
     # sentry_logging = LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)

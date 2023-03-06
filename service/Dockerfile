@@ -15,9 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Install and start cron for Django jobs
+# Install and start redis for Django jobs
 RUN apt-get update \
-    && apt-get autoremove -y
+    && apt-get install -y redis \
+    && apt-get autoremove -y \
+RUN service redis start
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD exec gunicorn config.wsgi:application \
