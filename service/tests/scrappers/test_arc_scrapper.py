@@ -3,8 +3,8 @@ import unittest
 
 import responses
 
-from apps.actions.management.digesters import ScrappedItem
-from apps.actions.management.digesters.scrappers import ARCScrapper
+from apps.actions.management.utils import ScrappedItem
+from apps.actions.management.scrappers import ARCScrapper
 from tests.utils import add_html_response
 from utils.choices import RACE_TRAINERA, GENDER_MALE, PARTICIPANT_CATEGORY_ABSOLUT
 
@@ -107,7 +107,7 @@ class ARCScrapperTest(unittest.TestCase):
     @responses.activate
     def test_scrap_arc_v2(self):
         add_html_response("https://www.liga-arc.com/es/resultados/2009", 'arc_v2.html')
-        add_html_response("https://www.liga-arc.com/es/regata/29/xvii-bandera-ria-del-ason", 'arc_v2_details.html')
+        add_html_response("https://www.liga-arc.com/es/regata/29/unknown", 'arc_v2_details.html')
 
         self.assertEqual(
             [
@@ -121,14 +121,14 @@ class ARCScrapperTest(unittest.TestCase):
                     edition=17,
                     day=1,
                     t_date=datetime.date(2009, 8, 22),
-                    club_name='Zumaiako A.E.',
+                    club_name='ZUMAIAKO A.E.',
                     lane=6,
                     series=1,
                     laps=['00:05:48', '00:10:39', '00:16:47', '00:21:37.110000'],
                     trophy_name='BANDERA RIA DEL ASON',
                     participant='ZUMAIAKO A.E.',
                     race_id='29',
-                    url='https://www.liga-arc.com/es/regata/29/xvii-bandera-ria-del-ason',
+                    url='https://www.liga-arc.com/es/regata/29/unknown',
                     datasource='arc',
                     town='COLINDRES',
                     organizer=None,
@@ -147,14 +147,14 @@ class ARCScrapperTest(unittest.TestCase):
                     edition=17,
                     day=1,
                     t_date=datetime.date(2009, 8, 22),
-                    club_name='Santoña Excelente\n                    ',
+                    club_name='SANTOÑA EXCELENTE',
                     lane=3,
                     series=2,
                     laps=['00:05:23', '00:10:18', '00:15:58', '00:20:50.020000'],
                     trophy_name='BANDERA RIA DEL ASON',
                     participant='SANTOÑA EXCELENTE',
                     race_id='29',
-                    url='https://www.liga-arc.com/es/regata/29/xvii-bandera-ria-del-ason',
+                    url='https://www.liga-arc.com/es/regata/29/unknown',
                     datasource='arc',
                     town='COLINDRES',
                     organizer=None,

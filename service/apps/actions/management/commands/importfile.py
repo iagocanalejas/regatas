@@ -1,17 +1,17 @@
 import datetime
 from ast import literal_eval
-from datetime import time, date
+from datetime import time
 from typing import Optional, Dict, Tuple
 
 import inquirer
 from pandas import Series
 
 from apps.actions.management.commands.validate import *
-from apps.actions.management.digesters import Digester
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
 from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
+from utils.checks import is_play_off
 from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
 from utils.exceptions import StopProcessing
 
@@ -22,7 +22,7 @@ _KNOWN_MAPPINGS = {
 }
 
 
-class Command(BaseCommand, Digester):
+class Command(BaseCommand):
     help = 'Import CSV file into the DB'
 
     def add_arguments(self, parser):
@@ -55,7 +55,7 @@ class Command(BaseCommand, Digester):
     #                  DIGEST METHODS                  #
     ####################################################
 
-    def digest(self, dfs: DataFrame, manual: bool = False, **kwargs):
+    def digest(self, dfs: DataFrame, manual: bool = False):
         # create missing trophies/flags
         missing_trophies = dfs.loc[dfs[COMPUTED_TROPHY].isnull() & dfs[COMPUTED_FLAG].isnull()][COLUMN_TROPHY].unique()
         if len(missing_trophies) > 0:
@@ -76,57 +76,8 @@ class Command(BaseCommand, Digester):
             logger.debug(f'processing row {index}')
             self._create_or_update_participant(row)
 
-    def get_name(self, row: Series, **kwargs) -> str:
-        return row[COLUMN_NAME]
-
-    def get_date(self, row: Series, **kwargs) -> date:
-        return row[COLUMN_DATE]
-
     @staticmethod
-    def get_edition(row: Series, **kwargs) -> int:
-        return row[COLUMN_EDITION]
-
-    def get_day(self, row: Series, **kwargs) -> int:
-        return row[COLUMN_DAY]
-
-    def get_modality(self, row: Series, **kwargs) -> str:
-        return row[COLUMN_MODALITY]
-
-    def get_league(self, row: Series, **kwargs) -> Optional[League]:
-        return row[COLUMN_LEAGUE]
-
-    def get_town(self, row: Series, **kwargs) -> Optional[str]:
-        return row[COLUMN_TOWN]
-
-    def get_organizer(self, row: Series, **kwargs) -> Optional[str]:
-        return row[COLUMN_ORGANIZER]
-
-    def get_gender(self, row: Series, **kwargs) -> str:
-        return row[COLUMN_GENDER]
-
-    def get_category(self, row: Series, **kwargs) -> str:
-        return row[COLUMN_CATEGORY]
-
-    def get_club_name(self, row: Series, **kwargs) -> str:
-        return row[COLUMN_CNAME]
-
-    def get_lane(self, row: Series, **kwargs) -> int:
-        return row[COLUMN_LANE]
-
-    def get_series(self, row: Series, **kwargs) -> int:
-        return row[COLUMN_SERIES]
-
-    def get_laps(self, row: Series, **kwargs) -> List[str]:
-        return row[COLUMN_LAPS]
-
-    def get_distance(self, row: Series, **kwargs) -> int:
-        return row[COLUMN_DISTANCE]
-
-    @staticmethod
-    def get_club(row: Series) -> Entity:
-        return row[COMPUTED_PARTICIPANT]
-
-    def get_race_lanes(self, dfs: DataFrame, row: Series, **kwargs) -> int:
+    def get_race_lanes(dfs: DataFrame, row: Series) -> int:
         lanes = row[COLUMN_RACE_LANES]
         if not lanes:
             lanes = dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LANE].max()
@@ -134,7 +85,8 @@ class Command(BaseCommand, Digester):
             logger.warning(f'race found with more than 5 lanes: {row[COLUMN_RACE_ID]}')
         return lanes
 
-    def get_race_laps(self, dfs: DataFrame, row: Series, **kwargs) -> int:
+    @staticmethod
+    def get_race_laps(dfs: DataFrame, row: Series) -> int:
         laps = row[COLUMN_RACE_LAPS]
         if not laps:
             laps = max([len(e) for e in dfs.loc[dfs[COLUMN_RACE_ID] == row[COLUMN_RACE_ID]][COLUMN_LAPS]])
@@ -150,18 +102,8 @@ class Command(BaseCommand, Digester):
         return RACE_TIME_TRIAL if lanes == 1 else RACE_CONVENTIONAL
 
     @staticmethod
-    def is_cancelled(row: Series) -> bool:
-        return row[COLUMN_CANCELLED] if COLUMN_CANCELLED in row else False
-
-    @staticmethod
     def is_disqualified(row: Series) -> bool:
         return row[COLUMN_DISQUALIFIED] if COLUMN_DISQUALIFIED in row else False
-
-    def normalized_name(self, name: str, **kwargs) -> str:
-        raise NotImplementedError
-
-    def normalized_club_name(self, name: str, **kwargs) -> str:
-        raise NotImplementedError
 
     ####################################################
     #                 DATAFRAME METHODS                #
@@ -173,9 +115,7 @@ class Command(BaseCommand, Digester):
         dfs[COLUMN_CLUB] = dfs[COLUMN_CLUB] if COLUMN_CLUB in dfs else dfs[COLUMN_CNAME]
 
         # remove leagues for play-off races
-        dfs[COLUMN_LEAGUE] = dfs.apply(
-            lambda x: self._get_league(x[COLUMN_LEAGUE]) if not self.is_play_off(x[COLUMN_TROPHY]) else None, axis=1
-        )
+        dfs[COLUMN_LEAGUE] = dfs.apply(lambda x: self._get_league(x[COLUMN_LEAGUE]) if not is_play_off(x[COLUMN_TROPHY]) else None, axis=1)
 
         # find already existing data
         dfs[COMPUTED_TROPHY] = dfs.apply(lambda x: self._get_trophy(x[COLUMN_TROPHY]), axis=1)
@@ -348,19 +288,19 @@ class Command(BaseCommand, Digester):
         race = Race(
             laps=self.get_race_laps(dfs, row),
             lanes=self.get_race_lanes(dfs, row),
-            town=self.get_town(row),
+            town=row[COLUMN_TOWN],
             type=self.get_race_type(dfs, row),
-            date=self.get_date(row),
-            day=self.get_day(row),
-            cancelled=self.is_cancelled(row),
-            race_name=self.get_name(row),  # un-normalized race name
+            date=row[COLUMN_DATE],
+            day=row[COLUMN_DAY],
+            cancelled=row[COLUMN_CANCELLED] if COLUMN_CANCELLED in row else False,
+            race_name=row[COLUMN_NAME],  # un-normalized race name
             trophy=row[COMPUTED_TROPHY],
-            trophy_edition=self.get_edition(row) if row[COMPUTED_TROPHY] else None,
+            trophy_edition=row[COLUMN_EDITION] if row[COMPUTED_TROPHY] else None,
             flag=row[COMPUTED_FLAG],
-            flag_edition=self.get_edition(row) if row[COMPUTED_FLAG] else None,
-            league=self.get_league(row),
-            modality=self.get_modality(row),
-            organizer=self.get_organizer(row),
+            flag_edition=row[COLUMN_EDITION] if row[COMPUTED_FLAG] else None,
+            league=row[COLUMN_LEAGUE],
+            modality=row[COLUMN_MODALITY],
+            organizer=row[COLUMN_ORGANIZER],
             metadata=metadata.build(),
         )
         created, db_race = RaceService.get_race_or_create(race)
@@ -376,15 +316,15 @@ class Command(BaseCommand, Digester):
 
     def _create_or_update_participant(self, row: Series):
         participant = Participant(
-            club_name=self.get_club_name(row),  # un-normalized used club name
-            club=self.get_club(row),
+            club_name=row[COLUMN_CNAME],  # un-normalized used club name
+            club=row[COMPUTED_PARTICIPANT],
             race=row[COMPUTED_RACE],
-            distance=self.get_distance(row),
-            laps=self.get_laps(row),
-            lane=self.get_lane(row),
-            series=self.get_series(row),
-            gender=self.get_gender(row),
-            category=self.get_category(row),
+            distance=row[COLUMN_DISTANCE],
+            laps=row[COLUMN_LAPS],
+            lane=row[COLUMN_LANE],
+            series=row[COLUMN_SERIES],
+            gender=row[COLUMN_GENDER],
+            category=row[COLUMN_CATEGORY],
         )
         created, db_participant = ParticipantService.get_participant_or_create(participant, maybe_branch=True)
         if not created:

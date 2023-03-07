@@ -12,8 +12,8 @@ from pytesseract import pytesseract
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, remove_symbols
 from apps.actions.datasource import Datasource
-from apps.actions.management.digesters import ScrappedItem
-from apps.actions.management.digesters.ocr._image import ImageOCR
+from apps.actions.management.utils import ScrappedItem
+from apps.actions.management.ocr._image import ImageOCR
 from apps.participants.normalization import normalize_lap_time
 from utils.choices import RACE_TRAINERA, GENDER_MALE, GENDER_FEMALE, GENDER_MIX, PARTICIPANT_CATEGORY_VETERAN, PARTICIPANT_CATEGORY_ABSOLUT
 

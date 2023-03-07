@@ -10,11 +10,13 @@ from bs4 import BeautifulSoup, Tag
 from ai_django.ai_core.utils.strings import whitespaces_clean, int_to_roman
 from apps.actions.clients import Client
 from apps.actions.datasource import Datasource
-from apps.actions.management.digesters._item import ScrappedItem
-from apps.actions.management.digesters.scrappers.arc.arc import ARCScrapper
+from apps.actions.digesters import SoupDigester
+from apps.actions.management.utils import ScrappedItem
+from apps.actions.management.scrappers.arc.arc import ARCScrapper
 from apps.entities.normalization import normalize_club_name
 from apps.participants.normalization import normalize_lap_time
 from apps.races.normalization import normalize_trophy_name
+from utils.checks import is_play_off
 from utils.choices import GENDER_MALE
 from utils.exceptions import StopProcessing
 
@@ -50,7 +52,7 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
         for group in self._GROUPS:
             soup, summary_url = self.get_races_summary_soup(year=self._year, group=group)
 
-            race_ids = self.__get_race_ids(soup)
+            race_ids = self._get_race_ids(soup)
             if len(race_ids) == 0:
                 continue
 
@@ -66,7 +68,7 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
                 day = self.get_day(name)
 
                 # known hardcoded mappings too specific to be implemented
-                trophy_name, edition, day = self.__hardcoded_mappings(trophy_name, edition, day)
+                trophy_name, edition, day = self._hardcoded_mappings(trophy_name, edition, day)
 
                 details_soup, url = self.get_race_details_soup(race_id=race_id)
                 tables = details_soup.find_all('table', {'class': 'resultados'})
@@ -84,17 +86,17 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
                             t_date=t_date,
                             edition=edition,
                             day=day,
-                            modality=self.get_modality(),
+                            modality=SoupDigester.get_modality(),
                             league=league,
-                            town=self.get_town(),
-                            organizer=self.get_organizer(),
+                            town=None,
+                            organizer=None,
                             gender=self.get_gender(),
-                            category=self.get_category(),
+                            category=SoupDigester.get_category(),
                             club_name=club_name,
                             lane=self.get_lane(row),
                             series=series,
                             laps=self.get_laps(row),
-                            distance=self.get_distance(),
+                            distance=SoupDigester.get_distance(is_female=False),
                             trophy_name=trophy_name,
                             participant=self.normalized_club_name(club_name),
                             race_id=race_id,
@@ -111,32 +113,34 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
     #                      GETTERS                     #
     ####################################################
     @staticmethod
-    def get_name(soup: Tag, race_id: str = None, **kwargs) -> str:
+    def get_name(soup: Tag, race_id: str = None) -> str:
         rows = [row.find('a') for row in soup.find_all('div', {'class': 'listado_regatas_nombre'})]
         return whitespaces_clean([row for row in rows if row['href'].split('=')[-1] == race_id][-1].text).upper()
 
     @staticmethod
-    def get_date(soup: Tag, race_id: str = None, **kwargs) -> date:
+    def get_date(soup: Tag, race_id: str = None) -> date:
         rows = [row.find('a') for row in soup.find_all('div', {'class': 'listado_regatas_nombre'})]
         row = [row for row in rows if row['href'].split('=')[-1] == race_id][-1]
         return datetime.strptime(row.previous_element.find_previous_sibling('div').text.strip(), '%d-%m-%Y').date()
 
-    def get_edition(self, name: str, **kwargs) -> int:
+    @staticmethod
+    def get_edition(name: str) -> int:
         edition = Client.get_edition(name)
-        if edition != 1 or self.is_play_off(name) or 'ORDENACION GRUPOS' in name:  # already valid edition
+        if edition != 1 or is_play_off(name) or 'ORDENACION GRUPOS' in name:  # already valid edition
             return edition
         if name[0].isdigit():
             return int(name[0])
         return 1
 
-    def get_day(self, name: str, **kwargs) -> int:
-        if self.is_play_off(name) or 'ORDENACION GRUPOS' in name:  # exception case
+    @staticmethod
+    def get_day(name: str) -> int:
+        if is_play_off(name) or 'ORDENACION GRUPOS' in name:  # exception case
             return 1 if 'PRIMER' in name or name[0] == '1' else 2
         matches = re.findall(r'\(?(\dJ|J\d)\)?', name)
         return int(re.findall(r'\d+', matches[0])[0].strip()) if matches else 1
 
     @staticmethod
-    def get_league(group: str, **kwargs) -> Optional[str]:
+    def get_league(group: str) -> Optional[str]:
         if group == 'playoffact':
             return 'ASOCIACIÓN DE CLUBES DE TRAINERAS'
         elif group == 'playoff':
@@ -148,20 +152,16 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
         else:
             return None
 
-    def get_town(self, **kwargs) -> Optional[str]:
-        return None
-
-    def get_organizer(self, **kwargs) -> Optional[str]:
-        return None
-
-    def get_gender(self, **kwargs) -> str:
+    @staticmethod
+    def get_gender() -> str:
         return GENDER_MALE  # no female races previous 2009
 
     @staticmethod
-    def get_club_name(soup: Tag, **kwargs) -> str:
+    def get_club_name(soup: Tag) -> str:
         return soup.find_all('td')[1].text.strip().upper()
 
-    def get_laps(self, soup: Tag, **kwargs) -> List[str]:
+    @staticmethod
+    def get_laps(soup: Tag) -> List[str]:
         times = [e.text for e in soup.find_all('td')[2:-1] if e.text]
         times = ['21:53.20' if t == '21:63.20' else t for t in times]  # page error
         times = ['17:08,00' if t == '147:08,00' else t for t in times]  # page error
@@ -170,7 +170,7 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
         return [t.isoformat() for t in times if t.isoformat() != '00:00:00']
 
     @staticmethod
-    def get_lane(soup: Tag, **kwargs) -> int:
+    def get_lane(soup: Tag) -> int:
         return int(soup.find_all('td')[0].text.strip())
 
     def normalized_name(self, name: str, **kwargs) -> str:
@@ -192,20 +192,11 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
     def normalized_club_name(name: str, **kwargs) -> str:
         return normalize_club_name(name)
 
-    def get_series(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
-    def get_race_lanes(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
-    def get_race_laps(self, soup: Tag, **kwargs) -> int:
-        raise NotImplementedError
-
     ####################################################
     #                 PRIVATE METHODS                  #
     ####################################################
 
-    def __hardcoded_mappings(self, name: str, edition: int, day: int) -> Tuple[str, int, int]:
+    def _hardcoded_mappings(self, name: str, edition: int, day: int) -> Tuple[str, int, int]:
         if 'DONIBANE ZIBURUKO' in name:
             return 'DONIBANE ZIBURUKO ESTROPADAK', int(re.findall(r'\d+', name)[0]), 1
         if 'AMBILAMP' in name:
@@ -218,14 +209,14 @@ class ARCScrapperV1(ARCScrapper, version=Datasource.ARCVersions.V1):
         if name == 'IKURRIÑA ILTMO AYTO DE SANTURTZI':
             return 'IKURRIÑA DE SANTURTZI', edition, day
 
-        if self.is_play_off(name):
+        if is_play_off(name):
             if any(e in name for e in ['ACT', 'SAN MIGUEL']):
                 return 'PREVIO PLAY-OFF ACT (ARC - ALN)', (self._year - 2005), day
             return 'PLAY-OFF ARC', (self._year - 2005), day
         return name, edition, day
 
     @staticmethod
-    def __get_race_ids(soup: Tag) -> List[str]:
+    def _get_race_ids(soup: Tag) -> List[str]:
         if not soup.find('div', {'class': 'listado_regatas_nombre'}):
             logger.error(f'not races found')
             return []

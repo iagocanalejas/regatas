@@ -4,8 +4,8 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from apps.actions.management.digesters import ScrappedItem
-from apps.actions.management.digesters.scrappers import ACTScrapper
+from apps.actions.management.utils import ScrappedItem, save_scrapped_items
+from apps.actions.management.scrappers import ACTScrapper
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
@@ -36,10 +36,10 @@ class Command(BaseCommand):
                 i += 1
                 time.sleep(5)
 
-            scrapper.save(items)
+            save_scrapped_items(items, file_name=scrapper.DATASOURCE)
 
         if options['year']:
-            scrapper.save(
+            save_scrapped_items(
                 list(scrapper.scrap(year=options['year'])),
                 file_name=f'{options["year"]}.csv',
             )

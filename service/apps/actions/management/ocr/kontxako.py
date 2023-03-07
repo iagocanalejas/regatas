@@ -8,8 +8,8 @@ import cv2
 from pandas import DataFrame, Series
 
 from ai_django.ai_core.utils.strings import whitespaces_clean
-from apps.actions.management.digesters._item import ScrappedItem
-from apps.actions.management.digesters.ocr._image import ImageOCR
+from apps.actions.management.utils import ScrappedItem
+from apps.actions.management.ocr._image import ImageOCR
 from apps.entities.normalization import normalize_club_name
 from apps.participants.normalization import normalize_lap_time
 from utils.synonyms import TIME_TRIAL_SYNONYMS, FEMALE_SYNONYMS, CLASSIFICATION_SYNONYMS

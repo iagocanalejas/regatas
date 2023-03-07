@@ -74,7 +74,7 @@ class ProcessNewRacesTest(TestCase):
                 },
                 'participants': [
                     {
-                        'lane': '3',
+                        'lane': 3,
                         'laps': ['00:05:03', '00:09:57', '00:15:20', '00:20:09.900000'],
                         'gender': 'MALE',
                         'series': 1,
@@ -83,7 +83,7 @@ class ProcessNewRacesTest(TestCase):
                         'distance': 5556,
                         'club_name': 'GETARIA'
                     }, {
-                        'lane': '4',
+                        'lane': 4,
                         'laps': ['00:05:05', '00:09:59', '00:15:26', '00:20:20.980000'],
                         'gender': 'MALE',
                         'series': 2,
@@ -92,14 +92,14 @@ class ProcessNewRacesTest(TestCase):
                         'distance': 5556,
                         'club_name': 'ZIERBENA BAHIAS DE BIZKAIA'
                     }, {
-                        'lane': '2',
+                        'lane': 2,
                         'laps': ['00:04:57', '00:09:44', '00:15:05', '00:19:54.520000'],
                         'gender': 'MALE',
                         'series': 3,
                         'club_id': 42,
                         'category': 'ABSOLUT',
                         'distance': 5556,
-                        'club_name': 'Matrix Hondarribia'
+                        'club_name': 'MATRIX HONDARRIBIA'
                     }
                 ]
             }

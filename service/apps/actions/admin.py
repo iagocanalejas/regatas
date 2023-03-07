@@ -19,9 +19,7 @@ logger = logging.getLogger(__name__)
 class TaskAdmin(StampedModelAdmin):
     change_form_template = os.path.join(settings.TEMPLATES_ROOT, 'admin', 'task_changeform.html')
 
-    formfield_overrides = {
-        JSONField: {'widget': PrettyJSONWidget(attrs={'initial': 'parsed'})}
-    }
+    formfield_overrides = {JSONField: {'widget': PrettyJSONWidget(attrs={'initial': 'parsed'})}}
 
     def response_change(self, request, task: Task):
         if "_cancel-task" in request.POST:

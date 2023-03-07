@@ -6,6 +6,7 @@ from typing import Optional, Tuple, List
 from bs4 import Tag
 
 from ai_django.ai_core.utils.strings import roman_to_int, find_roman
+from apps.actions.digesters import SoupDigester
 from apps.entities.models import Entity
 from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService
@@ -76,13 +77,23 @@ class Client(ABC):
     def get_ids_by_season(self, season: int = None, is_female: bool = False, **kwargs) -> List[str]:
         raise NotImplementedError
 
-    @abstractmethod
-    def normalize(self, field: str, value: str, **kwargs):
-        raise NotImplementedError
-
     ####################################################
     #                PROTECTED METHODS                 #
     ####################################################
+    def _find_race_participants(self, digester: SoupDigester, race: Race, is_female: bool) -> List[Participant]:
+        for participant in digester.get_participants():
+            club_name = digester.get_club_name(participant)
+            yield Participant(
+                race=race,
+                club_name=club_name,
+                club=self._find_club(club_name),
+                distance=digester.get_distance(is_female=is_female),
+                laps=digester.get_laps(participant),
+                lane=digester.get_lane(participant),
+                series=digester.get_series(participant),
+                gender=digester.get_gender(is_female=is_female),
+                category=digester.get_category(),
+            )
 
     @staticmethod
     def _find_race_in_db(race_id: str, datasource: str) -> Optional[Race]:
@@ -126,4 +137,15 @@ class Client(ABC):
             return found_club
         except Entity.DoesNotExist:
             logger.error(f'no matching club found for {name=}')
+            return None
+
+    @staticmethod
+    def _find_organizer(name: str) -> Optional[Entity]:
+        if not name:
+            return None
+        try:
+            found_organizer = EntityService.get_closest_by_name_type(name, entity_type=None)
+            logger.info(f'found {found_organizer=}')
+            return found_organizer
+        except Entity.DoesNotExist:
             return None

@@ -1,7 +1,7 @@
 from abc import ABC
 
 from apps.actions.datasource import Datasource
-from apps.actions.management.digesters.scrappers import Scrapper
+from apps.actions.management.scrappers import Scrapper
 
 
 class ARCScrapper(Scrapper, ABC):

@@ -4,8 +4,8 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from apps.actions.management.digesters import ScrappedItem
-from apps.actions.management.digesters.scrappers import ARCScrapper
+from apps.actions.management.utils import ScrappedItem, save_scrapped_items
+from apps.actions.management.scrappers import ARCScrapper
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
@@ -35,9 +35,8 @@ class Command(BaseCommand):
                 i += 1
                 time.sleep(2)
 
-            # we can use any scrapper for this
-            ARCScrapper(is_female=options['female'], year=i).save(items)
+            save_scrapped_items(items, file_name=ARCScrapper.DATASOURCE)
 
         if options['year']:
             scrapper = ARCScrapper(is_female=options['female'], year=int(options['year']))
-            scrapper.save(list(scrapper.scrap()), file_name=f'{options["year"]}.csv')
+            save_scrapped_items(list(scrapper.scrap()), file_name=f'{options["year"]}.csv')

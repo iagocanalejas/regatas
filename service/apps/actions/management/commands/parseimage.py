@@ -4,8 +4,8 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from apps.actions.management.digesters import ScrappedItem
-from apps.actions.management.digesters.ocr import ImageOCR
+from apps.actions.management.utils import ScrappedItem, save_scrapped_items
+from apps.actions.management.ocr import ImageOCR
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class Command(BaseCommand):
         for file in self._path_files(options['path']):
             items.extend(scrapper.digest(path=file))
 
-        scrapper.save(items)
+        save_scrapped_items(items, file_name=scrapper.DATASOURCE)
 
     @staticmethod
     def _valid_file(file: str) -> bool:

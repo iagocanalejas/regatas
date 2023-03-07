@@ -9,14 +9,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 from pandas import DataFrame
 
-from apps.actions.management.digesters import Digester
 from apps.entities.normalization import normalize_club_name
 from apps.races.normalization import normalize_trophy_name
 
 logger = logging.getLogger(__name__)
 
 
-class ImageOCR(Digester, ABC):
+class ImageOCR(ABC):
+    DATASOURCE: str
     _registry = {}
 
     img: str  # grayscale loaded image

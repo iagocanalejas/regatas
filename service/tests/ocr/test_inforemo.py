@@ -6,8 +6,8 @@ import unittest
 from django.conf import settings
 
 from apps.actions.datasource import Datasource
-from apps.actions.management.digesters import ScrappedItem
-from apps.actions.management.digesters.ocr.inforemo import ImageOCRInforemo
+from apps.actions.management.utils import ScrappedItem
+from apps.actions.management.ocr import ImageOCRInforemo
 from utils.choices import GENDER_FEMALE, RACE_TRAINERA, PARTICIPANT_CATEGORY_ABSOLUT, GENDER_MALE, PARTICIPANT_CATEGORY_VETERAN
 
 
