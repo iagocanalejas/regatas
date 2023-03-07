@@ -113,10 +113,3 @@ python manage.py dumpdata > <name>.yaml --format yaml --exclude admin.logentry -
 ```sh
 docker-compose up -f docker-compose.dev.yml
 ```
-
-# Notes:
-```
-// race with disqualified participant = 33
-// race with missing laps = 848
-// races without participation = [686, 752, 756, 759, 758, 764, 766, 772, 774, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 790, 791, 793, 828]
-```

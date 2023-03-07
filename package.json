@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "install": "lerna bootstrap",
     "publish": "lerna version --conventional-commits"
   },
   "devDependencies": {
-    "lerna": "6.4.1"
+    "lerna": "~6.5.1"
   }
 }
