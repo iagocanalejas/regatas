@@ -74,7 +74,7 @@ def _get_closest_by_name(_model: Type[T], name: str) -> T:
 
     closest, threshold = closest_result(name, [m for _, m in matches]) if matches else (None, 0)
     if not closest or threshold < 0.85:
-        raise _model.DoesNotExist
+        raise _model.DoesNotExist(f'{_model.__name__} with {name=}')
 
     # retrieve the un-flag name
     closest = [k for k, m in matches if m == closest][0]

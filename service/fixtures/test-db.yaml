@@ -1387,3 +1387,28 @@
         - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
         race_id: '158'
         datasource_name: arc
+- model: races.race
+  pk: 4
+  fields:
+    creation_date: 2023-02-11 13:11:17.831402+00:00
+    laps: 2
+    lanes: 1
+    town: BOIRO
+    type: TIME_TRIAL
+    date: 2023-02-05
+    day: 1
+    cancelled: false
+    cancellation_reasons: '[]'
+    race_name: CONTRARRELOXO DE TRAIÑEIRAS CABO DA CRUZ
+    sponsor: null
+    trophy_edition: null
+    trophy: null
+    flag_edition: 20
+    flag: 133
+    league: null
+    modality: TRAINERA
+    organizer: null
+    metadata:
+      datasource:
+      - race_id: cabo.jpg
+        datasource_name: inforemo

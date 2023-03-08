@@ -1,7 +1,7 @@
 import logging
 from typing import List, Tuple
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 
 from apps.participants.models import Participant
 from utils.checks import is_branch_club
@@ -24,12 +24,8 @@ def get_participant_or_create(participant: Participant, maybe_branch: bool = Fal
         category=participant.category,
     )
 
-    # filter for B and C branch teams
     if maybe_branch:
-        if is_branch_club(participant.club_name):
-            q = q.filter(club_name__endswith=' B')
-        if is_branch_club(participant.club_name, letter='C'):
-            q = q.filter(club_name__endswith=' C')
+        q = _add_branch_filters(q, participant)
 
     try:
         # check for multiple results and get the non-branch club
@@ -40,3 +36,13 @@ def get_participant_or_create(participant: Participant, maybe_branch: bool = Fal
 
         logger.info(f'created:: {participant}')
         return True, participant
+
+
+def _add_branch_filters(q: QuerySet, participant: Participant) -> QuerySet:
+    if not is_branch_club(participant.club_name) and not is_branch_club(participant.club_name, letter='C'):
+        return q.exclude(Q(club_name__endswith=' B') | Q(club_name__endswith=' C'))
+
+    if is_branch_club(participant.club_name):
+        return q.filter(club_name__endswith=' B')
+    if is_branch_club(participant.club_name, letter='C'):
+        return q.filter(club_name__endswith=' C')
