@@ -7,11 +7,17 @@ RACE_METADATA_SCHEMA = {
             'items': {
                 'type': 'object',
                 'properties': {
-                    'race_id': {'type': 'string'},
-                    'datasource_name': {'type': 'string'},
+                    'race_id': {
+                        'type': 'string'
+                    },
+                    'datasource_name': {
+                        'type': 'string'
+                    },
                     'values': {
                         'type': 'object',
-                        'additionalProperties': {'type': 'string'}
+                        'additionalProperties': {
+                            'type': 'string'
+                        }
                     }
                 },
                 'additionalProperties': False,

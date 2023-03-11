@@ -31,10 +31,11 @@ class Participant(models.Model):
     gender = models.CharField(default=GENDER_MALE, max_length=10, choices=GENDER_CHOICES)
     category = models.CharField(default=PARTICIPANT_CATEGORY_ABSOLUT, max_length=10, choices=PARTICIPANT_CATEGORIES_CHOICES)
 
-    def __str__(self):
-        title = f'{self.club.title.name}' if self.club.title else ''
-        club = f'{title} {self.club_name}'.strip() if self.club_name else self.club
-        return f'{self.race.date} :: {club} ({self.gender}) ({self.category}) -> {self.race.name}'
+    # TODO: avoid queries in the __str__ methods
+    # def __str__(self):
+    #     title = f'{self.club.title.name}' if self.club.title else ''
+    #     club = f'{title} {self.club_name}'.strip() if self.club_name else self.club
+    #     return f'{self.race.date} :: {club} ({self.gender}) ({self.category}) -> {self.race.name}'
 
     def validate_unique(self, exclude=None):
         """

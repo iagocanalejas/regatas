@@ -1,11 +1,16 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from utils.choices import ENTITY_CLUB, ENTITY_LEAGUE, ENTITY_FEDERATION, ENTITY_PRIVATE
-from apps.entities.serializers import LeagueSerializer, ClubSerializer, OrganizerSerializer, EntitySerializer
+from apps.entities.serializers import ParticipationSerializer
 from apps.entities.services import LeagueService, EntityService
+from apps.participants.models import Participant
+from apps.participants.services import ParticipantService
+from apps.serializers import LeagueSerializer, ClubSerializer, OrganizerSerializer, EntitySerializer
+from utils.choices import ENTITY_CLUB, ENTITY_LEAGUE, ENTITY_FEDERATION, ENTITY_PRIVATE
 
 
 class LeaguesView(APIView):
@@ -62,3 +67,35 @@ class OrganizersView(APIView):
             },
             status=status.HTTP_200_OK
         )
+
+
+class ClubRacesView(GenericAPIView):
+    """
+    get:
+    Return an active club races
+    """
+    queryset = Participant.objects
+    serializer_class = ParticipationSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name='trophy', description='Filter by trophy', required=False, type=int),
+            OpenApiParameter(name='flag', description='Filter by flag', required=False, type=int),
+            OpenApiParameter(name='league', description='Filter by league', required=False, type=int),
+            OpenApiParameter(name='year', description='Filter by year', required=False, type=int),
+            OpenApiParameter(name='keywords', description='Filter by trophy, flag, league, sponsor, town', required=False, type=str),
+        ],
+        responses={
+            200: ParticipationSerializer(many=True),
+            400: OpenApiTypes.OBJECT,
+        }
+    )
+    def get(self, request, club_id: int):
+        queryset = self.get_queryset().filter(club_id=club_id)
+        races = ParticipantService.get_filtered(
+            queryset,
+            request.query_params,
+            related=['race__trophy', 'race__flag', 'race__league', 'race__organizer__title'],
+            prefetch=['race__participants']
+        )
+        return Response(ParticipationSerializer(races, many=True).data, status=status.HTTP_200_OK)

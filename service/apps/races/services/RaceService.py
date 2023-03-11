@@ -1,10 +1,11 @@
 import logging
 from typing import List, Tuple
 
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
 from rest_framework.generics import get_object_or_404
 
 from ai_django.ai_core.utils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
+from apps.races.filters import build_base_filters, build_keyword_filter
 from apps.races.models import Race
 
 logger = logging.getLogger(__name__)
@@ -18,26 +19,14 @@ def get_by_id(race_id: int, related: List[str] = None, prefetch: List[str] = Non
 
 
 def get_filtered(queryset: QuerySet[Race], filters: dict, related: List[str] = None, prefetch: List[str] = None) -> QuerySet[Race]:
-    if 'year' in filters:
-        queryset = queryset.filter(date__year=filters['year'])
-    if 'trophy' in filters:
-        queryset = queryset.filter(trophy=filters['trophy'])
-    if 'flag' in filters:
-        queryset = queryset.filter(flag=filters['flag'])
-    if 'league' in filters:
-        queryset = queryset.filter(league=filters['league'])
-    if 'participant_club' in filters:
-        queryset = queryset.filter(participant__club=filters['participant_club'])
+    queryset = queryset.filter(**build_base_filters(filters))
+    if 'participant' in filters:
+        queryset = queryset.filter(participant__club_id=filters['participant'])
     if 'metadata' in filters:
         queryset = queryset.filter(metadata__datasource__contains=filters['metadata'])
     if 'keywords' in filters:
         keywords = whitespaces_clean(remove_conjunctions(remove_symbols(filters['keywords'])))
-        queryset = queryset.filter(
-            Q(trophy__isnull=False, trophy__name__unaccent__icontains=keywords)
-            | Q(flag__isnull=False, flag__name__unaccent__icontains=keywords)
-            | Q(league__isnull=False, league__name__unaccent__icontains=keywords)
-            | Q(sponsor__isnull=False, sponsor__unaccent__icontains=keywords) | Q(town__isnull=False, town__unaccent__icontains=keywords)
-        )
+        queryset = queryset.filter(build_keyword_filter(keywords))
 
     queryset = queryset.order_by('date')
 

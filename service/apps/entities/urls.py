@@ -9,5 +9,6 @@ app_name = EntitiesConfig.name
 urlpatterns = [
     path('', views.ClubsView().as_view(), name='clubs'),
     path('<int:club_id>/', views.ClubView().as_view(), name='clubs'),
+    path('<int:club_id>/races/', views.ClubRacesView().as_view(), name='club-races'),
 ]
 # @formatter:on

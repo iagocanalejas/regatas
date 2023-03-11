@@ -2,79 +2,9 @@ from typing import Optional
 
 from rest_framework import serializers
 
-from apps.entities.models import League, Entity
-from utils.choices import ENTITY_CLUB
-from apps.entities.serializers import LeagueSerializer, EntitySerializer, ClubSerializer
-from apps.participants.models import Participant, Penalty
-from apps.races.models import Trophy, Flag, Race
-
-
-class RaceParamsSerializer(serializers.Serializer):
-    trophy = serializers.PrimaryKeyRelatedField(queryset=Trophy.objects, required=False, allow_null=True)
-    flag = serializers.PrimaryKeyRelatedField(queryset=Flag.objects, required=False, allow_null=True)
-    league = serializers.PrimaryKeyRelatedField(queryset=League.objects, required=False, allow_null=True)
-    participant_club = serializers.PrimaryKeyRelatedField(queryset=Entity.objects.filter(type=ENTITY_CLUB), required=False)
-
-    year = serializers.IntegerField(required=False, allow_null=False)
-    keywords = serializers.CharField(required=False, allow_null=False)
-
-    def update(self, instance, validated_data):  # pragma: no cover
-        raise NotImplementedError
-
-    def create(self, validated_data):  # pragma: no cover
-        raise NotImplementedError
-
-
-class TrophySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Trophy
-        fields = (
-            'id',
-            'name',
-        )
-        ordering = ('name',)
-
-
-class FlagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Flag
-        fields = (
-            'id',
-            'name',
-        )
-        ordering = ('name',)
-
-
-class SimpleRaceSerializer(serializers.ModelSerializer):
-    trophy = TrophySerializer()
-    flag = FlagSerializer()
-    league = LeagueSerializer(allow_null=True)
-    gender = serializers.SerializerMethodField()
-
-    @staticmethod
-    def get_gender(race: Race) -> Optional[str]:
-        if race.league:
-            return race.league.gender
-        genders = list({p.gender for p in list(race.participants.all())})
-        return genders[0] if len(genders) == 1 else None
-
-    class Meta:
-        model = Race
-        fields = (
-            'id',
-            'type',
-            'modality',
-            'gender',
-            'day',
-            'date',
-            'cancelled',
-            'trophy',
-            'trophy_edition',
-            'flag',
-            'flag_edition',
-            'league',
-            'sponsor',
-        )
+from apps.participants.models import Penalty, Participant
+from apps.races.models import Race
+from apps.serializers import SimpleRaceSerializer, EntitySerializer, SimpleParticipantSerializer, ClubSerializer
 
 
 class RaceDetailsSerializer(SimpleRaceSerializer):
@@ -91,7 +21,7 @@ class RaceDetailsSerializer(SimpleRaceSerializer):
         return max(series) if series else None
 
     class Meta(SimpleRaceSerializer.Meta):
-        fields = SimpleRaceSerializer.Meta.fields + ('laps', 'lanes', 'series', 'town', 'organizer')
+        fields = SimpleRaceSerializer.Meta.fields + ('series', 'town', 'organizer')
 
 
 class PenaltySerializer(serializers.ModelSerializer):
@@ -100,7 +30,7 @@ class PenaltySerializer(serializers.ModelSerializer):
         fields = ('penalty', 'disqualification', 'reason')
 
 
-class RaceParticipantSerializer(serializers.ModelSerializer):
+class ParticipantSerializer(SimpleParticipantSerializer):
     club = ClubSerializer()
     penalties = PenaltySerializer(many=True)
     disqualified = serializers.SerializerMethodField()
@@ -108,14 +38,16 @@ class RaceParticipantSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_disqualified(participant: Participant) -> bool:
-        return participant.penalties.filter(disqualification=True).exists()
+        return any(p.disqualification for p in participant.penalties.all())
 
     @staticmethod
     def get_club_name(participant: Participant) -> Optional[str]:
-        extra = [e for e in ['B', 'C', 'D'] if e in participant.club_name.split()]
-        extra = ''.join(e for e in extra) if extra else None
+        extra = None
+        if participant.club_name:
+            extra = [e for e in ['B', 'C', 'D'] if e in participant.club_name.split()]
+            extra = ''.join(e for e in extra) if extra else None
         return f'{participant.club} "{extra}"' if extra else None
 
-    class Meta:
+    class Meta(SimpleParticipantSerializer.Meta):
         model = Participant
-        fields = ('id', 'club', 'laps', 'lane', 'series', 'disqualified', 'penalties', 'club_name', 'gender', 'category', 'distance')
+        fields = SimpleParticipantSerializer.Meta.fields + ('club', 'disqualified', 'penalties', 'club_name')

@@ -1,9 +1,9 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from apps.entities.serializers import LeagueSerializer, EntitySerializer, ClubSerializer
 from apps.participants.models import Participant
 from apps.races.models import Race
-from apps.races.serializers import TrophySerializer, FlagSerializer
+from apps.serializers import TrophySerializer, FlagSerializer, LeagueSerializer, EntitySerializer, ClubSerializer
 
 
 class ScrapActionSerializer(serializers.Serializer):
@@ -33,6 +33,7 @@ class ScrappedRaceSerializer(serializers.ModelSerializer):
     organizer = EntitySerializer(allow_null=True)
     participants = serializers.SerializerMethodField()
 
+    @extend_schema_field(ScrappedParticipantSerializer)
     def get_participants(self, _):
         return ScrappedParticipantSerializer(self.context.get('participants', []), many=True).data
 
@@ -48,9 +49,11 @@ class ActionScrapSerializer(serializers.Serializer):
     db_race = serializers.SerializerMethodField()
     web_race = serializers.SerializerMethodField()
 
+    @extend_schema_field(ScrappedRaceSerializer)
     def get_db_race(self, value):
         return ScrappedRaceSerializer(value.get('db_race'), context={'participants': self.context.get('db_participants', [])}).data
 
+    @extend_schema_field(ScrappedRaceSerializer)
     def get_web_race(self, value):
         return ScrappedRaceSerializer(value.get('web_race'), context={'participants': self.context.get('web_participants', [])}).data
 

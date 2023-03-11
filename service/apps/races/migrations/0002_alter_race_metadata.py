@@ -35,14 +35,42 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='race',
             name='metadata',
-            field=models.JSONField(default=apps.races.schemas.default_race_metadata, validators=[
-                ai_django.ai_core.validators.schema.JSONSchemaValidator(
-                    schema={'$schema': 'http://json-schema.org/schema#', 'name': 'RaceMetadata', 'properties': {'datasource': {
-                        'items': {'additionalProperties': False,
-                                  'properties': {'datasource_name': {'type': 'string'}, 'race_id': {'type': 'string'},
-                                                 'values': {'additionalProperties': {'type': 'string'}, 'type': 'object'}},
-                                  'required': ['datasource_name', 'values'], 'type': 'object'}, 'type': 'array'}},
-                            'required': ['datasource']})]),
+            field=models.JSONField(
+                default=apps.races.schemas.default_race_metadata,
+                validators=[
+                    ai_django.ai_core.validators.schema.JSONSchemaValidator(
+                        schema={
+                            '$schema': 'http://json-schema.org/schema#',
+                            'name': 'RaceMetadata',
+                            'properties': {
+                                'datasource': {
+                                    'items': {
+                                        'additionalProperties': False,
+                                        'properties': {
+                                            'datasource_name': {
+                                                'type': 'string'
+                                            },
+                                            'race_id': {
+                                                'type': 'string'
+                                            },
+                                            'values': {
+                                                'additionalProperties': {
+                                                    'type': 'string'
+                                                },
+                                                'type': 'object'
+                                            }
+                                        },
+                                        'required': ['datasource_name', 'values'],
+                                        'type': 'object'
+                                    },
+                                    'type': 'array'
+                                }
+                            },
+                            'required': ['datasource']
+                        }
+                    )
+                ]
+            ),
         ),
         migrations.RunPython(update_metadata, reverse_code=migrations.RunPython.noop),
     ]
