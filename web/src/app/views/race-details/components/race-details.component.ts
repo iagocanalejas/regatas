@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from "@ngrx/store";
 import { State } from "src/app/reducers";
-import { compareParticipantTimes, Gender, Participant, ParticipantCategory, Race, RaceDetail, readableCategoryGender } from "src/types";
+import { Gender, Participant, ParticipantCategory, ParticipantUtils, Race, RaceDetail, StringTypeUtils } from "src/types";
 import { Observable } from "rxjs";
 import { selectRace } from "../reducers";
 import * as RaceDetailsActions from "../reducers/race-details.actions";
@@ -60,7 +60,7 @@ export class RaceDetailsComponent implements OnInit {
   }
 
   participants(participants: Participant[]): Participant[] {
-    return [...participants].sort((p1, p2) => compareParticipantTimes(p1, p2));
+    return [...participants].sort((p1, p2) => ParticipantUtils.compareTimes(p1, p2));
   }
 
   participantsBySeries(participants: Participant[], series: number): Participant[] {
@@ -70,7 +70,7 @@ export class RaceDetailsComponent implements OnInit {
 
   participantsByCategory(participants: Participant[], [category, gender]: [ParticipantCategory, Gender | null]): Participant[] {
     return participants.filter(x => x.category === category && (!gender || x.gender === gender))
-      .sort((p1, p2) => compareParticipantTimes(p1, p2));
+      .sort((p1, p2) => ParticipantUtils.compareTimes(p1, p2));
   }
 
   participantsWithPenalties(participants: Participant[]): Participant[] {
@@ -86,5 +86,5 @@ export class RaceDetailsComponent implements OnInit {
     return value ? `Tanda ${value}` : 'Tiempos'
   }
 
-  readableCategoryGender = readableCategoryGender
+  readableCategoryGender = StringTypeUtils.categoryGender
 }

@@ -1,4 +1,4 @@
-export interface Trophy {
+export type Trophy = {
   id: number;
   name: string;
 }

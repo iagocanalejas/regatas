@@ -22,7 +22,7 @@
       <td>{{ p.race.date }}</td>
       <td class="text-nowrap">{{ p.race.league?.symbol || '' }}</td>
       <td>{{ readableCategoryGender([p.category, p.gender]) }}</td>
-      <td><i class="material-icons">{{ p.race.type === 'TIME_TRIAL' ? 'schedule' : 'more_vert' }}</i></td>
+      <td><i class="material-icons" [ngbTooltip]="readableRaceType(p.race.type)">{{ raceTypeIcon(p.race) }}</i></td>
       <td class="text-end">{{ p.race.name }}</td>
       <td>{{ p.distance }}</td>
       <td>{{ p.time }}</td>

@@ -1,6 +1,6 @@
 import { Gender } from "./types";
 
-export interface League {
+export type League = {
   id: number;
   name: string;
   symbol: string;

@@ -1,11 +1,11 @@
-export interface Page<T> {
+export type Page<T> = {
   results: T[];
   count: number;
   next: string;
   previous: string;
 }
 
-export interface PaginationConfig {
+export type PaginationConfig = {
   itemsPerPage: number;
   page: number;
 }

@@ -1,21 +1,11 @@
 import { League } from "./league";
 import { Trophy } from "./trophy";
 import { Flag } from "./flag";
-import { compareParticipantTimes, Participant, participantSpeed, participantTime, Participation, Penalty } from "./participant";
+import { Participant, ParticipantUtils, Participation, Penalty } from "./participant";
 import { Club, ClubDetail, Organizers } from "./entity";
 import { Race, RaceDetail, RaceFilter } from "./race";
 import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, Page, PaginationConfig } from "./page";
-import {
-  Gender,
-  ParticipantCategory,
-  PenaltyReason,
-  RaceType,
-  readableCategory,
-  readableCategoryGender,
-  readableGender,
-  readableRaceType,
-  readableReason
-} from "./types";
+import { Gender, ParticipantCategory, PenaltyReason, RaceType, StringTypeUtils } from "./types";
 
 // TODO: .SS format is currently broken
 // https://github.com/iamkun/dayjs/issues/1331
@@ -31,7 +21,6 @@ export {
   Club, ClubDetail, Organizers,
   Race, RaceFilter, RaceDetail,
   Participation, Participant, Penalty,
-  participantSpeed, participantTime, compareParticipantTimes,
-  readableReason, readableCategory, readableGender, readableRaceType, readableCategoryGender,
+  ParticipantUtils, StringTypeUtils,
   DEFAULT_PAGE, DEFAULT_PAGE_RESULT
 }

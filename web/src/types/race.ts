@@ -5,7 +5,7 @@ import { Participant } from "./participant";
 import { Entity } from "./entity";
 import { Gender, RaceType } from "./types";
 
-export interface Race {
+export type Race = {
   id: number;
   type: RaceType;
   name: string; // computed
@@ -24,14 +24,14 @@ export interface Race {
   lanes?: number;
 }
 
-export interface RaceDetail extends Race {
+export type RaceDetail = Race & {
   participants: Participant[];
   series?: number;
   town?: string;
   organizer?: Entity;
 }
 
-export interface RaceFilter {
+export type RaceFilter = {
   trophy?: number;
   flag?: number;
   league?: number;

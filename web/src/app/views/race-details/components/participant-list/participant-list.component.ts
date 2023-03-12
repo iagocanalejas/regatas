@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { compareParticipantTimes, LAP_FORMAT, NO_TIME, Participant, participantSpeed, participantTime, TIME_FORMAT } from "src/types";
+import { LAP_FORMAT, NO_TIME, Participant, ParticipantUtils, TIME_FORMAT } from "src/types";
 import { NG_IF, ROTATE } from "src/app/shared/animations";
 import * as dayjs from "dayjs";
 
@@ -33,7 +33,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
     this.fastestLap = this.numberOfLaps.map(current =>
       this.fastest(this.participants.map(p => p.times_per_lap[current])));
 
-    this.winner = [...this.participants].sort((p1, p2) => compareParticipantTimes(p1, p2))[0];
+    this.winner = [...this.participants].sort((p1, p2) => ParticipantUtils.compareTimes(p1, p2))[0];
     this.numberOfLaps = Array.from(Array(Math.max(...this.participants.map(x => x.laps.length))).keys());
     this.hasPenalties = this.participants.some(x => x.penalties.length);
   }
@@ -58,7 +58,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
 
   get displayedParticipants(): Participant[] {
     return this.ignorePenalties
-      ? [...this.participants].sort((p1, p2) => compareParticipantTimes(p1, p2, true))
+      ? [...this.participants].sort((p1, p2) => ParticipantUtils.compareTimes(p1, p2, true))
       : this.participants;
   }
 
@@ -75,7 +75,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
   }
 
   getTime(participant: Participant): string {
-    return participantTime(participant, this.ignorePenalties)
+    return ParticipantUtils.time(participant, this.ignorePenalties)
   }
 
   getDifferenceTime(participant: Participant): string {
@@ -87,7 +87,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
 
   getParticipantSpeed(participant: Participant): number {
     if (!this.distance) return 0  // should never happen
-    return participantSpeed(participant, this.distance);
+    return ParticipantUtils.speed(participant, this.distance);
   }
 
   isFastestLap(lap: number, time: string): boolean {

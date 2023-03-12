@@ -12,6 +12,7 @@ import { PaginationModule } from "../../shared/components/pagination/pagination.
 import { ClubDetailsComponent } from "./components/club-details.component";
 import { ClubDetailsService } from "./club-details.service";
 import { ParticipantRacesComponent } from "./components/participant-races/participant-races.component";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 
 
 @NgModule({
@@ -20,7 +21,7 @@ import { ParticipantRacesComponent } from "./components/participant-races/partic
     ParticipantRacesComponent,
   ],
   imports: [
-    FormsModule, CommonModule,
+    FormsModule, CommonModule, NgbTooltipModule,
     PaginationModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(featureKey, FEATURE_REDUCER_TOKEN),

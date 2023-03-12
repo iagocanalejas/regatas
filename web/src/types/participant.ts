@@ -3,13 +3,13 @@ import { Race, TIME_FORMAT } from "./index";
 import { Gender, ParticipantCategory, PenaltyReason } from "./types";
 import * as dayjs from "dayjs";
 
-export interface Penalty {
+export type Penalty = {
   penalty: number;
   disqualification: boolean;
   reason?: PenaltyReason;
 }
 
-export interface Participation {
+export type Participation = {
   id: number;
   laps: string[];
   lane: number;
@@ -21,7 +21,7 @@ export interface Participation {
   time: string; // computed
 }
 
-export interface Participant {
+export type Participant = {
   id: number;
   club: Entity;
   club_name?: string; // only exist if we have a computed name (ex: Puebla "B")
@@ -38,30 +38,32 @@ export interface Participant {
   category: ParticipantCategory;
 }
 
-const timeReg = /^[0-9]{2}:[0-9]{2}.[0-9]*$/;
+export class ParticipantUtils {
+  private static timeReg = /^[0-9]{2}:[0-9]{2}.[0-9]*$/;
 
-export function participantSpeed(participant: Participant | Participation, distance: number): number {
-  if (!timeReg.test(participant.time)) return 0
+  static speed(participant: Participant | Participation, distance: number) {
+    if (!ParticipantUtils.timeReg.test(participant.time)) return 0
 
-  const time = dayjs(participant.time, TIME_FORMAT)
-  if (!time.minute()) return 0
+    const time = dayjs(participant.time, TIME_FORMAT)
+    if (!time.minute()) return 0
 
-  const seconds = time.minute() * 60 + time.second();
-  const mS = distance / seconds;
-  return mS * 3.6; // kmH
-}
+    const seconds = time.minute() * 60 + time.second();
+    const mS = distance / seconds;
+    return mS * 3.6; // kmH
+  }
 
-export function participantTime(participant: Participant, ignorePenalties: boolean = false): string {
-  if (!ignorePenalties) return participant.time
+  static time(participant: Participant, ignorePenalties: boolean = false) {
+    if (!ignorePenalties) return participant.time
 
-  const penalties = participant.penalties.filter(p => !p.disqualification).reduce((prev, curr) => prev + curr.penalty, 0);
-  return dayjs(participant.time, TIME_FORMAT).subtract(penalties, "seconds").format(TIME_FORMAT)
-}
+    const penalties = participant.penalties.filter(p => !p.disqualification).reduce((prev, curr) => prev + curr.penalty, 0);
+    return dayjs(participant.time, TIME_FORMAT).subtract(penalties, "seconds").format(TIME_FORMAT)
+  }
 
-export function compareParticipantTimes(p1: Participant, p2: Participant, ignorePenalties: boolean = false): number {
-  if (!ignorePenalties && p1.disqualified) return 100
-  if (!ignorePenalties && p2.disqualified) return -100
+  static compareTimes(p1: Participant, p2: Participant, ignorePenalties: boolean = false) {
+    if (!ignorePenalties && p1.disqualified) return 100
+    if (!ignorePenalties && p2.disqualified) return -100
 
-  return dayjs(participantTime(p1, ignorePenalties), TIME_FORMAT).diff(dayjs(participantTime(p2, ignorePenalties), TIME_FORMAT))
+    return dayjs(ParticipantUtils.time(p1, ignorePenalties), TIME_FORMAT).diff(dayjs(ParticipantUtils.time(p2, ignorePenalties), TIME_FORMAT))
+  }
 }
 

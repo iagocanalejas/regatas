@@ -1,4 +1,4 @@
-export interface Flag {
+export type Flag = {
   id: number;
   name: string;
 }

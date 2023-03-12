@@ -25,7 +25,7 @@ export class RacesService {
 
     Object.entries(filters)
       .forEach(([key, value]) => {
-        url = (key !== 'page') ? url.addQueryParam(key, value || '') : url
+        url = (key !== 'page') ? url.addQueryParam(key, value ? `${value}` : '') : url
       });
 
     return this._http.get<Page<Race>>(url.build()).pipe(

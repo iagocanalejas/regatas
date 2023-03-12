@@ -1,19 +1,16 @@
 import { League } from "./league";
 import { Participation } from "./participant";
 
-export interface Entity {
+export type Entity = {
   id: number;
   name: string;
 }
+export type Club = Entity
 
-export interface Club extends Entity {
+export type ClubDetail = Club & {
+  participation: Participation[];
 }
-
-export interface ClubDetail extends Club {
-  participation: Participation[]
-}
-
-export interface Organizers {
+export type Organizers = {
   clubs: Club[];
   leagues: League[];
   federations: Entity[];
