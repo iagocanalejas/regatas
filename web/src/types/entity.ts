@@ -1,6 +1,5 @@
-import { Race } from "./race";
-import { Page } from "./page";
 import { League } from "./league";
+import { Participation } from "./participant";
 
 export interface Entity {
   id: number;
@@ -11,7 +10,7 @@ export interface Club extends Entity {
 }
 
 export interface ClubDetail extends Club {
-  races: Page<Race>
+  participation: Participation[]
 }
 
 export interface Organizers {

@@ -18,12 +18,12 @@ export class ClubDetailsEffects {
       exhaustMap(action =>
         combineLatest([
           this._service$.getClub(action.clubId),
-          this._service$.getClubRaces(action.clubId, action.page),
+          this._service$.getClubParticipation(action.clubId),
         ]).pipe(
-          map(([club, races]) => ClubActions.LOAD_DETAILS_SUCCESS({
+          map(([club, participation]) => ClubActions.LOAD_DETAILS_SUCCESS({
             club: {
               ...club,
-              races: races
+              participation: participation
             }
           })),
           catchError(error => of(ClubActions.LOAD_DETAILS_ERROR({ error }))),

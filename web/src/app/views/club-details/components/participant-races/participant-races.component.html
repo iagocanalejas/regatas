@@ -1,0 +1,36 @@
+<div *ngIf="participation.length > 0" class="pointer">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Liga</th>
+      <th scope="col">Categoría</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Distancia</th>
+      <th scope="col">Tiempo</th>
+      <th scope="col">V.Media</th>
+      <th scope="col" class="d-none d-xl-table-cell">N.Largos</th>
+      <th scope="col" class="d-none d-xl-table-cell">Boya</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let p of participation; index as i" (click)="selectRace(p.race)">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ p.race.date }}</td>
+      <td class="text-nowrap">{{ p.race.league?.symbol || '' }}</td>
+      <td>{{ readableCategoryGender([p.category, p.gender]) }}</td>
+      <td><i class="material-icons">{{ p.race.type === 'TIME_TRIAL' ? 'schedule' : 'more_vert' }}</i></td>
+      <td class="text-end">{{ p.race.name }}</td>
+      <td>{{ p.distance }}</td>
+      <td>{{ p.time }}</td>
+      <td>{{ getParticipantSpeed(p) | number:'2.3-3' }}</td>
+      <td class="d-none d-xl-table-cell">{{ p.laps.length }}</td>
+      <td class="d-none d-xl-table-cell">{{ p.lane }} / {{ p.race.lanes }}</td>
+      <td><i class="material-icons">keyboard_arrow_right</i></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

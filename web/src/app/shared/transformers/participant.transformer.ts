@@ -1,7 +1,16 @@
-import { LAP_FORMAT, NO_TIME, Participant, TIME_FORMAT } from "src/types";
+import { LAP_FORMAT, NO_TIME, Participant, Participation, TIME_FORMAT } from "src/types";
 import * as dayjs from "dayjs";
+import { RaceTransformer } from "./race.transformer";
 
 export class ParticipantTransformer {
+  static transformParticipation(participation: Participation): Participation {
+    // format 'laps' and 'time'
+    participation.time = participation.laps.length ? this.formatTime([...participation.laps.slice(-1)][0]) : '00:00.000';
+    participation.laps = participation.laps.map(l => this.formatLap(l));
+    participation.race = RaceTransformer.transformRace(participation.race)
+    return participation
+  }
+
   static transformParticipants(participants: Participant[]): Participant[] {
     this.fillMissingLaps(participants);
 
@@ -16,7 +25,7 @@ export class ParticipantTransformer {
       return dayjs(lap - ((itx > 0) ? laps[itx - 1] : 0)).format(LAP_FORMAT)
     })
     // format 'laps' and 'time'
-    participant.time = this.formatTime([...participant.laps.slice(-1)][0]);
+    participant.time = participant.laps.length ? this.formatTime([...participant.laps.slice(-1)][0]) : '00:00.000';
     participant.laps = participant.laps.map(l => this.formatLap(l));
     participant.hast_time_penalty = participant.penalties.some(p => !p.disqualification);
     return participant;

@@ -20,12 +20,12 @@ export interface Race {
   league?: League;
   gender?: Gender;
   sponsor?: string;
+  laps?: number;
+  lanes?: number;
 }
 
 export interface RaceDetail extends Race {
   participants: Participant[];
-  laps?: number;
-  lanes?: number;
   series?: number;
   town?: string;
   organizer?: Entity;

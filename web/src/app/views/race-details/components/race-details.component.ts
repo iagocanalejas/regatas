@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from "@ngrx/store";
 import { State } from "src/app/reducers";
-import {
-  compareParticipantTimes,
-  Gender,
-  Participant,
-  ParticipantCategory,
-  Race,
-  RaceDetail,
-  readableCategory,
-  readableGender
-} from "src/types";
+import { compareParticipantTimes, Gender, Participant, ParticipantCategory, Race, RaceDetail, readableCategoryGender } from "src/types";
 import { Observable } from "rxjs";
 import { selectRace } from "../reducers";
 import * as RaceDetailsActions from "../reducers/race-details.actions";
@@ -95,7 +86,5 @@ export class RaceDetailsComponent implements OnInit {
     return value ? `Tanda ${value}` : 'Tiempos'
   }
 
-  readableTimeTrialTitle([category, gender]: [ParticipantCategory, Gender | null]): string {
-    return gender ? `${readableCategory(category)} ${readableGender(gender)}` : `${readableCategory(category)}`
-  }
+  readableCategoryGender = readableCategoryGender
 }

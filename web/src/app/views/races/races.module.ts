@@ -11,19 +11,20 @@ import { RacesEffects } from './reducers/races.effects';
 import { featureKey } from "./reducers/races.reducers";
 import { RaceFiltersComponent } from './components/race-filters/race-filters.component';
 import { FormsModule } from "@angular/forms";
-import { RaceListModule } from "../../shared/components/lists/race-list/race-list.module";
 import { PaginationModule } from "../../shared/components/pagination/pagination.module";
 import { DropdownModule } from "../../shared/components/dropdown/dropdown.module";
+import { RaceListComponent } from "./components/race-list/race-list.component";
 
 
 @NgModule({
   declarations: [
     RacesComponent,
     RaceFiltersComponent,
+    RaceListComponent,
   ],
   imports: [
     FormsModule, CommonModule,
-    RaceListModule, PaginationModule, DropdownModule,
+    PaginationModule, DropdownModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(featureKey, FEATURE_REDUCER_TOKEN),
     EffectsModule.forFeature([RacesEffects]),

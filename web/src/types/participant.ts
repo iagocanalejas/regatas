@@ -1,5 +1,5 @@
 import { Entity } from "./entity";
-import { TIME_FORMAT } from "./index";
+import { Race, TIME_FORMAT } from "./index";
 import { Gender, ParticipantCategory, PenaltyReason } from "./types";
 import * as dayjs from "dayjs";
 
@@ -7,6 +7,18 @@ export interface Penalty {
   penalty: number;
   disqualification: boolean;
   reason?: PenaltyReason;
+}
+
+export interface Participation {
+  id: number;
+  laps: string[];
+  lane: number;
+  series: number;
+  distance: number;
+  gender: Gender;
+  category: ParticipantCategory;
+  race: Race
+  time: string; // computed
 }
 
 export interface Participant {
@@ -28,10 +40,11 @@ export interface Participant {
 
 const timeReg = /^[0-9]{2}:[0-9]{2}.[0-9]*$/;
 
-export function participantSpeed(participant: Participant, distance: number): number {
+export function participantSpeed(participant: Participant | Participation, distance: number): number {
   if (!timeReg.test(participant.time)) return 0
 
   const time = dayjs(participant.time, TIME_FORMAT)
+  if (!time.minute()) return 0
 
   const seconds = time.minute() * 60 + time.second();
   const mS = distance / seconds;

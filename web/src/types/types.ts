@@ -3,6 +3,17 @@ export type Gender = 'MALE' | 'FEMALE' | 'MIX';
 export type PenaltyReason = 'NO_LINE_START' | 'NULL_START' | 'BLADE_TOUCH'
 export type ParticipantCategory = 'ABSOLUT' | 'VETERAN' | 'SCHOOL'
 
+export function readableRaceType(type?: RaceType): string {
+  switch (type) {
+    case "TIME_TRIAL":
+      return "CONTRARRELOJ"
+    case "CONVENTIONAL":
+      return "CONVENCIONAL"
+    default:
+      return ""
+  }
+}
+
 export function readableReason(reason?: PenaltyReason): string {
   switch (reason) {
     case "BLADE_TOUCH":
@@ -41,3 +52,7 @@ export function readableCategory(category?: ParticipantCategory): string {
       return 'DESCONOCIDO'
   }
 }
+
+export function readableCategoryGender([category, gender]: [ParticipantCategory, Gender | null]): string {
+    return gender ? `${readableCategory(category)} ${readableGender(gender)}` : `${readableCategory(category)}`
+  }

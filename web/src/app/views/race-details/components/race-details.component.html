@@ -20,7 +20,7 @@
     <participant-list *ngFor="let cg of categories; let i = index;"
                       [participants]="participantsByCategory(race.participants, cg)"
                       [distance]="distance(participantsByCategory(race.participants, cg))"
-                      [title]="readableTimeTrialTitle(cg)" [headColumn]="'Puesto'"
+                      [title]="readableCategoryGender(cg)" [headColumn]="'Puesto'"
                       [showDifference]="true" [collapsed]="i !== 0">
     </participant-list>
   </div>
