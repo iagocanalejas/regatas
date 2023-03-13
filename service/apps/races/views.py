@@ -62,10 +62,8 @@ class RacesView(GenericAPIView):
         )
         page = self.paginate_queryset(races)
         if page is not None:
-            serialized_races = SimpleRaceSerializer(page, many=True)
-            return self.get_paginated_response(serialized_races.data)
-        serialized_races = SimpleRaceSerializer(races, many=True)
-        return Response(serialized_races.data, status=status.HTTP_200_OK)
+            return self.get_paginated_response(SimpleRaceSerializer(page, many=True).data)
+        return Response(SimpleRaceSerializer(races, many=True).data, status=status.HTTP_200_OK)
 
 
 class RaceView(APIView):

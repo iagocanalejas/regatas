@@ -16,8 +16,7 @@ export class RacesService {
   getRaces(filters: RaceFilter, page: PaginationConfig): Observable<Page<Race>> {
     let url = new URLBuilder(environment.API_PATH)
       .path('races/')
-      .addQueryParam('limit', page.itemsPerPage.toString())
-      .addQueryParam('offset', ((page.page - 1) * page.itemsPerPage).toString());
+      .setPage(page);
 
     if (!filters.year) {
       filters = { ...filters, year: new Date().getFullYear() };

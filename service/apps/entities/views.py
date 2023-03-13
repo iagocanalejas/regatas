@@ -98,4 +98,7 @@ class ClubRacesView(GenericAPIView):
             related=['race__trophy', 'race__flag', 'race__league', 'race__organizer__title'],
             prefetch=['race__participants']
         )
+        page = self.paginate_queryset(races)
+        if page is not None:
+            return self.get_paginated_response(ParticipationSerializer(page, many=True).data)
         return Response(ParticipationSerializer(races, many=True).data, status=status.HTTP_200_OK)

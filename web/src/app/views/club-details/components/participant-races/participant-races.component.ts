@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ParticipantUtils, Participation, Race, StringTypeUtils } from "src/types";
+import { DEFAULT_PAGE_RESULT, Page, ParticipantUtils, Participation, Race, StringTypeUtils } from "src/types";
 
 @Component({
   selector: 'participant-races',
@@ -8,7 +8,8 @@ import { ParticipantUtils, Participation, Race, StringTypeUtils } from "src/type
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantRacesComponent {
-  @Input() participation: Participation[] = [];
+  @Input() participation: Page<Participation> = DEFAULT_PAGE_RESULT<Participation>();
+  @Input() offset: number = 0;
 
   @Output() onRaceSelect: EventEmitter<Race> = new EventEmitter();
 

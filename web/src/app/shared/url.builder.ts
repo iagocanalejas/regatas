@@ -1,3 +1,5 @@
+import { PaginationConfig } from "../../types";
+
 export class URLBuilder {
 
   private readonly _host: string;
@@ -84,6 +86,12 @@ export class URLBuilder {
   public addQueryParam(paramName: string, value: string): URLBuilder {
     this._queryParams[paramName] = value;
     return this;
+  }
+
+  public setPage(page: PaginationConfig): URLBuilder {
+    this.addQueryParam('limit', `${page.itemsPerPage}`);
+    this.addQueryParam('offset', `${(page.page - 1) * page.itemsPerPage}`);
+    return this
   }
 
   public build(): string {

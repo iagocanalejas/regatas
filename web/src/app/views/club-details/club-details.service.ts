@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { ClubDetail, Participation } from "src/types";
+import { ClubDetail, Page, PaginationConfig, Participation } from "src/types";
 import { map, Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { URLBuilder } from "src/app/shared/url.builder";
@@ -21,13 +21,14 @@ export class ClubDetailsService {
     return this._http.get<ClubDetail>(url.build());
   }
 
-  getClubParticipation(clubId: number): Observable<Participation[]> {
+  getClubParticipation(clubId: number, page: PaginationConfig): Observable<Page<Participation>> {
     const url = new URLBuilder(environment.API_PATH)
       .path('clubs/:club_id/races/')
-      .setParam('club_id', `${clubId}`);
+      .setParam('club_id', `${clubId}`)
+      .setPage(page);
 
-    return this._http.get<Participation[]>(url.build()).pipe(
-      map(participation => participation.map(p => ParticipantTransformer.transformParticipation(p)))
+    return this._http.get<Page<Participation>>(url.build()).pipe(
+      map(page => ({ ...page, results: page.results.map(p => ParticipantTransformer.transformParticipation(p)) }))
     );
   }
 }

@@ -1,4 +1,4 @@
-<div *ngIf="participation.length > 0" class="pointer">
+<div *ngIf="participation.results.length > 0" class="pointer">
   <table class="table table-striped">
     <thead>
     <tr>
@@ -17,8 +17,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let p of participation; index as i" (click)="selectRace(p.race)">
-      <th scope="row">{{ i + 1 }}</th>
+    <tr *ngFor="let p of participation.results; index as i" (click)="selectRace(p.race)">
+      <th scope="row">{{ i + offset + 1 }}</th>
       <td>{{ p.race.date }}</td>
       <td class="text-nowrap">{{ p.race.league?.symbol || '' }}</td>
       <td>{{ readableCategoryGender([p.category, p.gender]) }}</td>

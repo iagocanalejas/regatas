@@ -1,5 +1,6 @@
 import { League } from "./league";
 import { Participation } from "./participant";
+import { Page } from "./page";
 
 export type Entity = {
   id: number;
@@ -8,7 +9,7 @@ export type Entity = {
 export type Club = Entity
 
 export type ClubDetail = Club & {
-  participation: Participation[];
+  participation: Page<Participation>;
 }
 export type Organizers = {
   clubs: Club[];
