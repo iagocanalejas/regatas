@@ -1,11 +1,17 @@
-<div *ngIf="races.results as races" class="pointer">
+<div *ngIf="races && races.results as races else empty" class="pointer">
   <table class="table table-striped">
     <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Liga</th>
-      <th scope="col">Fecha</th>
+      <th scope="col" (click)="toggleSorting('name')">
+        <span class="d-flex">Nombre <i *ngIf="sortBy === 'name'" class="material-icons">{{ sortIcon }}</i></span>
+      </th>
+      <th scope="col" (click)="toggleSorting('league')">
+        <span class="d-flex">Liga <i *ngIf="sortBy === 'league'" class="material-icons">{{ sortIcon }}</i></span>
+      </th>
+      <th scope="col" (click)="toggleSorting('date')">
+        <span class="d-flex">Fecha <i *ngIf="sortBy === 'date'" class="material-icons">{{ sortIcon }}</i></span>
+      </th>
       <th scope="col"></th>
     </tr>
     </thead>
@@ -20,3 +26,7 @@
     </tbody>
   </table>
 </div>
+
+<ng-template #empty>
+  <no-content></no-content>
+</ng-template>

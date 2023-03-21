@@ -1,4 +1,4 @@
-import { PaginationConfig } from "../../types";
+import { PaginationConfig } from "src/types";
 
 export class URLBuilder {
 
@@ -91,6 +91,13 @@ export class URLBuilder {
   public setPage(page: PaginationConfig): URLBuilder {
     this.addQueryParam('limit', `${page.itemsPerPage}`);
     this.addQueryParam('offset', `${(page.page - 1) * page.itemsPerPage}`);
+    if (page.sortBy) this.addQueryParam('ordering', page.sortBy)
+    return this
+  }
+
+  public setFilters(filters: object): URLBuilder {
+    Object.entries(filters)
+      .forEach(([key, value]) => this.addQueryParam(key, value ? `${value}` : ''));
     return this
   }
 

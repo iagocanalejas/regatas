@@ -4,8 +4,7 @@ from typing import List, Tuple
 from django.db.models import QuerySet
 from rest_framework.generics import get_object_or_404
 
-from ai_django.ai_core.utils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
-from apps.races.filters import build_base_filters, build_keyword_filter
+from apps.races.filters import RaceFilters
 from apps.races.models import Race
 
 logger = logging.getLogger(__name__)
@@ -19,16 +18,11 @@ def get_by_id(race_id: int, related: List[str] = None, prefetch: List[str] = Non
 
 
 def get_filtered(queryset: QuerySet[Race], filters: dict, related: List[str] = None, prefetch: List[str] = None) -> QuerySet[Race]:
-    queryset = queryset.filter(**build_base_filters(filters))
-    if 'participant' in filters:
-        queryset = queryset.filter(participant__club_id=filters['participant'])
-    if 'metadata' in filters:
-        queryset = queryset.filter(metadata__datasource__contains=filters['metadata'])
-    if 'keywords' in filters:
-        keywords = whitespaces_clean(remove_conjunctions(remove_symbols(filters['keywords'])))
-        queryset = queryset.filter(build_keyword_filter(keywords))
-
-    queryset = queryset.order_by('date')
+    queryset = RaceFilters(queryset) \
+        .set_filters(filters) \
+        .set_keywords(filters.get('keywords', None)) \
+        .set_sorting(filters.get('ordering', None)) \
+        .build_query()
 
     queryset = queryset.select_related(*related) if related else queryset
     queryset = queryset.prefetch_related(*prefetch) if prefetch else queryset

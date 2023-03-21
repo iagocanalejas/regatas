@@ -7,23 +7,6 @@ from apps.races.models import Race
 from apps.serializers import SimpleRaceSerializer, EntitySerializer, SimpleParticipantSerializer, ClubSerializer
 
 
-class RaceDetailsSerializer(SimpleRaceSerializer):
-    organizer = EntitySerializer(allow_null=True)
-    series = serializers.SerializerMethodField()
-
-    @staticmethod
-    def get_series(race: Race) -> Optional[int]:
-        if not race.participants.count():
-            return None
-
-        participants = list(race.participants.all())
-        series = [p.series for p in participants if p.series]
-        return max(series) if series else None
-
-    class Meta(SimpleRaceSerializer.Meta):
-        fields = SimpleRaceSerializer.Meta.fields + ('series', 'town', 'organizer')
-
-
 class PenaltySerializer(serializers.ModelSerializer):
     class Meta:
         model = Penalty
@@ -51,3 +34,20 @@ class ParticipantSerializer(SimpleParticipantSerializer):
     class Meta(SimpleParticipantSerializer.Meta):
         model = Participant
         fields = SimpleParticipantSerializer.Meta.fields + ('club', 'disqualified', 'penalties', 'club_name')
+
+
+class RaceDetailsSerializer(SimpleRaceSerializer):
+    organizer = EntitySerializer(allow_null=True)
+    series = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_series(race: Race) -> Optional[int]:
+        if not race.participants.count():
+            return None
+
+        participants = list(race.participants.all())
+        series = [p.series for p in participants if p.series]
+        return max(series) if series else None
+
+    class Meta(SimpleRaceSerializer.Meta):
+        fields = SimpleRaceSerializer.Meta.fields + ('series', 'town', 'organizer')

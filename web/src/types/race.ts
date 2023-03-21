@@ -35,7 +35,9 @@ export type RaceFilter = {
   trophy?: number;
   flag?: number;
   league?: number;
-  participant_club?: number;
+  participant?: number;
   year?: number;
   keywords?: string;
 }
+
+export type RaceSortBy = 'type' | 'date' | 'name' | 'league' ;

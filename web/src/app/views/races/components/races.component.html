@@ -2,17 +2,18 @@
   <div class="my-3">
     <race-filters [trophies]="(trophies$ | async)!"
                   [flags]="(flags$ | async)!"
-                  (onFilterChange)="onFilterChange($event)">
+                  (onFilterChange)="changeFilters($event)">
     </race-filters>
   </div>
 
   <div class="my-3">
-    <race-list [races]="(races$ | async)!" [offset]="listOffset"
-               (onRaceSelect)="onRaceSelect($event)">
+    <race-list [races]="races$ | async" [offset]="listOffset"
+               (onRaceSelect)="selectRace($event)"
+               (onSortingChange)="changeSorting($event)">
     </race-list>
 
-    <pagination #pagination [key]="'RACES'" [collectionSize]="(races$ | async)?.count!"
-                (pageChange)="onPageChange($event)">
+    <pagination [key]="'RACES'" [collectionSize]="(races$ | async)?.count  || 0"
+                (onPageChange)="changePage($event)">
     </pagination>
   </div>
 </div>

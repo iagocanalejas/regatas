@@ -8,7 +8,8 @@ export type Page<T> = {
 export type PaginationConfig = {
   itemsPerPage: number;
   page: number;
+  sortBy?: string;
 }
 
 export const DEFAULT_PAGE: PaginationConfig = { itemsPerPage: 25, page: 0 };
-export const DEFAULT_PAGE_RESULT = <T>() => ({ count: 0, next: '', previous: '', results: <T[]>[] });
+export const DEFAULT_PAGE_RESULT = <T>() => ({ count: 0, next: '', previous: '', results: <T[]>[] } as Page<T>);

@@ -18,7 +18,7 @@ export class ClubDetailsEffects {
       exhaustMap(action =>
         combineLatest([
           this._service$.getClub(action.clubId),
-          this._service$.getClubParticipation(action.clubId, action.page),
+          this._service$.getClubParticipation(action.clubId, action.filters, action.page),
         ]).pipe(
           map(([club, participation]) => ClubActions.LOAD_DETAILS_SUCCESS({
             club: {

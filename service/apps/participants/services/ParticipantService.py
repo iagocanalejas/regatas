@@ -3,9 +3,8 @@ from typing import List, Tuple
 
 from django.db.models import QuerySet, Q
 
-from ai_django.ai_core.utils.strings import whitespaces_clean, remove_conjunctions, remove_symbols
+from apps.participants.filters import ParticipantFilters
 from apps.participants.models import Participant
-from apps.races.filters import build_base_filters, build_keyword_filter
 from utils.checks import is_branch_club
 
 logger = logging.getLogger(__name__)
@@ -21,16 +20,18 @@ def get_by_race_id(race_id: int, related: List[str] = None, prefetch: List[str] 
 def get_filtered(queryset: QuerySet[Participant],
                  filters: dict,
                  related: List[str] = None,
-                 prefetch: List[str] = None) -> QuerySet[Participant]:
-    queryset = queryset.filter(**build_base_filters(filters, prefix='race'))
-    if 'keywords' in filters:
-        keywords = whitespaces_clean(remove_conjunctions(remove_symbols(filters['keywords'])))
-        queryset = queryset.filter(build_keyword_filter(keywords, prefix='race'))
+                 prefetch: List[str] = None) -> QuerySet[Participant] | List[Participant]:
 
-    queryset = queryset.order_by('race__date')
+    queryset = ParticipantFilters(queryset).set_filters(filters) \
+        .set_keywords(filters.get('keywords', None)) \
+        .set_sorting(filters.get('ordering', None)) \
+        .build_query()
 
     queryset = queryset.select_related(*related) if related else queryset
     queryset = queryset.prefetch_related(*prefetch) if prefetch else queryset
+
+    if 'speed' in filters.get('ordering', ''):
+        return ParticipantFilters.sort_by_speed(queryset, reverse='-' in filters.get('ordering'))
 
     return queryset.all()
 

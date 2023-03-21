@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DEFAULT_PAGE, PaginationConfig } from "src/types";
-import { BehaviorSubject, distinct, Subject, takeWhile } from "rxjs";
+import { distinct, ReplaySubject, takeWhile } from "rxjs";
 import { z } from "zod";
 
 const PAGINATION_KEY = 'PAGINATION';
@@ -16,16 +16,18 @@ export class PaginationComponent implements OnInit, OnDestroy {
   @Input() key: string = `${Math.floor(Math.random() * 1000)}`;
   @Input() collectionSize!: number;
 
-  @Output() pageChange: EventEmitter<PaginationConfig> = new EventEmitter();
+  @Output() onPageChange: EventEmitter<PaginationConfig> = new EventEmitter();
 
   paginationOptions = [
     { value: 25, text: '25 regatas por página' },
     { value: 50, text: '50 regatas por página' },
-    { value: 100, text: '100 regatas por página' }
+    { value: 100, text: '100 regatas por página' },
+    { value: 250, text: '250 regatas por página' },
+    { value: 500, text: '500 regatas por página' },
   ];
 
-  page: PaginationConfig = { ...DEFAULT_PAGE };
-  debouncer: Subject<PaginationConfig> = new BehaviorSubject(this.page);
+  page!: PaginationConfig;
+  debouncer = new ReplaySubject<PaginationConfig>();
 
   get selectedPaginationOption() {
     return this.paginationOptions.find(x => x.value === this.page.itemsPerPage)
@@ -36,13 +38,17 @@ export class PaginationComponent implements OnInit, OnDestroy {
 
     // load saved pagination
     const p = sessionStorage.getItem(`${this.key}_${PAGINATION_KEY}`);
-    this.page = p ? this.retrievePage(p) : this.page
+    this.page = p ? this.retrievePage(p) : { ...DEFAULT_PAGE }
+
+    this.debouncer.pipe(
+      distinct(({itemsPerPage, page}) => `${itemsPerPage}|${page}`),
+      takeWhile(() => this.activeComponent),
+    ).subscribe(page => {
+      sessionStorage.setItem(`${this.key}_${PAGINATION_KEY}`, JSON.stringify(this.page));
+      return this.onPageChange.emit(page)
+    })
 
     this.debouncer.next(this.page);
-    this.debouncer.pipe(
-      distinct(),
-      takeWhile(() => this.activeComponent),
-    ).subscribe(page => this.pageChange.emit(page))
   }
 
   ngOnDestroy() {
@@ -50,12 +56,12 @@ export class PaginationComponent implements OnInit, OnDestroy {
     sessionStorage.setItem(`${this.key}_${PAGINATION_KEY}`, JSON.stringify(this.page));
   }
 
-  onPageChange(page: number) {
+  changePage(page: number) {
     this.page = { ...this.page, page }
     this.debouncer.next(this.page)
   }
 
-  onItemsPerPageChange(itemsPerPage: number) {
+  changeItemsPerPage(itemsPerPage: number) {
     this.page = { ...this.page, itemsPerPage }
     this.debouncer.next(this.page)
   }
@@ -64,6 +70,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
     const pageSchema = z.object({
       itemsPerPage: z.number().min(1),
       page: z.number().min(0),
+      sortBy: z.string().optional(),
     });
     return pageSchema.parse(JSON.parse(page))
   }

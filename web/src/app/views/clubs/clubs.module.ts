@@ -11,6 +11,7 @@ import { ClubsEffects } from "./reducers/clubs.effects";
 import { featureKey } from "./reducers/clubs.reducers";
 import { FEATURE_REDUCER_TOKEN } from "./reducers";
 import { ClubCardComponent } from "./components/card/club-card.component";
+import { EmptyViewModule } from "../../shared/components/empty-view/empty-view.module";
 
 
 @NgModule({
@@ -19,7 +20,7 @@ import { ClubCardComponent } from "./components/card/club-card.component";
     ClubCardComponent,
   ],
   imports: [
-    FormsModule, CommonModule,
+    FormsModule, CommonModule, EmptyViewModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(featureKey, FEATURE_REDUCER_TOKEN),
     EffectsModule.forFeature([ClubsEffects]),

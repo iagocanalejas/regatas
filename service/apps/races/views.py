@@ -50,6 +50,7 @@ class RacesView(GenericAPIView):
             OpenApiParameter(name='year', description='Filter by year', required=False, type=int),
             OpenApiParameter(name='participant', description='Filter by participant club', required=False, type=int),
             OpenApiParameter(name='keywords', description='Filter by trophy, flag, league, sponsor, town', required=False, type=str),
+            OpenApiParameter(name='ordering', description='Sort results by given param. default: #Race.date', required=False, type=str),
         ],
         responses={
             200: SimpleRaceSerializer(many=True),

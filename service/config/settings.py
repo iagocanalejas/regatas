@@ -94,7 +94,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'stdimage',
     'prettyjson',
-    'django_extensions',
     'rest_framework',
     'drf_spectacular',
     # Self
@@ -106,7 +105,7 @@ INSTALLED_APPS = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar']
+    INSTALLED_APPS += ['debug_toolbar', 'django_extensions']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

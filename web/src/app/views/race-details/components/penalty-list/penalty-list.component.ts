@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Participant, StringTypeUtils } from "src/types";
+import { Participant, PenaltyReason, penaltyReason_es } from "src/types";
 import { NG_IF, ROTATE } from "src/app/shared/animations";
 
 @Component({
@@ -13,5 +13,5 @@ export class PenaltyListComponent {
   @Input() participants!: Participant[];
   @Input() collapsed: boolean = false;
 
-  readableReason = StringTypeUtils.reason
+  readableReason = (e?: PenaltyReason) => e ? penaltyReason_es[e] : '';
 }

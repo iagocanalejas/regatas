@@ -14,6 +14,8 @@ import { FormsModule } from "@angular/forms";
 import { PaginationModule } from "../../shared/components/pagination/pagination.module";
 import { DropdownModule } from "../../shared/components/dropdown/dropdown.module";
 import { RaceListComponent } from "./components/race-list/race-list.component";
+import { SearchBarModule } from "../../shared/components/search-bar/search-bar.module";
+import { EmptyViewModule } from "../../shared/components/empty-view/empty-view.module";
 
 
 @NgModule({
@@ -24,7 +26,7 @@ import { RaceListComponent } from "./components/race-list/race-list.component";
   ],
   imports: [
     FormsModule, CommonModule,
-    PaginationModule, DropdownModule,
+    PaginationModule, DropdownModule, SearchBarModule, EmptyViewModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(featureKey, FEATURE_REDUCER_TOKEN),
     EffectsModule.forFeature([RacesEffects]),

@@ -1,4 +1,4 @@
-<div *ngIf="(clubs$ | async) as clubs" class="container">
+<div *ngIf="(clubs$ | async) as clubs else empty" class="container">
   <div class="d-flex justify-content-center align-items-center mt-3">
     <div class="input-group" [ngClass]="{'w-50': windowsWidth >= 576}">
       <input type="text" class="form-control" placeholder="Buscar..." aria-label="Buscar..."
@@ -17,3 +17,7 @@
     </club-card>
   </div>
 </div>
+
+<ng-template #empty>
+  <no-content></no-content>
+</ng-template>

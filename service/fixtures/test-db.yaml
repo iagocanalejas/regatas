@@ -1412,3 +1412,15 @@
       datasource:
       - race_id: cabo.jpg
         datasource_name: inforemo
+- model: participants.participant
+  pk: 1
+  fields:
+    club_name: CR RIANXO
+    club: 26
+    race: 1
+    distance: 5556
+    laps: '["00:05:49", "00:11:23", "00:17:24", "00:22:47.690000"]'
+    lane: 2
+    series: 1
+    gender: MALE
+    category: ABSOLUT

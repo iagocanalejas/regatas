@@ -13,16 +13,21 @@ import { ClubDetailsComponent } from "./components/club-details.component";
 import { ClubDetailsService } from "./club-details.service";
 import { ParticipantRacesComponent } from "./components/participant-races/participant-races.component";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { DropdownModule } from "../../shared/components/dropdown/dropdown.module";
+import { ParticipantRaceFiltersComponent } from "./components/participant-race-filters/participant-race-filters.component";
+import { SearchBarModule } from "../../shared/components/search-bar/search-bar.module";
+import { EmptyViewModule } from "../../shared/components/empty-view/empty-view.module";
 
 
 @NgModule({
   declarations: [
     ClubDetailsComponent,
     ParticipantRacesComponent,
+    ParticipantRaceFiltersComponent,
   ],
   imports: [
     FormsModule, CommonModule, NgbTooltipModule,
-    PaginationModule,
+    PaginationModule, DropdownModule, SearchBarModule, EmptyViewModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature(featureKey, FEATURE_REDUCER_TOKEN),
     EffectsModule.forFeature([ClubDetailsEffects]),

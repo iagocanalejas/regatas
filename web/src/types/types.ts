@@ -1,62 +1,36 @@
-export type RaceType = 'TIME_TRIAL' | 'CONVENTIONAL';
-export type Gender = 'MALE' | 'FEMALE' | 'MIX';
-export type PenaltyReason = 'NO_LINE_START' | 'NULL_START' | 'BLADE_TOUCH'
-export type ParticipantCategory = 'ABSOLUT' | 'VETERAN' | 'SCHOOL'
+export const RACE_TYPES = ['TIME_TRIAL', 'CONVENTIONAL'] as const;
+export type RaceType = typeof RACE_TYPES[number];
+export const raceType_es: { [_ in RaceType]: string } = {
+  'TIME_TRIAL': 'CONTRARRELOJ',
+  'CONVENTIONAL': 'CONVENCIONAL',
+};
 
-export class StringTypeUtils {
-  static raceType(type?: RaceType) {
-    switch (type) {
-      case "TIME_TRIAL":
-        return "CONTRARRELOJ"
-      case "CONVENTIONAL":
-        return "CONVENCIONAL"
-      default:
-        return ""
-    }
-  }
+export const PENALTY_REASONS = ['NO_LINE_START', 'NULL_START', 'BLADE_TOUCH'] as const;
+export type PenaltyReason = typeof PENALTY_REASONS[number];
+export const penaltyReason_es: { [_ in PenaltyReason]: string } = {
+  'NO_LINE_START': 'TOQUE DE PALAS',
+  'NULL_START': 'SALIDA SIN ESTACHA',
+  'BLADE_TOUCH': 'SALIDA NULA',
+};
 
-  static reason(reason?: PenaltyReason) {
-    switch (reason) {
-      case "BLADE_TOUCH":
-        return 'TOQUE DE PALAS'
-      case "NO_LINE_START":
-        return 'SALIDA SIN ESTACHA'
-      case "NULL_START":
-        return 'SALIDA NULA'
-      default:
-        return 'DESCONOCIDO'
-    }
-  }
+export const GENDERS = ['MALE', 'FEMALE', 'MIX'] as const;
+export type Gender = typeof GENDERS[number];
+export const gender_es: { [_ in Gender]: string } = {
+  'MALE': 'MASCULINO',
+  'FEMALE': 'FEMENINO',
+  'MIX': 'MIXTO',
+};
 
-  static gender(gender?: Gender) {
-    switch (gender) {
-      case "MALE":
-        return 'MASCULINO'
-      case "FEMALE":
-        return 'FEMENINO'
-      case "MIX":
-        return 'MIXTO'
-      default:
-        return 'DESCONOCIDO'
-    }
-  }
+export const PARTICIPANT_CATEGORIES = ['ABSOLUT', 'VETERAN', 'SCHOOL'] as const;
+export type ParticipantCategory = typeof PARTICIPANT_CATEGORIES[number];
+export const category_es: { [_ in ParticipantCategory]: string } = {
+  'ABSOLUT': 'ABSOLUTO',
+  'VETERAN': 'VETERANO',
+  'SCHOOL': 'ESCUELA',
+};
 
-  static category(category?: ParticipantCategory) {
-    switch (category) {
-      case "ABSOLUT":
-        return 'ABSOLUTO'
-      case "VETERAN":
-        return 'VETERANO'
-      case "SCHOOL":
-        return 'ESCUELA'
-      default:
-        return 'DESCONOCIDO'
-    }
-  }
-
-  static categoryGender([category, gender]: [ParticipantCategory, Gender | null]) {
-    return gender
-      ? `${StringTypeUtils.category(category)} ${StringTypeUtils.gender(gender)}`
-      : `${StringTypeUtils.category(category)}`
-  }
+export function categoryGender_es([category, gender]: [ParticipantCategory, Gender | null]) {
+  return gender
+    ? `${category_es[category]} ${gender_es[gender]}`
+    : `${category_es[category]}`
 }

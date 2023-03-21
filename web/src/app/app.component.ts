@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
     return leagues.filter(l => l.gender === gender)
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.activeComponent = true;
     this._store.dispatch(AppActions.LOAD_DATA());
   }

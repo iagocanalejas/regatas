@@ -1,15 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { BehaviorSubject, combineLatest, debounceTime, filter, Observable, takeWhile } from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { BehaviorSubject, combineLatest, debounceTime, Observable, ReplaySubject, takeWhile } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { State } from "src/app/reducers";
+import { selectFlags, selectTrophies, State } from "src/app/reducers";
 import * as ClubDetailsActions from "../reducers/club-details.actions";
-import { ClubDetail, DEFAULT_PAGE, PaginationConfig, Race } from "src/types";
+import { ClubDetail, DEFAULT_PAGE, Flag, PaginationConfig, ParticipantFilter, Race, Trophy } from "src/types";
 import { selectClub } from "../reducers";
-import { PaginationComponent } from "../../../shared/components/pagination/pagination.component";
 
 interface QueryParams {
-  clubId?: number;
+  clubId: number;
 }
 
 @Component({
@@ -19,51 +18,61 @@ interface QueryParams {
 })
 export class ClubDetailsComponent implements OnInit, OnDestroy {
   private activeComponent: boolean = false;
-  @ViewChild('pagination') paginationComponent?: PaginationComponent;
+
+  public trophies$: Observable<Trophy[]> = this._store.select(selectTrophies);
+  public flags$: Observable<Flag[]> = this._store.select(selectFlags);
 
   club$: Observable<ClubDetail | undefined> = this._store.select(selectClub);
 
-  private params: BehaviorSubject<QueryParams> = new BehaviorSubject({});
-  private paginating: BehaviorSubject<PaginationConfig> = new BehaviorSubject({ ...DEFAULT_PAGE, itemsPerPage: 100 });
+  private params = new ReplaySubject<QueryParams>();
+  private filtering = new BehaviorSubject<ParticipantFilter>({});
+  private sorting = new BehaviorSubject<string>('date');
+  private paginating = new BehaviorSubject<PaginationConfig>({ ...DEFAULT_PAGE, itemsPerPage: 250 });
 
   listOffset: number = 0;
 
   constructor(private _route: ActivatedRoute, private _router: Router, private _store: Store<State>) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.activeComponent = true;
-
-    this._route.paramMap.pipe(
-      filter(params => !!params.get('club_id')),
-      takeWhile(() => this.activeComponent),
-    ).subscribe(
-      params => this.params.next({ clubId: +params.get('club_id')! })
-    )
 
     combineLatest([
       this.params,
+      this.filtering,
+      this.sorting,
       this.paginating
     ]).pipe(
       debounceTime(200),
       takeWhile(() => this.activeComponent),
     ).subscribe(
-      ([params, page]) => {
+      ([params, filters, sortBy, page]) => {
         this.listOffset = (page.page - 1) * page.itemsPerPage;
-        return this._store.dispatch(ClubDetailsActions.LOAD_DETAILS({ clubId: params.clubId!, page }));
+        return this._store.dispatch(ClubDetailsActions.LOAD_DETAILS({ clubId: params.clubId, page: { ...page, sortBy }, filters }));
       }
     );
+
+    const clubId = this._route.snapshot.paramMap.get('club_id')
+    if (clubId) this.params.next({ clubId: +clubId })
   }
 
   ngOnDestroy() {
     this.activeComponent = false;
   }
 
-  onPageChange(page: PaginationConfig) {
+  changeFilters(filters: ParticipantFilter) {
+    this.filtering.next(filters);
+  }
+
+  changeSorting(sortBy: string) {
+    this.sorting.next(sortBy);
+  }
+
+  changePage(page: PaginationConfig) {
     this.paginating.next(page);
   }
 
-  onRaceSelect(race: Race) {
+  selectRace(race: Race) {
     this._router.navigate(['races', race.id]).then();
   }
 }

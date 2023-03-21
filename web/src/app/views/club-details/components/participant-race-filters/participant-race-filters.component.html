@@ -1,5 +1,19 @@
 <search [badges]="badges" (onKeywordsChanged)="changeKeywords($event)">
   <dropdown class="row text-center margins"
+            [items]="genders" [title]="DROPDOWNS_NAMES.gender"
+            [selectedItem]="selected(genders, 'gender')"
+            [displayFn]="readableGender"
+            (onSelect)="select('gender', $event, $event.name, readableGender($event.name))"
+            (onClear)="clear('gender')">
+  </dropdown>
+  <dropdown class="row text-center margins"
+            [items]="categories" [title]="DROPDOWNS_NAMES.category"
+            [selectedItem]="selected(categories, 'category')"
+            [displayFn]="readableCategory"
+            (onSelect)="select('category', $event, $event.name, readableCategory($event.name))"
+            (onClear)="clear('category')">
+  </dropdown>
+  <dropdown class="row text-center margins"
             [items]="years" [title]="DROPDOWNS_NAMES.year"
             [selectedItem]="selected(years, 'year')"
             (onSelect)="select('year', $event, $event.id)"

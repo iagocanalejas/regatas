@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from "@ngrx/store";
 import { State } from "src/app/reducers";
-import { Gender, Participant, ParticipantCategory, ParticipantUtils, Race, RaceDetail, StringTypeUtils } from "src/types";
+import { categoryGender_es, Gender, Participant, ParticipantCategory, ParticipantUtils, Race, RaceDetail } from "src/types";
 import { Observable } from "rxjs";
 import { selectRace } from "../reducers";
 import * as RaceDetailsActions from "../reducers/race-details.actions";
@@ -27,10 +27,7 @@ export class RaceDetailsComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private _store: Store<State>) {
   }
 
-  ngOnInit(): void {
-    const raceId = this._route.snapshot.paramMap.get('race_id')
-    if (raceId) this._store.dispatch(RaceDetailsActions.LOAD_DETAILS({ raceId: +raceId }))
-
+  ngOnInit() {
     this.race$.subscribe((race) => {
         if (!race) return;
 
@@ -43,6 +40,9 @@ export class RaceDetailsComponent implements OnInit {
         }
       }
     );
+
+    const raceId = this._route.snapshot.paramMap.get('race_id')
+    if (raceId) this._store.dispatch(RaceDetailsActions.LOAD_DETAILS({ raceId: +raceId }))
   }
 
   isTimeTrial(race: Race): boolean {
@@ -86,5 +86,5 @@ export class RaceDetailsComponent implements OnInit {
     return value ? `Tanda ${value}` : 'Tiempos'
   }
 
-  readableCategoryGender = StringTypeUtils.categoryGender
+  readableCategoryGender = categoryGender_es;
 }

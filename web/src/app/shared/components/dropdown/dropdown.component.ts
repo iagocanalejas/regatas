@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
-export interface DropdownItem {
+export type DropdownItem = {
   id: number;
   name: string;
 }
@@ -13,15 +13,15 @@ export interface DropdownItem {
 })
 export class DropdownComponent<T extends DropdownItem> {
   @Input() title: string = 'Dropdown';
-  @Input() nullItem?: string = undefined;
-  @Input() items: T[] = [];
-  @Input() showClear: boolean = false;
-  @Input() selectedItem?: T = undefined;
+  @Input() items: readonly T[] = [];
+  @Input() hideClear: boolean = false;
+  @Input() selectedItem?: T;
+  @Input() displayFn: (t: string) => string = (t) => t;
 
-  @Output() onSelect: EventEmitter<T | undefined> = new EventEmitter();
+  @Output() onSelect: EventEmitter<T> = new EventEmitter();
   @Output() onClear: EventEmitter<void> = new EventEmitter();
 
-  select(item?: T) {
+  select(item: T) {
     this.selectedItem = item
     this.onSelect.emit(item)
   }

@@ -84,6 +84,9 @@ class ClubRacesView(GenericAPIView):
             OpenApiParameter(name='league', description='Filter by league', required=False, type=int),
             OpenApiParameter(name='year', description='Filter by year', required=False, type=int),
             OpenApiParameter(name='keywords', description='Filter by trophy, flag, league, sponsor, town', required=False, type=str),
+            OpenApiParameter(name='gender', description='Filter by gender', required=False, type=str),
+            OpenApiParameter(name='category', description='Filter by category', required=False, type=str),
+            OpenApiParameter(name='ordering', description='Sort results by given param. default: #Race.date', required=False, type=str),
         ],
         responses={
             200: ParticipationSerializer(many=True),
@@ -95,7 +98,7 @@ class ClubRacesView(GenericAPIView):
         races = ParticipantService.get_filtered(
             queryset,
             request.query_params,
-            related=['race__trophy', 'race__flag', 'race__league', 'race__organizer__title'],
+            related=['race', 'race__trophy', 'race__flag', 'race__league', 'race__organizer__title'],
             prefetch=['race__participants']
         )
         page = self.paginate_queryset(races)

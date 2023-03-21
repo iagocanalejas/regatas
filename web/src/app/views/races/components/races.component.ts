@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, combineLatest, debounceTime, distinct, filter, map, Observable, takeWhile, tap } from "rxjs";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, debounceTime, distinct, Observable, takeWhile } from "rxjs";
 import { DEFAULT_PAGE, Flag, Page, PaginationConfig, Race, RaceFilter, Trophy } from 'src/types';
 import { selectFlags, selectTrophies, State } from "src/app/reducers";
 import { Store } from "@ngrx/store";
 import * as RaceActions from "../reducers/races.actions";
 import { selectRaces } from "../reducers";
 import { ActivatedRoute, Router } from "@angular/router";
-import { PaginationComponent } from "../../../shared/components/pagination/pagination.component";
 
 interface QueryParams {
   leagueId?: number;
@@ -19,7 +18,6 @@ interface QueryParams {
 })
 export class RacesComponent implements OnInit, OnDestroy {
   private activeComponent: boolean = false;
-  @ViewChild('pagination') paginationComponent?: PaginationComponent;
 
   public trophies$: Observable<Trophy[]> = this._store.select(selectTrophies);
   public flags$: Observable<Flag[]> = this._store.select(selectFlags);
@@ -28,6 +26,7 @@ export class RacesComponent implements OnInit, OnDestroy {
 
   private params: BehaviorSubject<QueryParams> = new BehaviorSubject({});
   private filtering: BehaviorSubject<RaceFilter> = new BehaviorSubject({});
+  private sorting: BehaviorSubject<string> = new BehaviorSubject('date');
   private paginating: BehaviorSubject<PaginationConfig> = new BehaviorSubject({ ...DEFAULT_PAGE });
 
   listOffset: number = 0;
@@ -38,41 +37,52 @@ export class RacesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.activeComponent = true;
 
-    this._route.queryParams.pipe(
-      tap(params => !params['league_id']
-        ? this._router.navigate(['races'], { queryParams: { league_id: 2 } })
-        : params),
-      filter(params => !!params['league_id']),
-      map(params => +params['league_id']),
-      takeWhile(() => this.activeComponent),
-    ).subscribe(
-      leagueId => this.params.next({ leagueId })
-    )
-
     combineLatest([
       this.params,
       this.filtering,
+      this.sorting,
       this.paginating
     ]).pipe(
       distinct(),
-      debounceTime(200),
+      debounceTime(300),
       takeWhile(() => this.activeComponent),
     ).subscribe(
-      ([params, filters, page]) => {
+      ([params, filters, sortBy, page]) => {
         this.listOffset = (page.page - 1) * page.itemsPerPage;
 
         delete filters['league']
         switch (params.leagueId) {
           case -1:
             // filter races without league
-            return this._store.dispatch(RaceActions.LOAD_RACES({ filters: { ...filters, league: undefined }, page }));
+            return this._store.dispatch(RaceActions.LOAD_RACES({
+              filters: { ...filters, league: undefined },
+              page: { ...page, sortBy }
+            }));
           case 0:
             // filter races with any league or no league
-            return this._store.dispatch(RaceActions.LOAD_RACES({ filters: { ...filters }, page }));
+            return this._store.dispatch(RaceActions.LOAD_RACES({
+              filters: { ...filters },
+              page: { ...page, sortBy }
+            }));
           default:
             // filter races with given league
-            return this._store.dispatch(RaceActions.LOAD_RACES({ filters: { ...filters, league: params.leagueId }, page }));
+            return this._store.dispatch(RaceActions.LOAD_RACES({
+              filters: { ...filters, league: params.leagueId },
+              page: { ...page, sortBy }
+            }));
         }
+      }
+    );
+
+    this._route.queryParams.pipe(
+      takeWhile(() => this.activeComponent),
+    ).subscribe(
+      params => {
+        if (!params['league_id']) {
+          this._router.navigate(['races'], { queryParams: { league_id: 0 } })
+          return
+        }
+        return this.params.next({ leagueId: +params['league_id'] })
       }
     );
   }
@@ -81,15 +91,19 @@ export class RacesComponent implements OnInit, OnDestroy {
     this.activeComponent = false;
   }
 
-  onFilterChange(filters: RaceFilter) {
+  changeFilters(filters: RaceFilter) {
     this.filtering.next(filters);
   }
 
-  onPageChange(page: PaginationConfig) {
+  changePage(page: PaginationConfig) {
     this.paginating.next(page);
   }
 
-  onRaceSelect(race: Race) {
+  changeSorting(sortBy: string) {
+    this.sorting.next(sortBy);
+  }
+
+  selectRace(race: Race) {
     this._router.navigate(['races', race.id]).then();
   }
 }
