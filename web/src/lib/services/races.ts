@@ -16,6 +16,14 @@ export class RacesService {
 			query += `&league=${filters.league}`;
 		}
 
+		if (!!filters.trophy) {
+			query += `&trophy=${filters.trophy}`;
+		}
+
+		if (!!filters.flag) {
+			query += `&flag=${filters.flag}`;
+		}
+
 		return query;
 	}
 

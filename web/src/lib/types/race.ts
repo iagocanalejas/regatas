@@ -1,8 +1,8 @@
 import type { Trophy } from './trophy';
 import type { Flag } from './flag';
 import type { League } from './league';
-import type { Entity } from './entity';
 import type { Gender, RaceType } from './types';
+import { z } from 'zod';
 
 export type Race = {
 	id: number;
@@ -25,20 +25,14 @@ export type Race = {
 	genders: Gender[];
 };
 
-export type RaceDetail = Race & {
-	// participants: Participant[];
-	series?: number;
-	town?: string;
-	organizer?: Entity;
-};
-
-export type RaceFilter = {
-	trophy?: number;
-	flag?: number;
-	league?: number;
-	participant?: number;
-	year?: number;
-	keywords?: string;
-};
+export const RaceFilter = z.object({
+	trophy: z.optional(z.number().min(1)),
+	flag: z.optional(z.number().min(1)),
+	league: z.optional(z.number().min(1)),
+	participant: z.optional(z.number().min(1)),
+	year: z.optional(z.number().min(2003)),
+	keywords: z.optional(z.string())
+});
+export type RaceFilter = z.infer<typeof RaceFilter>;
 
 export type RaceSortBy = 'type' | 'date' | 'name' | 'league';

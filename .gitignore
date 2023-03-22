@@ -47,6 +47,7 @@ service/.coverage
 service/media/
 **/logs/*.log
 **/logs/*.log.*
+**/tmp/*
 service/static/
 _backups/*
 _scrapped/*

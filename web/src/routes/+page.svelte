@@ -2,9 +2,9 @@
 	import { races, racesPage, raceFilters, resetRacesStore } from '$lib/stores/races';
 	import { DEFAULT_PAGE_RESULT, type RaceFilter } from '$lib/types';
 	import { onDestroy } from 'svelte';
-	import SearchRace from '$lib/components/SearchRace.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
 	import { RacesService } from '$lib/services/races';
+	import Pagination from '$lib/components/Pagination.svelte';
+	import RaceFilters from '$lib/components/RaceFilters.svelte';
 
 	onDestroy(() => resetRacesStore());
 
@@ -44,8 +44,10 @@
 </script>
 
 <div class="flex flex-col mx-auto w-4/5 py-3 space-y-3">
-	<SearchRace
+	<RaceFilters
 		on:leagueChanged={(e) => changeFilters('league', e.detail?.id)}
+		on:trophyChanged={(e) => changeFilters('trophy', e.detail?.id)}
+		on:flagChanged={(e) => changeFilters('flag', e.detail?.id)}
 		on:keywordsChanged={(e) => changeFilters('keywords', e.detail)}
 		on:yearChanged={(e) => changeFilters('year', e.detail)}
 		on:clear={clearFilters}

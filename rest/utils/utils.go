@@ -9,34 +9,32 @@ func ContainsString(slice []string, target string) bool {
 	return false
 }
 
-func Int2roman(original int) string {
-	if original < 1 || original > 3999 {
-		return ""
-	}
+var romanSymbols = []struct {
+	Value  int
+	Symbol string
+}{
+	{1000, "M"},
+	{900, "CM"},
+	{500, "D"},
+	{400, "CD"},
+	{100, "C"},
+	{90, "XC"},
+	{50, "L"},
+	{40, "XL"},
+	{10, "X"},
+	{9, "IX"},
+	{5, "V"},
+	{4, "IV"},
+	{1, "I"},
+}
 
-	numerals := [][]string{
-		{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}, // 1-9
-		{"X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}, // 10-90
-		{"C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}, // 100-900
-		{"M", "MM", "MMM"}, // 1000-3000
-	}
-
-	digits := []int{}
-	n := original
-	for n > 0 {
-		digits = append(digits, n%10)
-		n /= 10
-	}
-
-	position := len(digits) - 1
+func Int2Roman(num int) string {
 	roman := ""
-
-	for _, digit := range digits {
-		if digit != 0 {
-			roman += numerals[position][digit-1]
+	for _, symbol := range romanSymbols {
+		for num >= symbol.Value {
+			roman += symbol.Symbol
+			num -= symbol.Value
 		}
-		position--
 	}
-
 	return roman
 }

@@ -32,7 +32,7 @@ func getLeagues(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, leagues)
 }
 
-func AddLeaguesRoutes(router *gin.Engine) *gin.Engine {
+func AddLeagueRoutes(router *gin.Engine) *gin.Engine {
 	router.GET("/api/leagues", getLeagues)
 	return router
 }

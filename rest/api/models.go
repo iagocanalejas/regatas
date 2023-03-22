@@ -12,12 +12,12 @@ import (
 type Trophy struct {
 	ID      int64  `json:"id"`
 	Name    string `json:"name"`
-	Edition int    `json:"edition"`
+	Edition *int    `json:"edition"`
 }
 type Flag struct {
 	ID      int64  `json:"id"`
 	Name    string `json:"name"`
-	Edition int    `json:"edition"`
+	Edition *int    `json:"edition"`
 }
 type League struct {
 	ID     int64   `json:"id"`
@@ -53,7 +53,7 @@ func NewRace(race db.Race) *Race {
 		trophy = &Trophy{
 			ID:      *race.TrophyId,
 			Name:    *race.TrophyName,
-			Edition: *race.TrophyEdition,
+			Edition: race.TrophyEdition,
 		}
 	}
 
@@ -62,7 +62,7 @@ func NewRace(race db.Race) *Race {
 		flag = &Flag{
 			ID:      *race.FlagId,
 			Name:    *race.FlagName,
-			Edition: *race.FlagEdition,
+			Edition: race.FlagEdition,
 		}
 	}
 
@@ -112,13 +112,13 @@ func buildRaceName(race db.Race) string {
 
 	trophy := ""
 	if race.TrophyId != nil && *race.TrophyEdition > 0 {
-		trophy = fmt.Sprintf("%s - %s", utils.Int2roman(*race.TrophyEdition), *race.TrophyName)
+		trophy = fmt.Sprintf("%s - %s", utils.Int2Roman(*race.TrophyEdition), *race.TrophyName)
 		trophy = strings.Replace(trophy, "(CLASIFICATORIA)", "", -1)
 	}
 
 	flag := ""
 	if race.FlagId != nil && *race.FlagEdition > 0 {
-		flag = fmt.Sprintf("%s - %s", utils.Int2roman(*race.FlagEdition), *race.FlagName)
+		flag = fmt.Sprintf("%s - %s", utils.Int2Roman(*race.FlagEdition), *race.FlagName)
 	}
 
 	sponsor := ""

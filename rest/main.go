@@ -3,8 +3,10 @@ package main
 import (
 	"net/http"
 
+	"r4l/rest/api/flags"
 	"r4l/rest/api/leagues"
 	"r4l/rest/api/races"
+	"r4l/rest/api/trophies"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,8 +31,10 @@ func main() {
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
+	trophies.AddTrophyRoutes(router)
+	flags.AddFlagRoutes(router)
 	races.AddRaceRoutes(router)
-	leagues.AddLeaguesRoutes(router)
+	leagues.AddLeagueRoutes(router)
 
 	router.Run("localhost:8080")
 }
