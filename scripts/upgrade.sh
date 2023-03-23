@@ -22,4 +22,4 @@ echo "### Wait for user input (in case some manual action needs to be done)"
 read -n 1 -p "Press any key to continue:" _
 
 echo "### Start new version"
-docker-compose up
+docker-compose up -d

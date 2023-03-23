@@ -42,5 +42,5 @@ echo >&2 'Celery workers is available'
 
 celery -A config.celery.app --broker="${CELERY_BROKER}" flower --detach
 
-# This will exec the CMD from your Dockerfile, i.e. "npm start"
+# This will exec the CMD from your Dockerfile
 exec "$@"

@@ -1,10 +1,16 @@
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from apps.entities.views import LeaguesView, OrganizersView
 from apps.races.views import FlagsView, TrophiesView
 from config import settings
+
+
+def flower_redirect(request):
+    return redirect('http://localhost:5557')
+
 
 # @formatter:off
 base_urls = [
@@ -28,6 +34,7 @@ urlpatterns = [
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('admin/', admin.site.urls),
     path('api/', include(api_urls), name='api'),
+    path('flower/', flower_redirect, name='flower'),
 ]
 
 if settings.DEBUG:

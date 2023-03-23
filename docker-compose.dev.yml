@@ -15,6 +15,7 @@ services:
         build_command: 'npm run build:dev'
         nginx: 'nginx.dev.conf'
     image: r4l/web
+    restart: unless-stopped
     networks:
       - r4l
     ports:
@@ -37,10 +38,10 @@ services:
       - './docker/shared:/srv/www/r4l/shared'
       - './docker/logs:/srv/www/r4l/logs'
       - './docker/sockets:/run/r4l'
-    env_file:
-      - '.env.docker'
     ports:
       - "5557:5555"
+    env_file:
+      - '.env.docker'
     depends_on:
       - redis
 networks:

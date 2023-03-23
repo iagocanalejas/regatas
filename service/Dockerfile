@@ -26,4 +26,5 @@ CMD exec gunicorn config.wsgi:application \
     --workers=2 \
     --log-level=info \
     --log-file=/srv/www/r4l/logs/gunicorn.log \
-    --access-logfile=/srv/www/r4l/logs/gunicorn-access.log
+    --access-logfile=/srv/www/r4l/logs/gunicorn-access.log \
+    --daemon
