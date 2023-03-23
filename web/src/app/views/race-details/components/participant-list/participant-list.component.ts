@@ -49,7 +49,7 @@ export class ParticipantListComponent implements OnInit, OnChanges {
   }
 
   get cardTitle(): string {
-    return this.distance ? `${this.title} (${this.distance}m)` : this.title
+    return this.distance ? `${this.title} (${this.distance.toFixed()}m)` : this.title
   }
 
   get visibleLaps(): number[] {
