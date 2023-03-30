@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def _should_create_task(race_id: str, datasource: str, tasks: List[Task]) -> bool:
     exists_in_db = RaceService.get_filtered(
         queryset=Race.objects, filters={'metadata': [{
-            "race_id": race_id,
+            "ref_id": race_id,
             "datasource_name": datasource
         }]}
     )

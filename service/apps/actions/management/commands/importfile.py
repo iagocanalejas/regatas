@@ -11,6 +11,7 @@ from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
 from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
+from apps.schemas import MetadataBuilder
 from utils.checks import is_play_off
 from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
 from utils.exceptions import StopProcessing
@@ -279,8 +280,8 @@ class Command(BaseCommand):
                 raise StopProcessing
 
     def _get_race_or_create(self, dfs: DataFrame, row: Series):
-        metadata = Race.MetadataBuilder() \
-            .race_id(row[COLUMN_RACE_ID]) \
+        metadata = MetadataBuilder() \
+            .ref_id(row[COLUMN_RACE_ID]) \
             .datasource_name(row[COLUMN_DATASOURCE])
         if COLUMN_URL in row and row[COLUMN_URL]:
             metadata = metadata.values('details_page', row[COLUMN_URL])
@@ -301,7 +302,7 @@ class Command(BaseCommand):
             league=row[COLUMN_LEAGUE],
             modality=row[COLUMN_MODALITY],
             organizer=row[COLUMN_ORGANIZER],
-            metadata=metadata.build(),
+            metadata={'datasource': [metadata.build()]},
         )
         created, db_race = RaceService.get_race_or_create(race)
         if not created:

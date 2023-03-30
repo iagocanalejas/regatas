@@ -12,6 +12,7 @@ from apps.actions.digesters import ARCSoupDigester
 from apps.entities.services import LeagueService
 from apps.participants.models import Participant
 from apps.races.models import Race
+from apps.schemas import MetadataBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,14 @@ class ARCClient(Client, source=Datasource.ARC):
     @staticmethod
     def get_race_results_soup(**kwargs) -> Tuple[Tag, str]:
         raise NotImplementedError
+
+    @staticmethod
+    def get_club_page_soup(club_id: str, year: int, is_female: bool = False, **kwargs) -> Tuple[Tag, str]:
+        female = 'ligaete' if is_female else 'liga-arc'
+        url = f'https://www.{female}.com/es/clubes/{year}/{club_id}/1/_/plantilla'
+        response = requests.get(url=url, headers=Client.HEADERS)
+
+        return BeautifulSoup(response.text, 'html5lib'), url
 
     def get_web_race_by_id(self, race_id: str, is_female: bool) -> Tuple[Optional[Race], List[Participant]]:
         soup, url = self.get_race_details_soup(race_id=race_id, is_female=is_female)
@@ -75,7 +84,9 @@ class ARCClient(Client, source=Datasource.ARC):
             league=LeagueService.get_by_name(digester.get_league(is_female=is_female)),
             modality=digester.get_modality(),
             organizer=digester.get_organizer(),
-            metadata=Race.MetadataBuilder().race_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build(),
+            metadata={'datasource': [
+                MetadataBuilder().ref_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build()
+            ]},
         )
 
         return race, self._find_race_participants(digester, race, is_female)

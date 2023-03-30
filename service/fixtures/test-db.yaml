@@ -1331,7 +1331,7 @@
       datasource:
       - values:
         - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
-        race_id: '1647864858'
+        ref_id: '1647864858'
         datasource_name: act
 - model: races.race
   pk: 2
@@ -1358,7 +1358,7 @@
       datasource:
       - values:
         - details_page: https://www.ligalgt.com/principal/regata/11
-        race_id: '11'
+        ref_id: '11'
         datasource_name: lgt
 - model: races.race
   pk: 3
@@ -1385,7 +1385,7 @@
       datasource:
       - values:
         - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
-        race_id: '158'
+        ref_id: '158'
         datasource_name: arc
 - model: races.race
   pk: 4
@@ -1410,7 +1410,7 @@
     organizer: null
     metadata:
       datasource:
-      - race_id: cabo.jpg
+      - ref_id: cabo.jpg
         datasource_name: inforemo
 - model: participants.participant
   pk: 1

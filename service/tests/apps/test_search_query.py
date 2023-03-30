@@ -3,6 +3,8 @@ import os.path
 from django.conf import settings
 from django.test import TestCase
 
+from apps.entities.models import Entity
+from apps.entities.services import EntityService
 from apps.races.models import Flag, Trophy
 from apps.races.services import FlagService, TrophyService
 
@@ -33,3 +35,9 @@ class SearchQueryTest(TestCase):
 
         query = 'BANDEIRA DEPUTACION DA CORUNA DE TRAINERAS'
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
+
+    def test_search_club(self):
+        entity = Entity.objects.get(pk=30)
+
+        query = 'SD TIRÁN PEREIRA'
+        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))

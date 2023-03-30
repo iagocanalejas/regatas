@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 import ai_django.ai_core.validators.schema
-import apps.races.schemas
+import apps.schemas
 from apps.actions.datasource import Datasource
 
 
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             model_name='race',
             name='metadata',
             field=models.JSONField(
-                default=apps.races.schemas.default_race_metadata,
+                default=apps.schemas.default_metadata,
                 validators=[
                     ai_django.ai_core.validators.schema.JSONSchemaValidator(
                         schema={

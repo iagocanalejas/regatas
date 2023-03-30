@@ -3,6 +3,7 @@ from django.utils import timezone
 from jsonschema.exceptions import ValidationError
 
 from apps.races.models import Race, Flag
+from apps.schemas import MetadataBuilder
 
 
 class JSONValidatorsTest(TestCase):
@@ -11,12 +12,12 @@ class JSONValidatorsTest(TestCase):
         self.flag.save()
 
     def test_race_metadata_valid_datasource(self):
-        metadata = Race.MetadataBuilder().race_id(1).datasource_name('arc').values('details_page', 'test')
+        metadata = MetadataBuilder().ref_id(1).datasource_name('arc').values('details_page', 'test')
         race = Race(
             date=timezone.now(),
             flag=self.flag,
             flag_edition=1,
-            metadata=metadata.build(),
+            metadata={'datasource': [metadata.build()]},
         )
         race.save()
 
@@ -26,7 +27,7 @@ class JSONValidatorsTest(TestCase):
             flag=self.flag,
             flag_edition=1,
             metadata={'datasource': [{
-                'race_id': '1',
+                'ref_id': '1',
                 'datasource_name': 'arc',
                 'key': 'details_page'
             }]},

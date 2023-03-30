@@ -53,7 +53,8 @@ class Migration(migrations.Migration):
                 ('official_name', models.CharField(max_length=150, unique=True)),
                 (
                     'other_names',
-                    django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=150), default=list, size=None)
+                    django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=150),
+                                                              default=list, blank=True, size=None)
                 ),
                 (
                     'type',

@@ -14,6 +14,7 @@ from apps.actions.digesters import LGTSoupDigester
 from apps.entities.services import LeagueService
 from apps.participants.models import Participant
 from apps.races.models import Race
+from apps.schemas import MetadataBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,13 @@ class LGTClient(Client, source=Datasource.LGT):
     @staticmethod
     def get_races_summary_soup(**kwargs) -> Tuple[Tag, str]:
         raise NotImplementedError
+
+    @staticmethod
+    def get_club_page_soup(club_id: str, **kwargs) -> Tuple[Tag, str]:
+        url = f'https://www.ligalgt.com/principal/club/{club_id}'
+        response = requests.get(url=url, headers=Client.HEADERS)
+
+        return BeautifulSoup(response.text, 'html5lib'), url
 
     def get_web_race_by_id(self, race_id: str, **kwargs) -> Tuple[Optional[Race], List[Participant]]:
         details_soup, url = self.get_race_details_soup(race_id=race_id)
@@ -83,7 +91,9 @@ class LGTClient(Client, source=Datasource.LGT):
             league=LeagueService.get_by_name(digester.get_league()),
             modality=digester.get_modality(),
             organizer=self._find_organizer(digester.get_organizer()),
-            metadata=Race.MetadataBuilder().race_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build(),
+            metadata={'datasource': [
+                MetadataBuilder().ref_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build()
+            ]},
         )
 
         return race, self._find_race_participants(digester, race, is_female)
@@ -107,7 +117,7 @@ class LGTClient(Client, source=Datasource.LGT):
         )
         last_race_id = 1
         if len(races) > 0:
-            last_race_id = max([int(r.metadata['datasource'][0]['race_id']) for r in races if 'race_id' in r.metadata['datasource'][0]])
+            last_race_id = max([int(r.metadata['datasource'][0]['ref_id']) for r in races if 'ref_id' in r.metadata['datasource'][0]])
         logger.info(f'{self.DATASOURCE}: start scrapping from {last_race_id=}')
 
         # try to load new races

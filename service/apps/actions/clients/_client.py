@@ -69,6 +69,11 @@ class Client(ABC):
     def get_race_results_soup(**kwargs) -> Tuple[Tag, str]:
         raise NotImplementedError
 
+    @staticmethod
+    @abstractmethod
+    def get_club_page_soup(**kwargs) -> Tuple[Tag, str]:
+        raise NotImplementedError
+
     @abstractmethod
     def get_web_race_by_id(self, race_id: str, is_female: bool) -> Tuple[Optional[Race], List[Participant]]:
         raise NotImplementedError
@@ -102,7 +107,7 @@ class Client(ABC):
                 queryset=Race.objects,
                 filters={
                     'metadata': [{
-                        "race_id": race_id,
+                        "ref_id": race_id,
                         "datasource_name": datasource.lower()
                     }]
                 },

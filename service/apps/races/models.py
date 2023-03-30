@@ -1,8 +1,6 @@
 import logging
-from typing import Dict
 
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ValidationError
 from django.db import models, IntegrityError
 from django.db.models import JSONField
 
@@ -10,8 +8,7 @@ from ai_django.ai_core.models import CreationStampModel
 from ai_django.ai_core.utils.shortcuts import all_or_none
 from ai_django.ai_core.utils.strings import int_to_roman, whitespaces_clean
 from ai_django.ai_core.validators import JSONSchemaValidator
-from apps.actions.datasource import Datasource
-from apps.races.schemas import RACE_METADATA_SCHEMA, default_race_metadata
+from apps.schemas import METADATA_SCHEMA, default_metadata
 from utils.choices import RACE_CONVENTIONAL, RACE_TYPE_CHOICES, RACE_TRAINERA, RACE_MODALITY_CHOICES
 from utils.synonyms import lemmatize
 
@@ -116,8 +113,8 @@ class Race(CreationStampModel):
         on_delete=models.PROTECT,
     )
     metadata = JSONField(
-        default=default_race_metadata,
-        validators=[JSONSchemaValidator(schema=RACE_METADATA_SCHEMA)],
+        default=default_metadata,
+        validators=[JSONSchemaValidator(schema=METADATA_SCHEMA)],
     )
 
     def __str__(self):
@@ -152,35 +149,6 @@ class Race(CreationStampModel):
         self.validate_editions()
         self.full_clean()
         super(Race, self).save(*args, **kwargs)
-
-    class MetadataBuilder:
-        _metadata: Dict
-
-        def __init__(self):
-            self._metadata = {'values': {}}
-
-        def race_id(self, value: str | int) -> 'Race.MetadataBuilder':
-            self._metadata['race_id'] = str(value)
-            return self
-
-        def datasource_name(self, value: str) -> 'Race.MetadataBuilder':
-            if not Datasource.is_valid(value):
-                raise ValidationError({'datasource_name', f'invalid {value=}'})
-            self._metadata['datasource_name'] = value
-            return self
-
-        def values(self, key: str, value: str) -> 'Race.MetadataBuilder':
-            if key in self._metadata['values']:
-                logger.warning(f'replacing {key=}:{self._metadata["values"][key]} with {value=}')
-            self._metadata['values'][key] = value
-            return self
-
-        def build(self) -> Dict:
-            if 'values' not in self._metadata:
-                raise ValidationError({'values', f'required object "values" in metadata'})
-            if 'datasource_name' not in self._metadata:
-                raise ValidationError({'datasource_name', f'required object "datasource_name" in metadata'})
-            return {'datasource': [self._metadata]}  # TODO: allow multiple datasource
 
     class Meta:
         db_table = 'race'

@@ -5,7 +5,7 @@ import django.utils.timezone
 from django.db import migrations, models
 
 import ai_django.ai_core.validators.schema
-import apps.races.schemas
+import apps.schemas
 
 
 class Migration(migrations.Migration):
@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
                 (
                     'metadata',
                     models.JSONField(
-                        default=apps.races.schemas.default_race_metadata,
+                        default=apps.schemas.default_metadata,
                         validators=[
                             ai_django.ai_core.validators.schema.JSONSchemaValidator(
                                 schema={

@@ -12,6 +12,7 @@ from apps.actions.digesters import ACTSoupDigester
 from apps.entities.services import LeagueService
 from apps.participants.models import Participant
 from apps.races.models import Race
+from apps.schemas import MetadataBuilder
 from utils.choices import RACE_TRAINERA
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,14 @@ class ACTClient(Client, source=Datasource.ACT):
     def get_races_summary_soup(year: int, is_female: bool, **kwargs) -> Tuple[Tag, str]:
         female = '/femenina' if is_female else ''
         url = f"https://www.euskolabelliga.com{female}/resultados/index.php?t={year}"
+        response = requests.get(url=url, headers=Client.HEADERS)
+
+        return BeautifulSoup(response.text, 'html5lib'), url
+
+    @staticmethod
+    def get_club_page_soup(club_id: str, is_female: bool, **kwargs) -> Tuple[Tag, str]:
+        female = '/femenina' if is_female else ''
+        url = f'https://www.euskolabelliga.com{female}/clubes/index.php?c={club_id}'
         response = requests.get(url=url, headers=Client.HEADERS)
 
         return BeautifulSoup(response.text, 'html5lib'), url
@@ -80,7 +89,9 @@ class ACTClient(Client, source=Datasource.ACT):
             league=LeagueService.get_by_name(digester.get_league(is_female=is_female)),
             modality=RACE_TRAINERA,
             organizer=self._find_organizer(digester.get_organizer()),
-            metadata=Race.MetadataBuilder().race_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build(),
+            metadata={'datasource': [
+                MetadataBuilder().ref_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build()
+            ]},
         )
         return race, self._find_race_participants(digester, race, is_female=is_female)
 
