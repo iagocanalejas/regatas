@@ -8,7 +8,7 @@ django-extensions==3.2.1
 django-prettyjson==0.4.1
 django-stdimage==6.0.1
 djangorestframework==3.14.0
-drf-spectacular==0.26.1
+drf-spectacular==0.26.2
 environs==9.5.0
 flower==1.2.0
 html5lib==1.1
