@@ -1,4 +1,4 @@
-Django==4.1.7
+Django==4.1.9
 Pillow==9.4.0
 argon2_cffi==21.3.0
 beautifulsoup4==4.12.0
