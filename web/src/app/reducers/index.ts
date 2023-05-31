@@ -22,6 +22,6 @@ export const selectLeagues = createSelector(selectAppState, app.selectLeagues);
 export const selectTrophies = createSelector(selectAppState, app.selectTrophies);
 export const selectFlags = createSelector(selectAppState, app.selectFlags);
 export const selectClubs = createSelector(selectAppState, app.selectClubs);
-export const {selectRouteData} = router.getSelectors();
+export const {selectRouteData} = router.getRouterSelectors();
 
 export { app, router }
