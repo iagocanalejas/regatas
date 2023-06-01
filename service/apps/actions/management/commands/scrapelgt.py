@@ -4,7 +4,7 @@ from typing import List
 
 from django.core.management import BaseCommand
 
-from apps.actions.management.utils import ScrappedItem, save_scrapped_items
+from apps.actions.management.utils import ScrappedItem, save_items
 from apps.actions.management.scrappers import LGTScrapper
 from utils.exceptions import StopProcessing
 
@@ -41,10 +41,10 @@ class Command(BaseCommand):
 
                 i += 1
 
-            save_scrapped_items(items, file_name=scrapper.DATASOURCE)
+            save_items(items, file_name=scrapper.DATASOURCE)
 
         if options['race_id']:
-            save_scrapped_items(
+            save_items(
                 list(scrapper.scrap(race_id=options['race_id'])),
                 file_name=f'{options["race_id"]}.csv',
             )

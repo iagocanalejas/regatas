@@ -1,4 +1,5 @@
 import csv
+import os
 from dataclasses import dataclass
 from datetime import date
 from typing import List, Optional
@@ -41,7 +42,7 @@ class ScrappedItem:
     disqualified: bool = False
 
 
-def save_scrapped_items(items: List[ScrappedItem], file_name: str):
+def save_items(items: List[ScrappedItem], file_name: str):
     if not len(items):
         return
 
@@ -51,3 +52,18 @@ def save_scrapped_items(items: List[ScrappedItem], file_name: str):
         writer.writerow(items[0].__dict__.keys())  # write headers
         for item in items:
             writer.writerow(item.__dict__.values())
+
+
+def path_files(paths: List[str], valid_files: List[str]) -> List[str]:
+    def is_valid(file: str) -> bool:
+        _, extension = os.path.splitext(file)
+        return extension.upper() in valid_files
+
+    files = []
+    for path in paths:
+        if os.path.isdir(path):
+            [files.append(os.path.join(path, file)) for file in os.listdir(path)]
+        else:
+            files.append(path)
+
+    return [f for f in files if is_valid(f)]
