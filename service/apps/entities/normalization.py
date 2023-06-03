@@ -10,7 +10,7 @@ from utils.choices import ENTITY_CLUB
 logger = logging.getLogger(__name__)
 
 # list of normalizations to specific to be implemented
-_ENTITY_TITLES_SHORT = ['CR', 'SD', 'SDR', 'CM', 'CR', 'AD', 'CC', 'CRC', 'CDM', 'CCD', 'CRN', 'FEM', 'B', 'AN', 'AE', 'CN']
+_ENTITY_TITLES_SHORT = ['CR', 'SD', 'SDR', 'CM', 'CR', 'AD', 'CC', 'CRC', 'CDM', 'CCD', 'CRN', 'FEM', 'B', 'AN', 'AE', 'CN', 'AR']
 _ENTITY_TITLES = [
     'SOCIEDAD CULTURAL Y RECREATIVA',
     'BETERANOEN ARRAUNKETA KLUBA',
@@ -57,6 +57,7 @@ _NORMALIZED_ENTITIES = {
     'PORTUGALETE': ['POTUGALETE'],
     'GETXO': ['GETRXO'],
     'DONOSTIARRA': ['DNOSTIARRA'],
+    'UR KIROLAK': ['UR-KIROLAK'],
 }
 _LEAGUES_MAP = {
     'LIGA GALEGA DE TRAIÑAS': ['LGT'],
@@ -65,6 +66,7 @@ _LEAGUES_MAP = {
     'LIGA GALEGA DE TRAIÑAS FEMENINA': ['LIGA FEM', 'LIGA F'],
     'ASOCIACIÓN DE CLUBES DE TRAINERAS': ['ACT'],
 }
+_KNOWN_SPONSORS = ['BAHIAS DE BIZKAIA', 'UROLA KOSTA', 'PEREIRA', 'MATRIX', 'BIZKAIA']
 
 
 def normalize_league_name(name: str) -> str:
@@ -113,11 +115,14 @@ def remove_club_sponsor(name: str) -> str:
         query = Entity.queryset_for_search().filter(
             Q(name__unaccent__icontains=maybe_sponsor) | Q(joined_names__unaccent__icontains=maybe_sponsor), type=ENTITY_CLUB
         )
-        if not maybe_sponsor or not query.exists():
+        if not maybe_sponsor or not query.exists() or maybe_sponsor in _KNOWN_SPONSORS:
             maybe_sponsor = None
 
         if all(i is None for i in [maybe_club, maybe_sponsor]):
             return name
 
         name = ' - '.join(i for i in [maybe_club, maybe_sponsor] if i is not None)
+    for sponsor in _KNOWN_SPONSORS:
+        name = name.replace(sponsor, '')
+        name = name.replace(unidecode(sponsor), '')
     return whitespaces_clean(name)

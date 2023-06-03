@@ -1,9 +1,11 @@
 import os.path
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from apps.entities.models import Entity
+from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService
 from apps.races.models import Flag, Trophy
 from apps.races.services import FlagService, TrophyService
@@ -40,4 +42,15 @@ class SearchQueryTest(TestCase):
         entity = Entity.objects.get(pk=30)
 
         query = 'SD TIRÁN PEREIRA'
+        query = normalize_club_name(query)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
+
+        query = 'SAN JUAN DE TIRAN'
+        with self.assertRaises(ObjectDoesNotExist):
+            EntityService.get_closest_club_by_name(query)
+
+    def test_search_should_raise(self):
+        queries = ['C.N. SANTA LUCÍA', 'UR-KIROLAK', 'RIO MERO', 'SAN MARTIÑO']
+        for query in queries:
+            with self.assertRaises(ObjectDoesNotExist):
+                EntityService.get_closest_club_by_name(query)

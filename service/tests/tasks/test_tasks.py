@@ -59,10 +59,10 @@ class ProcessNewRacesTest(TestCase):
                     'metadata': {
                         'datasource': [
                             {
+                                'ref_id': '1647864858',
                                 'values': {
                                     'details_page': 'https://www.euskolabelliga.com/resultados/ver.php?r=1647864858'
                                 },
-                                'ref_id': '1647864858',
                                 'datasource_name': 'act'
                             }
                         ]

@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from unidecode import unidecode
 
 from ai_django.ai_core.utils.lists import flatten
-from ai_django.ai_core.utils.strings import closest_result, remove_conjunctions, remove_symbols
+from ai_django.ai_core.utils.strings import closest_result, remove_conjunctions, remove_symbols, levenshtein_distance
 from apps.entities.models import Entity
 from utils.choices import ENTITY_CLUB, ENTITY_TYPES
 
@@ -54,14 +54,22 @@ def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> En
     if not name:
         raise ValueError(f'invalid {name=}')
 
+    name = name.upper()
     parts = unidecode(remove_conjunctions(remove_symbols(name))).split()
 
     q = Entity.queryset_for_search().filter(type=entity_type) if entity_type else Entity.queryset_for_search()
     clubs = q.filter(reduce(operator.or_, [Q(name__unaccent__icontains=n) | Q(joined_names__unaccent__icontains=n) for n in parts]))
 
     matches = list(flatten(list(clubs.values_list('name', 'other_names'))))
-    closest, _ = closest_result(name, matches) if matches else (None, 0)
-    if not closest:
-        raise Entity.DoesNotExist
+    closest, closest_distance = closest_result(name, matches) if matches else (None, 0)
 
-    return Entity.objects.get(Q(name=closest) | Q(other_names__contains=[closest]))
+    if closest and closest_distance > .4:  # bigger is better
+        if closest_distance == 1.0:
+            return Entity.objects.get(Q(name=closest) | Q(other_names__contains=[closest]))
+
+        avg_length = (len(closest) + len(name)) / 2
+        normalized_levenshtein = levenshtein_distance(name, closest) / avg_length
+        if normalized_levenshtein < .4:  # smaller is better
+            return Entity.objects.get(Q(name=closest) | Q(other_names__contains=[closest]))
+
+    raise Entity.DoesNotExist
