@@ -32,29 +32,20 @@ class League(TraceableModel):
 
 
 class Entity(TraceableModel):
-    name = models.CharField(unique=True, max_length=150)
+    name = models.CharField(max_length=150)  # not unique | EX: CR BADALONA and CN BADALONA will resolve to BADALONA
     official_name = models.CharField(unique=True, max_length=150)
     other_names = ArrayField(default=list, blank=True, base_field=models.CharField(max_length=150))
 
     type = models.CharField(max_length=50, choices=ENTITY_TYPE_CHOICES)
     symbol = models.CharField(null=True, blank=True, default=None, max_length=10)
-    title = models.ForeignKey(
-        null=True,
-        default=None,
-        to='EntityTitle',
-        on_delete=models.PROTECT,
-        related_name='entities',
-        related_query_name='entity',
-    )
+
     metadata = JSONField(
         default=default_metadata,
         validators=[JSONSchemaValidator(schema=METADATA_SCHEMA)],
     )
 
     def __str__(self):
-        if self.title:
-            return f'{self.name} {self.title.name}' if self.title.show_after else f'{self.title.name} {self.name}'
-        return self.name
+        return self.official_name
 
     @staticmethod
     def queryset_for_search() -> QuerySet:
@@ -74,13 +65,3 @@ class Entity(TraceableModel):
         verbose_name = 'Entidad'
         verbose_name_plural = 'Entidades'
         ordering = ['type', 'name']
-
-
-class EntityTitle(models.Model):
-    name = models.CharField(unique=True, max_length=150)
-    show_after = models.BooleanField(default=False)
-
-    class Meta:
-        db_table = 'entity_tite'
-        verbose_name = 'Titulo'
-        ordering = ['name']

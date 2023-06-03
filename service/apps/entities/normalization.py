@@ -1,19 +1,44 @@
 import logging
 
 from django.db.models import Q
-from django.db.models.functions import Length
 from unidecode import unidecode
 
 from ai_django.ai_core.utils.strings import whitespaces_clean, remove_parenthesis
-from apps.entities.models import EntityTitle, Entity
+from apps.entities.models import Entity
 from utils.choices import ENTITY_CLUB
 
 logger = logging.getLogger(__name__)
 
 # list of normalizations to specific to be implemented
-__ENTITY_TITLES = ['CR', 'SD', 'SDR', 'CM', 'CR', 'AD', 'CC', 'CDM', 'CCD', 'CRN', 'FEM', 'B']
-__NORMALIZED_ENTITIES = {
+_ENTITY_TITLES_SHORT = ['CR', 'SD', 'SDR', 'CM', 'CR', 'AD', 'CC', 'CRC', 'CDM', 'CCD', 'CRN', 'FEM', 'B', 'AN', 'AE', 'CN']
+_ENTITY_TITLES = [
+    'SOCIEDAD CULTURAL Y RECREATIVA',
+    'BETERANOEN ARRAUNKETA KLUBA',
+    'SOCIEDAD DEPORTIVA DE REMO',
+    'CENTRO DEPORTIVO MARIÑEIRO',
+    'CIRCULO CULTURAL DEPORTIVO',
+    'CLUB DEPORTIVO DE REMO',
+    'CLUB DE REMO NAUTICO',
+    'ASOCIACIÓN DEPORTIVA',
+    'SOCIEDAD DEPORTIVA',
+    'CIRCULO CULTURAL',
+    'CLUB DE REGATAS',
+    'ARRAUN ELKARTEA',
+    'ARRAUN LAGUNAK',
+    'ARRAUN TALDEA',
+    'CLUB ATLÉTICO',
+    'CLUB NAUTICO'
+    'CLUB DE REMO',
+    'CLUB DO MAR',
+    'CLUB DE MAR',
+    'REMO CLUB',
+    'CLUB REMO',
+    'ARRAUN',
+    'LICEO',
+]
+_NORMALIZED_ENTITIES = {
     'CABO DA CRUZ': ['CABO DE CRUZ', 'CABO'],
+    'CASTRO URDIALES': ['CASTRO'],
     'ARES': ['DE ARES'],
     'CESANTES': ['CESANTES REMO - RODAVIGO'],
     'FEDERACION GALEGA DE REMO': ['LGT - FEGR'],
@@ -33,7 +58,7 @@ __NORMALIZED_ENTITIES = {
     'GETXO': ['GETRXO'],
     'DONOSTIARRA': ['DNOSTIARRA'],
 }
-__LEAGUES_MAP = {
+_LEAGUES_MAP = {
     'LIGA GALEGA DE TRAIÑAS': ['LGT'],
     'LIGA GALEGA DE TRAIÑAS A': ['LIGA A'],
     'LIGA GALEGA DE TRAIÑAS B': ['LIGA B'],
@@ -43,7 +68,7 @@ __LEAGUES_MAP = {
 
 
 def normalize_league_name(name: str) -> str:
-    for k, v in __LEAGUES_MAP.items():
+    for k, v in _LEAGUES_MAP.items():
         if name in v:
             name = k
             break
@@ -56,7 +81,7 @@ def normalize_club_name(name: str) -> str:
     name = remove_club_sponsor(name)
 
     # specific club normalizations
-    for k, v in __NORMALIZED_ENTITIES.items():
+    for k, v in _NORMALIZED_ENTITIES.items():
         if name in v or any(part in name for part in v):
             name = k
             break
@@ -65,8 +90,8 @@ def normalize_club_name(name: str) -> str:
 
 
 def remove_club_title(name: str) -> str:
-    name = ' '.join(w for w in name.split() if w not in __ENTITY_TITLES)
-    for title in EntityTitle.objects.all().order_by(Length('name').desc()).values_list('name', flat=True):
+    name = ' '.join(w for w in name.split() if w not in _ENTITY_TITLES_SHORT)
+    for title in _ENTITY_TITLES:
         name = name.replace(title, '')
         name = name.replace(unidecode(title), '')
     return whitespaces_clean(name)

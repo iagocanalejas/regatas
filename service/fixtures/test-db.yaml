@@ -119,7 +119,6 @@
     other_names: '[]'
     type: LEAGUE
     symbol: ACT
-    title: null
 - model: entities.entity
   pk: 2
   fields:
@@ -131,7 +130,6 @@
     other_names: '[]'
     type: LEAGUE
     symbol: LGT
-    title: null
 - model: entities.entity
   pk: 3
   fields:
@@ -143,7 +141,6 @@
     other_names: '[]'
     type: LEAGUE
     symbol: ARC
-    title: null
 - model: entities.entity
   pk: 4
   fields:
@@ -155,7 +152,6 @@
     other_names: '[]'
     type: LEAGUE
     symbol: ETE
-    title: null
 - model: entities.entity
   pk: 5
   fields:
@@ -167,7 +163,6 @@
     other_names: '[]'
     type: FEDERATION
     symbol: FER
-    title: null
 - model: entities.entity
   pk: 6
   fields:
@@ -179,7 +174,6 @@
     other_names: '[]'
     type: FEDERATION
     symbol: FEGAR
-    title: null
 - model: entities.entity
   pk: 7
   fields:
@@ -191,7 +185,6 @@
     other_names: '[]'
     type: FEDERATION
     symbol: FECAN
-    title: null
 - model: entities.entity
   pk: 8
   fields:
@@ -203,7 +196,6 @@
     other_names: '[]'
     type: FEDERATION
     symbol: REMOASTUR
-    title: null
 - model: entities.entity
   pk: 9
   fields:
@@ -215,7 +207,6 @@
     other_names: '[]'
     type: FEDERATION
     symbol: ARRAUNA
-    title: null
 - model: entities.entity
   pk: 10
   fields:
@@ -227,7 +218,6 @@
     other_names: '[]'
     type: PRIVATE
     symbol: null
-    title: null
 - model: entities.entity
   pk: 11
   fields:
@@ -239,7 +229,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 12
   fields:
@@ -251,7 +240,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 5
 - model: entities.entity
   pk: 13
   fields:
@@ -263,7 +251,6 @@
     other_names: '[]'
     type: CLUB
     symbol: CRCC
-    title: 2
 - model: entities.entity
   pk: 14
   fields:
@@ -275,7 +262,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 6
 - model: entities.entity
   pk: 15
   fields:
@@ -287,7 +273,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 16
   fields:
@@ -299,7 +284,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 12
 - model: entities.entity
   pk: 17
   fields:
@@ -311,7 +295,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 18
   fields:
@@ -323,7 +306,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 19
   fields:
@@ -335,7 +317,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 10
 - model: entities.entity
   pk: 20
   fields:
@@ -347,7 +328,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 5
 - model: entities.entity
   pk: 21
   fields:
@@ -359,7 +339,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 22
   fields:
@@ -371,7 +350,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 1
 - model: entities.entity
   pk: 23
   fields:
@@ -383,7 +361,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 24
   fields:
@@ -395,7 +372,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 1
 - model: entities.entity
   pk: 25
   fields:
@@ -407,7 +383,6 @@
     other_names: '[]'
     type: CLUB
     symbol: CRP
-    title: 1
 - model: entities.entity
   pk: 26
   fields:
@@ -419,7 +394,6 @@
     other_names: '[]'
     type: CLUB
     symbol: CRR
-    title: 1
 - model: entities.entity
   pk: 27
   fields:
@@ -431,7 +405,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 11
 - model: entities.entity
   pk: 28
   fields:
@@ -443,7 +416,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 7
 - model: entities.entity
   pk: 29
   fields:
@@ -455,7 +427,6 @@
     other_names: '["MEIRA"]'
     type: CLUB
     symbol: null
-    title: 3
 - model: entities.entity
   pk: 30
   fields:
@@ -467,7 +438,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 3
 - model: entities.entity
   pk: 31
   fields:
@@ -479,7 +449,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 32
   fields:
@@ -491,7 +460,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 8
 - model: entities.entity
   pk: 33
   fields:
@@ -503,7 +471,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 34
   fields:
@@ -515,7 +482,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 35
   fields:
@@ -527,7 +493,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 36
   fields:
@@ -539,7 +504,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 37
   fields:
@@ -551,7 +515,6 @@
     other_names: '["GETARIA"]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 38
   fields:
@@ -563,7 +526,6 @@
     other_names: '["CASTRE\u00d1A", "CASTRO"]'
     type: CLUB
     symbol: null
-    title: 4
 - model: entities.entity
   pk: 39
   fields:
@@ -575,7 +537,6 @@
     other_names: '["BERMEO"]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 40
   fields:
@@ -587,7 +548,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 14
 - model: entities.entity
   pk: 41
   fields:
@@ -599,7 +559,6 @@
     other_names: '["SAN PEDRO"]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 42
   fields:
@@ -611,7 +570,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 43
   fields:
@@ -623,7 +581,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 15
 - model: entities.entity
   pk: 44
   fields:
@@ -635,7 +592,6 @@
     other_names: '["PORTUGALETE"]'
     type: CLUB
     symbol: null
-    title: 16
 - model: entities.entity
   pk: 45
   fields:
@@ -647,7 +603,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 46
   fields:
@@ -659,7 +614,6 @@
     other_names: '["SAN JUAN KOXTAPE", "SAN JUAN"]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 47
   fields:
@@ -671,7 +625,6 @@
     other_names: '["ZUMAIA", "ZUMAIAKO", "UROLA KOSTA"]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 48
   fields:
@@ -683,7 +636,6 @@
     other_names: '["LEKITTARRA"]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 49
   fields:
@@ -695,7 +647,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 50
   fields:
@@ -707,7 +658,6 @@
     other_names: '["SANTURTZI"]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 51
   fields:
@@ -719,7 +669,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 52
   fields:
@@ -731,7 +680,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 53
   fields:
@@ -743,7 +691,6 @@
     other_names: '["TRINTXERPE"]'
     type: CLUB
     symbol: null
-    title: 17
 - model: entities.entity
   pk: 54
   fields:
@@ -755,7 +702,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 4
 - model: entities.entity
   pk: 55
   fields:
@@ -767,7 +713,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 56
   fields:
@@ -779,7 +724,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 4
 - model: entities.entity
   pk: 57
   fields:
@@ -791,7 +735,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 58
   fields:
@@ -803,7 +746,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 16
 - model: entities.entity
   pk: 59
   fields:
@@ -815,7 +757,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 60
   fields:
@@ -827,7 +768,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 18
 - model: entities.entity
   pk: 61
   fields:
@@ -839,7 +779,6 @@
     other_names: '["TOLOSALDEA"]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 62
   fields:
@@ -851,7 +790,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 19
 - model: entities.entity
   pk: 63
   fields:
@@ -863,7 +801,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 64
   fields:
@@ -875,7 +812,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 65
   fields:
@@ -887,7 +823,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 66
   fields:
@@ -899,7 +834,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 67
   fields:
@@ -911,7 +845,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 68
   fields:
@@ -923,7 +856,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 69
   fields:
@@ -935,7 +867,6 @@
     other_names: '["RIANXEIRA MECALIA"]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 70
   fields:
@@ -947,7 +878,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 3
 - model: entities.entity
   pk: 71
   fields:
@@ -959,7 +889,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 72
   fields:
@@ -971,7 +900,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 16
 - model: entities.entity
   pk: 73
   fields:
@@ -983,7 +911,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 16
 - model: entities.entity
   pk: 74
   fields:
@@ -995,7 +922,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 19
 - model: entities.entity
   pk: 75
   fields:
@@ -1007,7 +933,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 11
 - model: entities.entity
   pk: 76
   fields:
@@ -1019,7 +944,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 77
   fields:
@@ -1031,7 +955,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 78
   fields:
@@ -1043,7 +966,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 79
   fields:
@@ -1055,7 +977,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 80
   fields:
@@ -1067,7 +988,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 81
   fields:
@@ -1079,7 +999,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 14
 - model: entities.entity
   pk: 82
   fields:
@@ -1091,7 +1010,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 13
 - model: entities.entity
   pk: 84
   fields:
@@ -1103,7 +1021,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 85
   fields:
@@ -1115,7 +1032,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 86
   fields:
@@ -1127,7 +1043,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 87
   fields:
@@ -1139,7 +1054,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 20
 - model: entities.entity
   pk: 88
   fields:
@@ -1151,7 +1065,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
 - model: entities.entity
   pk: 89
   fields:
@@ -1163,107 +1076,6 @@
     other_names: '[]'
     type: CLUB
     symbol: null
-    title: 2
-- model: entities.entitytitle
-  pk: 1
-  fields:
-    name: CLUB REMO
-    show_after: false
-- model: entities.entitytitle
-  pk: 2
-  fields:
-    name: CLUB DE REMO
-    show_after: false
-- model: entities.entitytitle
-  pk: 3
-  fields:
-    name: SOCIEDAD DEPORTIVA
-    show_after: false
-- model: entities.entitytitle
-  pk: 4
-  fields:
-    name: SOCIEDAD DEPORTIVA DE REMO
-    show_after: false
-- model: entities.entitytitle
-  pk: 5
-  fields:
-    name: CLUB DO MAR
-    show_after: false
-- model: entities.entitytitle
-  pk: 6
-  fields:
-    name: CLUB DE MAR
-    show_after: false
-- model: entities.entitytitle
-  pk: 7
-  fields:
-    name: CLUB DE REGATAS
-    show_after: false
-- model: entities.entitytitle
-  pk: 8
-  fields:
-    name: ASOCIACIÓN DEPORTIVA
-    show_after: false
-- model: entities.entitytitle
-  pk: 9
-  fields:
-    name: CIRCULO CULTURAL
-    show_after: false
-- model: entities.entitytitle
-  pk: 10
-  fields:
-    name: CENTRO DEPORTIVO MARIÑEIRO
-    show_after: false
-- model: entities.entitytitle
-  pk: 11
-  fields:
-    name: CLUB DE REMO NAUTICO
-    show_after: false
-- model: entities.entitytitle
-  pk: 12
-  fields:
-    name: CIRCULO CULTURAL DEPORTIVO
-    show_after: false
-- model: entities.entitytitle
-  pk: 13
-  fields:
-    name: ARRAUN ELKARTEA
-    show_after: true
-- model: entities.entitytitle
-  pk: 14
-  fields:
-    name: CLUB DEPORTIVO DE REMO
-    show_after: false
-- model: entities.entitytitle
-  pk: 15
-  fields:
-    name: REMO CLUB
-    show_after: false
-- model: entities.entitytitle
-  pk: 16
-  fields:
-    name: ARRAUN TALDEA
-    show_after: true
-- model: entities.entitytitle
-  pk: 17
-  fields:
-    name: CLUB ATLÉTICO
-    show_after: false
-- model: entities.entitytitle
-  pk: 18
-  fields:
-    name: ARRAUN LAGUNAK
-    show_after: true
-- model: entities.entitytitle
-  pk: 19
-  fields:
-    name: ARRAUN
-    show_after: true
-- model: entities.entitytitle
-  pk: 20
-  fields:
-    name: SOCIEDAD CULTURAL Y RECREATIVA
-    show_after: false
 - model: races.trophy
   pk: 25
   fields:

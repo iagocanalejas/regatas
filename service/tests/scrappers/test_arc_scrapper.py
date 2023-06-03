@@ -38,7 +38,7 @@ class ARCScrapperTest(unittest.TestCase):
                     series=1,
                     laps=['00:05:03', '00:10:11', '00:15:28'],
                     trophy_name='BANDERA DE ELENTXOBE',
-                    participant='CASTRO',
+                    participant='CASTRO URDIALES',
                     race_id='170',
                     url='http://www.liga-arc.com/historico/resultados_detalle.php?id=170',
                     datasource='arc',

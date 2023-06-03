@@ -33,7 +33,7 @@ class ClubsView(APIView):
     @extend_schema(responses={200: ClubSerializer(many=True)})
     def get(request):
         # TODO: Exclude clubs without participation
-        clubs = EntityService.get_clubs(related=['title'])
+        clubs = EntityService.get_clubs()
         return Response(ClubSerializer(clubs, many=True).data, status=status.HTTP_200_OK)
 
 
@@ -45,7 +45,7 @@ class ClubView(APIView):
     @staticmethod
     @extend_schema(responses={200: ClubSerializer()})
     def get(request, club_id: int):
-        club = EntityService.get_club_by_id(club_id, related=['title'])
+        club = EntityService.get_club_by_id(club_id)
         return Response(ClubSerializer(club).data, status=status.HTTP_200_OK)
 
 
@@ -57,7 +57,7 @@ class OrganizersView(APIView):
     @staticmethod
     @extend_schema(responses={200: OrganizerSerializer(many=True)})
     def get(request):
-        entities = EntityService.get(related=['title'])
+        entities = EntityService.get()
         return Response(
             {
                 'clubs': ClubSerializer([e for e in entities if e.type == ENTITY_CLUB], many=True).data,
@@ -98,7 +98,7 @@ class ClubRacesView(GenericAPIView):
         races = ParticipantService.get_filtered(
             queryset,
             request.query_params,
-            related=['race', 'race__trophy', 'race__flag', 'race__league', 'race__organizer__title'],
+            related=['race', 'race__trophy', 'race__flag', 'race__league', 'race__organizer'],
             prefetch=['race__participants']
         )
         page = self.paginate_queryset(races)

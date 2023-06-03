@@ -77,7 +77,7 @@ class RaceView(APIView):
     def get(request, race_id: int):
         race = RaceService.get_by_id(
             race_id=race_id,
-            related=['trophy', 'flag', 'league', 'organizer__title'],
+            related=['trophy', 'flag', 'league', 'organizer'],
             prefetch=['participants'],
         )
         return Response(RaceDetailsSerializer(race).data, status=status.HTTP_200_OK)
@@ -91,5 +91,5 @@ class RaceParticipantsView(APIView):
     @staticmethod
     @extend_schema(responses={200: ParticipantSerializer(many=True)})
     def get(request, race_id: int):
-        participants = ParticipantService.get_by_race_id(race_id, related=['club__title'], prefetch=['penalties'])
+        participants = ParticipantService.get_by_race_id(race_id, related=['club'], prefetch=['penalties'])
         return Response(ParticipantSerializer(participants, many=True).data, status=status.HTTP_200_OK)

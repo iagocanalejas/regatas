@@ -51,6 +51,9 @@ def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> En
     if entity_type and entity_type not in ENTITY_TYPES:
         raise ValueError(f'{entity_type=} should be one of {ENTITY_TYPES=}')
 
+    if not name:
+        raise ValueError(f'invalid {name=}')
+
     parts = unidecode(remove_conjunctions(remove_symbols(name))).split()
 
     q = Entity.queryset_for_search().filter(type=entity_type) if entity_type else Entity.queryset_for_search()

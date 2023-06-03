@@ -2,6 +2,7 @@ class Datasource:
     ACT = 'act'
     LGT = 'lgt'
     ARC = 'arc'
+    TRAINERAS = 'traineras.es'
     INFOREMO = 'inforemo'
 
     class ARCVersions:
@@ -10,4 +11,4 @@ class Datasource:
 
     @classmethod
     def is_valid(cls, value: str) -> bool:
-        return value in [cls.ACT, cls.ARC, cls.LGT, cls.INFOREMO]
+        return value in [cls.ACT, cls.ARC, cls.LGT, cls.TRAINERAS, cls.INFOREMO]
