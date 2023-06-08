@@ -32,12 +32,40 @@ class League(TraceableModel):
 
 
 class Entity(TraceableModel):
-    name = models.CharField(max_length=150)  # not unique | EX: CR BADALONA and CN BADALONA will resolve to BADALONA
-    official_name = models.CharField(unique=True, max_length=150)
-    other_names = ArrayField(default=list, blank=True, base_field=models.CharField(max_length=150))
+    """
+    cases:
+        - normal entity. ex: PUEBLA
+        - inactive entity that fused into another one. ex: BERMEO -> URDAIBAI
+        - subsidiary entity of another club. ex: MEIRA -> SAMERTOLAMEU
+    """
+
+    name = models.CharField(unique=True, max_length=150)
+    normalized_name = models.CharField(max_length=150)  # not unique | EX: CR BADALONA and CN BADALONA will resolve to BADALONA
+    known_names = ArrayField(default=list, blank=True, base_field=models.CharField(max_length=150))
 
     type = models.CharField(max_length=50, choices=ENTITY_TYPE_CHOICES)
     symbol = models.CharField(null=True, blank=True, default=None, max_length=10)
+
+    is_partnership = models.BooleanField(null=False, blank=True, default=False, db_index=True)
+
+    parent = models.ForeignKey(
+        null=True,
+        blank=True,
+        default=None,
+        to='self',
+        on_delete=models.PROTECT,
+        related_name='subsidiaries',
+        related_query_name='subsidiary',
+    )
+    fused_into = models.ForeignKey(
+        null=True,
+        blank=True,
+        default=None,
+        to='self',
+        on_delete=models.PROTECT,
+        related_name='formed_by',
+        related_query_name='formed_by',
+    )
 
     metadata = JSONField(
         default=default_metadata,
@@ -45,7 +73,7 @@ class Entity(TraceableModel):
     )
 
     def __str__(self):
-        return self.official_name
+        return self.name
 
     @staticmethod
     def queryset_for_search() -> QuerySet:
@@ -53,7 +81,7 @@ class Entity(TraceableModel):
         :return: #QuerySet annotated for named search
         """
         return Entity.objects.annotate(
-            joined_names=Func(F('other_names'), Value(' '), function='array_to_string', output_field=models.CharField())
+            joined_names=Func(F('known_names'), Value(' '), function='array_to_string', output_field=models.CharField())
         )
 
     def save(self, *args, **kwargs):

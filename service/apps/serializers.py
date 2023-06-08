@@ -15,12 +15,6 @@ class LeagueSerializer(serializers.ModelSerializer):
 
 
 class EntitySerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(read_only=True)
-
-    @staticmethod
-    def get_name(entity) -> str:
-        return f'{entity}'
-
     class Meta:
         model = Entity
         fields = (
