@@ -93,3 +93,26 @@ class Entity(TraceableModel):
         verbose_name = 'Entidad'
         verbose_name_plural = 'Entidades'
         ordering = ['type', 'name']
+
+
+class EntityPartnership(models.Model):
+    target = models.ForeignKey(
+        to='entities.Entity',
+        on_delete=models.PROTECT,
+        related_name='components',
+        related_query_name='component',
+        limit_choices_to={"is_partnership", True},
+    )
+    part = models.ForeignKey(
+        to='entities.Entity',
+        on_delete=models.PROTECT,
+        related_name='part_of',
+        related_query_name='part_of',
+        limit_choices_to={"is_partnership", False},
+    )
+    is_active = models.BooleanField(null=False, blank=True, default=True, db_index=True)
+
+    class Meta:
+        db_table = 'entity_partnership'
+        verbose_name = 'Fusión'
+        verbose_name_plural = 'Fusiones'
