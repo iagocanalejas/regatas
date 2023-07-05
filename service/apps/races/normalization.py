@@ -30,6 +30,7 @@ def normalize_trophy_name(name: str, is_female: bool) -> str:
     name = whitespaces_clean(name).upper()
     name = amend_trophy_name(name)
     name = deacronym_trophy_name(name)
+    name = remove_league_indicator(name)
 
     normalizations = __NORMALIZED_FEMALE_TROPHIES if is_female else __NORMALIZED_MALE_TROPHIES
     # specific trophy normalizations
@@ -39,6 +40,10 @@ def normalize_trophy_name(name: str, is_female: bool) -> str:
             break
 
     return whitespaces_clean(name)
+
+
+def remove_league_indicator(name: str) -> str:
+    return ' '.join([w for w in name.split() if w not in ['B', 'F']])
 
 
 def deacronym_trophy_name(name: str) -> str:

@@ -51,13 +51,14 @@ _NORMALIZED_ENTITIES = {
     'ZARAUTZ': ['ZARAUTZ GESALAGA-OKELAN', 'ZARAUTZ INMOB. ORIO'],
     'PASAI DONIBANE KOXTAPE': ['P.DONIBANE IBERDROLA'],
     'HONDARRIBIA': ['HONADRRIBIA', 'HONDARRBIA'],
-    'SANTURTZI': ['ITSASOKO AMA', 'SOTERA'],
+    'SANTURTZI': ['ITSASOKO AMA', 'SOTERA', 'ITSASOKO AMA SANTURTZI'],
     'ONDARROA': ['OMDARROA'],
     'ILLUMBE': ['ILLUNBE'],
     'PORTUGALETE': ['POTUGALETE'],
     'GETXO': ['GETRXO'],
     'DONOSTIARRA': ['DNOSTIARRA'],
     'UR KIROLAK': ['UR-KIROLAK'],
+    'URDAIBAI': ['BERMEO URDAIBAI'],
 }
 _LEAGUES_MAP = {
     'LIGA GALEGA DE TRAIÑAS': ['LGT'],
@@ -66,7 +67,10 @@ _LEAGUES_MAP = {
     'LIGA GALEGA DE TRAIÑAS FEMENINA': ['LIGA FEM', 'LIGA F'],
     'ASOCIACIÓN DE CLUBES DE TRAINERAS': ['ACT'],
 }
-_KNOWN_SPONSORS = ['BAHIAS DE BIZKAIA', 'UROLA KOSTA', 'PEREIRA', 'MATRIX', 'BIZKAIA']
+_KNOWN_SPONSORS = [
+    'BAHIAS DE BIZKAIA', 'UROLA KOSTA', 'PEREIRA', 'MATRIX', 'BIZKAIA', 'FANDICOSTA', 'CIKAUTXO', 'ORIALKI', 'AMENABAR', 'ELECNOR',
+    'BEREZ GALANTA', 'JAMONES ANCIN', 'NORTINDAL', 'BERTAKO IGOGAILUAK',
+]
 
 
 def normalize_league_name(name: str) -> str:
@@ -84,7 +88,7 @@ def normalize_club_name(name: str) -> str:
 
     # specific club normalizations
     for k, v in _NORMALIZED_ENTITIES.items():
-        if name in v or any(part in name for part in v):
+        if name in v or any(part in name.split() for part in v):
             name = k
             break
 

@@ -58,18 +58,28 @@ def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> En
     parts = unidecode(remove_conjunctions(remove_symbols(name))).split()
 
     q = Entity.queryset_for_search().filter(type=entity_type) if entity_type else Entity.queryset_for_search()
-    clubs = q.filter(reduce(operator.or_, [Q(name__unaccent__icontains=n) | Q(joined_names__unaccent__icontains=n) for n in parts]))
 
-    matches = list(flatten(list(clubs.values_list('name', 'known_names'))))
+    # quick route, just an exact match
+    clubs = q.filter(Q(normalized_name__unaccent__iexact=name) | Q(name__unaccent__iexact=name))
+    if clubs.count() == 1:
+        return clubs.first()
+
+    # go for similarity
+    clubs = q.filter(reduce(
+        operator.or_,
+        [Q(normalized_name__unaccent__icontains=n) | Q(joined_names__unaccent__icontains=n) for n in parts]
+    ))
+
+    matches = list(flatten(list(clubs.values_list('normalized_name', 'known_names'))))
     closest, closest_distance = closest_result(name, matches) if matches else (None, 0)
 
     if closest and closest_distance > .4:  # bigger is better
         if closest_distance == 1.0:
-            return Entity.objects.get(Q(name=closest) | Q(known_names__contains=[closest]))
+            return Entity.objects.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
 
         avg_length = (len(closest) + len(name)) / 2
         normalized_levenshtein = levenshtein_distance(name, closest) / avg_length
         if normalized_levenshtein < .4:  # smaller is better
-            return Entity.objects.get(Q(name=closest) | Q(known_names__contains=[closest]))
+            return Entity.objects.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
 
     raise Entity.DoesNotExist
