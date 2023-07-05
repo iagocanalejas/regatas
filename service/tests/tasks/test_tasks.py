@@ -61,6 +61,7 @@ class ProcessNewRacesTest(TestCase):
                             {
                                 'ref_id': '1647864858',
                                 'values': {
+                                    'gender': 'MALE',
                                     'details_page': 'https://www.euskolabelliga.com/resultados/ver.php?r=1647864858'
                                 },
                                 'datasource_name': 'act'

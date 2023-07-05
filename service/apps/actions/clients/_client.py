@@ -46,8 +46,8 @@ class Client(ABC):
         roman_options = [find_roman(w) for w in name.split() if find_roman(w)]
         return roman_to_int(roman_options[0]) if roman_options else 1
 
-    def get_db_race_by_id(self, race_id: str) -> Tuple[Optional[Race], List[Participant]]:
-        db_race = self._find_race_in_db(race_id, datasource=self.DATASOURCE)
+    def get_db_race_by_id(self, race_id: str, gender: Optional[str] = None) -> Tuple[Optional[Race], List[Participant]]:
+        db_race = self._find_race_in_db(race_id, gender=gender, datasource=self.DATASOURCE)
         return db_race, db_race.participants.select_related('club').all() if db_race else []
 
     ####################################################
@@ -101,15 +101,16 @@ class Client(ABC):
             )
 
     @staticmethod
-    def _find_race_in_db(race_id: str, datasource: str) -> Optional[Race]:
+    def _find_race_in_db(race_id: str, datasource: str, gender: Optional[str] = None) -> Optional[Race]:
         try:
+            metadata = {"ref_id": race_id, "datasource_name": datasource.lower()}
+            if gender:
+                metadata['values'] = {'gender': gender}
+
             return RaceService.get_filtered(
                 queryset=Race.objects,
                 filters={
-                    'metadata': [{
-                        "ref_id": race_id,
-                        "datasource_name": datasource.lower()
-                    }]
+                    'metadata': [metadata]
                 },
                 prefetch=['participants'],
             ).get()

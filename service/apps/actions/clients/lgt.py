@@ -15,6 +15,7 @@ from apps.entities.services import LeagueService
 from apps.participants.models import Participant
 from apps.races.models import Race
 from apps.schemas import MetadataBuilder
+from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +82,7 @@ class LGTClient(Client, source=Datasource.LGT):
             date=t_date,
             day=digester.get_day(),
             cancelled=digester.is_cancelled(),
-            cancellation_reasons=None,  # no reason provided by LGT
+            cancellation_reasons=[],  # no reason provided by LGT
             race_name=name,
             sponsor=None,
             trophy_edition=edition if trophy else None,
@@ -92,7 +93,12 @@ class LGTClient(Client, source=Datasource.LGT):
             modality=digester.get_modality(),
             organizer=self._find_organizer(digester.get_organizer()),
             metadata={'datasource': [
-                MetadataBuilder().ref_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build()
+                MetadataBuilder()
+                .ref_id(race_id)
+                .datasource_name(self.DATASOURCE)
+                .gender(GENDER_FEMALE if is_female else GENDER_MALE)
+                .values("details_page", url)
+                .build()
             ]},
         )
 

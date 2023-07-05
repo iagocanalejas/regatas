@@ -4,6 +4,7 @@ from typing import Dict
 from django.core.exceptions import ValidationError
 
 from apps.actions.datasource import Datasource
+from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,11 @@ class MetadataBuilder:
             raise ValidationError({'datasource_name', f'invalid {value=}'})
         self._metadata['datasource_name'] = value
         return self
+
+    def gender(self, gender: str) -> 'MetadataBuilder':
+        if gender not in [GENDER_FEMALE, GENDER_MALE]:
+            raise ValidationError({'values', f'invalid {gender=}'})
+        return self.values('gender', gender)
 
     def values(self, key: str, value: str) -> 'MetadataBuilder':
         if key in self._metadata['values']:

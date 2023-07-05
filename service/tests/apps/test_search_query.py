@@ -39,7 +39,6 @@ class SearchQueryTest(TestCase):
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
     def test_search_club(self):
-
         query = 'SD TIRÁN PEREIRA'
         query = normalize_club_name(query)
         entity = Entity.objects.get(pk=30)
@@ -48,6 +47,11 @@ class SearchQueryTest(TestCase):
         query = 'CM CASTROPOL'
         query = normalize_club_name(query)
         entity = Entity.objects.get(pk=14)
+        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
+
+        query = 'DONOSTIA ARRAUN LAGUNAK'
+        query = normalize_club_name(query)
+        entity = Entity.objects.get(pk=60)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
 
         query = 'SAN JUAN DE TIRAN'

@@ -13,7 +13,7 @@ from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
 from apps.schemas import MetadataBuilder
 from utils.checks import is_play_off
-from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL
+from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL, GENDER_FEMALE, GENDER_MALE
 from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
@@ -285,6 +285,7 @@ class Command(BaseCommand):
             .datasource_name(row[COLUMN_DATASOURCE])
         if COLUMN_URL in row and row[COLUMN_URL]:
             metadata = metadata.values('details_page', row[COLUMN_URL])
+            metadata = metadata.gender(GENDER_FEMALE if row[COLUMN_GENDER] else GENDER_MALE)
 
         race = Race(
             laps=self.get_race_laps(dfs, row),

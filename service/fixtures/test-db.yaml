@@ -763,9 +763,9 @@
     from_date: 2022-11-07 15:05:28.983645+00:00
     to_date: null
     is_active: true
-    name: DONOSTIA
-    normalized_name: DONOSTIA
-    known_names: '[]'
+    name: CLUB DE REMO OLÍMPICO DONOSTIA ARRAUN LAGUNAK
+    normalized_name: DONOSTIA ARRAUN LAGUNAK
+    known_names: '["CRO DONOSTIA ARRAUN LAGUNAK","GU ARRAUN"]'
     type: CLUB
     symbol: null
 - model: entities.entity

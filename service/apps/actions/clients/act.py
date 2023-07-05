@@ -13,7 +13,7 @@ from apps.entities.services import LeagueService
 from apps.participants.models import Participant
 from apps.races.models import Race
 from apps.schemas import MetadataBuilder
-from utils.choices import RACE_TRAINERA
+from utils.choices import RACE_TRAINERA, GENDER_FEMALE, GENDER_MALE
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +79,7 @@ class ACTClient(Client, source=Datasource.ACT):
             date=t_date,
             day=day,
             cancelled=digester.is_cancelled(),
-            cancellation_reasons=None,  # no reason provided by ACT
+            cancellation_reasons=[],  # no reason provided by ACT
             race_name=name,
             sponsor=None,
             trophy_edition=edition if trophy else None,
@@ -90,7 +90,12 @@ class ACTClient(Client, source=Datasource.ACT):
             modality=RACE_TRAINERA,
             organizer=self._find_organizer(digester.get_organizer()),
             metadata={'datasource': [
-                MetadataBuilder().ref_id(race_id).datasource_name(self.DATASOURCE).values("details_page", url).build()
+                MetadataBuilder()
+                .ref_id(race_id)
+                .datasource_name(self.DATASOURCE)
+                .gender(GENDER_FEMALE if is_female else GENDER_MALE)
+                .values("details_page", url)
+                .build()
             ]},
         )
         return race, self._find_race_participants(digester, race, is_female=is_female)

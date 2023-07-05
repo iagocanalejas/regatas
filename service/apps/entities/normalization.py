@@ -38,9 +38,9 @@ _ENTITY_TITLES = [
 ]
 _NORMALIZED_ENTITIES = {
     'CABO DA CRUZ': ['CABO DE CRUZ', 'CABO'],
-    'CASTRO URDIALES': ['CASTRO'],
     'ARES': ['DE ARES'],
     'CESANTES': ['CESANTES REMO - RODAVIGO'],
+    'DEUSTO': ['DEUSTO - BILBAO'],
     'FEDERACION GALEGA DE REMO': ['LGT - FEGR'],
     'PERILLO': ['SALGADO PERILLO'],
     'LIGA GALEGA DE TRAIÑAS': ['LIGA GALEGA TRAIÑEIRAS', 'LIGA GALEGA TRAINEIRAS', 'LGT'],
@@ -69,7 +69,8 @@ _LEAGUES_MAP = {
 }
 _KNOWN_SPONSORS = [
     'BAHIAS DE BIZKAIA', 'UROLA KOSTA', 'PEREIRA', 'MATRIX', 'BIZKAIA', 'FANDICOSTA', 'CIKAUTXO', 'ORIALKI', 'AMENABAR', 'ELECNOR',
-    'BEREZ GALANTA', 'JAMONES ANCIN', 'NORTINDAL', 'BERTAKO IGOGAILUAK',
+    'BEREZ GALANTA', 'JAMONES ANCIN', 'NORTINDAL', 'BERTAKO IGOGAILUAK', 'GESALAGA OKELAN', 'ANTTON BILBAO', 'CMO VALVES',
+    'CANTERAS DE SANTULLAN', 'RODAVIGO', 'NORTEGAS',
 ]
 
 
@@ -98,6 +99,9 @@ def normalize_club_name(name: str) -> str:
 def remove_club_title(name: str) -> str:
     name = ' '.join(w for w in name.split() if w not in _ENTITY_TITLES_SHORT)
     for title in _ENTITY_TITLES:
+        if 'DONOSTI' in name and title == 'ARRAUN LAGUNAK':
+            # edge case, need to avoid removing 'ARRAUN LAGUNAK' from 'DONOSTIA ARRAUN LAGUNAK'
+            continue
         name = name.replace(title, '')
         name = name.replace(unidecode(title), '')
     return whitespaces_clean(name)
