@@ -6,13 +6,15 @@ from typing import Optional, Dict, Tuple
 import inquirer
 from pandas import Series
 
+from rscraping import Datasource
+from rscraping.data.functions import is_play_off
+
 from apps.actions.management.commands.validate import *
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
 from apps.races.models import Flag
 from apps.races.services import RaceService, FlagService
 from apps.schemas import MetadataBuilder
-from utils.checks import is_play_off
 from utils.choices import RACE_CONVENTIONAL, RACE_TIME_TRIAL, GENDER_FEMALE, GENDER_MALE
 from utils.exceptions import StopProcessing
 
@@ -282,7 +284,7 @@ class Command(BaseCommand):
     def _get_race_or_create(self, dfs: DataFrame, row: Series):
         metadata = MetadataBuilder() \
             .ref_id(row[COLUMN_RACE_ID]) \
-            .datasource_name(row[COLUMN_DATASOURCE])
+            .datasource_name(Datasource(row[COLUMN_DATASOURCE]))
         if COLUMN_URL in row and row[COLUMN_URL]:
             metadata = metadata.values('details_page', row[COLUMN_URL])
             metadata = metadata.gender(GENDER_FEMALE if row[COLUMN_GENDER] else GENDER_MALE)

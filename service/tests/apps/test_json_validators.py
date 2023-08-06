@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.utils import timezone
 from jsonschema.exceptions import ValidationError
 
+from rscraping import Datasource
 from apps.races.models import Race, Flag
 from apps.schemas import MetadataBuilder
 
@@ -12,7 +13,7 @@ class JSONValidatorsTest(TestCase):
         self.flag.save()
 
     def test_race_metadata_valid_datasource(self):
-        metadata = MetadataBuilder().ref_id(1).datasource_name('arc').values('details_page', 'test')
+        metadata = MetadataBuilder().ref_id(1).datasource_name(Datasource.ARC).values('details_page', 'test')
         race = Race(
             date=timezone.now(),
             flag=self.flag,

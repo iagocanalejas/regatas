@@ -4,7 +4,6 @@ from typing import Optional, List
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from unidecode import unidecode
 
 from ai_django.ai_core.utils.lists import flatten
 from ai_django.ai_core.utils.strings import closest_result, remove_conjunctions, remove_symbols, levenshtein_distance
@@ -28,7 +27,7 @@ def get_clubs(related: List[str] = None) -> List[Entity]:
     return entities.select_related(*related) if related else entities
 
 
-def get_club_by_id(club_id: int, related: List[str] = None) -> List[Entity]:
+def get_club_by_id(club_id: int, related: List[str] = None) -> Entity:
     """
     :return: a CLUB entity
     """
@@ -49,37 +48,39 @@ def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> En
     :return: closest found @entity_type in the database
     """
     if entity_type and entity_type not in ENTITY_TYPES:
-        raise ValueError(f'{entity_type=} should be one of {ENTITY_TYPES=}')
+        raise ValueError(f"{entity_type=} should be one of {ENTITY_TYPES=}")
 
     if not name:
-        raise ValueError(f'invalid {name=}')
+        raise ValueError(f"invalid {name=}")
 
     name = name.upper()
-    parts = unidecode(remove_conjunctions(remove_symbols(name))).split()
+    parts = remove_conjunctions(remove_symbols(name)).split()
 
     q = Entity.queryset_for_search().filter(type=entity_type) if entity_type else Entity.queryset_for_search()
 
     # quick route, just an exact match
-    clubs = q.filter(Q(normalized_name__unaccent__iexact=name) | Q(name__unaccent__iexact=name))
+    clubs = q.filter(Q(normalized_name__iexact=name) | Q(name__iexact=name))
     if clubs.count() == 1:
         return clubs.first()
 
     # go for similarity
-    clubs = q.filter(reduce(
-        operator.or_,
-        [Q(normalized_name__unaccent__icontains=n) | Q(joined_names__unaccent__icontains=n) for n in parts]
-    ))
+    clubs = q.filter(
+        reduce(
+            operator.or_,
+            [Q(normalized_name__icontains=n) | Q(joined_names__icontains=n) for n in parts],
+        )
+    )
 
-    matches = list(flatten(list(clubs.values_list('normalized_name', 'known_names'))))
+    matches = list(flatten(list(clubs.values_list("normalized_name", "known_names"))))
     closest, closest_distance = closest_result(name, matches) if matches else (None, 0)
 
-    if closest and closest_distance > .4:  # bigger is better
+    if closest and closest_distance > 0.4:  # bigger is better
         if closest_distance == 1.0:
             return Entity.objects.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
 
         avg_length = (len(closest) + len(name)) / 2
         normalized_levenshtein = levenshtein_distance(name, closest) / avg_length
-        if normalized_levenshtein < .4:  # smaller is better
+        if normalized_levenshtein < 0.4:  # smaller is better
             return Entity.objects.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
 
     raise Entity.DoesNotExist

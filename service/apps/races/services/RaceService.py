@@ -1,11 +1,13 @@
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from django.db.models import QuerySet
 from rest_framework.generics import get_object_or_404
+from rscraping.data.models import Datasource
 
 from apps.races.filters import RaceFilters
 from apps.races.models import Race
+from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 logger = logging.getLogger(__name__)
 
@@ -44,3 +46,14 @@ def get_race_or_create(race: Race) -> Tuple[bool, Race]:
 
         logger.info(f'created:: {race}')
         return True, race
+
+
+def get_by_datasource(ref_id: str, datasource: Datasource, gender: Optional[str] = False) -> Optional[Race]:
+    metadata = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
+    if gender and gender in [GENDER_MALE, GENDER_FEMALE]:
+        metadata['values'] = {'gender': gender}
+
+    try:
+        return get_filtered(queryset=Race.objects, filters={'metadata': [metadata]}, prefetch=['participants']).get()
+    except Race.DoesNotExist:
+        return None

@@ -4,26 +4,29 @@ from functools import reduce
 from typing import TypeVar, Type, Optional
 
 from django.db.models import Q
-from unidecode import unidecode
+from pyutils.strings import expand_lemmas, normalize_synonyms
+from rscraping import lemmatize, SYNONYMS
 
-from ai_django.ai_core.utils.strings import remove_symbols, remove_conjunctions, closest_result, whitespaces_clean
+from ai_django.ai_core.utils.strings import closest_result, whitespaces_clean
 from apps.races.models import Flag, Trophy
-from utils.synonyms import normalize_synonyms, lemmatize, expand_lemmas
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T", Trophy, Flag)
+
+TOKEN_EXPANSIONS = [
+    ["trofeo", "bandera", "regata"],
+    ["trainera", None],
+    ["femenino", None],
+]
 
 
 def get_closest_by_name(_model: Type[T], name: str) -> T:
     """
     :return: closest found Flag|Trophy in the database
     """
-    name = name.upper()
-
-    # try search by tokens
-    trophy = _get_closest_by_name_with_tokens(_model, name)
-    return trophy or _get_closest_by_name(_model, name)
+    trophy = _get_closest_by_name_with_tokens(_model, name.upper())
+    return trophy or _get_closest_by_name(_model, name.upper())
 
 
 def get_closest_by_name_or_create(_model: Type[T], name: str) -> T:
@@ -36,16 +39,32 @@ def get_closest_by_name_or_create(_model: Type[T], name: str) -> T:
         item = _model(name=name.upper())
         item.save()
 
-        logger.info(f'created:: {item}')
+        logger.info(f"created:: {item}")
     return item
 
 
 def _get_closest_by_name_with_tokens(_model: Type[T], name: str) -> Optional[T]:
     """
-    Use lemma expansion to find a Flag|Trophy filtering by the tokens
+    Use lemma expansion to find a Flag or Trophy by filtering using tokens.
+
+    The `_get_closest_by_name_with_tokens` function takes a model type `_model` and a name as input and uses lemma
+    expansion to find the closest matching object of type `T` (Flag or Trophy) by filtering using tokens.
+
+    Parameters:
+        _model (Type[T]): The model type representing either `Flag` or `Trophy`.
+        name (str): The name to search for the closest match.
+
+    Returns:
+        Optional[T]: The closest matching object of type `T` (Flag or Trophy), or None if no match is found.
+
+    Note:
+        This function utilizes lemma expansion to handle variations of the input name, synonyms, and whitespace.
+        It filters objects based on matching tokens in their names.
     """
+
     # try search by tokens
-    tokens = expand_lemmas(lemmatize(name))
+    name = whitespaces_clean(normalize_synonyms(name, SYNONYMS))
+    tokens = expand_lemmas(list(lemmatize(name)), TOKEN_EXPANSIONS)
     trophies = _model.objects.filter(reduce(operator.or_, [Q(tokens__contains=list(n)) for n in tokens]))
 
     count = trophies.count()
@@ -62,26 +81,37 @@ def _get_closest_by_name_with_tokens(_model: Type[T], name: str) -> Optional[T]:
 
 def _get_closest_by_name(_model: Type[T], name: str) -> T:
     """
-    :return: closest found Flag|Trophy in the database
-    """
-    name = _normalize(name)
-    parts = name.split()
+    Retrieve the closest matching Flag or Trophy from the database.
 
-    trophies = _model.objects.filter(reduce(operator.and_, [Q(name__unaccent__icontains=n) for n in parts]))
+    The `_get_closest_by_name` function takes a model type `_model` and a name as input and returns the closest
+    matching object of type `T` (Flag or Trophy) from the database.
+
+    Parameters:
+        _model (Type[T]): The model type representing either `Flag` or `Trophy`.
+        name (str): The name to search for the closest match.
+
+    Returns:
+        T: The closest matching object of type `T` (Flag or Trophy) from the database.
+
+    Raises:
+        _model.DoesNotExist: If no close match is found in the database or the match's similarity threshold is below 0.85.
+
+    Note:
+        This function internally uses a normalization process to handle synonyms, whitespace, and case-insensitivity
+        in the name search.
+    """
+
+    def normalize(name: str) -> str:
+        return whitespaces_clean(normalize_synonyms(name, SYNONYMS))
 
     # retrieve the matches and un-flag them
-    matches = [(i, _normalize(i)) for i in list(trophies.values_list('name', flat=True))]
+    trophies = _model.objects.filter(reduce(operator.and_, [Q(name__icontains=n) for n in name.split()]))
+    matches = [(i, normalize(i)) for i in list(trophies.values_list("name", flat=True))]
 
-    closest, threshold = closest_result(name, [m for _, m in matches]) if matches else (None, 0)
+    closest, threshold = closest_result(normalize(name), [m for _, m in matches]) if matches else (None, 0)
     if not closest or threshold < 0.85:
-        raise _model.DoesNotExist(f'{_model.__name__} with {name=}')
+        raise _model.DoesNotExist(f"{_model.__name__} with {name=}")
 
     # retrieve the un-flag name
     closest = [k for k, m in matches if m == closest][0]
     return _model.objects.get(name=closest)
-
-
-def _normalize(name: str) -> str:
-    name = normalize_synonyms(name)
-    name = remove_symbols(unidecode(remove_conjunctions(name)))
-    return whitespaces_clean(name)

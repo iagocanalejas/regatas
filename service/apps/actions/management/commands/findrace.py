@@ -1,16 +1,14 @@
-import json
 import logging
-from typing import Optional
 
-import inquirer
 from django.core.management import BaseCommand
-from rest_framework import serializers
+from rscraping import find_race, Datasource
 
-from apps.actions.clients import Client
-from apps.actions.datasource import Datasource
-from apps.participants.models import Participant
-from apps.races.models import Race
-from apps.serializers import TrophySerializer, FlagSerializer, LeagueSerializer, EntitySerializer
+from apps.actions.management.helpers.helpers import (
+    preload_participants,
+    save_race_from_scraped_data,
+    save_participants_from_scraped_data,
+)
+from apps.races.services import RaceService
 from utils.choices import GENDER_FEMALE
 from utils.exceptions import StopProcessing
 
@@ -18,110 +16,67 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = 'Tries to find a race in the database or scrapping the pages'
+    help = """
+    Command class for finding and scraping a specific race from a web datasource.
+
+    This class provides functionality to search for a specific race on a web datasource
+    and scrape its data. The datasource can be specified as the first positional argument.
+    The supported datasources are specified in the 'Datasource' enum.
+
+    Usage:
+    ------
+    python manage.py findrace datasource race_id [--female]
+
+    Arguments:
+        datasource (str): The name of the web datasource from where to retrieve race data. Supported
+                          datasources are specified in the 'Datasource' enum.
+        race_id (str): The unique identifier of the race to find and scrape.
+
+    Options:
+        --female: (Optional) If specified, search and scrape data for female races. If not specified,
+                  only male races will be searched. Applicable only when searching for a race.
+
+    Note:
+    -----
+    - The command should be executed with appropriate arguments to find and scrape the desired race
+      from the web datasource.
+    - The 'race_id' argument is required to uniquely identify the race.
+    - The '--female' option can be used to search and scrape only female races.
+    - If the race is found, its data is scraped and saved to the database.
+    - If the race already exists in the database, the command raises a
+      'StopProcessing' exception.
+    """
 
     def add_arguments(self, parser):
-        parser.add_argument('datasource', type=str, help='Datasource from where to retrieve.')
-        parser.add_argument('race_id', type=str, help='Race to find.')
-        parser.add_argument('--female', action='store_true', default=False)
+        parser.add_argument("datasource", type=str, help="Datasource from where to retrieve.")
+        parser.add_argument("race_id", type=str, help="Race to find.")
+        parser.add_argument("--female", action="store_true", default=False)
+        parser.add_argument("--use-db", action="store_true", default=False)
 
-    def handle(self, *args, **options):
-        logger.info(f'{options}')
+    def handle(self, *_, **options):
+        logger.info(f"{options}")
 
-        race_id = options['race_id']
-        datasource = options['datasource']
-        is_female = options['female']
-
-        if datasource and not Datasource.is_valid(datasource):
-            raise ValueError(f'invalid {datasource=}')
-        if not datasource:
-            raise ValueError(f'unknown datasource')
-
-        client = Client(source=datasource)
-        race, participants = client.get_db_race_by_id(race_id, gender=GENDER_FEMALE if is_female else None)
-
-        if race:
-            raise StopProcessing(f'{race=} already exists')
-
-        race, participants = client.get_web_race_by_id(race_id, is_female=is_female)
-
-        serialized_race = CommandRaceSerializer(race).data
-        print(json.dumps(serialized_race, indent=4))
-        if not inquirer.confirm(f"Save new race in the database?", default=False):
-            raise StopProcessing
-
-        race.save()
-        participants = list(participants)
-        for participant in participants:
-            participant.race = race
-
-        serialized_participants = CommandParticipantSerializer(participants, many=True).data
-        for index, serialized_participant in enumerate(serialized_participants):
-            print(json.dumps(serialized_participant, indent=4))
-            if not inquirer.confirm(f"Save new participant for {race=} in the database?", default=False):
-                continue
-            participants[index].save()
-
-
-# TODO:
-# ARC - 479
-# ARC - 480
-# ARC - 495
-# ARC - 482
-
-# ETE - 442
-# ETE - 444
-# ETE - 445
-
-class CommandRaceSerializer(serializers.ModelSerializer):
-    trophy = TrophySerializer()
-    flag = FlagSerializer()
-    league = LeagueSerializer(allow_null=True)
-    gender = serializers.SerializerMethodField()
-    organizer = EntitySerializer(allow_null=True)
-
-    @staticmethod
-    def get_gender(race: Race) -> Optional[str]:
-        if race.league:
-            return race.league.gender
-        genders = list({p.gender for p in list(race.participants.all())})
-        return genders[0] if len(genders) == 1 else None
-
-    class Meta:
-        model = Race
-        fields = (
-            'id',
-            'type',
-            'modality',
-            'gender',
-            'day',
-            'date',
-            'cancelled',
-            'trophy',
-            'trophy_edition',
-            'flag',
-            'flag_edition',
-            'league',
-            'sponsor',
-            'laps',
-            'lanes',
-            'town',
-            'organizer'
+        race_id, datasource, is_female, use_db = (
+            options["race_id"],
+            options["datasource"],
+            options["female"],
+            options["use_db"],
         )
+        if not datasource or not Datasource.has_value(datasource):
+            raise ValueError(f"invalid {datasource=}")
 
+        db_race = RaceService.get_by_datasource(
+            race_id, Datasource(datasource), gender=GENDER_FEMALE if is_female else None
+        )
+        if not use_db and db_race is not None:
+            raise StopProcessing(f"race={race_id} already exists")
 
-class CommandParticipantSerializer(serializers.ModelSerializer):
-    club = EntitySerializer()
-    club_name = serializers.SerializerMethodField()
+        web_race = find_race(race_id, datasource=Datasource(datasource), is_female=is_female)
+        if not web_race:
+            raise StopProcessing("no race found")
 
-    @staticmethod
-    def get_club_name(participant: Participant) -> Optional[str]:
-        extra = None
-        if participant.club_name:
-            extra = [e for e in ['B', 'C', 'D'] if e in participant.club_name.split()]
-            extra = ''.join(e for e in extra) if extra else None
-        return f'{participant.club} "{extra}"' if extra else None
+        participants = web_race.participants
+        clubs = preload_participants(participants)
 
-    class Meta:
-        model = Participant
-        fields = ('id', 'laps', 'lane', 'series', 'gender', 'category', 'distance', 'club', 'club_name')
+        new_race = db_race if use_db and db_race else save_race_from_scraped_data(web_race, Datasource(datasource))
+        save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)

@@ -5,7 +5,7 @@ from django.db.models import QuerySet, Q
 
 from apps.participants.filters import ParticipantFilters
 from apps.participants.models import Participant
-from utils.checks import is_branch_club
+from rscraping.data.functions import is_branch_club
 
 logger = logging.getLogger(__name__)
 

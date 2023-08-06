@@ -1,2 +1,2 @@
 -r prod.txt
-responses==0.23.1
+responses==0.23.2

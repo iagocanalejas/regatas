@@ -1,135 +1,118 @@
-import logging
 import os
-import sys
 from pathlib import Path
 
-import sentry_sdk
-from celery.schedules import crontab
 from corsheaders.defaults import default_methods
 from environs import Env
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-
 from config import version
 from config.common import load_env
+from config.patch import patch_unaccent
 
 load_env()
+patch_unaccent()
 env = Env()
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', False)
+# WARNING: don't run with debug turned on in production!
+DEBUG = env.bool("DEBUG", False)
 VERSION = version.__version__
 
-SERVICE_NAME = 'rowing'
-ROOT_URLCONF = 'config.urls'
-WSGI_APPLICATION = 'config.wsgi.application'
+SERVICE_NAME = "rowing"
+ROOT_URLCONF = "config.urls"
+WSGI_APPLICATION = "config.wsgi.application"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-TEMPLATES_ROOT = os.path.join(STATIC_ROOT, 'templates')
-LOG_ROOT = os.path.join(BASE_DIR, 'logs')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+TEMPLATES_ROOT = os.path.join(STATIC_ROOT, "templates")
+LOG_ROOT = os.path.join(BASE_DIR, "logs")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-MEDIA_URL = '/media/'
-STATIC_URL = '/static/'
+MEDIA_URL = "/media/"
+STATIC_URL = "/static/"
 
-INTERNAL_DATE_FORMAT = '%Y%m%d_%H%M%S'
+INTERNAL_DATE_FORMAT = "%Y%m%d_%H%M%S"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY', 'what-a-fake-secret-key-lol')
+SECRET_KEY = env.str("SECRET_KEY", "what-a-fake-secret-key-lol")
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('DATABASE_NAME'),
-        'USER': env.str('DATABASE_USERNAME'),
-        'PASSWORD': env.str('DATABASE_PASSWORD'),
-        'HOST': env.str('DATABASE_HOST'),
-        'PORT': '5432',
-        'CONN_MAX_AGE': 300  # 5 minutes
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env.str("DATABASE_NAME"),
+        "USER": env.str("DATABASE_USERNAME"),
+        "PASSWORD": env.str("DATABASE_PASSWORD"),
+        "HOST": env.str("DATABASE_HOST"),
+        "PORT": "5432",
     },
-    'OPTIONS': {
-        'client_encoding': 'UTF8',
-        'timezone': 'UTC'
-    }
+    "OPTIONS": {"client_encoding": "UTF8", "timezone": "UTC"},
 }
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
-
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.BCryptPasswordHasher",
 ]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 6}},
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 6
-        }
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
 ]
 
 INSTALLED_APPS = [
-    'django.contrib.contenttypes',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.postgres',
-    'corsheaders',
-    'stdimage',
-    'prettyjson',
-    'rest_framework',
-    'drf_spectacular',
+    "django.contrib.contenttypes",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.postgres",
+    "corsheaders",
+    "stdimage",
+    "prettyjson",
+    "rest_framework",
+    "drf_spectacular",
     # Self
-    'ai_django.ai_core',
-    'apps.entities',
-    'apps.races',
-    'apps.participants',
-    'apps.actions',
+    "ai_django.ai_core",
+    "apps.entities",
+    "apps.races",
+    "apps.participants",
+    "apps.actions",
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar', 'django_extensions']
+    INSTALLED_APPS += ["debug_toolbar", "django_extensions"]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'ai_django', 'core', 'templates'), TEMPLATES_ROOT],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "ai_django", "core", "templates"), TEMPLATES_ROOT],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -137,23 +120,23 @@ TEMPLATES = [
 
 if DEBUG:
     MIDDLEWARE += [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
     ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 INTERNAL_IPS = [
-    '127.0.0.1',
+    "127.0.0.1",
 ]
-'''
+"""
 ** Cross-Origin-Resource-Sharing: CORS is a mechanism that allows restricted resources (e.g. fonts) on a web page to be 
 ** requested from another domain outside the domain from which the first resource was served. A web page may freely 
 ** embed cross-origin images, stylesheets, scripts, iframes, and videos. Certain 'cross-domain' requests, notably 
@@ -161,33 +144,37 @@ INTERNAL_IPS = [
 
 # Control Cross-Origin-Resource-Sharing to allow access to our service from other sites, it's value depends on
 # https://github.com/ottoyiu/django-cors-headers
-'''
-ALLOWED_HOSTS = ['*'] if DEBUG else ['.tiempostraineras.com', '54.73.193.48', 'localhost', '127.0.0.1']
+"""
+ALLOWED_HOSTS = ["*"] if DEBUG else [".tiempostraineras.com", "54.73.193.48", "localhost", "127.0.0.1"]
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOW_METHODS = default_methods
 CORS_ALLOW_HEADERS = [
-    'accept',
-    'authorization',
-    'content-type',
-    'accept-language',
-    'pragma',
-    'cache-control',
-    'accept-encoding',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
+    "accept",
+    "authorization",
+    "content-type",
+    "accept-language",
+    "pragma",
+    "cache-control",
+    "accept-encoding",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
-CORS_ALLOWED_ORIGINS = [] if DEBUG else [
-    'https://tiempostraineras.com',
-    'https://*.tiempostraineras.com',
-    'https://54.73.193.48',
-    'http://localhost',
-    'http://127.0.0.1',
-]
-'''
+CORS_ALLOWED_ORIGINS = (
+    []
+    if DEBUG
+    else [
+        "https://tiempostraineras.com",
+        "https://*.tiempostraineras.com",
+        "https://54.73.193.48",
+        "http://localhost",
+        "http://127.0.0.1",
+    ]
+)
+"""
 ** Cross-Site-Request-Forgery: A CSRF hole is when a malicious site can cause a visitor's browser to make a 
 ** request to your server that causes a change on the server. The server thinks that because the request comes with the 
 ** user's cookies, the user wanted to submit that form.
@@ -195,22 +182,26 @@ CORS_ALLOWED_ORIGINS = [] if DEBUG else [
 # To use CORS and CSRF at the same time we need to include in CSRF_TRUSTED_ORIGINS all the valid domains that can 
 # send requests to our service.
 # https://docs.djangoproject.com/en/dev/ref/csrf/
-'''
-CSRF_TRUSTED_ORIGINS = [] if DEBUG else [
-    'https://tiempostraineras.com',
-    'https://*.tiempostraineras.com',
-    'https://54.73.193.48',
-    'http://localhost',
-    'http://127.0.0.1',
-]
+"""
+CSRF_TRUSTED_ORIGINS = (
+    []
+    if DEBUG
+    else [
+        "https://tiempostraineras.com",
+        "https://*.tiempostraineras.com",
+        "https://54.73.193.48",
+        "http://localhost",
+        "http://127.0.0.1",
+    ]
+)
 
 if DEBUG:
     ADMIN_HONEYPOT_EMAIL_ADMINS = False
-    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    EMAIL_FILE_PATH = os.path.join(LOG_ROOT, 'emails')
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH = os.path.join(LOG_ROOT, "emails")
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
         }
     }
 else:
@@ -219,8 +210,8 @@ else:
     CSRF_COOKIE_SECURE = True
     USE_X_FORWARDED_HOST = True
     SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    '''
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    """
     ** HTTP-Strict-Transport-Security: Web security policy mechanism which helps to protect websites against protocol
     ** downgrade attacks and cookie hijacking. It allows web servers to declare that web browsers (or other complying
     ** user agents) should only interact with it using secure HTTPS connections, and never via the insecure HTTP
@@ -228,22 +219,10 @@ else:
 
     # Force HSTS header in all the requests
     # https://docs.djangoproject.com/en/2.0/ref/middleware/#http-strict-transport-security
-    '''
+    """
     SECURE_HSTS_SECONDS = 31536000  # One year
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-
-    # celery tasks
-    CELERY_BEAT_SCHEDULE = {
-        'get_new_races': {  # crontab() runs the tasks every month
-            'task': 'apps.actions.tasks.get_new_races',
-            'schedule': crontab(minute='0', hour='0', day_of_week='*', day_of_month='1', month_of_year='*'),
-        },
-        'process_tasks': {  # crontab() runs the tasks every monday
-            'task': 'apps.actions.tasks.process_tasks',
-            'schedule': crontab(minute='0', hour='0', day_of_week='1', day_of_month='*', month_of_year='*'),
-        },
-    }
 
     # # SENTRY
     # sentry_logging = LoggingIntegration(level=logging.INFO, event_level=logging.ERROR)
@@ -252,114 +231,114 @@ else:
     # )
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD", "")
 
-MAIN_ADMIN = ('AndIag', 'andiag.dev@gmail.com')
-ADMINS = [('AndIag', 'andiag.dev@gmail.com')]
+MAIN_ADMIN = ("AndIag", "andiag.dev@gmail.com")
+ADMINS = [("AndIag", "andiag.dev@gmail.com")]
 
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
-LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = "es-es"
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
 SWAGGER_SETTINGS = {
-    'API_VERSION': VERSION,
-    'TITLE': SERVICE_NAME,
-    'DESCRIPTION': 'Servicio de regatas',
-    'VERSION': VERSION,
-    'SERVE_INCLUDE_SCHEMA': False,
+    "API_VERSION": VERSION,
+    "TITLE": SERVICE_NAME,
+    "DESCRIPTION": "Servicio de regatas",
+    "VERSION": VERSION,
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {process:d} {thread:d} {module} {filename} {funcName} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {process:d} {thread:d} {module} {filename} {funcName} {message}",
+            "style": "{",
         },
-        'simple': {
-            'format': '{levelname} {asctime} {message}',
-            'style': '{',
-        },
-    },
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
+        "simple": {
+            "format": "{levelname} {asctime} {message}",
+            "style": "{",
         },
     },
-    'handlers': {
-        'console': {
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
         },
-        'file_all': {
-            'level': 'DEBUG' if DEBUG else os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'class': 'logging.handlers.RotatingFileHandler',
-            'maxBytes': 1024 * 1024 * 5,
-            'backupCount': 5,
-            'filename': os.path.join(LOG_ROOT, 'django_debug.log'),
-            'formatter': 'verbose',
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
         },
-        'file': {
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
-            'class': 'logging.handlers.RotatingFileHandler',
-            'maxBytes': 1024 * 1024 * 5,
-            'backupCount': 5,
-            'filename': os.path.join(LOG_ROOT, 'django_errors.log'),
-            'formatter': 'verbose',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
-            'formatter': 'simple',
-            'include_html': True,
-        }
     },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file', 'file_all', 'mail_admins'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
-            'propagate': True,
+    "handlers": {
+        "console": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "file_all": {
+            "level": "DEBUG" if DEBUG else os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "class": "logging.handlers.RotatingFileHandler",
+            "maxBytes": 1024 * 1024 * 5,
+            "backupCount": 5,
+            "filename": os.path.join(LOG_ROOT, "django_debug.log"),
+            "formatter": "verbose",
+        },
+        "file": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", "ERROR"),
+            "class": "logging.handlers.RotatingFileHandler",
+            "maxBytes": 1024 * 1024 * 5,
+            "backupCount": 5,
+            "filename": os.path.join(LOG_ROOT, "django_errors.log"),
+            "formatter": "verbose",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "formatter": "simple",
+            "include_html": True,
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console", "file", "file_all", "mail_admins"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": True,
         },
         # Handling of requests
-        'django.request': {
-            'handlers': ['console', 'file', 'file_all', 'mail_admins'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
-            'propagate': True,
+        "django.request": {
+            "handlers": ["console", "file", "file_all", "mail_admins"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": True,
         },
         # MRendering of templates
-        'django.template': {
-            'handlers': ['console', 'file', 'file_all', 'mail_admins'],
-            'level': 'INFO',
-            'propagate': True,
+        "django.template": {
+            "handlers": ["console", "file", "file_all", "mail_admins"],
+            "level": "INFO",
+            "propagate": True,
         },
         # Interaction of code with the database
-        'django.db.backends': {
-            'handlers': ['file_all'],
-            'level': 'DEBUG',
-            'propagate': False,
+        "django.db.backends": {
+            "handlers": ["file_all"],
+            "level": "DEBUG",
+            "propagate": False,
         },
         # SuspiciousOperation error as DisallowedHost call
-        'django.security.DisallowedHost': {
-            'handlers': ['console', 'file'],
-            'propagate': False,
+        "django.security.DisallowedHost": {
+            "handlers": ["console", "file"],
+            "propagate": False,
         },
-    }
+    },
 }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

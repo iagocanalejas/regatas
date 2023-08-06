@@ -12,54 +12,54 @@ from apps.races.services import FlagService, TrophyService
 
 
 class SearchQueryTest(TestCase):
-    fixtures = [os.path.join(settings.BASE_DIR, 'fixtures', 'test-db.yaml')]
+    fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "test-db.yaml")]
 
     def test_search_teresa_herrera(self):
         trophy = Trophy.objects.get(pk=25)
         flag = Flag.objects.get(pk=39)
 
-        query = 'ELIMINATORIA TROFEO TERESA HERRERA'
+        query = "ELIMINATORIA TROFEO TERESA HERRERA"
         self.assertEqual(trophy, TrophyService.get_closest_by_name(query))
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
-        query = 'ELIMINATORIA BANDERA TERESA HERRERA'
+        query = "ELIMINATORIA BANDERA TERESA HERRERA"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
         self.assertEqual(trophy, TrophyService.get_closest_by_name(query))
 
     def test_search_deputacion(self):
         flag = Flag.objects.get(pk=133)
 
-        query = 'BANDEIRA DEPUTACIÓN DA CORUÑA'
+        query = "BANDEIRA DEPUTACIÓN DA CORUÑA"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
-        query = 'BANDEIRA DEPUTACION DA CORUNA'
+        query = "BANDEIRA DEPUTACION DA CORUNA"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
-        query = 'BANDEIRA DEPUTACION DA CORUNA DE TRAINERAS'
+        query = "BANDEIRA DEPUTACION DA CORUNA DE TRAINERAS"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
     def test_search_club(self):
-        query = 'SD TIRÁN PEREIRA'
+        query = "SD TIRÁN PEREIRA"
         query = normalize_club_name(query)
         entity = Entity.objects.get(pk=30)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
 
-        query = 'CM CASTROPOL'
+        query = "CM CASTROPOL"
         query = normalize_club_name(query)
         entity = Entity.objects.get(pk=14)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
 
-        query = 'DONOSTIA ARRAUN LAGUNAK'
+        query = "DONOSTIA ARRAUN LAGUNAK"
         query = normalize_club_name(query)
         entity = Entity.objects.get(pk=60)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
 
-        query = 'SAN JUAN DE TIRAN'
+        query = "SAN JUAN DE TIRAN"
         with self.assertRaises(ObjectDoesNotExist):
             EntityService.get_closest_club_by_name(query)
 
     def test_search_should_raise(self):
-        queries = ['C.N. SANTA LUCÍA', 'UR-KIROLAK', 'RIO MERO', 'SAN MARTIÑO']
+        queries = ["C.N. SANTA LUCÍA", "UR-KIROLAK", "RIO MERO", "SAN MARTIÑO"]
         for query in queries:
             with self.assertRaises(ObjectDoesNotExist):
                 EntityService.get_closest_club_by_name(query)

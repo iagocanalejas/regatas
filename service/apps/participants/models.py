@@ -53,7 +53,7 @@ class Participant(models.Model):
                 )
 
     def save(self, *args, **kwargs):
-        if self.pk is None:  # TODO: implement update validation
+        if self.pk is None:
             self.validate_unique()
 
         super(Participant, self).save(*args, **kwargs)

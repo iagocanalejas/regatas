@@ -3,6 +3,7 @@ import logging
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, IntegrityError
 from django.db.models import JSONField
+from rscraping import lemmatize
 
 from ai_django.ai_core.models import CreationStampModel
 from ai_django.ai_core.utils.shortcuts import all_or_none
@@ -10,7 +11,6 @@ from ai_django.ai_core.utils.strings import int_to_roman, whitespaces_clean
 from ai_django.ai_core.validators import JSONSchemaValidator
 from apps.schemas import METADATA_SCHEMA, default_metadata
 from utils.choices import RACE_CONVENTIONAL, RACE_TYPE_CHOICES, RACE_TRAINERA, RACE_MODALITY_CHOICES
-from utils.synonyms import lemmatize
 
 logger = logging.getLogger(__name__)
 

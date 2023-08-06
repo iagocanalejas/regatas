@@ -3,15 +3,15 @@
 from django.db import migrations
 from django.db.models import Q
 
-from apps.actions.datasource import Datasource
+from rscraping import Datasource
 from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 
 def update_metadata(apps, schema_editor):
     Race = apps.get_model('races', 'Race')
     races = Race.objects.filter(
-        Q(metadata__datasource__contains=[{"datasource_name": Datasource.ACT}]) |
-        Q(metadata__datasource__contains=[{"datasource_name": Datasource.ARC}])
+        Q(metadata__datasource__contains=[{"datasource_name": Datasource.ACT.value}]) |
+        Q(metadata__datasource__contains=[{"datasource_name": Datasource.ARC.value}])
     )
     for race in races:
         datasource = race.metadata['datasource'][0]
