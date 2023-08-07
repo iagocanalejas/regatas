@@ -1,21 +1,23 @@
 import json
 from datetime import datetime
-from typing import Tuple, Optional, List, Dict
+from typing import Dict, List, Optional, Tuple
 
 import inquirer
 from rest_framework import serializers
-from rscraping.data.functions import is_memorial
-from rscraping.data.models import Race as RSRace, Participant as RSParticipant, Datasource
+from utils.exceptions import StopProcessing
 
 from apps.entities.models import Entity
 from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService, LeagueService
 from apps.participants.models import Participant, Penalty
-from apps.races.models import Race, Trophy, Flag
-from apps.races.services import TrophyService, FlagService
+from apps.races.models import Flag, Race, Trophy
+from apps.races.services import FlagService, TrophyService
 from apps.schemas import MetadataBuilder
-from apps.serializers import TrophySerializer, FlagSerializer, LeagueSerializer, EntitySerializer
-from utils.exceptions import StopProcessing
+from apps.serializers import EntitySerializer, FlagSerializer, LeagueSerializer, TrophySerializer
+from rscraping.data.functions import is_memorial
+from rscraping.data.models import Datasource
+from rscraping.data.models import Participant as RSParticipant
+from rscraping.data.models import Race as RSRace
 
 
 def preload_participants(participants: List[RSParticipant]) -> Dict[str, Entity]:
@@ -95,7 +97,7 @@ def save_participants_from_scraped_data(
             club=preloaded_clubs[p.participant],
             race=race,
             distance=p.distance,
-            laps=[datetime.strptime(l, "%M:%S.%f").time() for l in p.laps],
+            laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in p.laps],
             lane=p.lane,
             series=p.series,
             gender=p.gender,

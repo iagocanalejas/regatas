@@ -66,4 +66,3 @@ export class ParticipantUtils {
     return dayjs(ParticipantUtils.time(p1, ignorePenalties), TIME_FORMAT).diff(dayjs(ParticipantUtils.time(p2, ignorePenalties), TIME_FORMAT))
   }
 }
-

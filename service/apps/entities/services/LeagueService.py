@@ -1,8 +1,7 @@
 from typing import List
 
-from rscraping.data.normalization.leagues import normalize_league_name
-
 from apps.entities.models import League
+from rscraping.data.normalization.leagues import normalize_league_name
 
 
 def get_with_parent() -> List[League]:

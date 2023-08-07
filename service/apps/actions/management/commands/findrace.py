@@ -1,16 +1,16 @@
 import logging
 
 from django.core.management import BaseCommand
-from rscraping import find_race, Datasource
+from utils.choices import GENDER_FEMALE
+from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.helpers import (
     preload_participants,
-    save_race_from_scraped_data,
     save_participants_from_scraped_data,
+    save_race_from_scraped_data,
 )
 from apps.races.services import RaceService
-from utils.choices import GENDER_FEMALE
-from utils.exceptions import StopProcessing
+from rscraping import Datasource, find_race
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +43,7 @@ class Command(BaseCommand):
     - The 'race_id' argument is required to uniquely identify the race.
     - The '--female' option can be used to search and scrape only female races.
     - If the race is found, its data is scraped and saved to the database.
-    - If the race already exists in the database, the command raises a
-      'StopProcessing' exception.
+    - If the race already exists in the database, the command raises a 'StopProcessing' exception.
     """
 
     def add_arguments(self, parser):

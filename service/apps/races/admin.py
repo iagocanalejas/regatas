@@ -1,8 +1,8 @@
+from ai_django.ai_core.admin import ReadOnlyTabularInline, StampedModelAdmin, YearFilter
 from django.contrib import admin
 
-from ai_django.ai_core.admin import StampedModelAdmin, YearFilter, ReadOnlyTabularInline
 from apps.participants.models import Participant
-from apps.races.models import Trophy, Race, Flag
+from apps.races.models import Flag, Race, Trophy
 
 
 class RaceYearFilter(YearFilter):

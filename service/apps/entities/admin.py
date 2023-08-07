@@ -1,6 +1,6 @@
+from ai_django.ai_core.admin import TraceableModelAdmin
 from django.contrib import admin
 
-from ai_django.ai_core.admin import TraceableModelAdmin
 from apps.entities.models import Entity, League
 
 

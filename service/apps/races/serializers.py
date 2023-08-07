@@ -2,9 +2,9 @@ from typing import Optional
 
 from rest_framework import serializers
 
-from apps.participants.models import Penalty, Participant
+from apps.participants.models import Participant, Penalty
 from apps.races.models import Race
-from apps.serializers import SimpleRaceSerializer, EntitySerializer, SimpleParticipantSerializer, ClubSerializer
+from apps.serializers import ClubSerializer, EntitySerializer, SimpleParticipantSerializer, SimpleRaceSerializer
 
 
 class PenaltySerializer(serializers.ModelSerializer):

@@ -1,14 +1,14 @@
 import logging
 import operator
 from functools import reduce
-from typing import TypeVar, Type, Optional
-
-from django.db.models import Q
-from pyutils.strings import expand_lemmas, normalize_synonyms
-from rscraping import lemmatize, SYNONYMS
+from typing import Optional, Type, TypeVar
 
 from ai_django.ai_core.utils.strings import closest_result, whitespaces_clean
+from django.db.models import Q
+from pyutils.strings import expand_lemmas, normalize_synonyms
+
 from apps.races.models import Flag, Trophy
+from rscraping import SYNONYMS, lemmatize
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ def _get_closest_by_name(_model: Type[T], name: str) -> T:
         T: The closest matching object of type `T` (Flag or Trophy) from the database.
 
     Raises:
-        _model.DoesNotExist: If no close match is found in the database or the match's similarity threshold is below 0.85.
+        T.DoesNotExist: If no close match is found in the database or the match's similarity threshold is below 0.85.
 
     Note:
         This function internally uses a normalization process to handle synonyms, whitespace, and case-insensitivity

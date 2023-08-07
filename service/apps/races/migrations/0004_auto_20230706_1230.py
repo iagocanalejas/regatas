@@ -2,9 +2,9 @@
 
 from django.db import migrations
 from django.db.models import Q
+from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 from rscraping import Datasource
-from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 
 def update_metadata(apps, schema_editor):

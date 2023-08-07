@@ -1,10 +1,10 @@
+from apps.races.models import Flag, Race
+from apps.schemas import MetadataBuilder
 from django.test import TestCase
 from django.utils import timezone
 from jsonschema.exceptions import ValidationError
 
 from rscraping import Datasource
-from apps.races.models import Race, Flag
-from apps.schemas import MetadataBuilder
 
 
 class JSONValidatorsTest(TestCase):

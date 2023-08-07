@@ -1,12 +1,31 @@
-from rscraping.data.constants import *
+from rscraping.data.constants import (
+    BLADE_TOUCH,
+    ENTITY_CLUB,
+    ENTITY_FEDERATION,
+    ENTITY_LEAGUE,
+    ENTITY_PRIVATE,
+    GENDER_FEMALE,
+    GENDER_MALE,
+    GENDER_MIX,
+    NO_LINE_START,
+    NULL_START,
+    PARTICIPANT_CATEGORY_ABSOLUT,
+    PARTICIPANT_CATEGORY_SCHOOL,
+    PARTICIPANT_CATEGORY_VETERAN,
+    RACE_BATEL,
+    RACE_CONVENTIONAL,
+    RACE_TIME_TRIAL,
+    RACE_TRAINERA,
+    RACE_TRAINERILLA,
+)
 
 ################
 #   RACE TYPE  #
 ################
 RACE_TYPES = [RACE_CONVENTIONAL, RACE_TIME_TRIAL]
 RACE_TYPE_CHOICES = [
-    (RACE_CONVENTIONAL, 'Convencional'),
-    (RACE_TIME_TRIAL, 'Contrarreloj'),
+    (RACE_CONVENTIONAL, "Convencional"),
+    (RACE_TIME_TRIAL, "Contrarreloj"),
 ]
 
 ################
@@ -14,9 +33,9 @@ RACE_TYPE_CHOICES = [
 ################
 RACE_MODALITIES = [RACE_TRAINERA, RACE_TRAINERILLA, RACE_BATEL]
 RACE_MODALITY_CHOICES = [
-    (RACE_TRAINERA, 'Trainera'),
-    (RACE_TRAINERILLA, 'Trainerilla'),
-    (RACE_BATEL, 'Batel'),
+    (RACE_TRAINERA, "Trainera"),
+    (RACE_TRAINERILLA, "Trainerilla"),
+    (RACE_BATEL, "Batel"),
 ]
 
 ################
@@ -24,9 +43,9 @@ RACE_MODALITY_CHOICES = [
 ################
 PARTICIPANT_CATEGORIES = [PARTICIPANT_CATEGORY_ABSOLUT, PARTICIPANT_CATEGORY_VETERAN, PARTICIPANT_CATEGORY_SCHOOL]
 PARTICIPANT_CATEGORIES_CHOICES = [
-    (PARTICIPANT_CATEGORY_ABSOLUT, 'Absoluto'),
-    (PARTICIPANT_CATEGORY_VETERAN, 'Veterano'),
-    (PARTICIPANT_CATEGORY_SCHOOL, 'Escuela'),
+    (PARTICIPANT_CATEGORY_ABSOLUT, "Absoluto"),
+    (PARTICIPANT_CATEGORY_VETERAN, "Veterano"),
+    (PARTICIPANT_CATEGORY_SCHOOL, "Escuela"),
 ]
 
 ################
@@ -34,10 +53,10 @@ PARTICIPANT_CATEGORIES_CHOICES = [
 ################
 ENTITY_TYPES = [ENTITY_CLUB, ENTITY_LEAGUE, ENTITY_FEDERATION, ENTITY_PRIVATE]
 ENTITY_TYPE_CHOICES = [
-    (ENTITY_CLUB, 'Club'),
-    (ENTITY_LEAGUE, 'Liga'),
-    (ENTITY_FEDERATION, 'Federación'),
-    (ENTITY_PRIVATE, 'Privada'),
+    (ENTITY_CLUB, "Club"),
+    (ENTITY_LEAGUE, "Liga"),
+    (ENTITY_FEDERATION, "Federación"),
+    (ENTITY_PRIVATE, "Privada"),
 ]
 
 ################
@@ -45,16 +64,16 @@ ENTITY_TYPE_CHOICES = [
 ################
 GENDERS = [GENDER_MALE, GENDER_FEMALE, GENDER_MIX]
 GENDER_CHOICES = [
-    (GENDER_MALE, 'Male'),
-    (GENDER_FEMALE, 'Female'),
-    (GENDER_MIX, 'Mixto'),
+    (GENDER_MALE, "Male"),
+    (GENDER_FEMALE, "Female"),
+    (GENDER_MIX, "Mixto"),
 ]
 
 ################
 #  PENALTIES   #
 ################
 PENALTY_CHOICES = [
-    (NO_LINE_START, 'Salida sin estacha'),
-    (NULL_START, 'Salida nula'),
-    (BLADE_TOUCH, 'Toque de palas'),
+    (NO_LINE_START, "Salida sin estacha"),
+    (NULL_START, "Salida nula"),
+    (BLADE_TOUCH, "Toque de palas"),
 ]

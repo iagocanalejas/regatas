@@ -1,9 +1,10 @@
-from django.db.models import Q
-from rscraping.data.normalization.clubs import normalize_club_name as rs_normalize_club_name, _KNOWN_SPONSORS
-
 from ai_django.ai_core.utils.strings import whitespaces_clean
-from apps.entities.models import Entity
+from django.db.models import Q
 from utils.choices import ENTITY_CLUB
+
+from apps.entities.models import Entity
+from rscraping.data.normalization.clubs import _KNOWN_SPONSORS
+from rscraping.data.normalization.clubs import normalize_club_name as rs_normalize_club_name
 
 
 def normalize_club_name(name: str) -> str:

@@ -3,6 +3,7 @@ from pathlib import Path
 
 from corsheaders.defaults import default_methods
 from environs import Env
+
 from config import version
 from config.common import load_env
 from config.patch import patch_unaccent
@@ -137,9 +138,9 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 """
-** Cross-Origin-Resource-Sharing: CORS is a mechanism that allows restricted resources (e.g. fonts) on a web page to be 
-** requested from another domain outside the domain from which the first resource was served. A web page may freely 
-** embed cross-origin images, stylesheets, scripts, iframes, and videos. Certain 'cross-domain' requests, notably 
+** Cross-Origin-Resource-Sharing: CORS is a mechanism that allows restricted resources (e.g. fonts) on a web page to be
+** requested from another domain outside the domain from which the first resource was served. A web page may freely
+** embed cross-origin images, stylesheets, scripts, iframes, and videos. Certain 'cross-domain' requests, notably
 ** Ajax requests, are forbidden by default by the same-origin security policy.
 
 # Control Cross-Origin-Resource-Sharing to allow access to our service from other sites, it's value depends on
@@ -175,11 +176,11 @@ CORS_ALLOWED_ORIGINS = (
     ]
 )
 """
-** Cross-Site-Request-Forgery: A CSRF hole is when a malicious site can cause a visitor's browser to make a 
-** request to your server that causes a change on the server. The server thinks that because the request comes with the 
+** Cross-Site-Request-Forgery: A CSRF hole is when a malicious site can cause a visitor's browser to make a
+** request to your server that causes a change on the server. The server thinks that because the request comes with the
 ** user's cookies, the user wanted to submit that form.
- 
-# To use CORS and CSRF at the same time we need to include in CSRF_TRUSTED_ORIGINS all the valid domains that can 
+
+# To use CORS and CSRF at the same time we need to include in CSRF_TRUSTED_ORIGINS all the valid domains that can
 # send requests to our service.
 # https://docs.djangoproject.com/en/dev/ref/csrf/
 """

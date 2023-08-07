@@ -1,17 +1,17 @@
-from django.contrib.postgres.fields import ArrayField
-from django.db import models
-from django.db.models import QuerySet, Func, F, Value, JSONField
-
 from ai_django.ai_core.models import TraceableModel
 from ai_django.ai_core.validators import JSONSchemaValidator
-from apps.schemas import default_metadata, METADATA_SCHEMA
-from utils.choices import ENTITY_TYPE_CHOICES, GENDER_MALE, GENDER_FEMALE, GENDER_CHOICES
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.db.models import F, Func, JSONField, QuerySet, Value
+from utils.choices import ENTITY_TYPE_CHOICES, GENDER_CHOICES, GENDER_FEMALE, GENDER_MALE
+
+from apps.schemas import METADATA_SCHEMA, default_metadata
 
 
 class League(TraceableModel):
     name = models.CharField(unique=True, max_length=150)
     symbol = models.CharField(max_length=10)
-    parent = models.ForeignKey('self', null=True, default=None, on_delete=models.PROTECT)
+    parent = models.ForeignKey("self", null=True, default=None, on_delete=models.PROTECT)
     gender = models.CharField(max_length=10, null=True, default=None, choices=GENDER_CHOICES)
 
     def __str__(self):
@@ -26,9 +26,9 @@ class League(TraceableModel):
         return self.gender == GENDER_FEMALE
 
     class Meta:
-        db_table = 'league'
-        verbose_name = 'Liga'
-        ordering = ['id']
+        db_table = "league"
+        verbose_name = "Liga"
+        ordering = ["id"]
 
 
 class Entity(TraceableModel):
@@ -40,7 +40,7 @@ class Entity(TraceableModel):
     """
 
     name = models.CharField(unique=True, max_length=150)
-    normalized_name = models.CharField(max_length=150)  # not unique | EX: CR BADALONA and CN BADALONA will resolve to BADALONA
+    normalized_name = models.CharField(max_length=150)  # EX: CR BADALONA and CN BADALONA will resolve to BADALONA
     known_names = ArrayField(default=list, blank=True, base_field=models.CharField(max_length=150))
 
     type = models.CharField(max_length=50, choices=ENTITY_TYPE_CHOICES)
@@ -52,19 +52,19 @@ class Entity(TraceableModel):
         null=True,
         blank=True,
         default=None,
-        to='self',
+        to="self",
         on_delete=models.PROTECT,
-        related_name='subsidiaries',
-        related_query_name='subsidiary',
+        related_name="subsidiaries",
+        related_query_name="subsidiary",
     )
     fused_into = models.ForeignKey(
         null=True,
         blank=True,
         default=None,
-        to='self',
+        to="self",
         on_delete=models.PROTECT,
-        related_name='formed_by',
-        related_query_name='formed_by',
+        related_name="formed_by",
+        related_query_name="formed_by",
     )
 
     metadata = JSONField(
@@ -81,38 +81,38 @@ class Entity(TraceableModel):
         :return: #QuerySet annotated for named search
         """
         return Entity.objects.annotate(
-            joined_names=Func(F('known_names'), Value(' '), function='array_to_string', output_field=models.CharField())
+            joined_names=Func(F("known_names"), Value(" "), function="array_to_string", output_field=models.CharField())
         )
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        super(Entity, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
-        db_table = 'entity'
-        verbose_name = 'Entidad'
-        verbose_name_plural = 'Entidades'
-        ordering = ['type', 'name']
+        db_table = "entity"
+        verbose_name = "Entidad"
+        verbose_name_plural = "Entidades"
+        ordering = ["type", "name"]
 
 
 class EntityPartnership(models.Model):
     target = models.ForeignKey(
-        to='entities.Entity',
+        to="entities.Entity",
         on_delete=models.PROTECT,
-        related_name='components',
-        related_query_name='component',
-        limit_choices_to={"is_partnership", True},
+        related_name="components",
+        related_query_name="component",
+        limit_choices_to={"is_partnership", True},  # pyright: ignore
     )
     part = models.ForeignKey(
-        to='entities.Entity',
+        to="entities.Entity",
         on_delete=models.PROTECT,
-        related_name='part_of',
-        related_query_name='part_of',
-        limit_choices_to={"is_partnership", False},
+        related_name="part_of",
+        related_query_name="part_of",
+        limit_choices_to={"is_partnership", False},  # pyright: ignore
     )
     is_active = models.BooleanField(null=False, blank=True, default=True, db_index=True)
 
     class Meta:
-        db_table = 'entity_partnership'
-        verbose_name = 'Fusión'
-        verbose_name_plural = 'Fusiones'
+        db_table = "entity_partnership"
+        verbose_name = "Fusión"
+        verbose_name_plural = "Fusiones"

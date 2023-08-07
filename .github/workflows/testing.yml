@@ -3,16 +3,19 @@ on:
   workflow_call:
   workflow_dispatch:
   push:
-    branches: [ master, develop, feature/* ]
+    branches: [master, develop, feature/*]
   pull_request:
-    branches: [ master, develop ]
+    branches: [master, develop]
+
 jobs:
   test_service:
     runs-on: ubuntu-latest
+
     strategy:
       matrix: # current + last versions
-        python-version: [ '3.11' ]
-        postgres-version: [ '14', '15' ]
+        python-version: ["3.11"]
+        postgres-version: ["14", "15"]
+
     services:
       postgres:
         image: postgres:${{ matrix.postgres-version }}
@@ -23,29 +26,39 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Pre-commit checks
+        uses: pre-commit/action@v3.0.0
+
       - name: Install requirements
         run: |
           pip install -r service/config/requirements/ci.txt
+
       - name: Copy environment variables (CI requires .env file)
         run: |
           cat .testenv > .env
+
       - name: Ensure migrations are consistent
         run: |
           cd service
           python manage.py migrate
+
       - name: Run python tests
         run: |
           cd service
-          python manage.py test
+          python manage.py test --pattern="*_test.py"
+
   test_web:
     runs-on: ubuntu-latest
     strategy:
@@ -55,14 +68,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
+
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Install packages
         run: |
           cd web
           npm ci
+
       - name: Run linter
         run: |
           cd web

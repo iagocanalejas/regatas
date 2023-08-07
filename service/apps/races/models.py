@@ -1,16 +1,16 @@
 import logging
 
-from django.contrib.postgres.fields import ArrayField
-from django.db import models, IntegrityError
-from django.db.models import JSONField
-from rscraping import lemmatize
-
 from ai_django.ai_core.models import CreationStampModel
 from ai_django.ai_core.utils.shortcuts import all_or_none
 from ai_django.ai_core.utils.strings import int_to_roman, whitespaces_clean
 from ai_django.ai_core.validators import JSONSchemaValidator
+from django.contrib.postgres.fields import ArrayField
+from django.db import IntegrityError, models
+from django.db.models import JSONField
+from utils.choices import RACE_CONVENTIONAL, RACE_MODALITY_CHOICES, RACE_TRAINERA, RACE_TYPE_CHOICES
+
 from apps.schemas import METADATA_SCHEMA, default_metadata
-from utils.choices import RACE_CONVENTIONAL, RACE_TYPE_CHOICES, RACE_TRAINERA, RACE_MODALITY_CHOICES
+from rscraping import lemmatize
 
 logger = logging.getLogger(__name__)
 
@@ -26,13 +26,13 @@ class Trophy(CreationStampModel):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.tokens = list(lemmatize(self.name))
-        super(Trophy, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
-        db_table = 'trophy'
-        verbose_name = 'Trofeo'
-        verbose_name_plural = 'Trofeos'
-        ordering = ['name']
+        db_table = "trophy"
+        verbose_name = "Trofeo"
+        verbose_name_plural = "Trofeos"
+        ordering = ["name"]
 
 
 class Flag(CreationStampModel):
@@ -46,13 +46,13 @@ class Flag(CreationStampModel):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.tokens = list(lemmatize(self.name))
-        super(Flag, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
-        db_table = 'flag'
-        verbose_name = 'Bandera'
-        verbose_name_plural = 'Banderas'
-        ordering = ['name']
+        db_table = "flag"
+        verbose_name = "Bandera"
+        verbose_name_plural = "Banderas"
+        ordering = ["name"]
 
 
 # TODO: enum of cancellation reasons
@@ -79,8 +79,8 @@ class Race(CreationStampModel):
         default=None,
         to=Trophy,
         on_delete=models.PROTECT,
-        related_name='editions',
-        related_query_name='edition',
+        related_name="editions",
+        related_query_name="edition",
     )
     # 'flag_edition' and 'flag' should both be NULL or NOT_NULL
     flag_edition = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
@@ -90,18 +90,18 @@ class Race(CreationStampModel):
         default=None,
         to=Flag,
         on_delete=models.PROTECT,
-        related_name='editions',
-        related_query_name='edition',
+        related_name="editions",
+        related_query_name="edition",
     )
 
     league = models.ForeignKey(
         null=True,
         blank=True,
         default=None,
-        to='entities.League',
+        to="entities.League",
         on_delete=models.PROTECT,
-        related_name='races',
-        related_query_name='race',
+        related_name="races",
+        related_query_name="race",
     )
 
     modality = models.CharField(default=RACE_TRAINERA, max_length=15, choices=RACE_MODALITY_CHOICES)
@@ -109,7 +109,7 @@ class Race(CreationStampModel):
         null=True,
         blank=True,
         default=None,
-        to='entities.Entity',
+        to="entities.Entity",
         on_delete=models.PROTECT,
     )
     metadata = JSONField(
@@ -118,43 +118,44 @@ class Race(CreationStampModel):
     )
 
     def __str__(self):
-        league = f'({self.league.symbol})' if self.league else ''
-        return f'{self.date} :: {self.name} {league}'.strip()
+        league = f"({self.league.symbol})" if self.league else ""
+        return f"{self.date} :: {self.name} {league}".strip()
 
     @property
     def name(self) -> str:
-        day = f'XORNADA {self.day}' if self.day > 1 else ''
+        day = f"XORNADA {self.day}" if self.day > 1 else ""
 
-        trophy = f'{int_to_roman(self.trophy_edition)} - {self.trophy}' if self.trophy else ''
-        flag = f'{int_to_roman(self.flag_edition)} - {self.flag}' if self.flag else ''
-        name = ' - '.join([i for i in [trophy, flag, self.sponsor] if i])
-        return whitespaces_clean(f'{name} {day}')
+        trophy = f"{int_to_roman(self.trophy_edition)} - {self.trophy}" if self.trophy and self.trophy_edition else ""
+        flag = f"{int_to_roman(self.flag_edition)} - {self.flag}" if self.flag and self.flag_edition else ""
+        name = " - ".join([i for i in [trophy, flag, self.sponsor] if i])
+        return whitespaces_clean(f"{name} {day}")
 
     def validate_editions(self):
         """
         Validate trophy and flag should have editions.
         """
-        if not all_or_none(self.flag_id, self.flag_edition):
+        if not all_or_none(self.flag, self.flag_edition):
             raise IntegrityError(
-                f'Instance needs to have both \'flag\' and \'flag_edition\' filled or empty. '
-                f'current: (flag_id:{self.flag_id}, flag_edition:{self.flag_edition})'
+                f"Instance needs to have both 'flag' and 'flag_edition' filled or empty. "
+                f"current: (flag_id:{self.flag}, flag_edition:{self.flag_edition})"
             )
-        if not all_or_none(self.trophy_id, self.trophy_edition):
+        if not all_or_none(self.trophy, self.trophy_edition):
             raise IntegrityError(
-                f'Instance needs to have both \'trophy\' and \'trophy_edition\' filled or empty. '
-                f'current: (trophy_id:{self.trophy_id}, trophy_edition:{self.trophy_edition})'
+                f"Instance needs to have both 'trophy' and 'trophy_edition' filled or empty. "
+                f"current: (trophy_id:{self.trophy}, trophy_edition:{self.trophy_edition})"
             )
 
     def save(self, *args, **kwargs):
         self.validate_editions()
         self.full_clean()
-        super(Race, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
-        db_table = 'race'
-        verbose_name = 'Regata'
+        db_table = "race"
+        verbose_name = "Regata"
         unique_together = [
-            ['trophy', 'league', 'trophy_edition', 'modality', 'day'], ['flag', 'league', 'flag_edition', 'modality', 'day'],
-            ['league', 'date']
+            ["trophy", "league", "trophy_edition", "modality", "day"],
+            ["flag", "league", "flag_edition", "modality", "day"],
+            ["league", "date"],
         ]
-        ordering = ['date', 'league']
+        ordering = ["date", "league"]

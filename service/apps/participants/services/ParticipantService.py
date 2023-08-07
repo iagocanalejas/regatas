@@ -1,7 +1,7 @@
 import logging
 from typing import List, Tuple
 
-from django.db.models import QuerySet, Q
+from django.db.models import Q, QuerySet
 
 from apps.participants.filters import ParticipantFilters
 from apps.participants.models import Participant

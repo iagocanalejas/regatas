@@ -1,7 +1,7 @@
 from django.urls import path
 
-from apps.entities.apps import EntitiesConfig
 from apps.entities import views
+from apps.entities.apps import EntitiesConfig
 
 app_name = EntitiesConfig.name
 

@@ -2,9 +2,9 @@ from typing import Optional
 
 from rest_framework import serializers
 
-from apps.entities.models import League, Entity
+from apps.entities.models import Entity, League
 from apps.participants.models import Participant
-from apps.races.models import Race, Trophy, Flag
+from apps.races.models import Flag, Race, Trophy
 
 
 class LeagueSerializer(serializers.ModelSerializer):

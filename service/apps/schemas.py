@@ -2,9 +2,9 @@ import logging
 from typing import Dict, Optional
 
 from django.core.exceptions import ValidationError
-from rscraping import Datasource
-
 from utils.choices import GENDER_FEMALE, GENDER_MALE
+
+from rscraping import Datasource
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class MetadataBuilder:
 
     def build(self) -> Dict:
         if "values" not in self._metadata:
-            raise ValidationError({"values", f'required object "values" in metadata'})
+            raise ValidationError({"values", 'required object "values" in metadata'})
         if "datasource_name" not in self._metadata:
-            raise ValidationError({"datasource_name", f'required object "datasource_name" in metadata'})
+            raise ValidationError({"datasource_name", 'required object "datasource_name" in metadata'})
         return self._metadata

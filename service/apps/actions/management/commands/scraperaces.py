@@ -4,16 +4,16 @@ from datetime import date, datetime
 from typing import List, Optional
 
 from django.core.management import BaseCommand
-from rscraping.clients import Client
-from rscraping.data.constants import GENDER_FEMALE
-from rscraping.data.models import Race, Datasource
 
 from apps.actions.management.helpers.helpers import (
     preload_participants,
-    save_race_from_scraped_data,
     save_participants_from_scraped_data,
+    save_race_from_scraped_data,
 )
 from apps.races.services import RaceService
+from rscraping.clients import Client
+from rscraping.data.constants import GENDER_FEMALE
+from rscraping.data.models import Datasource, Race
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class Command(BaseCommand):
     - The command should be executed with appropriate arguments to import data from the desired web datasource.
     - The '--all' option allows importing data for all available years.
     - After importing, the parsed 'Race' and 'Participant' objects are iteratively saved to the database.
-    - It is recommended to avoid running this command frequently to avoid excessive web requests and database operations.
+    - Avoid running this command frequently to avoid excessive web requests and database operations.
     """
 
     def add_arguments(self, parser):
@@ -65,7 +65,7 @@ class Command(BaseCommand):
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
         if not year and not do_all:
-            raise ValueError(f"missing param 'year' | 'all'")
+            raise ValueError("missing param 'year' | 'all'")
 
         if Datasource(datasource) == Datasource.LGT:
             is_female = None

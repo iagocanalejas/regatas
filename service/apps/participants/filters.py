@@ -1,9 +1,9 @@
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
 
-from django.db.models import QuerySet, Q
+from ai_django.ai_core.utils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
+from django.db.models import Q, QuerySet
 from django.db.models.expressions import RawSQL
 
-from ai_django.ai_core.utils.strings import whitespaces_clean, remove_conjunctions, remove_symbols
 from apps.participants.models import Participant
 
 

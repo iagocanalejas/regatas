@@ -1,16 +1,16 @@
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from utils.choices import ENTITY_CLUB, ENTITY_FEDERATION, ENTITY_LEAGUE, ENTITY_PRIVATE
 
 from apps.entities.serializers import ParticipationSerializer
-from apps.entities.services import LeagueService, EntityService
+from apps.entities.services import EntityService, LeagueService
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
-from apps.serializers import LeagueSerializer, ClubSerializer, OrganizerSerializer, EntitySerializer
-from utils.choices import ENTITY_CLUB, ENTITY_LEAGUE, ENTITY_FEDERATION, ENTITY_PRIVATE
+from apps.serializers import ClubSerializer, EntitySerializer, LeagueSerializer, OrganizerSerializer
 
 
 class LeaguesView(APIView):
@@ -18,6 +18,7 @@ class LeaguesView(APIView):
     get:
     Return a list of active leagues
     """
+
     @staticmethod
     @extend_schema(responses={200: LeagueSerializer(many=True)})
     def get(request):
@@ -29,6 +30,7 @@ class ClubsView(APIView):
     get:
     Return a list of active clubs
     """
+
     @staticmethod
     @extend_schema(responses={200: ClubSerializer(many=True)})
     def get(request):
@@ -42,6 +44,7 @@ class ClubView(APIView):
     get:
     Return an active club
     """
+
     @staticmethod
     @extend_schema(responses={200: ClubSerializer()})
     def get(request, club_id: int):
@@ -54,18 +57,19 @@ class OrganizersView(APIView):
     get:
     Return a list of active organizers
     """
+
     @staticmethod
     @extend_schema(responses={200: OrganizerSerializer(many=True)})
     def get(request):
         entities = EntityService.get()
         return Response(
             {
-                'clubs': ClubSerializer([e for e in entities if e.type == ENTITY_CLUB], many=True).data,
-                'leagues': EntitySerializer([e for e in entities if e.type == ENTITY_LEAGUE], many=True).data,
-                'federations': EntitySerializer([e for e in entities if e.type == ENTITY_FEDERATION], many=True).data,
-                'private': EntitySerializer([e for e in entities if e.type == ENTITY_PRIVATE], many=True).data,
+                "clubs": ClubSerializer([e for e in entities if e.type == ENTITY_CLUB], many=True).data,
+                "leagues": EntitySerializer([e for e in entities if e.type == ENTITY_LEAGUE], many=True).data,
+                "federations": EntitySerializer([e for e in entities if e.type == ENTITY_FEDERATION], many=True).data,
+                "private": EntitySerializer([e for e in entities if e.type == ENTITY_PRIVATE], many=True).data,
             },
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
 
 
@@ -74,32 +78,43 @@ class ClubRacesView(GenericAPIView):
     get:
     Return an active club races
     """
+
     queryset = Participant.objects
     serializer_class = ParticipationSerializer
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name='trophy', description='Filter by trophy', required=False, type=int),
-            OpenApiParameter(name='flag', description='Filter by flag', required=False, type=int),
-            OpenApiParameter(name='league', description='Filter by league', required=False, type=int),
-            OpenApiParameter(name='year', description='Filter by year', required=False, type=int),
-            OpenApiParameter(name='keywords', description='Filter by trophy, flag, league, sponsor, town', required=False, type=str),
-            OpenApiParameter(name='gender', description='Filter by gender', required=False, type=str),
-            OpenApiParameter(name='category', description='Filter by category', required=False, type=str),
-            OpenApiParameter(name='ordering', description='Sort results by given param. default: #Race.date', required=False, type=str),
+            OpenApiParameter(name="trophy", description="Filter by trophy", required=False, type=int),
+            OpenApiParameter(name="flag", description="Filter by flag", required=False, type=int),
+            OpenApiParameter(name="league", description="Filter by league", required=False, type=int),
+            OpenApiParameter(name="year", description="Filter by year", required=False, type=int),
+            OpenApiParameter(
+                name="keywords",
+                description="Filter by trophy, flag, league, sponsor, town",
+                required=False,
+                type=str,
+            ),
+            OpenApiParameter(name="gender", description="Filter by gender", required=False, type=str),
+            OpenApiParameter(name="category", description="Filter by category", required=False, type=str),
+            OpenApiParameter(
+                name="ordering",
+                description="Sort results by given param. default: #Race.date",
+                required=False,
+                type=str,
+            ),
         ],
         responses={
             200: ParticipationSerializer(many=True),
             400: OpenApiTypes.OBJECT,
-        }
+        },
     )
     def get(self, request, club_id: int):
         queryset = self.get_queryset().filter(club_id=club_id)
         races = ParticipantService.get_filtered(
             queryset,
             request.query_params,
-            related=['race', 'race__trophy', 'race__flag', 'race__league', 'race__organizer'],
-            prefetch=['race__participants']
+            related=["race", "race__trophy", "race__flag", "race__league", "race__organizer"],
+            prefetch=["race__participants"],
         )
         page = self.paginate_queryset(races)
         if page is not None:

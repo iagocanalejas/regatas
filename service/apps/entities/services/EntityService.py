@@ -1,14 +1,14 @@
 import operator
 from functools import reduce
-from typing import Optional, List
-
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
+from typing import List, Optional
 
 from ai_django.ai_core.utils.lists import flatten
-from ai_django.ai_core.utils.strings import closest_result, remove_conjunctions, remove_symbols, levenshtein_distance
-from apps.entities.models import Entity
+from ai_django.ai_core.utils.strings import closest_result, levenshtein_distance, remove_conjunctions, remove_symbols
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from utils.choices import ENTITY_CLUB, ENTITY_TYPES
+
+from apps.entities.models import Entity
 
 
 def get(related: List[str] = None) -> List[Entity]:

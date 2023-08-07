@@ -1,16 +1,17 @@
 import logging
 from typing import List
+
 from django.core.management import BaseCommand
 from django.db.models import ObjectDoesNotExist
-from pyutils.strings import remove_conjunctions, remove_symbols, whitespaces_clean, normalize_synonyms
 from pyutils.lists import flatten
+from pyutils.strings import normalize_synonyms, remove_conjunctions, remove_symbols, whitespaces_clean
+
+from apps.races.models import Flag, Trophy
+from apps.races.services import FlagService, TrophyService
 from rscraping import SYNONYMS, Client, Datasource, lemmatize
 from rscraping.data.functions import is_play_off
-from rscraping.data.normalization import normalize_race_name, normalize_name_parts
 from rscraping.data.models import RaceName
-from apps.races.services import FlagService, TrophyService
-from apps.races.models import Flag, Trophy
-
+from rscraping.data.normalization import normalize_name_parts, normalize_race_name
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +32,9 @@ class Command(BaseCommand):
         if datasource and not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
         if not year and not do_all:
-            raise ValueError(f"missing param 'year' | 'all'")
+            raise ValueError("missing param 'year' | 'all'")
         if not datasource and not do_all:
-            raise ValueError(f"missing param 'datasource' | 'all'")
+            raise ValueError("missing param 'datasource' | 'all'")
 
         items: List[RaceName] = []
         if do_all:
