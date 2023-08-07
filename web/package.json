@@ -34,7 +34,7 @@
     "@ngx-loading-bar/http-client": "6.0.2",
     "@popperjs/core": "2.11.8",
     "bootstrap": "5.3.0",
-    "dayjs": "1.11.7",
+    "dayjs": "1.11.9",
     "rxjs": "7.8.1",
     "tslib": "2.5.2",
     "zod": "3.21.4",
