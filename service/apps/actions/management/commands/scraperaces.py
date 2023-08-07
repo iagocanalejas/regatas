@@ -105,7 +105,7 @@ class Command(BaseCommand):
         for race_id in race_ids:
             time.sleep(1)
 
-            race = client.get_race_by_id(race_id)
+            race = client.get_race_by_id(race_id, is_female=is_female)
             if not race:
                 continue
             print(f"found race={race.name} for {race_id=}")

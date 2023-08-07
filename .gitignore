@@ -1,4 +1,5 @@
 #### Ignore all .idea files
+.idea
 .idea/**
 
 #### Except:
@@ -29,6 +30,7 @@ service/build/
 service/docs/_build/
 service/docs/locale/
 service/venv/
+service/out/
 
 #### Coverage
 service/tests/coverage_html/

@@ -28,29 +28,23 @@ def preload_participants(participants: List[RSParticipant]) -> Dict[str, Entity]
 
 def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
     race.participants = []
-    trophy_edition = flag_edition = None
-    trophy = flag = None
 
-    for name, edition in race.normalized_names:
-        if len(race.normalized_names) > 1 and is_memorial(name):
-            continue
-        trophy, trophy_edition = _find_trophy(name, edition)
-        if trophy:
-            break
-        trophy_edition = None
+    trophy, trophy_edition = _find_trophy(race.normalized_names)
+    flag, flag_edition = _find_flag(race.normalized_names)
 
-    for name, edition in race.normalized_names:
-        if len(race.normalized_names) > 1 and is_memorial(name):
-            continue
-        flag, flag_edition = _find_flag(name, edition)
-        if flag:
-            break
-        flag_edition = None
+    if not trophy and not flag:
+        (trophy, trophy_edition), (flag, flag_edition) = _try_manual_input(race.name)
 
     if not trophy and not flag:
         raise StopProcessing(f"no trophy/flag found for {race.normalized_names}")
+
     if not race.url:
         raise StopProcessing(f"no datasource provided for race={race.name}")
+
+    if trophy and not trophy_edition:
+        trophy_edition = int(inquirer.text(f"Edition for trophy {trophy}: ", default=None))
+    if flag and not flag_edition:
+        flag_edition = int(inquirer.text(f"Edition for flag {flag}: ", default=None))
 
     organizer = _find_club(race.organizer) if race.organizer else None
 
@@ -85,7 +79,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
     )
 
     print(json.dumps(CommandRaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False))
-    if not inquirer.confirm(f"Save new race in the database?", default=False):
+    if not inquirer.confirm(f"Save new race for {race.name} in the database?", default=False):
         raise StopProcessing
 
     new_race.save()
@@ -124,18 +118,43 @@ def save_participants_from_scraped_data(
     return new_participants
 
 
-def _find_trophy(name: str, edition: Optional[int]) -> Tuple[Optional[Trophy], Optional[int]]:
-    try:
-        return TrophyService.get_closest_by_name(name), edition
-    except Trophy.DoesNotExist:
-        return None, None
+def _try_manual_input(name: str) -> Tuple[Tuple[Optional[Trophy], Optional[int]], Tuple[Optional[Flag], Optional[int]]]:
+    trophy = flag = None
+    trophy_edition = flag_edition = None
+
+    trophy_id = inquirer.text(f"no trophy found for {name}. Trophy ID: ", default=None)
+    if trophy_id:
+        trophy = Trophy.objects.get(id=trophy_id)
+        trophy_edition = int(inquirer.text(f"Edition for trophy {trophy}: ", default=None))
+
+    flag_id = inquirer.text(f"no flag found for {name}. Flag ID: ", default=None)
+    if flag_id:
+        flag = Flag.objects.get(id=flag_id)
+        flag_edition = int(inquirer.text(f"Edition for flag {flag}: ", default=None))
+
+    return (trophy, trophy_edition), (flag, flag_edition)
 
 
-def _find_flag(name: str, edition: Optional[int]) -> Tuple[Optional[Flag], Optional[int]]:
-    try:
-        return FlagService.get_closest_by_name(name), edition
-    except Flag.DoesNotExist:
-        return None, None
+def _find_trophy(names: List[Tuple[str, Optional[int]]]) -> Tuple[Optional[Trophy], Optional[int]]:
+    for name, edition in names:
+        if len(names) > 1 and is_memorial(name):
+            continue
+        try:
+            return TrophyService.get_closest_by_name(name), edition
+        except Trophy.DoesNotExist:
+            continue
+    return None, None
+
+
+def _find_flag(names: List[Tuple[str, Optional[int]]]) -> Tuple[Optional[Flag], Optional[int]]:
+    for name, edition in names:
+        if len(names) > 1 and is_memorial(name):
+            continue
+        try:
+            return FlagService.get_closest_by_name(name), edition
+        except Flag.DoesNotExist:
+            continue
+    return None, None
 
 
 def _find_club(name: str) -> Optional[Entity]:
