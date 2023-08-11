@@ -38,15 +38,15 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
         (trophy, trophy_edition), (flag, flag_edition) = _try_manual_input(race.name)
 
     if not trophy and not flag:
-        raise StopProcessing(f"no trophy/flag found for {race.normalized_names}")
+        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
 
     if not race.url:
-        raise StopProcessing(f"no datasource provided for race={race.name}")
+        raise StopProcessing(f"no datasource provided for {race.race_id}::{race.name}")
 
     if trophy and not trophy_edition:
-        trophy_edition = int(inquirer.text(f"Edition for trophy {trophy}: ", default=None))
+        trophy_edition = int(inquirer.text(f"race_id={race.race_id}::Edition for trophy {trophy}: ", default=None))
     if flag and not flag_edition:
-        flag_edition = int(inquirer.text(f"Edition for flag {flag}: ", default=None))
+        flag_edition = int(inquirer.text(f"race_id={race.race_id}::Edition for flag {flag}: ", default=None))
 
     organizer = _find_club(race.organizer) if race.organizer else None
 
@@ -100,6 +100,7 @@ def save_participants_from_scraped_data(
             laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in p.laps],
             lane=p.lane,
             series=p.series,
+            handicap=datetime.strptime(p.handicap, "%M:%S.%f").time() if p.handicap else None,
             gender=p.gender,
             category=p.category,
         )

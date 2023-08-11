@@ -31,6 +31,7 @@ class Participant(models.Model):
     laps = ArrayField(blank=True, default=list, base_field=models.TimeField(null=False))
     lane = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     series = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
+    handicap = models.TimeField(null=True, blank=True, default=None)
 
     gender = models.CharField(default=GENDER_MALE, max_length=10, choices=GENDER_CHOICES)
     category = models.CharField(
@@ -76,9 +77,7 @@ class Participant(models.Model):
 class Penalty(models.Model):
     penalty = models.PositiveIntegerField(blank=True, default=0)
     disqualification = models.BooleanField(default=False)
-    reason = models.CharField(
-        null=True, blank=True, default=None, max_length=500, choices=PENALTY_CHOICES
-    )  # TODO: convert to NON-NULLABLE
+    reason = models.CharField(null=True, blank=True, default=None, max_length=500, choices=PENALTY_CHOICES)
     participant = models.ForeignKey(
         null=False,
         to=Participant,

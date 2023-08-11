@@ -3,11 +3,11 @@ from typing import List
 
 from django.core.management import BaseCommand
 from django.db.models import ObjectDoesNotExist
-from pyutils.lists import flatten
-from pyutils.strings import normalize_synonyms, remove_conjunctions, remove_symbols, whitespaces_clean
 
 from apps.races.models import Flag, Trophy
 from apps.races.services import FlagService, TrophyService
+from pyutils.lists import flatten
+from pyutils.strings import normalize_synonyms, remove_conjunctions, remove_symbols, whitespaces_clean
 from rscraping import SYNONYMS, Client, Datasource, lemmatize
 from rscraping.data.functions import is_play_off
 from rscraping.data.models import RaceName

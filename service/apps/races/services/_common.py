@@ -5,9 +5,9 @@ from typing import Optional, Type, TypeVar
 
 from ai_django.ai_core.utils.strings import closest_result, whitespaces_clean
 from django.db.models import Q
-from pyutils.strings import expand_lemmas, normalize_synonyms
 
 from apps.races.models import Flag, Trophy
+from pyutils.strings import expand_lemmas, normalize_synonyms
 from rscraping import SYNONYMS, lemmatize
 
 logger = logging.getLogger(__name__)

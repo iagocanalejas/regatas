@@ -4,6 +4,7 @@ from datetime import date, datetime
 from typing import List, Optional
 
 from django.core.management import BaseCommand
+from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.helpers import (
     preload_participants,
@@ -87,8 +88,12 @@ class Command(BaseCommand):
             participants = race.participants
 
             clubs = preload_participants(participants)
-            new_race = save_race_from_scraped_data(race, Datasource(datasource))
-            save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)
+            try:
+                new_race = save_race_from_scraped_data(race, Datasource(datasource))
+                save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)
+            except StopProcessing:
+                logger.error(f"unable to save data for {race.race_id}::{race.name}")
+                continue
 
     @staticmethod
     def _handle_year(client: Client, year: int, datasource: Datasource, is_female: Optional[bool] = None) -> List[Race]:
@@ -100,15 +105,19 @@ class Command(BaseCommand):
             for r in race_ids
             if not RaceService.get_by_datasource(r, datasource, gender=GENDER_FEMALE if is_female else None)
         ]
-        print(f"found {len(race_ids)} races for {year=}")
+        logger.info(f"found {len(race_ids)} races for {year=}")
 
         for race_id in race_ids:
             time.sleep(1)
 
-            race = client.get_race_by_id(race_id, is_female=is_female)
+            try:
+                race = client.get_race_by_id(race_id, is_female=is_female)
+            except ValueError as e:
+                logger.error(e)
+                continue
             if not race:
                 continue
-            print(f"found race={race.name} for {race_id=}")
+            logger.info(f"found race={race.name} for {race_id=}")
 
             is_after_today = race and datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
             if is_after_today:
@@ -117,5 +126,5 @@ class Command(BaseCommand):
             items.append(race)
 
         items = [i for i in items if i is not None]
-        print(f"parsed {len(items)} races for {year=}")
+        logger.info(f"parsed {len(items)} races for {year=}")
         return items
