@@ -3,7 +3,7 @@ import type { Trophy } from './trophy';
 import type { Flag } from './flag';
 import type { Club, ClubDetail, Organizers } from './entity';
 import type { Race, RaceDetail, RaceFilter, RaceSortBy } from './race';
-import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, type Page, type PaginationConfig } from './page';
+import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, type Page, type PaginationConfig, type PaginationResult } from './page';
 import {
 	category_es,
 	categoryGender_es,
@@ -28,6 +28,7 @@ export const NO_TIME = '- - - - -';
 export {
 	Page,
 	PaginationConfig,
+	PaginationResult,
 	RaceType,
 	Gender,
 	PenaltyReason,

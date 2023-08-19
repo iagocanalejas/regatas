@@ -1,82 +1,55 @@
 <script lang="ts">
-	import { races, racesPage, raceFilters } from '$lib/stores/races';
-	import { DEFAULT_PAGE_RESULT, type League, type Page, type Race } from '$lib/types';
-	import { onDestroy, onMount } from 'svelte';
+	import { races, racesPage, raceFilters, resetRacesStore } from '$lib/stores/races';
+	import { DEFAULT_PAGE_RESULT, type RaceFilter } from '$lib/types';
+	import { onDestroy } from 'svelte';
 	import SearchRace from '$lib/components/SearchRace.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
+	import { RacesService } from '$lib/services/races';
 
-	onMount(() => {
-		loadRacesPage();
-	});
+	onDestroy(() => resetRacesStore());
 
-	onDestroy(() => {
-		raceFilters.set({});
-		racesPage.set(DEFAULT_PAGE_RESULT);
-		races.set([]);
-	});
-
-	$: {
-		debouncedSearchTerm && changeKeywords();
-	}
-
-	let debouncedSearchTerm = '';
-	function changeKeywords() {
+	function changeFilters(key: keyof RaceFilter, value: unknown) {
 		races.set([]);
 		racesPage.set(DEFAULT_PAGE_RESULT);
-		raceFilters.update((filters) => ({ ...filters, keywords: debouncedSearchTerm }));
+		raceFilters.update((filters) => ({ ...filters, [key]: value }));
 
 		loadRacesPage();
 	}
 
 	function changePage(pageNumber: number) {
 		racesPage.update((page) => ({ ...page, current_page: pageNumber }));
+
 		loadRacesPage();
 	}
 
-	function changeLeague(league: League) {
-		racesPage.update((page) => ({ ...page, current_page: 0 }));
-        raceFilters.update((filters) => ({ ...filters, league: league?.id }));
+	function clearFilters() {
+		resetRacesStore();
 		loadRacesPage();
-	}
-
-	function buildQueryParams(): string {
-		let query = `/api/races?page=${$racesPage.current_page}`;
-
-		if (!!$raceFilters.keywords) {
-			query += `&keywords=${$raceFilters.keywords}`;
-		}
-
-		if (!!$raceFilters.year) {
-			query += `&year=${$raceFilters.year}`;
-		}
-
-		if (!!$raceFilters.league) {
-			query += `&league=${$raceFilters.league}`;
-		}
-
-		return query;
 	}
 
 	let loading: boolean = false;
 	async function loadRacesPage() {
-		let isLastPage = $racesPage.total_pages > 0 && $racesPage.current_page + 1 == $racesPage.total_pages;
-		if (loading || isLastPage) {
+		if (loading) {
 			return;
 		}
+
 		loading = true;
-
-		const response = await fetch(`http://localhost:8080${buildQueryParams()}`);
-		const result = (await response.json()) as Page<Race>;
-
-		races.set(result.results);
-		racesPage.set(result.pagination);
-
+		const result = await RacesService.load($raceFilters, $racesPage);
+		if (result) {
+			races.set(result.results);
+			racesPage.set(result.pagination);
+		}
 		loading = false;
 	}
 </script>
 
 <div class="flex flex-col mx-auto w-4/5 py-3 space-y-3">
-	<SearchRace bind:debouncedSearchTerm on:onLeagueChanged={(e) => changeLeague(e.detail)} />
+	<SearchRace
+		on:leagueChanged={(e) => changeFilters('league', e.detail?.id)}
+		on:keywordsChanged={(e) => changeFilters('keywords', e.detail)}
+		on:yearChanged={(e) => changeFilters('year', e.detail)}
+		on:clear={clearFilters}
+	/>
 
 	{#if $racesPage.total_records}
 		<table class="table-auto w-full">
@@ -97,7 +70,23 @@
 						<th class="text-start pe-3">{race.name}</th>
 						<th class="pe-3">{race.league?.symbol || '-'}</th>
 						<th class="pe-3">{race.date}</th>
-						<th class="pe-3" />
+						<th class="px-3">
+							<svg
+								class="w-2.5 h-2.5"
+								aria-hidden="true"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 6 10"
+							>
+								<path
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="m1 9 4-4-4-4"
+								/>
+							</svg>
+						</th>
 					</tr>
 				{/each}
 			</tbody>

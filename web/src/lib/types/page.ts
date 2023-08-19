@@ -1,12 +1,14 @@
 export type Page<T> = {
 	results: T[];
-	pagination: {
-		current_page: number;
-		next: string;
-		page_size: number;
-		total_records: number;
-		total_pages: number;
-	};
+	pagination: PaginationResult;
+};
+
+export type PaginationResult = {
+	current_page: number;
+	next: string;
+	page_size: number;
+	total_records: number;
+	total_pages: number;
 };
 
 export type PaginationConfig = {

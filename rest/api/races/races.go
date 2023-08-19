@@ -95,6 +95,7 @@ func buildRacesQuery(ctx *gin.Context, filters RaceFilters) (string, string, []i
 func getRaces(ctx *gin.Context) {
 	filters := RaceFilters{}
 	filters.Keywords = ctx.DefaultQuery("keywords", "")
+	filters.Year, _ = strconv.ParseInt(ctx.DefaultQuery("year", ""), 10, 64)
 	filters.Trophy, _ = strconv.ParseInt(ctx.DefaultQuery("trophy", ""), 10, 64)
 	filters.Flag, _ = strconv.ParseInt(ctx.DefaultQuery("flag", ""), 10, 64)
 	filters.League, _ = strconv.ParseInt(ctx.DefaultQuery("league", ""), 10, 64)
