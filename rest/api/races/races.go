@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"r4l/rest/api"
 	"r4l/rest/db"
 
 	sq "github.com/Masterminds/squirrel"
@@ -24,13 +23,12 @@ type RaceFilters struct {
 	Limit    int64
 }
 
-func buildRacesQuery(ctx *gin.Context, filters RaceFilters) (string, string, []interface{}) {
+func filterQuery(filters RaceFilters) (string, string, []interface{}, error) {
 	baseSelect := sq.
-		Select("r.id", "r.date", "r.day", "r.sponsor", "r.type", "r.modality", "r.laps", "r.lanes", "r.cancelled",
+		Select("r.id", "r.date", "r.day", "r.sponsor", "r.type", "r.modality", "r.laps", "r.lanes", "r.cancelled", "r.town",
 			"t.id as trophy_id", "t.name as trophy_name", "r.trophy_edition",
 			"f.id as flag_id", "f.name as flag_name", "r.flag_edition",
-			"l.id as league_id", "l.name as league_name", "l.gender as league_gender", "l.symbol as league_symbol",
-			"(SELECT ARRAY_AGG(DISTINCT(gender)) FROM participant WHERE race_id = r.id) as genders").
+			"l.id as league_id", "l.name as league_name", "l.gender as league_gender", "l.symbol as league_symbol").
 		From("race r").
 		LeftJoin("trophy t ON r.trophy_id = t.id").
 		LeftJoin("flag f ON r.flag_id = f.id").
@@ -76,7 +74,7 @@ func buildRacesQuery(ctx *gin.Context, filters RaceFilters) (string, string, []i
 		ToSql()
 	if err != nil {
 		log.Print(query, args)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return "", "", nil, err
 	}
 
 	countQuery, _, err := sq.
@@ -86,10 +84,10 @@ func buildRacesQuery(ctx *gin.Context, filters RaceFilters) (string, string, []i
 		ToSql()
 	if err != nil {
 		log.Print(query, args)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return "", "", nil, err
 	}
 
-	return query, countQuery, args
+	return query, countQuery, args, nil
 }
 
 func getRaces(ctx *gin.Context) {
@@ -102,10 +100,14 @@ func getRaces(ctx *gin.Context) {
 	filters.Page, _ = strconv.ParseInt(ctx.DefaultQuery("page", "0"), 10, 64)
 	filters.Limit, _ = strconv.ParseInt(ctx.DefaultQuery("limit", "100"), 10, 64)
 
-	query, countQuery, args := buildRacesQuery(ctx, filters)
+	query, countQuery, args, err := filterQuery(filters)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	var flatRaces []db.Race
-	err := db.GetDB().Select(&flatRaces, query, args...)
+	err = db.GetDB().Select(&flatRaces, query, args...)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -118,20 +120,15 @@ func getRaces(ctx *gin.Context) {
 		return
 	}
 
-	races := make([]api.Race, len(flatRaces))
+	races := make([]Race, len(flatRaces))
 	for idx, race := range flatRaces {
-		races[idx] = *api.NewRace(race)
+		races[idx] = *NewRace(race)
 	}
 
-	var next string
-	if (filters.Page + 1) < int64(math.Ceil(float64(count)/float64(filters.Limit))) {
-		next = fmt.Sprintf("/races?page=%d", filters.Page+1)
-	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"results": races,
 		"pagination": gin.H{
 			"current_page":  filters.Page,
-			"next":          next,
 			"page_size":     filters.Limit,
 			"total_records": count,
 			"total_pages":   math.Ceil(float64(count) / float64(filters.Limit)),
@@ -141,5 +138,6 @@ func getRaces(ctx *gin.Context) {
 
 func AddRaceRoutes(router *gin.Engine) *gin.Engine {
 	router.GET("/api/races", getRaces)
+	router.GET("/api/races/:raceId", GetRaceById)
 	return router
 }

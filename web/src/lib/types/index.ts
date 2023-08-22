@@ -1,8 +1,9 @@
 import type { League } from './league';
 import type { Trophy } from './trophy';
 import type { Flag } from './flag';
-import type { Club, ClubDetail, Organizers } from './entity';
+import type { Entity } from './entity';
 import type { Race, RaceFilter, RaceSortBy } from './race';
+import type { Participant, ParticipantFilter, ParticipantSortBy } from './participant';
 import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, type Page, type PaginationConfig, type PaginationResult } from './page';
 import {
 	category_es,
@@ -38,12 +39,13 @@ export {
 	League,
 	Flag,
 	Trophy,
-	Club,
-	ClubDetail,
-	Organizers,
+	Entity,
 	Race,
 	RaceFilter,
 	RaceSortBy,
+	Participant,
+	ParticipantFilter,
+	ParticipantSortBy,
 	raceType_es,
 	penaltyReason_es,
 	gender_es,

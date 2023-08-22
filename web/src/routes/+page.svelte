@@ -5,6 +5,7 @@
 	import { RacesService } from '$lib/services/races';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import RaceFilters from '$lib/components/RaceFilters.svelte';
+	import { goto } from '$app/navigation';
 
 	onDestroy(() => resetRacesStore());
 
@@ -43,7 +44,7 @@
 	}
 </script>
 
-<div class="flex flex-col mx-auto w-4/5 py-3 space-y-3">
+<div class="mx-auto flex w-4/5 flex-col space-y-3 py-3">
 	<RaceFilters
 		on:leagueChanged={(e) => changeFilters('league', e.detail?.id)}
 		on:trophyChanged={(e) => changeFilters('trophy', e.detail?.id)}
@@ -54,11 +55,11 @@
 	/>
 
 	{#if $racesPage.total_records}
-		<table class="table-auto w-full">
-			<thead class="text-md uppercase bg-gray-900 text-white h-9">
+		<table class="w-full table-auto">
+			<thead class="text-md h-9 bg-gray-900 uppercase text-white">
 				<tr>
 					<th class="pe-3">#</th>
-					<th class="text-start pe-3">Nombre</th>
+					<th class="pe-3 text-start">Nombre</th>
 					<th class="pe-3">Liga</th>
 					<th class="pe-3">Fecha</th>
 					<th class="pe-3" />
@@ -67,14 +68,14 @@
 
 			<tbody>
 				{#each $races as race, i}
-					<tr class="even:bg-gray-200 h-8">
+					<tr class="h-8 even:bg-gray-200" on:click={() => goto(`${race.id}`)}>
 						<th class="pe-3">{$racesPage.current_page * $racesPage.page_size + i + 1}</th>
-						<th class="text-start pe-3">{race.name}</th>
+						<th class="pe-3 text-start">{race.name}</th>
 						<th class="pe-3">{race.league?.symbol || '-'}</th>
 						<th class="pe-3">{race.date}</th>
 						<th class="px-3">
 							<svg
-								class="w-2.5 h-2.5"
+								class="h-2.5 w-2.5"
 								aria-hidden="true"
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -103,7 +104,7 @@
 		<div class="flex w-full" role="status">
 			<svg
 				aria-hidden="true"
-				class="w-8 h-8 animate-spin text-gray-600 fill-blue-600 mx-auto"
+				class="mx-auto h-8 w-8 animate-spin fill-blue-600 text-gray-600"
 				viewBox="0 0 100 101"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"

@@ -25,8 +25,35 @@ type Race struct {
 
 	Laps        *int `db:"laps"`
 	Lanes       *int `db:"lanes"`
+	Series      *int `db:"series"`
 	IsCancelled bool `db:"cancelled"`
 
 	Genders pq.StringArray `db:"genders"`
 	Sponsor *string        `db:"sponsor"`
+	Town    *string        `db:"town"`
+}
+
+type Participant struct {
+	ID int64 `db:"id"`
+
+	Gender   string `db:"gender"`
+	Category string `db:"category"`
+	Distance int    `db:"distance"`
+
+	ClubId      int64   `db:"club_id"`
+	ClubName    string  `db:"club_name"`
+	ClubRawName *string `db:"club_raw_name"`
+
+	IsDisqualified bool `db:"disqualified"`
+
+	Laps   pq.StringArray `db:"laps"`
+	Lane   *int           `db:"lane"`
+	Series *int           `db:"series"`
+}
+
+type Penalty struct {
+	ParticipantId      int64   `db:"participant_id"`
+	Penalty            int     `db:"penalty"`
+	IsDisqualification bool    `db:"disqualification"`
+	Reason             *string `db:"reason"`
 }

@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"r4l/rest/api"
 	"r4l/rest/db"
 
 	sq "github.com/Masterminds/squirrel"
@@ -22,7 +21,7 @@ func getLeagues(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	var leagues []api.League
+	var leagues []League
 	err = db.GetDB().Select(&leagues, query)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

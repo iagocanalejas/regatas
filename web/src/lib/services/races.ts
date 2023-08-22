@@ -1,8 +1,10 @@
 import type { Page, PaginationResult, Race, RaceFilter } from '$lib/types';
 
+const API_URL = 'http://localhost:8080/api';
+
 export class RacesService {
 	static #buildQueryParams(filters: RaceFilter, currentPage: number): string {
-		let query = `/api/races?page=${currentPage}`;
+		let query = `races?page=${currentPage}`;
 
 		if (!!filters.keywords) {
 			query += `&keywords=${filters.keywords}`;
@@ -33,8 +35,15 @@ export class RacesService {
 			return undefined;
 		}
 
-		const response = await fetch(`http://localhost:8080${this.#buildQueryParams(filters, page.current_page)}`);
+		const response = await fetch(`${API_URL}/${this.#buildQueryParams(filters, page.current_page)}`);
 		const result = (await response.json()) as Page<Race>;
+
+		return result;
+	}
+
+	static async get(raceId: string): Promise<Race> {
+		const response = await fetch(`${API_URL}/races/${raceId}`);
+		const result = (await response.json()) as Race;
 
 		return result;
 	}

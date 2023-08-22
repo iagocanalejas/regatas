@@ -54,18 +54,18 @@
 	}
 </script>
 
-<form class="w-4/5 mx-auto">
+<form class="mx-auto w-4/5">
 	<div class="flex">
 		<div class="relative contents text-left">
 			<button
 				id="leagues-dropdown"
-				class="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center border rounded-l-lg bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
+				class="z-10 inline-flex flex-shrink-0 items-center rounded-l-lg border border-gray-600 bg-gray-700 px-4 py-3 text-center text-sm font-medium text-white hover:bg-gray-600"
 				type="button"
 				on:click={() => toggleDropdown('league', !showLeaguesDropdown)}
 			>
 				{selectedLeague?.symbol || 'Liga'}
 				<svg
-					class="w-2.5 h-2.5 ml-2.5"
+					class="ml-2.5 h-2.5 w-2.5"
 					aria-hidden="true"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -82,7 +82,7 @@
 			</button>
 
 			{#if showLeaguesDropdown}
-				<div class="absolute mt-12 z-10 divide-y divide-gray-100 rounded-lg shadow w-80 bg-gray-700">
+				<div class="absolute z-10 mt-12 w-80 divide-y divide-gray-100 rounded-lg bg-gray-700 shadow">
 					<ul class="py-2 text-sm text-gray-200" aria-labelledby="leagues-dropdown">
 						{#each $leagues.filter((l) => l.gender == 'MALE') as league}
 							<li>
@@ -115,13 +115,13 @@
 		<div class="relative contents text-left">
 			<button
 				id=""
-				class="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center border bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
+				class="z-10 inline-flex flex-shrink-0 items-center border border-gray-600 bg-gray-700 px-4 py-3 text-center text-sm font-medium text-white hover:bg-gray-600"
 				type="button"
 				on:click={() => toggleDropdown('year', !showYearDropdown)}
 			>
 				{selectedYear || 'Año'}
 				<svg
-					class="w-2.5 h-2.5 ml-2.5"
+					class="ml-2.5 h-2.5 w-2.5"
 					aria-hidden="true"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -137,7 +137,7 @@
 				</svg>
 			</button>
 			{#if showYearDropdown}
-				<div class="absolute mt-12 z-10 divide-y divide-gray-100 rounded-lg shadow w-80 bg-gray-700">
+				<div class="absolute z-10 mt-12 w-80 divide-y divide-gray-100 rounded-lg bg-gray-700 shadow">
 					<ul class="py-2 text-sm text-gray-200" aria-labelledby="leagues-dropdown">
 						{#each years() as year}
 							<li>
@@ -159,17 +159,17 @@
 			<input
 				type="search"
 				id="search-dropdown"
-				class="block p-2.5 w-full z-20 text-md rounded-r-lg border-l-2 border bg-gray-700 border-l-gray-700 border-gray-600 placeholder-gray-400 text-white"
+				class="text-md z-20 block w-full rounded-r-lg border border-l-2 border-gray-600 border-l-gray-700 bg-gray-700 p-2.5 text-white placeholder-gray-400"
 				placeholder="Buscar..."
 				autocomplete="off"
 				bind:value={searchTerm}
 			/>
 			<button
 				type="button"
-				class="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white rounded-r-lg border border-gray-700 bg-gray-700 hover:bg-gray-600"
+				class="absolute right-0 top-0 h-full rounded-r-lg border border-gray-700 bg-gray-700 p-2.5 text-sm font-medium text-white hover:bg-gray-600"
 				on:click={clear}
 			>
-				<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+				<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
 					<path
 						stroke="currentColor"
 						stroke-linecap="round"

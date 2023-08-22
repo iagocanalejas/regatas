@@ -3,6 +3,7 @@ import type { Flag } from './flag';
 import type { League } from './league';
 import type { Gender, RaceType } from './types';
 import { z } from 'zod';
+import type { Participant } from './participant';
 
 export type Race = {
 	id: number;
@@ -19,10 +20,13 @@ export type Race = {
 
 	laps?: number;
 	lanes?: number;
+	series?: number;
 	cancelled: boolean;
 
 	sponsor?: string;
 	genders: Gender[];
+
+	participants?: Participant[];
 };
 
 export const RaceFilter = z.object({
