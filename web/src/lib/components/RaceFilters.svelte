@@ -12,8 +12,8 @@
 		flags.set(await GlobalsService.loadFlags());
 	});
 
-	let showTrophiesDropdown: boolean = false;
-	let showFlagsDropdown: boolean = false;
+	let showTrophiesDropdown = false;
+	let showFlagsDropdown = false;
 	function toggleDropdown(dropdown: 'trophy' | 'flag', open: boolean) {
 		showTrophiesDropdown = dropdown === 'trophy' ? open : false;
 		showFlagsDropdown = dropdown === 'flag' ? open : false;

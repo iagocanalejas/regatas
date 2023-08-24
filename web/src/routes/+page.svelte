@@ -28,7 +28,7 @@
 		loadRacesPage();
 	}
 
-	let loading: boolean = false;
+	let loading = false;
 	async function loadRacesPage() {
 		if (loading) {
 			return;

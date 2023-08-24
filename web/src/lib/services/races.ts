@@ -7,23 +7,23 @@ export class RacesService {
 	static #buildQueryParams(filters: RaceFilter, currentPage: number): string {
 		let query = `races?page=${currentPage}`;
 
-		if (!!filters.keywords) {
+		if (filters.keywords) {
 			query += `&keywords=${filters.keywords}`;
 		}
 
-		if (!!filters.year) {
+		if (filters.year) {
 			query += `&year=${filters.year}`;
 		}
 
-		if (!!filters.league) {
+		if (filters.league) {
 			query += `&league=${filters.league}`;
 		}
 
-		if (!!filters.trophy) {
+		if (filters.trophy) {
 			query += `&trophy=${filters.trophy}`;
 		}
 
-		if (!!filters.flag) {
+		if (filters.flag) {
 			query += `&flag=${filters.flag}`;
 		}
 
@@ -31,7 +31,7 @@ export class RacesService {
 	}
 
 	static async load(filters: RaceFilter, page: PaginationResult): Promise<Page<Race> | undefined> {
-		let isLastPage = page.total_pages > 0 && page.current_page == page.total_pages;
+		const isLastPage = page.total_pages > 0 && page.current_page == page.total_pages;
 		if (isLastPage) {
 			return undefined;
 		}

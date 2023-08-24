@@ -54,7 +54,7 @@ export class ParticipantUtils {
 			.filter((p) => !p.disqualification)
 			.reduce((prev, curr) => prev + curr.penalty, 0);
 
-		let computedTime = dayjs(participant.raw_time, TIME_FORMAT).subtract(penalties, 'seconds');
+		const computedTime = dayjs(participant.raw_time, TIME_FORMAT).subtract(penalties, 'seconds');
 		if (participant.handicap) {
 			// TODO: add handicap
 		}

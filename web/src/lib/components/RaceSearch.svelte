@@ -18,8 +18,8 @@
 		return result.reverse();
 	}
 
-	let showLeaguesDropdown: boolean = false;
-	let showYearDropdown: boolean = false;
+	let showLeaguesDropdown = false;
+	let showYearDropdown = false;
 	function toggleDropdown(dropdown: 'league' | 'year', open: boolean) {
 		showLeaguesDropdown = dropdown === 'league' ? open : false;
 		showYearDropdown = dropdown === 'year' ? open : false;
