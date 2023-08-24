@@ -1,16 +1,17 @@
-package flags
+package api
 
 import (
 	"log"
 	"net/http"
 
 	"r4l/rest/db"
+	"r4l/rest/models"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/gin-gonic/gin"
 )
 
-func getFlags(ctx *gin.Context) {
+func GetFlags(ctx *gin.Context) {
 	query, args, err := sq.
 		Select("id, name").
 		From("flag f").
@@ -21,7 +22,7 @@ func getFlags(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	var flags []Flag
+	var flags []models.Flag
 	err = db.GetDB().Select(&flags, query, args...)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -29,9 +30,4 @@ func getFlags(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, flags)
-}
-
-func AddFlagRoutes(router *gin.Engine) *gin.Engine {
-	router.GET("/api/flags", getFlags)
-	return router
 }

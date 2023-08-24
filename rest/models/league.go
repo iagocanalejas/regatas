@@ -1,4 +1,4 @@
-package leagues
+package models
 
 type League struct {
 	ID     int64   `json:"id"`

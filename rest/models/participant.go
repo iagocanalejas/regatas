@@ -1,7 +1,6 @@
-package participants
+package models
 
 import (
-	"r4l/rest/api"
 	"r4l/rest/db"
 )
 
@@ -12,7 +11,7 @@ type Participant struct {
 	Category string `json:"category"`
 	Distance int    `json:"distance"`
 
-	Club *api.Entity `json:"club"`
+	Club *Entity `json:"club"`
 
 	IsDisqualified bool `json:"disqualified"`
 
@@ -23,14 +22,8 @@ type Participant struct {
 	Penalties *[]Penalty `json:"penalties"`
 }
 
-type Penalty struct {
-	Penalty            int     `json:"penalty"`
-	IsDisqualification bool    `json:"disqualification"`
-	Reason             *string `json:"reason"`
-}
-
-func NewParticipant(participant db.Participant) *Participant {
-	club := &api.Entity{
+func (p Participant) FromDatabase(participant db.Participant) *Participant {
+	club := &Entity{
 		ID:      participant.ClubId,
 		Name:    participant.ClubName,
 		RawName: participant.ClubRawName,
@@ -52,13 +45,5 @@ func NewParticipant(participant db.Participant) *Participant {
 		Series: participant.Series,
 
 		Penalties: &[]Penalty{},
-	}
-}
-
-func NewPenalty(penalty db.Penalty) *Penalty {
-	return &Penalty{
-		Penalty:            penalty.Penalty,
-		IsDisqualification: penalty.IsDisqualification,
-		Reason:             penalty.Reason,
 	}
 }

@@ -1,16 +1,17 @@
-package leagues
+package api
 
 import (
 	"log"
 	"net/http"
 
 	"r4l/rest/db"
+	"r4l/rest/models"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/gin-gonic/gin"
 )
 
-func getLeagues(ctx *gin.Context) {
+func GetLeagues(ctx *gin.Context) {
 	query, _, err := sq.
 		Select("id, name, gender, symbol").
 		From("league").
@@ -21,7 +22,7 @@ func getLeagues(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	var leagues []League
+	var leagues []models.League
 	err = db.GetDB().Select(&leagues, query)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -29,9 +30,4 @@ func getLeagues(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, leagues)
-}
-
-func AddLeagueRoutes(router *gin.Engine) *gin.Engine {
-	router.GET("/api/leagues", getLeagues)
-	return router
 }

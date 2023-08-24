@@ -3,7 +3,7 @@ import type { Trophy } from './trophy';
 import type { Flag } from './flag';
 import type { Entity } from './entity';
 import type { Race, RaceFilter, RaceSortBy } from './race';
-import type { Participant, ParticipantFilter, ParticipantSortBy } from './participant';
+import { type Participant, type ParticipantFilter, type ParticipantSortBy, ParticipantUtils } from './participant';
 import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, type Page, type PaginationConfig, type PaginationResult } from './page';
 import {
 	category_es,
@@ -18,6 +18,14 @@ import {
 	type RaceType,
 	raceType_es
 } from './types';
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import duration from 'dayjs/plugin/duration';
+dayjs.locale('es');
+dayjs.extend(customParseFormat);
+dayjs.extend(duration);
 
 // TODO: .SS format is currently broken
 // https://github.com/iamkun/dayjs/issues/1331
@@ -52,5 +60,6 @@ export {
 	category_es,
 	categoryGender_es,
 	DEFAULT_PAGE,
-	DEFAULT_PAGE_RESULT
+	DEFAULT_PAGE_RESULT,
+	ParticipantUtils
 };

@@ -1,4 +1,4 @@
-package api
+package models
 
 type Entity struct {
 	ID      int64   `json:"id"`

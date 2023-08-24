@@ -1,3 +1,4 @@
+import { ParticipantTransformer } from '$lib/transformers/participant.transformer';
 import type { Page, PaginationResult, Race, RaceFilter } from '$lib/types';
 
 const API_URL = 'http://localhost:8080/api';
@@ -44,6 +45,10 @@ export class RacesService {
 	static async get(raceId: string): Promise<Race> {
 		const response = await fetch(`${API_URL}/races/${raceId}`);
 		const result = (await response.json()) as Race;
+
+		result.participants = ParticipantTransformer.transformParticipants(result.participants || []);
+
+		console.log(result);
 
 		return result;
 	}

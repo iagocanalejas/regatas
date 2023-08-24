@@ -1,14 +1,15 @@
-package participants
+package api
 
 import (
 	"log"
 
 	"r4l/rest/db"
+	"r4l/rest/models"
 
 	sq "github.com/Masterminds/squirrel"
 )
 
-func GetParticipantsByRaceId(raceId string) ([]Participant, error) {
+func GetParticipantsByRaceId(raceId string) ([]models.Participant, error) {
 	query, args, err := sq.
 		Select("p.id", "p.gender", "p.category", "p.distance", "p.laps", "p.lane", "p.series",
 			"p.club_id as club_id", "e.name as club_name", "p.club_name as club_raw_name",
@@ -30,22 +31,22 @@ func GetParticipantsByRaceId(raceId string) ([]Participant, error) {
 	}
 
 	participantIds := make([]int64, len(flatParticipants))
-	participants := make([]Participant, len(flatParticipants))
+	participants := make([]models.Participant, len(flatParticipants))
 	for idx, participant := range flatParticipants {
 		participantIds[idx] = participant.ID
-		participants[idx] = *NewParticipant(participant)
+		participants[idx] = *new(models.Participant).FromDatabase(participant)
 	}
 
-	penalties, err := getPenaltiesByParticipantIds(participantIds)
+	penalties, err := GetPenaltiesByParticipantIds(participantIds)
 	if err != nil {
 		return nil, err
 	}
 
 	for idx, participant := range participants {
-		var filtered []Penalty
+		var filtered []models.Penalty
 		for _, penalty := range penalties {
 			if penalty.ParticipantId == participant.ID {
-				filtered = append(filtered, *NewPenalty(penalty))
+				filtered = append(filtered, penalty)
 			}
 		}
 
@@ -56,25 +57,4 @@ func GetParticipantsByRaceId(raceId string) ([]Participant, error) {
 	}
 
 	return participants, nil
-}
-
-func getPenaltiesByParticipantIds(participantIds []int64) ([]db.Penalty, error) {
-	query, args, err := sq.
-		Select("p.participant_id", "p.reason", "p.penalty", "p.disqualification").
-		From("penalty p").
-		Where(sq.Eq{"p.participant_id": participantIds}).
-		PlaceholderFormat(sq.Dollar).
-		ToSql()
-	if err != nil {
-		log.Print(query, args)
-		return nil, err
-	}
-
-	var penalties []db.Penalty
-	err = db.GetDB().Select(&penalties, query, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	return penalties, nil
 }

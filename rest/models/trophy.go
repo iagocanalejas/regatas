@@ -1,4 +1,4 @@
-package trophies
+package models
 
 type Trophy struct {
 	ID      int64  `json:"id"`

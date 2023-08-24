@@ -1,4 +1,4 @@
-package flags
+package models
 
 type Flag struct {
 	ID      int64  `json:"id"`

@@ -1,16 +1,17 @@
-package trophies
+package api
 
 import (
 	"log"
 	"net/http"
 
 	"r4l/rest/db"
+	"r4l/rest/models"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/gin-gonic/gin"
 )
 
-func getTrohies(ctx *gin.Context) {
+func GetTrohies(ctx *gin.Context) {
 	query, args, err := sq.
 		Select("id, name").
 		From("trophy t").
@@ -21,7 +22,7 @@ func getTrohies(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	var trophies []Trophy
+	var trophies []models.Trophy
 	err = db.GetDB().Select(&trophies, query, args...)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -29,9 +30,4 @@ func getTrohies(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, trophies)
-}
-
-func AddTrophyRoutes(router *gin.Engine) *gin.Engine {
-	router.GET("/api/trophies", getTrohies)
-	return router
 }

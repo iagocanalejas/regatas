@@ -1,14 +1,10 @@
-package races
+package models
 
 import (
 	"fmt"
 	"strings"
 	"time"
 
-	"r4l/rest/api/flags"
-	"r4l/rest/api/leagues"
-	"r4l/rest/api/participants"
-	"r4l/rest/api/trophies"
 	"r4l/rest/db"
 	"r4l/rest/utils"
 )
@@ -17,9 +13,9 @@ type Race struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 
-	Trophy *trophies.Trophy `json:"trophy"`
-	Flag   *flags.Flag      `json:"flag"`
-	League *leagues.League  `json:"league"`
+	Trophy *Trophy `json:"trophy"`
+	Flag   *Flag   `json:"flag"`
+	League *League `json:"league"`
 
 	Day      int    `json:"day"`
 	Date     string `json:"date"`
@@ -35,36 +31,23 @@ type Race struct {
 	Town    *string  `json:"town"`
 	Genders []string `json:"genders"`
 
-	Participants []participants.Participant `json:"participants,omitempty"`
+	Participants []Participant `json:"participants,omitempty"`
 }
 
-func NewRace(race db.Race) *Race {
-	var trophy *trophies.Trophy
+func (r Race) FromDatabase(race db.Race) *Race {
+	var trophy *Trophy
 	if race.TrophyId != nil {
-		trophy = &trophies.Trophy{
-			ID:      *race.TrophyId,
-			Name:    *race.TrophyName,
-			Edition: race.TrophyEdition,
-		}
+		trophy = &Trophy{ID: *race.TrophyId, Name: *race.TrophyName, Edition: race.TrophyEdition}
 	}
 
-	var flag *flags.Flag
+	var flag *Flag
 	if race.FlagId != nil {
-		flag = &flags.Flag{
-			ID:      *race.FlagId,
-			Name:    *race.FlagName,
-			Edition: race.FlagEdition,
-		}
+		flag = &Flag{ID: *race.FlagId, Name: *race.FlagName, Edition: race.FlagEdition}
 	}
 
-	var league *leagues.League
+	var league *League
 	if race.LeagueId != nil {
-		league = &leagues.League{
-			ID:     *race.LeagueId,
-			Name:   *race.LeagueName,
-			Gender: race.LeagueGender,
-			Symbol: *race.LeagueSymbol,
-		}
+		league = &League{ID: *race.LeagueId, Name: *race.LeagueName, Gender: race.LeagueGender, Symbol: *race.LeagueSymbol}
 	}
 
 	date, _ := time.Parse(time.RFC3339, race.Date)
