@@ -17,6 +17,7 @@ func GetParticipantsByRaceId(raceId string) ([]models.Participant, error) {
 		From("participant p").
 		LeftJoin("entity e ON p.club_id = e.id").
 		Where(sq.Eq{"p.race_id": raceId}).
+		OrderBy("p.laps[ARRAY_UPPER(p.laps, 1)] ASC").
 		PlaceholderFormat(sq.Dollar).
 		ToSql()
 	if err != nil {

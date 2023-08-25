@@ -38,8 +38,9 @@ export type ParticipantSortBy = RaceSortBy | 'category' | 'speed';
 export class ParticipantUtils {
 	private static timeReg = /^[0-9]{2}:[0-9]{2}.[0-9]*$/;
 
-	static speed(participant: Participant, distance: number): number {
+	static speed(participant: Participant, distance: number | undefined = undefined): number {
 		if (!ParticipantUtils.timeReg.test(participant.raw_time)) return 0;
+		distance = distance || participant.distance;
 
 		const time = dayjs(participant.raw_time, TIME_FORMAT);
 		if (!time.minute()) return 0;
