@@ -28,6 +28,6 @@ pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.1
 requests==2.31.0
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
-sentry-sdk==1.29.2
+sentry-sdk==1.30.0
 setuptools==68.1.2
 simplemma==0.9.1
