@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
 import inquirer
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from utils.exceptions import StopProcessing
 
@@ -44,9 +45,13 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
         raise StopProcessing(f"no datasource provided for {race.race_id}::{race.name}")
 
     if trophy and not trophy_edition:
-        trophy_edition = int(inquirer.text(f"race_id={race.race_id}::Edition for trophy {trophy}: ", default=None))
+        trophy_edition = int(
+            inquirer.text(f"race_id={race.race_id}::Edition for trophy {race.league}:{trophy}", default=None)
+        )
     if flag and not flag_edition:
-        flag_edition = int(inquirer.text(f"race_id={race.race_id}::Edition for flag {flag}: ", default=None))
+        flag_edition = int(
+            inquirer.text(f"race_id={race.race_id}::Edition for flag {race.league}:{flag}", default=None)
+        )
 
     organizer = _find_club(race.organizer) if race.organizer else None
 
@@ -84,8 +89,14 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
     if not inquirer.confirm(f"Save new race for {race.name} in the database?", default=False):
         raise StopProcessing
 
-    new_race.save()
-    return new_race
+    try:
+        new_race.save()
+        return new_race
+    except ValidationError as e:
+        if race.day == 1 and inquirer.confirm("Race already in DB. Is this race a second day?"):
+            race.day = 2
+            return save_race_from_scraped_data(race, datasource=datasource)
+        raise e
 
 
 def save_participants_from_scraped_data(

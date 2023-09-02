@@ -20,6 +20,8 @@ class Trophy(CreationStampModel):
     tokens = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=50), editable=False)
     verified = models.BooleanField(blank=True, default=False)
 
+    qualifies_for = models.ForeignKey("self", null=True, blank=True, default=None, on_delete=models.PROTECT)
+
     def __str__(self):
         return self.name
 
@@ -39,6 +41,8 @@ class Flag(CreationStampModel):
     name = models.CharField(max_length=150, unique=True)
     tokens = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=50), editable=False)
     verified = models.BooleanField(blank=True, default=False)
+
+    qualifies_for = models.ForeignKey("self", null=True, blank=True, default=None, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
