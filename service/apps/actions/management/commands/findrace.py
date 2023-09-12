@@ -35,6 +35,8 @@ class Command(BaseCommand):
     Options:
         --female: (Optional) If specified, search and scrape data for female races. If not specified,
                   only male races will be searched. Applicable only when searching for a race.
+        --day: (Optional) If specified, tries to find the day of the race in a multi-race page.
+        --use-db: (Optional) If specified, uses the race found in the database instead of the one parsed.
 
     Note:
     -----
@@ -50,27 +52,32 @@ class Command(BaseCommand):
         parser.add_argument("datasource", type=str, help="Datasource from where to retrieve.")
         parser.add_argument("race_id", type=str, help="Race to find.")
         parser.add_argument("--female", action="store_true", default=False)
+        parser.add_argument("--day", type=int, help="Day of the race we want (used in multi-race pages).")
         parser.add_argument("--use-db", action="store_true", default=False)
 
     def handle(self, *_, **options):
         logger.info(f"{options}")
 
-        race_id, datasource, is_female, use_db = (
+        race_id, datasource, is_female, day, use_db = (
             options["race_id"],
             options["datasource"],
             options["female"],
+            options["day"],
             options["use_db"],
         )
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
 
         db_race = RaceService.get_by_datasource(
-            race_id, Datasource(datasource), gender=GENDER_FEMALE if is_female else None
+            race_id,
+            Datasource(datasource),
+            gender=GENDER_FEMALE if is_female else None,
+            day=day,
         )
         if not use_db and db_race is not None:
             raise StopProcessing(f"race={race_id} already exists")
 
-        web_race = find_race(race_id, datasource=Datasource(datasource), is_female=is_female)
+        web_race = find_race(race_id, datasource=Datasource(datasource), is_female=is_female, day=day)
         if not web_race:
             raise StopProcessing("no race found")
 

@@ -9,6 +9,7 @@ from apps.races.models import Race
 class RaceFilters:
     _FILTERS_MAP = {
         "year": "date__year",
+        "day": "day",
         "trophy": "trophy_id",
         "flag": "flag_id",
         "league": "league_id",

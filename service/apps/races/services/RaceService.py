@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from django.db.models import QuerySet
 from rest_framework.generics import get_object_or_404
@@ -59,12 +59,21 @@ def get_race_or_create(race: Race) -> Tuple[bool, Race]:
         return True, race
 
 
-def get_by_datasource(ref_id: str, datasource: Datasource, gender: Optional[str] = None) -> Optional[Race]:
+def get_by_datasource(
+    ref_id: str,
+    datasource: Datasource,
+    gender: Optional[str] = None,
+    day: Optional[int] = None,
+) -> Optional[Race]:
     metadata: Dict[str, Dict[str, str] | str] = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
     if gender and gender in [GENDER_MALE, GENDER_FEMALE]:
         metadata["values"] = {"gender": gender}
 
+    filters: Dict[str, Any] = {"metadata": [metadata]}
+    if day:
+        filters["day"] = day
+
     try:
-        return get_filtered(queryset=Race.objects, filters={"metadata": [metadata]}, prefetch=["participants"]).get()
+        return get_filtered(queryset=Race.objects, filters=filters, prefetch=["participants"]).get()
     except Race.DoesNotExist:
         return None
