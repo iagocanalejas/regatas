@@ -2,7 +2,6 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 from django.db.models import QuerySet
-from rest_framework.generics import get_object_or_404
 from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 from apps.races.filters import RaceFilters
@@ -20,7 +19,8 @@ def get_by_id(
     queryset = Race.objects
     queryset = queryset.select_related(*related) if related else queryset
     queryset = queryset.prefetch_related(*prefetch) if prefetch else queryset
-    return get_object_or_404(queryset, pk=race_id)
+
+    return queryset.get(pk=race_id)
 
 
 def get_filtered(

@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Tuple
 
 import inquirer
 from django.core.exceptions import ValidationError
-from rest_framework import serializers
 from utils.exceptions import StopProcessing
 
+from apps.actions.serializers import ParticipantSerializer, RaceSerializer
 from apps.entities.models import Entity
 from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService, LeagueService
@@ -14,7 +14,6 @@ from apps.participants.models import Participant, Penalty
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, TrophyService
 from apps.schemas import MetadataBuilder
-from apps.serializers import EntitySerializer, FlagSerializer, LeagueSerializer, TrophySerializer
 from rscraping.data.functions import is_memorial
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
@@ -85,7 +84,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
         },
     )
 
-    print(json.dumps(CommandRaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False))
+    print(json.dumps(RaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False))
     if not inquirer.confirm(f"Save new race for {race.name} in the database?", default=False):
         raise StopProcessing
 
@@ -118,7 +117,7 @@ def save_participants_from_scraped_data(
         for p in participants
     ]
 
-    serialized_participants = CommandParticipantSerializer(new_participants, many=True).data
+    serialized_participants = ParticipantSerializer(new_participants, many=True).data
     for index, serialized_participant in enumerate(serialized_participants):
         print(json.dumps(serialized_participant, indent=4, skipkeys=True, ensure_ascii=False))
         if not inquirer.confirm(f"Save new participant for {race=} in the database?", default=False):
@@ -178,50 +177,3 @@ def _find_club(name: str) -> Optional[Entity]:
         return None
     except Entity.MultipleObjectsReturned:
         raise StopProcessing(f"multiple clubs found for {name=}")
-
-
-class CommandRaceSerializer(serializers.ModelSerializer):
-    trophy = TrophySerializer()
-    flag = FlagSerializer()
-    league = LeagueSerializer(allow_null=True)
-    organizer = EntitySerializer(allow_null=True)
-
-    class Meta:
-        model = Race
-        fields = (
-            "id",
-            "type",
-            "modality",
-            "day",
-            "date",
-            "cancelled",
-            "trophy",
-            "trophy_edition",
-            "flag",
-            "flag_edition",
-            "league",
-            "sponsor",
-            "laps",
-            "lanes",
-            "town",
-            "organizer",
-            "metadata",
-        )
-
-
-class CommandParticipantSerializer(serializers.ModelSerializer):
-    club = EntitySerializer()
-    club_name = serializers.SerializerMethodField()
-
-    # noinspection DuplicatedCode
-    @staticmethod
-    def get_club_name(participant: Participant) -> Optional[str]:
-        extra = None
-        if participant.club_name:
-            extra = [e for e in ["B", "C", "D"] if e in participant.club_name.split()]
-            extra = "".join(e for e in extra) if extra else None
-        return f'{participant.club} "{extra}"' if extra else None
-
-    class Meta:
-        model = Participant
-        fields = ("id", "laps", "lane", "series", "gender", "category", "distance", "club", "club_name")
