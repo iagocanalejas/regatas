@@ -1,11 +1,11 @@
-from ai_django.ai_core.admin import TraceableModelAdmin
 from django.contrib import admin
+from djutils.admin import TraceableModelAdmin
 
 from apps.entities.models import Entity, League
 
 
 class EntityAdmin(TraceableModelAdmin):
-    list_filter = ('type',)
+    list_filter = ("type",)
 
 
 admin.site.register(Entity, EntityAdmin)

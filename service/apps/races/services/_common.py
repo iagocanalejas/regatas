@@ -3,11 +3,10 @@ import operator
 from functools import reduce
 from typing import Optional, Type, TypeVar
 
-from ai_django.ai_core.utils.strings import closest_result, whitespaces_clean
 from django.db.models import Q
 
 from apps.races.models import Flag, Trophy
-from pyutils.strings import expand_lemmas, normalize_synonyms
+from pyutils.strings import closest_result, expand_lemmas, normalize_synonyms, whitespaces_clean
 from rscraping import SYNONYMS, lemmatize
 
 logger = logging.getLogger(__name__)

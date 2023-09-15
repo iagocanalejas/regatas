@@ -1,14 +1,5 @@
-from typing import List
-
 from apps.races.models import Trophy
 from apps.races.services import _common
-
-
-def get() -> List[Trophy]:
-    """
-    :return: all the trophies
-    """
-    return Trophy.objects.all()
 
 
 def get_closest_by_name(name: str) -> Trophy:

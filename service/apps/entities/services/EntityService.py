@@ -1,39 +1,13 @@
 import operator
 from functools import reduce
-from typing import List, Optional
+from typing import Optional
 
-from ai_django.ai_core.utils.lists import flatten
-from ai_django.ai_core.utils.strings import closest_result, levenshtein_distance, remove_conjunctions, remove_symbols
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from utils.choices import ENTITY_CLUB, ENTITY_TYPES
 
 from apps.entities.models import Entity
-
-
-def get(related: List[str] = None) -> List[Entity]:
-    """
-    :return: all the entities
-    """
-    entities = Entity.objects.all()
-    return entities.select_related(*related) if related else entities
-
-
-def get_clubs(related: List[str] = None) -> List[Entity]:
-    """
-    :return: all the CLUB entities
-    """
-    entities = Entity.objects.filter(type=ENTITY_CLUB)
-    return entities.select_related(*related) if related else entities
-
-
-def get_club_by_id(club_id: int, related: List[str] = None) -> Entity:
-    """
-    :return: a CLUB entity
-    """
-    queryset = Entity.objects.filter(type=ENTITY_CLUB)
-    queryset = queryset.select_related(*related) if related else queryset
-    return get_object_or_404(queryset, pk=club_id)
+from pyutils.lists import flatten
+from pyutils.strings import closest_result, levenshtein_distance, remove_conjunctions, remove_symbols
 
 
 def get_closest_club_by_name(name: str) -> Entity:
@@ -61,7 +35,9 @@ def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> En
     # quick route, just an exact match
     clubs = q.filter(Q(normalized_name__iexact=name) | Q(name__iexact=name))
     if clubs.count() == 1:
-        return clubs.first()
+        match = clubs.first()
+        assert isinstance(match, Entity)
+        return match
 
     # go for similarity
     clubs = q.filter(

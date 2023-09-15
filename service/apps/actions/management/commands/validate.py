@@ -5,13 +5,13 @@ from typing import Any, List
 import pandas as pd
 from django.core.management import BaseCommand
 from pandas import DataFrame
-from service.ai_django.ai_core.utils.shortcuts import all_or_none
 from utils.choices import GENDERS
 
 from apps.entities.models import Entity, League
 from apps.entities.services import EntityService, LeagueService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, TrophyService
+from pyutils.shortcuts import all_or_none
 
 logger = logging.getLogger(__name__)
 
@@ -179,7 +179,8 @@ def _check_trophies(names: List[str]) -> List[str]:
         try:
             TrophyService.get_closest_by_name(name)
         except Trophy.DoesNotExist:
-            FlagService.get_closest_by_name(name)
-        except Flag.DoesNotExist:
-            not_found.append(name)
+            try:
+                FlagService.get_closest_by_name(name)
+            except Flag.DoesNotExist:
+                not_found.append(name)
     return not_found

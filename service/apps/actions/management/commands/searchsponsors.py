@@ -1,8 +1,8 @@
 import logging
 from typing import List
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import BaseCommand
-from django.db.models import ObjectDoesNotExist
 
 from apps.races.models import Flag, Trophy
 from apps.races.services import FlagService, TrophyService
@@ -47,7 +47,7 @@ class Command(BaseCommand):
 
         filtered_items = []
         for item in items:
-            names = normalize_name_parts(normalize_race_name(item.name, is_female=is_female))
+            names = normalize_name_parts(normalize_race_name(item.name))
             for normalized_name, _ in names:
                 if not normalized_name or is_play_off(normalized_name):
                     continue
@@ -65,7 +65,7 @@ class Command(BaseCommand):
         tokens = set(flatten(tokens))
 
         for item in filtered_items:
-            name = normalize_race_name(item.name, is_female=is_female)
+            name = normalize_race_name(item.name)
             name = normalize_synonyms(name, SYNONYMS)
             name = remove_symbols(remove_conjunctions(name))
             name = whitespaces_clean(name)

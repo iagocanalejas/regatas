@@ -1,9 +1,9 @@
 from typing import Dict, Optional
 
-from ai_django.ai_core.utils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
 from django.db.models import Q, QuerySet
 
 from apps.races.models import Race
+from pyutils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
 
 
 class RaceFilters:

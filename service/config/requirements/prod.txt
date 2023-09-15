@@ -8,6 +8,7 @@ django-extensions==3.2.3
 django-prettyjson==0.4.1
 django-stdimage==6.0.1
 djangorestframework==3.14.0
+djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.26.4
 environs==9.5.0
 flower==2.0.1

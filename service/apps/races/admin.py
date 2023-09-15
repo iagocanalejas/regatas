@@ -1,5 +1,5 @@
-from ai_django.ai_core.admin import ReadOnlyTabularInline, StampedModelAdmin, YearFilter
 from django.contrib import admin
+from djutils.admin import ReadOnlyTabularInline, StampedModelAdmin, YearFilter
 
 from apps.participants.models import Participant
 from apps.races.models import Flag, Race, Trophy
@@ -27,7 +27,7 @@ class FlagTrophyAdmin(StampedModelAdmin):
 
 class RaceAdmin(StampedModelAdmin):
     inlines = [ParticipantInline]
-    list_filter = ('league', RaceYearFilter)
+    list_filter = ("league", RaceYearFilter)
 
 
 admin.site.register(Trophy, TrophyAdmin)

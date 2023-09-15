@@ -1,3 +1,0 @@
-[submodule "service/ai_django"]
-	path = service/ai_django
-	url = git@github.com:AndIag/ai-django.git

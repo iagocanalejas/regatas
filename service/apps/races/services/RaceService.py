@@ -11,18 +11,6 @@ from rscraping.data.models import Datasource
 logger = logging.getLogger(__name__)
 
 
-def get_by_id(
-    race_id: int,
-    related: Optional[List[str]] = None,
-    prefetch: Optional[List[str]] = None,
-) -> Race:
-    queryset = Race.objects
-    queryset = queryset.select_related(*related) if related else queryset
-    queryset = queryset.prefetch_related(*prefetch) if prefetch else queryset
-
-    return queryset.get(pk=race_id)
-
-
 def get_filtered(
     queryset: QuerySet[Race],
     filters: dict,

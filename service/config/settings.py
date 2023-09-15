@@ -81,7 +81,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     # Self
-    "ai_django.ai_core",
+    "djutils",
     "apps.entities",
     "apps.races",
     "apps.participants",
@@ -106,7 +106,7 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "ai_django", "core", "templates"), TEMPLATES_ROOT],
+        "DIRS": [TEMPLATES_ROOT],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
