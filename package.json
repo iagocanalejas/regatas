@@ -1,0 +1,8 @@
+{
+  "name": "r4l",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "bump": "python bump.py"
+  }
+}
