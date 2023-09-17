@@ -1,8 +1,16 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { racesPage } from '$lib/stores/races';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	export let totalPages: number;
 	export let currentPage: number;
+
+	onMount(() => {
+		if ($racesPage.current_page) {
+			currentPage = $racesPage.current_page;
+			totalPages = $racesPage.total_pages;
+		}
+	});
 
 	const dispatch = createEventDispatcher();
 	function changePage(page: number) {

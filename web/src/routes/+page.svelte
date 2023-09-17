@@ -1,34 +1,24 @@
 <script lang="ts">
 	import { races, racesPage, raceFilters, resetRacesStore } from '$lib/stores/races';
 	import { DEFAULT_PAGE_RESULT, type RaceFilter } from '$lib/types';
-	import { onDestroy } from 'svelte';
 	import { RacesService } from '$lib/services/races';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import RaceFilters from '$lib/components/RaceFilters.svelte';
 	import { goto } from '$app/navigation';
-
-	onDestroy(() => resetRacesStore());
-
-	function changeFilters(key: keyof RaceFilter, value: unknown) {
-		races.set([]);
-		racesPage.set(DEFAULT_PAGE_RESULT);
-		raceFilters.update((filters) => ({ ...filters, [key]: value }));
-
-		loadRacesPage();
-	}
-
-	function changePage(pageNumber: number) {
-		racesPage.update((page) => ({ ...page, current_page: pageNumber }));
-
-		loadRacesPage();
-	}
-
-	function clearFilters() {
-		resetRacesStore();
-		loadRacesPage();
-	}
+	import { onMount } from 'svelte';
 
 	let loading = false;
+	onMount(() => {
+		if ($races.length) {
+			// HACK: avoid double load when we are comming back from another page
+			loading = true;
+			setTimeout(() => {
+				loading = false;
+			}, 1000);
+		}
+		loadRacesPage();
+	});
+
 	async function loadRacesPage() {
 		if (loading) {
 			return;
@@ -41,6 +31,33 @@
 			racesPage.set(result.pagination);
 		}
 		loading = false;
+	}
+
+	function changeFilters(key: keyof RaceFilter, value: unknown) {
+		if (loading) {
+			return;
+		}
+
+		races.set([]);
+		racesPage.set(DEFAULT_PAGE_RESULT);
+		raceFilters.update((filters) => ({ ...filters, [key]: value }));
+
+		loadRacesPage();
+	}
+
+	function changePage(pageNumber: number) {
+		if (loading) {
+			return;
+		}
+
+		racesPage.update((page) => ({ ...page, current_page: pageNumber }));
+
+		loadRacesPage();
+	}
+
+	function clearFilters() {
+		resetRacesStore();
+		loadRacesPage();
 	}
 </script>
 

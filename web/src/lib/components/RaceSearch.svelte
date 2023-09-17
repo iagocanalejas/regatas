@@ -1,21 +1,37 @@
 <script lang="ts">
+	import { raceFilters } from '$lib/stores/races';
 	import { GlobalsService } from '$lib/services/globals';
 	import { leagues } from '$lib/stores/globals';
 	import type { League } from '$lib/types';
 	import { createEventDispatcher, onMount } from 'svelte';
 
+	let years: number[] = [];
 	const dispatch = createEventDispatcher();
 
-	onMount(async () => {
-		leagues.set(await GlobalsService.loadLeagues());
+	onMount(() => {
+		if (!$leagues.length) {
+            GlobalsService.loadLeagues().then((loaded) => {
+                leagues.set(loaded);
+                restoreState();
+            });
+		} else {
+			restoreState();
+		}
+
+		searchTerm = $raceFilters.keywords;
+		selectedYear = $raceFilters.year;
+
+		// init years
+		for (let i = 2003; i <= new Date().getFullYear(); i++) {
+			years.push(i);
+		}
+		years = years.reverse();
 	});
 
-	function years(): number[] {
-		const result: number[] = [];
-		for (let i = 2003; i <= new Date().getFullYear(); i++) {
-			result.push(i);
+	function restoreState() {
+		if ($raceFilters.league) {
+			selectedLeague = $leagues.find((t) => t.id === $raceFilters.league);
 		}
-		return result.reverse();
 	}
 
 	let showLeaguesDropdown = false;
@@ -29,7 +45,11 @@
 	let debounceTimer: number | undefined;
 	$: {
 		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => dispatch('keywordsChanged', searchTerm), 300);
+		debounceTimer = setTimeout(() => {
+			if (searchTerm !== null && searchTerm !== undefined) {
+				dispatch('keywordsChanged', searchTerm);
+			}
+		}, 300);
 	}
 
 	let selectedLeague: League | undefined;
@@ -139,7 +159,7 @@
 			{#if showYearDropdown}
 				<div class="absolute z-10 mt-12 w-80 divide-y divide-gray-100 rounded-lg bg-gray-700 shadow">
 					<ul class="py-2 text-sm text-gray-200" aria-labelledby="leagues-dropdown">
-						{#each years() as year}
+						{#each years as year}
 							<li>
 								<button
 									type="button"

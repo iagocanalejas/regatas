@@ -48,8 +48,6 @@ export class RacesService {
 
 		result.participants = ParticipantTransformer.transformParticipants(result.participants || []);
 
-		console.log(result);
-
 		return result;
 	}
 }

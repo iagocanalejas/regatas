@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { raceFilters } from '$lib/stores/races';
 	import { GlobalsService } from '$lib/services/globals';
 	import { flags, trophies } from '$lib/stores/globals';
 	import type { Flag, Trophy } from '$lib/types';
@@ -7,10 +8,26 @@
 
 	const dispatch = createEventDispatcher();
 
-	onMount(async () => {
-		trophies.set(await GlobalsService.loadTrophies());
-		flags.set(await GlobalsService.loadFlags());
+	onMount(() => {
+		if (!$trophies.length || !$flags.length) {
+			Promise.all([GlobalsService.loadTrophies(), GlobalsService.loadFlags()]).then(([loadedTrophies, loadedFlags]) => {
+				trophies.set(loadedTrophies);
+				flags.set(loadedFlags);
+				restoreState();
+			});
+		} else {
+			restoreState();
+		}
 	});
+
+	function restoreState() {
+		if ($raceFilters.trophy) {
+			selectedTrophy = $trophies.find((t) => t.id === $raceFilters.trophy);
+		}
+		if ($raceFilters.flag) {
+			selectedFlag = $flags.find((f) => f.id === $raceFilters.flag);
+		}
+	}
 
 	let showTrophiesDropdown = false;
 	let showFlagsDropdown = false;
