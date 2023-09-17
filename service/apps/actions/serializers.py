@@ -1,9 +1,9 @@
 from typing import Optional
 
 from rest_framework import serializers
-from service.apps.participants.models import Participant
 
 from apps.entities.models import Entity, League
+from apps.participants.models import Participant
 from apps.races.models import Flag, Race, Trophy
 
 

@@ -14,6 +14,7 @@ from apps.participants.models import Participant, Penalty
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, TrophyService
 from apps.schemas import MetadataBuilder
+from pyutils.strings import remove_conjunctions
 from rscraping.data.functions import is_memorial
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
@@ -37,20 +38,24 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
     if not trophy and not flag:
         (trophy, trophy_edition), (flag, flag_edition) = _try_manual_input(race.name)
 
-    if not trophy and not flag:
-        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
-
     if not race.url:
         raise StopProcessing(f"no datasource provided for {race.race_id}::{race.name}")
 
     if trophy and not trophy_edition:
-        trophy_edition = int(
-            inquirer.text(f"race_id={race.race_id}::Edition for trophy {race.league}:{trophy}", default=None)
-        )
+        edition = inquirer.text(f"race_id={race.race_id}::Edition for trophy {race.league}:{trophy}", default=None)
+        if edition:
+            trophy_edition = int(edition)
+        else:
+            trophy = None
     if flag and not flag_edition:
-        flag_edition = int(
-            inquirer.text(f"race_id={race.race_id}::Edition for flag {race.league}:{flag}", default=None)
-        )
+        edition = inquirer.text(f"race_id={race.race_id}::Edition for flag {race.league}:{flag}", default=None)
+        if edition:
+            flag_edition = int(edition)
+        else:
+            flag = None
+
+    if not trophy and not flag:
+        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
 
     organizer = _find_club(race.organizer) if race.organizer else None
 
@@ -174,6 +179,9 @@ def _find_club(name: str) -> Optional[Entity]:
     try:
         return EntityService.get_closest_club_by_name(name)
     except Entity.DoesNotExist:
-        return None
+        try:
+            return EntityService.get_closest_club_by_name(remove_conjunctions(name))
+        except Entity.DoesNotExist:
+            return None
     except Entity.MultipleObjectsReturned:
         raise StopProcessing(f"multiple clubs found for {name=}")
