@@ -4,16 +4,17 @@
 	import { leagues } from '$lib/stores/globals';
 	import type { League } from '$lib/types';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import clickOutside from '$lib/directives/clickOutside';
 
 	let years: number[] = [];
 	const dispatch = createEventDispatcher();
 
 	onMount(() => {
 		if (!$leagues.length) {
-            GlobalsService.loadLeagues().then((loaded) => {
-                leagues.set(loaded);
-                restoreState();
-            });
+			GlobalsService.loadLeagues().then((loaded) => {
+				leagues.set(loaded);
+				restoreState();
+			});
 		} else {
 			restoreState();
 		}
@@ -76,7 +77,7 @@
 
 <form class="mx-auto w-4/5">
 	<div class="flex">
-		<div class="relative contents text-left">
+		<div class="relative contents text-left" use:clickOutside={() => (showLeaguesDropdown = false)}>
 			<button
 				id="leagues-dropdown"
 				class="z-10 inline-flex flex-shrink-0 items-center rounded-l-lg border border-gray-600 bg-gray-700 px-4 py-3 text-center text-sm font-medium text-white hover:bg-gray-600"
@@ -132,7 +133,7 @@
 			{/if}
 		</div>
 
-		<div class="relative contents text-left">
+		<div class="relative contents text-left" use:clickOutside={() => (showYearDropdown = false)}>
 			<button
 				id=""
 				class="z-10 inline-flex flex-shrink-0 items-center border border-gray-600 bg-gray-700 px-4 py-3 text-center text-sm font-medium text-white hover:bg-gray-600"

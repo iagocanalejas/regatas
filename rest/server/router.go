@@ -34,6 +34,7 @@ func NewRouter() *gin.Engine {
 	router.GET("/api/trophies", api.GetTrohies)
 	router.GET("/api/flags", api.GetFlags)
 	router.GET("/api/leagues", api.GetLeagues)
+	router.GET("/api/clubs", api.GetClubs)
 	router.GET("/api/races", api.GetRaces)
 	router.GET("/api/races/:raceId", api.GetRaceById)
 

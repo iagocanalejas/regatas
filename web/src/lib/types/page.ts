@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 export type Page<T> = {
 	results: T[];
 	pagination: PaginationResult;
@@ -13,12 +11,11 @@ export type PaginationResult = {
 	total_pages: number;
 };
 
-export const PaginationConfig = z.object({
-	itemsPerPage: z.number().min(10).max(100),
-	page: z.number().min(0),
-	sortBy: z.optional(z.string())
-});
-export type PaginationConfig = z.infer<typeof PaginationConfig>;
+export type PaginationConfig = {
+	itemsPerPage: number;
+	page: number;
+	sortBy?: string;
+};
 
 export const DEFAULT_PAGE: PaginationConfig = { itemsPerPage: 30, page: 0 };
 export const DEFAULT_PAGE_RESULT = {

@@ -23,6 +23,10 @@ export class RacesService {
 			query += `&trophy=${filters.trophy}`;
 		}
 
+		if (filters.participant) {
+			query += `&participant=${filters.participant}`;
+		}
+
 		if (filters.flag) {
 			query += `&flag=${filters.flag}`;
 		}

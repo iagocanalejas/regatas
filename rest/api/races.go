@@ -22,6 +22,7 @@ func GetRaces(ctx *gin.Context) {
 	filters.Trophy, _ = strconv.ParseInt(ctx.DefaultQuery("trophy", ""), 10, 64)
 	filters.Flag, _ = strconv.ParseInt(ctx.DefaultQuery("flag", ""), 10, 64)
 	filters.League, _ = strconv.ParseInt(ctx.DefaultQuery("league", ""), 10, 64)
+	filters.Participant, _ = strconv.ParseInt(ctx.DefaultQuery("participant", ""), 10, 64)
 	filters.Page, _ = strconv.ParseInt(ctx.DefaultQuery("page", "0"), 10, 64)
 	filters.Limit, _ = strconv.ParseInt(ctx.DefaultQuery("limit", "100"), 10, 64)
 
@@ -145,6 +146,11 @@ func filterQuery(filters forms.RaceFilters) (string, string, []interface{}, erro
 			sq.NotEq{"r.league_id": nil},
 			sq.Eq{"r.league_id": filters.League},
 		})
+	}
+
+	if filters.Participant > 0 {
+		subQ := fmt.Sprint("EXISTS(SELECT 1 FROM participant p WHERE p.race_id = r.id AND p.club_id = ", filters.Participant, ")")
+		baseSelect = baseSelect.Where(subQ)
 	}
 
 	query, args, err := baseSelect.

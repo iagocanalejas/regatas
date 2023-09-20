@@ -66,6 +66,7 @@
 		on:leagueChanged={(e) => changeFilters('league', e.detail?.id)}
 		on:trophyChanged={(e) => changeFilters('trophy', e.detail?.id)}
 		on:flagChanged={(e) => changeFilters('flag', e.detail?.id)}
+		on:participantChanged={(e) => changeFilters('participant', e.detail?.id)}
 		on:keywordsChanged={(e) => changeFilters('keywords', e.detail)}
 		on:yearChanged={(e) => changeFilters('year', e.detail)}
 		on:clear={clearFilters}
