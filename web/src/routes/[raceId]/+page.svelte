@@ -23,20 +23,22 @@
 	{#if race && race.participants}
 		<div class="my-2 flex w-full justify-center bg-gray-700 py-2 text-white">
 			<span class="text-center font-semibold">
-				{race.date} -- {race.name}
+				{race.name} ({race.date})
 			</span>
 		</div>
 
-		{#each { length: race.series || 0 } as _, i}
-			<div class="my-4">
-				<ParticipantsTable
-					title={`Tanda ${i + 1}`}
-					showLanes={true}
-					participants={sortedParticipantsBySeries(i + 1)}
-					laps={race.laps || 0}
-				/>
-			</div>
-		{/each}
+		{#if (race.series || 0) > 1}
+			{#each { length: race.series || 0 } as _, i}
+				<div class="my-4">
+					<ParticipantsTable
+						title={`Tanda ${i + 1}`}
+						participants={sortedParticipantsBySeries(i + 1)}
+						laps={race.laps || 0}
+						showLanes={true}
+					/>
+				</div>
+			{/each}
+		{/if}
 
 		<div class="my-4">
 			<ParticipantsTable title={'Tiempos'} participants={race.participants} laps={race.laps || 0} showSpeed={true} />
