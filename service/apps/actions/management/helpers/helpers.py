@@ -14,8 +14,8 @@ from apps.participants.models import Participant, Penalty
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, TrophyService
 from apps.schemas import MetadataBuilder
-from pyutils.strings import remove_conjunctions
-from rscraping.data.functions import is_memorial
+from pyutils.strings import remove_conjunctions, remove_parenthesis
+from rscraping.data.functions import is_memorial, is_play_off
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
@@ -58,6 +58,11 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
         raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
 
     organizer = _find_club(race.organizer) if race.organizer else None
+    league = (
+        LeagueService.get_by_name(race.league)
+        if race.league and not is_play_off(remove_parenthesis(race.name))
+        else None
+    )
 
     new_race = Race(
         laps=race.race_laps,
@@ -73,7 +78,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
         trophy_edition=trophy_edition,
         flag=flag,
         flag_edition=flag_edition,
-        league=race.league and LeagueService.get_by_name(race.league),
+        league=league,
         modality=race.modality,
         organizer=organizer,
         sponsor=race.sponsor,
