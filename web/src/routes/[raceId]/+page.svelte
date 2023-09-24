@@ -20,7 +20,7 @@
 </script>
 
 <div class="mx-auto flex w-4/5 flex-col py-3">
-	{#if race && race.participants}
+	{#if race && race.participants?.length}
 		<div class="my-2 flex w-full justify-center bg-gray-700 py-2 text-white">
 			<span class="text-center font-semibold">
 				{race.name} ({race.date})

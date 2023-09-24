@@ -52,7 +52,7 @@
 	</button>
 
 	{#if showDropdown}
-		<div class="w-85 absolute z-10 mt-2 divide-y divide-gray-100 rounded-lg bg-gray-700 shadow">
+		<div class="absolute z-10 mt-2 min-w-[14rem] divide-y divide-gray-100 rounded-lg bg-gray-700 shadow">
 			<div class="p-3">
 				<label for="input-group-search" class="sr-only">Search</label>
 				<div class="relative">
