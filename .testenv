@@ -1,5 +1,4 @@
 DEBUG=True
-DOCKER=False
 SECRET_KEY=what-a-fake-secret-key-lol
 
 ## DATABASE

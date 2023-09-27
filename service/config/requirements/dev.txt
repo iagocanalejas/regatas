@@ -1,3 +1,3 @@
 -r ci.txt
-django-types==0.17.0
+django-types==0.18.0
 PySnooper==1.2.0
