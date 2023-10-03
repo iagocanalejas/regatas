@@ -20,7 +20,7 @@ class Trophy(CreationStampModel):
     tokens = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=50), editable=False)
     verified = models.BooleanField(blank=True, default=False)
 
-    qualifies_for = models.ForeignKey("self", null=True, blank=True, default=None, on_delete=models.PROTECT)
+    qualifies_for = models.ForeignKey(to="self", null=True, blank=True, default=None, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
@@ -42,7 +42,7 @@ class Flag(CreationStampModel):
     tokens = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=50), editable=False)
     verified = models.BooleanField(blank=True, default=False)
 
-    qualifies_for = models.ForeignKey("self", null=True, blank=True, default=None, on_delete=models.PROTECT)
+    qualifies_for = models.ForeignKey(to="self", null=True, blank=True, default=None, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
@@ -108,6 +108,15 @@ class Race(CreationStampModel):
         related_query_name="race",
     )
 
+    associated = models.ForeignKey(
+        null=True,
+        blank=True,
+        default=None,
+        to="self",
+        on_delete=models.PROTECT,
+        related_name="+",
+    )
+
     modality = models.CharField(default=RACE_TRAINERA, max_length=15, choices=RACE_MODALITY_CHOICES)
     organizer = models.ForeignKey(
         null=True,
@@ -149,8 +158,13 @@ class Race(CreationStampModel):
                 f"current: (trophy_id:{self.trophy}, trophy_edition:{self.trophy_edition})"
             )
 
+    def validate_associated(self):
+        if self.day == 2 and not self.associated:
+            raise IntegrityError("Instance needs to have an associated 'race' when 'day' = 2.")
+
     def save(self, *args, **kwargs):
         self.validate_editions()
+        self.validate_associated()
         self.full_clean()
         super().save(*args, **kwargs)
 
