@@ -8,6 +8,13 @@
 	export let showLanes = false;
 	export let showSpeed = false;
 
+	$: {
+		if (participants.length) {
+			fastestTurns = [];
+			fastestLaps = [];
+		}
+	}
+
 	let showingLapTime = false;
 
 	let fastestTurns: string[] = [];

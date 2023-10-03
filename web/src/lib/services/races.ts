@@ -1,11 +1,15 @@
 import { ParticipantTransformer } from '$lib/transformers/participant.transformer';
-import type { Page, PaginationResult, Race, RaceFilter } from '$lib/types';
+import type { Page, PaginationConfig, Race, RaceFilter } from '$lib/types';
 
 const API_URL = 'http://localhost:8080/api';
 
 export class RacesService {
-	static #buildQueryParams(filters: RaceFilter, currentPage: number): string {
-		let query = `races?page=${currentPage}`;
+	static #buildQueryParams(filters: RaceFilter, page: PaginationConfig): string {
+		let query = `races?page=${page.page}`;
+
+		if (page.itemsPerPage) {
+			query += `&limit=${page.itemsPerPage}`;
+		}
 
 		if (filters.keywords) {
 			query += `&keywords=${filters.keywords}`;
@@ -17,6 +21,10 @@ export class RacesService {
 
 		if (filters.league) {
 			query += `&league=${filters.league}`;
+		}
+
+		if (filters.trophyOrFlag) {
+			query += `&trophyOrFlag=${filters.trophyOrFlag[0]},${filters.trophyOrFlag[1]}`;
 		}
 
 		if (filters.trophy) {
@@ -34,13 +42,8 @@ export class RacesService {
 		return query;
 	}
 
-	static async load(filters: RaceFilter, page: PaginationResult): Promise<Page<Race> | undefined> {
-		const isLastPage = page.total_pages > 0 && page.current_page == page.total_pages;
-		if (isLastPage) {
-			return undefined;
-		}
-
-		const response = await fetch(`${API_URL}/${this.#buildQueryParams(filters, page.current_page)}`);
+	static async load(filters: RaceFilter, page: PaginationConfig): Promise<Page<Race>> {
+		const response = await fetch(`${API_URL}/${this.#buildQueryParams(filters, page)}`);
 		const result = (await response.json()) as Page<Race>;
 
 		return result;
@@ -53,5 +56,25 @@ export class RacesService {
 		result.participants = ParticipantTransformer.transformParticipants(result.participants || []);
 
 		return result;
+	}
+
+	static async getRelated(race: Race): Promise<Race[]> {
+		const page: PaginationConfig = {
+			page: 0,
+			itemsPerPage: 10
+		};
+
+		let result: Page<Race>;
+		if (race.trophy?.id && race.flag?.id) {
+			result = await this.load({ trophyOrFlag: [race.trophy.id, race.flag.id] }, page);
+		} else if (race.trophy?.id) {
+			result = await this.load({ trophy: race.trophy.id }, page);
+		} else if (race.flag?.id) {
+			result = await this.load({ trophy: race.flag.id }, page);
+		} else {
+			throw 'Something went terrible wrong';
+		}
+
+		return result.results;
 	}
 }

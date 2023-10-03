@@ -31,6 +31,7 @@ export type Race = {
 export type RaceFilter = {
 	trophy?: number;
 	flag?: number;
+	trophyOrFlag?: [number, number];
 	league?: number;
 	participant?: number;
 	year?: number;

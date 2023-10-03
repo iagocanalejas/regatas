@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"r4l/rest/db"
 	"r4l/rest/forms"
@@ -16,15 +17,7 @@ import (
 )
 
 func GetRaces(ctx *gin.Context) {
-	filters := forms.RaceFilters{}
-	filters.Keywords = ctx.DefaultQuery("keywords", "")
-	filters.Year, _ = strconv.ParseInt(ctx.DefaultQuery("year", ""), 10, 64)
-	filters.Trophy, _ = strconv.ParseInt(ctx.DefaultQuery("trophy", ""), 10, 64)
-	filters.Flag, _ = strconv.ParseInt(ctx.DefaultQuery("flag", ""), 10, 64)
-	filters.League, _ = strconv.ParseInt(ctx.DefaultQuery("league", ""), 10, 64)
-	filters.Participant, _ = strconv.ParseInt(ctx.DefaultQuery("participant", ""), 10, 64)
-	filters.Page, _ = strconv.ParseInt(ctx.DefaultQuery("page", "0"), 10, 64)
-	filters.Limit, _ = strconv.ParseInt(ctx.DefaultQuery("limit", "100"), 10, 64)
+	filters := parseFilters(ctx)
 
 	query, countQuery, args, err := filterQuery(filters)
 	if err != nil {
@@ -35,6 +28,7 @@ func GetRaces(ctx *gin.Context) {
 	var flatRaces []db.Race
 	err = db.GetDB().Select(&flatRaces, query, args...)
 	if err != nil {
+		log.Print(query, args)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -42,6 +36,7 @@ func GetRaces(ctx *gin.Context) {
 	var count int
 	err = db.GetDB().Get(&count, countQuery, args...)
 	if err != nil {
+		log.Print(countQuery, args)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -104,6 +99,30 @@ func GetRaceById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, race)
 }
 
+func parseFilters(ctx *gin.Context) forms.RaceFilters {
+	filters := forms.RaceFilters{
+		Keywords: ctx.DefaultQuery("keywords", ""),
+	}
+	filters.Year, _ = strconv.ParseInt(ctx.DefaultQuery("year", ""), 10, 64)
+	filters.Trophy, _ = strconv.ParseInt(ctx.DefaultQuery("trophy", ""), 10, 64)
+	filters.Flag, _ = strconv.ParseInt(ctx.DefaultQuery("flag", ""), 10, 64)
+	filters.League, _ = strconv.ParseInt(ctx.DefaultQuery("league", ""), 10, 64)
+	filters.Participant, _ = strconv.ParseInt(ctx.DefaultQuery("participant", ""), 10, 64)
+	filters.Page, _ = strconv.ParseInt(ctx.DefaultQuery("page", "0"), 10, 64)
+	filters.Limit, _ = strconv.ParseInt(ctx.DefaultQuery("limit", "100"), 10, 64)
+
+	maybeTrophyOrFlag := strings.Split(ctx.DefaultQuery("trophyOrFlag", ","), ",")
+	if len(maybeTrophyOrFlag) == 2 {
+		trophyOrFlag := make([]int64, 2)
+		for idx, item := range maybeTrophyOrFlag {
+			trophyOrFlag[idx], _ = strconv.ParseInt(item, 10, 64)
+		}
+		filters.TrophyOrFlag = trophyOrFlag
+	}
+
+	return filters
+}
+
 func filterQuery(filters forms.RaceFilters) (string, string, []interface{}, error) {
 	baseSelect := sq.
 		Select("r.id", "r.date", "r.day", "r.sponsor", "r.type", "r.modality", "r.laps", "r.lanes", "r.cancelled", "r.town",
@@ -138,6 +157,19 @@ func filterQuery(filters forms.RaceFilters) (string, string, []interface{}, erro
 		baseSelect = baseSelect.Where(sq.And{
 			sq.NotEq{"r.flag_id": nil},
 			sq.Eq{"r.flag_id": filters.Flag},
+		})
+	}
+
+	if filters.TrophyOrFlag[0] > 0 && filters.TrophyOrFlag[1] > 0 {
+		baseSelect = baseSelect.Where(sq.Or{
+			sq.And{
+				sq.NotEq{"r.trophy_id": nil},
+				sq.Eq{"r.trophy_id": filters.TrophyOrFlag[0]},
+			},
+			sq.And{
+				sq.NotEq{"r.flag_id": nil},
+				sq.Eq{"r.flag_id": filters.TrophyOrFlag[1]},
+			},
 		})
 	}
 

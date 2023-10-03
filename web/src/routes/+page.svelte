@@ -25,10 +25,16 @@
 		}
 
 		loading = true;
-		const result = await RacesService.load($raceFilters, $racesPage);
-		if (result) {
-			races.set(result.results);
-			racesPage.set(result.pagination);
+		const isLastPage = $racesPage.total_pages > 0 && $racesPage.current_page == $racesPage.total_pages;
+		if (!isLastPage) {
+			const result = await RacesService.load($raceFilters, {
+				page: $racesPage.current_page,
+				itemsPerPage: $racesPage.page_size
+			});
+			if (result) {
+				races.set(result.results);
+				racesPage.set(result.pagination);
+			}
 		}
 		loading = false;
 	}
@@ -74,7 +80,7 @@
 
 	{#if $racesPage.total_records}
 		<table class="w-full table-auto">
-			<thead class="text-md h-9 bg-gray-900 uppercase text-white">
+			<thead class="text-md h-9 bg-gray-700 uppercase text-white">
 				<tr>
 					<th class="pe-3">#</th>
 					<th class="pe-3 text-start">Nombre</th>
