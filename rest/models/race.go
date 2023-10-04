@@ -9,13 +9,19 @@ import (
 	"r4l/rest/utils"
 )
 
+type AssociatedRace struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
 type Race struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 
-	Trophy *Trophy `json:"trophy"`
-	Flag   *Flag   `json:"flag"`
-	League *League `json:"league"`
+	Trophy     *Trophy         `json:"trophy"`
+	Flag       *Flag           `json:"flag"`
+	League     *League         `json:"league"`
+	Associated *AssociatedRace `json:"associated"`
 
 	Day      int    `json:"day"`
 	Date     string `json:"date"`
@@ -50,14 +56,20 @@ func (r Race) FromDatabase(race db.Race) *Race {
 		league = &League{ID: *race.LeagueId, Name: *race.LeagueName, Gender: race.LeagueGender, Symbol: *race.LeagueSymbol}
 	}
 
+	var associated *AssociatedRace
+	if race.AssociatedId != nil {
+		associated = &AssociatedRace{ID: *race.AssociatedId, Name: buildRaceName(race, true)}
+	}
+
 	date, _ := time.Parse(time.RFC3339, race.Date)
 	return &Race{
 		ID:   race.ID,
-		Name: buildRaceName(race),
+		Name: buildRaceName(race, false),
 
-		Trophy: trophy,
-		Flag:   flag,
-		League: league,
+		Trophy:     trophy,
+		Flag:       flag,
+		League:     league,
+		Associated: associated,
 
 		Day:      race.Day,
 		Date:     date.Format("02-01-2006"),
@@ -75,9 +87,9 @@ func (r Race) FromDatabase(race db.Race) *Race {
 	}
 }
 
-func buildRaceName(race db.Race) string {
+func buildRaceName(race db.Race, associated bool) string {
 	day := ""
-	if race.Day > 1 {
+	if (!associated && race.Day > 1) || (associated && race.Day == 1) {
 		day = fmt.Sprintf("XORNADA %d", race.Day)
 	}
 

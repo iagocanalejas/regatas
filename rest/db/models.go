@@ -18,6 +18,8 @@ type Race struct {
 	LeagueGender *string `db:"league_gender"`
 	LeagueSymbol *string `db:"league_symbol"`
 
+	AssociatedId *int64 `db:"associated_id"`
+
 	Day      int    `db:"day"`
 	Date     string `db:"date"`
 	Type     string `db:"type"`

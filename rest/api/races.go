@@ -21,6 +21,7 @@ func GetRaces(ctx *gin.Context) {
 
 	query, countQuery, args, err := filterQuery(filters)
 	if err != nil {
+		log.Print(query, args)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -61,7 +62,7 @@ func GetRaceById(ctx *gin.Context) {
 	raceId := ctx.Param("raceId")
 
 	query, args, err := sq.
-		Select("r.id", "r.date", "r.day", "r.sponsor", "r.type", "r.modality", "r.laps", "r.lanes", "r.cancelled", "r.town",
+		Select("r.id", "r.date", "r.day", "r.sponsor", "r.type", "r.modality", "r.laps", "r.lanes", "r.cancelled", "r.town", "r.associated_id",
 			"t.id as trophy_id", "t.name as trophy_name", "r.trophy_edition",
 			"f.id as flag_id", "f.name as flag_name", "r.flag_edition",
 			"l.id as league_id", "l.name as league_name", "l.gender as league_gender", "l.symbol as league_symbol",

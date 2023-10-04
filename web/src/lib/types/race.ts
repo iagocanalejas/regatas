@@ -4,6 +4,11 @@ import type { League } from './league';
 import type { Gender, RaceType } from './types';
 import type { Participant } from './participant';
 
+export type AssociatedRace = {
+	id: number;
+	name: string;
+};
+
 export type Race = {
 	id: number;
 	name: string;
@@ -16,6 +21,7 @@ export type Race = {
 	trophy?: Trophy;
 	flag?: Flag;
 	league?: League;
+	associated?: AssociatedRace;
 
 	laps?: number;
 	lanes?: number;

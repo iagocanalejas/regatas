@@ -49,7 +49,7 @@ export class RacesService {
 		return result;
 	}
 
-	static async get(raceId: string): Promise<Race> {
+	static async get(raceId: string | number): Promise<Race> {
 		const response = await fetch(`${API_URL}/races/${raceId}`);
 		const result = (await response.json()) as Race;
 
@@ -70,7 +70,7 @@ export class RacesService {
 		} else if (race.trophy?.id) {
 			result = await this.load({ trophy: race.trophy.id }, page);
 		} else if (race.flag?.id) {
-			result = await this.load({ trophy: race.flag.id }, page);
+			result = await this.load({ flag: race.flag.id }, page);
 		} else {
 			throw 'Something went terrible wrong';
 		}

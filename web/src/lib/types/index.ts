@@ -2,7 +2,7 @@ import type { League } from './league';
 import type { Trophy } from './trophy';
 import type { Flag } from './flag';
 import type { Entity } from './entity';
-import type { Race, RaceFilter, RaceSortBy } from './race';
+import type { AssociatedRace, Race, RaceFilter, RaceSortBy } from './race';
 import { type Participant, type ParticipantFilter, type ParticipantSortBy, ParticipantUtils } from './participant';
 import { DEFAULT_PAGE, DEFAULT_PAGE_RESULT, type Page, type PaginationConfig, type PaginationResult } from './page';
 import {
@@ -48,6 +48,7 @@ export {
 	Flag,
 	Trophy,
 	Entity,
+	AssociatedRace,
 	Race,
 	RaceFilter,
 	RaceSortBy,
