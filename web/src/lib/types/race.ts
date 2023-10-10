@@ -32,6 +32,13 @@ export type Race = {
 	genders: Gender[];
 
 	participants?: Participant[];
+	metadata: { datasource: RaceDatasource[] };
+};
+
+export type RaceDatasource = {
+	ref_id: string;
+	datasource_name: string;
+	values: { details_page: string };
 };
 
 export type RaceFilter = {

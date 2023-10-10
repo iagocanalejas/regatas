@@ -33,6 +33,8 @@ type Race struct {
 	Genders pq.StringArray `db:"genders"`
 	Sponsor *string        `db:"sponsor"`
 	Town    *string        `db:"town"`
+
+	Metadata *string `db:"metadata"`
 }
 
 type Participant struct {

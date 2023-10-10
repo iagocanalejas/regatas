@@ -1,7 +1,9 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -37,7 +39,17 @@ type Race struct {
 	Town    *string  `json:"town"`
 	Genders []string `json:"genders"`
 
+	Metadata *RaceMetadata `json:"metadata"`
+
 	Participants []Participant `json:"participants,omitempty"`
+}
+
+type RaceMetadata struct {
+	Datasource []struct {
+		DatasourceName *string           `json:"datasource_name"`
+		RefId          *string           `json:"ref_id"`
+		Values         map[string]string `json:"values"`
+	} `json:"datasource"`
 }
 
 func (r Race) FromDatabase(race db.Race) *Race {
@@ -59,6 +71,14 @@ func (r Race) FromDatabase(race db.Race) *Race {
 	var associated *AssociatedRace
 	if race.AssociatedId != nil {
 		associated = &AssociatedRace{ID: *race.AssociatedId, Name: buildRaceName(race, true)}
+	}
+
+	var metadata *RaceMetadata
+	if race.Metadata != nil {
+		err := json.Unmarshal([]byte(*race.Metadata), &metadata)
+		if err != nil {
+			log.Print(err)
+		}
 	}
 
 	date, _ := time.Parse(time.RFC3339, race.Date)
@@ -84,6 +104,8 @@ func (r Race) FromDatabase(race db.Race) *Race {
 		Sponsor: race.Sponsor,
 		Town:    race.Town,
 		Genders: race.Genders,
+
+		Metadata: metadata,
 	}
 }
 

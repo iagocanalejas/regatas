@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ParticipantsTable from '$lib/components/ParticipantsTable.svelte';
+	import ParticipantsTable from './ParticipantsTable.svelte';
 	import type { Participant } from '$lib/types';
 
 	export let series: number;
@@ -31,17 +31,15 @@
 		</svg>
 	</button>
 
-	{#if expanded && series > 1}
+	{#if expanded}
 		<div class="border border-gray-700">
 			{#each { length: series } as _, i}
-				<div class="">
-					<ParticipantsTable
-						title={`Tanda ${i + 1}`}
-						participants={sortedParticipantsBySeries(i + 1)}
-						{laps}
-						showLanes={true}
-					/>
-				</div>
+				<ParticipantsTable
+					title={`Tanda ${i + 1}`}
+					participants={sortedParticipantsBySeries(i + 1)}
+					{laps}
+					showLanes={true}
+				/>
 			{/each}
 		</div>
 	{/if}

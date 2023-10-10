@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import ParticipantsTable from '$lib/components/ParticipantsTable.svelte';
 	import { RacesService } from '$lib/services/races';
 	import type { Race } from '$lib/types';
 	import { onMount } from 'svelte';
-	import RaceSeries from './RaceSeries.svelte';
+	import RaceMetadata from './RaceMetadata.svelte';
+	import RaceDetails from './RaceDetails.svelte';
+	import RaceRelated from './RaceRelated.svelte';
 
 	let { raceId } = $page.params;
 
@@ -36,99 +36,15 @@
 	}
 </script>
 
-<div class="mx-auto flex w-4/5 flex-col gap-y-4">
-	{#if race && race.participants?.length}
-		<div>
-			<div class="mt-2 flex w-full justify-center bg-gray-700 py-2 text-white">
-				<span class="text-center font-semibold">
-					{race.name} ({race.date})
-				</span>
-			</div>
-			<div class="border border-gray-700">
-				<ParticipantsTable title={'Tiempos'} participants={race.participants} laps={race.laps || 0} showSpeed={true} />
-			</div>
-		</div>
-	{/if}
-
-	{#if race && race.participants?.length}
-		<RaceSeries series={race.series || 0} laps={race.laps || 0} participants={race.participants} />
-	{/if}
-
-	{#if associated && associated.participants?.length}
-		<div>
-			<div class="flex w-full justify-center bg-gray-700 py-2 text-white">
-				<span class="text-center font-semibold">
-					{associated.name} ({associated.date})
-				</span>
-			</div>
-
-			<div class="border border-gray-700">
-				<ParticipantsTable
-					title={'Tiempos'}
-					participants={associated.participants}
-					laps={associated.laps || 0}
-					showSpeed={true}
-				/>
-			</div>
-		</div>
-	{/if}
-
-	{#if associated && associated.participants?.length}
-		<RaceSeries series={associated.series || 0} laps={associated.laps || 0} participants={associated.participants} />
-	{/if}
+<div class="mx-auto mt-2 flex w-4/5 flex-col gap-y-4">
+	<RaceDetails {race} />
+	<RaceDetails race={associated} />
 
 	{#if related?.length}
-		<div>
-			<div class="flex w-full justify-center bg-gray-700 py-2 text-white">
-				<span class="text-center font-semibold">Regatas relacionadas</span>
-			</div>
+		<RaceRelated {related} raceId={+raceId} on:raceChanged={(e) => load(e.detail)} />
+	{/if}
 
-			<table class="w-full table-auto">
-				<thead class="text-md h-9 bg-gray-700 uppercase text-white">
-					<tr>
-						<th class="pe-3">#</th>
-						<th class="pe-3 text-start">Nombre</th>
-						<th class="pe-3">Fecha</th>
-						<th class="pe-3" />
-					</tr>
-				</thead>
-
-				<tbody>
-					{#each related as race, i}
-						<tr
-							class="h-8"
-							class:bg-green-800={race.id === +raceId}
-							class:text-white={race.id === +raceId}
-							class:even:bg-gray-200={race.id !== +raceId}
-							on:click={() => {
-								goto(`${race.id}`);
-								load(`${race.id}`);
-							}}
-						>
-							<th class="pe-3">{i + 1}</th>
-							<th class="pe-3 text-start">{race.name}</th>
-							<th class="pe-3">{race.date}</th>
-							<th class="px-3">
-								<svg
-									class="h-2.5 w-2.5"
-									aria-hidden="true"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 6 10"
-								>
-									<path
-										stroke="currentColor"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="m1 9 4-4-4-4"
-									/>
-								</svg>
-							</th>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
+	{#if race?.metadata?.datasource && race.metadata.datasource.length > 0}
+		<RaceMetadata datasources={race.metadata.datasource} />
 	{/if}
 </div>
