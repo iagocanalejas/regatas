@@ -1,6 +1,7 @@
 import logging
 
 from django.core.management import BaseCommand
+from service.apps.races.services import MetadataService
 from utils.choices import GENDER_FEMALE
 from utils.exceptions import StopProcessing
 
@@ -9,7 +10,6 @@ from apps.actions.management.helpers.helpers import (
     save_participants_from_scraped_data,
     save_race_from_scraped_data,
 )
-from apps.races.services import RaceService
 from rscraping import Datasource, find_race
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ class Command(BaseCommand):
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
 
-        db_race = RaceService.get_by_datasource(
+        db_race = MetadataService.get_race(
             race_id,
             Datasource(datasource),
             gender=GENDER_FEMALE if is_female else None,

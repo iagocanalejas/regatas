@@ -1,17 +1,15 @@
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 
-from django.db.models import QuerySet
-from utils.choices import GENDER_FEMALE, GENDER_MALE
+from django.db.models import Q, QuerySet
 
 from apps.races.filters import RaceFilters
 from apps.races.models import Race
-from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
 
 
-def get_filtered(
+def filter(
     queryset: QuerySet[Race],
     filters: dict,
     related: Optional[List[str]] = None,
@@ -31,37 +29,29 @@ def get_filtered(
     return queryset.all()
 
 
-def get_race_or_create(race: Race) -> Tuple[bool, Race]:
-    # try to find a matching existing race
+def get_by_race(race: Race) -> Optional[Race]:
     q = Race.objects.filter(league=race.league) if race.league else Race.objects.filter(league__isnull=True)
     q = q.filter(trophy=race.trophy) if race.trophy else q.filter(trophy__isnull=True)
     q = q.filter(flag=race.flag) if race.flag else q.filter(flag__isnull=True)
     q = q.filter(date=race.date)
 
     try:
-        return False, q.get()
+        return q.get()
     except Race.DoesNotExist:
-        race.save()
-
-        logger.info(f"created:: {race}")
-        return True, race
+        return None
 
 
-def get_by_datasource(
-    ref_id: str,
-    datasource: Datasource,
-    gender: Optional[str] = None,
-    day: Optional[int] = None,
-) -> Optional[Race]:
-    metadata: Dict[str, Dict[str, str] | str] = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
-    if gender and gender in [GENDER_MALE, GENDER_FEMALE]:
-        metadata["values"] = {"gender": gender}
-
-    filters: Dict[str, Any] = {"metadata": [metadata]}
-    if day:
-        filters["day"] = day
-
+def find_associated(race: Race, year: int, day: int) -> Optional[Race]:
     try:
-        return get_filtered(queryset=Race.objects, filters=filters, prefetch=["participants"]).get()
+        match = Race.objects.get(
+            Q(trophy=race.trophy) | Q(trophy_id__isnull=True),
+            Q(trophy_edition=race.trophy_edition) | Q(trophy_edition__isnull=True),
+            flag=race.flag,
+            flag_edition=race.flag_edition,
+            league=race.league,
+            date__year=year,
+            day=day,
+        )
+        return match
     except Race.DoesNotExist:
         return None

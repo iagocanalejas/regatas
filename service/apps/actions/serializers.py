@@ -45,8 +45,8 @@ class FlagSerializer(serializers.ModelSerializer):
 
 
 class RaceSerializer(serializers.ModelSerializer):
-    trophy = TrophySerializer()
-    flag = FlagSerializer()
+    trophy = TrophySerializer(allow_null=True)
+    flag = FlagSerializer(allow_null=True)
     league = LeagueSerializer(allow_null=True)
     organizer = EntitySerializer(allow_null=True)
 

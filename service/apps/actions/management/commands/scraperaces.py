@@ -11,7 +11,8 @@ from apps.actions.management.helpers.helpers import (
     save_participants_from_scraped_data,
     save_race_from_scraped_data,
 )
-from apps.races.services import RaceService
+from apps.races.services import MetadataService
+from pyutils.lists import chunk
 from rscraping.clients import Client
 from rscraping.data.constants import GENDER_FEMALE
 from rscraping.data.models import Datasource, Race
@@ -59,10 +60,17 @@ class Command(BaseCommand):
         parser.add_argument("datasource", type=str, help="")
         parser.add_argument("year", default=None, type=int, help="")
         parser.add_argument("--female", action="store_true", default=False)
+        parser.add_argument("--merge", action="store_true", default=False)
         parser.add_argument("--all", action="store_true", default=False)
 
     def handle(self, *_, **options):
-        year, datasource, is_female, do_all = options["year"], options["datasource"], options["female"], options["all"]
+        year, datasource, is_female, do_all, allow_merges = (
+            options["year"],
+            options["datasource"],
+            options["female"],
+            options["all"],
+            options["merge"],
+        )
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
         if not year and not do_all:
@@ -71,60 +79,73 @@ class Command(BaseCommand):
         if Datasource(datasource) == Datasource.LGT:
             is_female = None
 
-        items: List[Race] = []
         client: Client = Client(source=Datasource(datasource), is_female=is_female)  # type: ignore
 
         if do_all:
             year = client.FEMALE_START if is_female else client.MALE_START
             today = date.today()
             while year <= today.year:
-                items.extend(self._handle_year(client, year, Datasource(datasource), is_female=is_female))
+                self._handle_year(client, year, Datasource(datasource), allow_merges=allow_merges, is_female=is_female)
                 year += 1
                 time.sleep(5)
         else:
-            items.extend(self._handle_year(client, year, Datasource(datasource), is_female=is_female))
+            self._handle_year(client, year, Datasource(datasource), allow_merges=allow_merges, is_female=is_female)
 
-        for race in items:
-            participants = race.participants
-
-            clubs = preload_participants(participants)
-            try:
-                new_race = save_race_from_scraped_data(race, Datasource(datasource))
-                save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)
-            except StopProcessing:
-                logger.error(f"unable to save data for {race.race_id}::{race.name}")
-                continue
-
-    @staticmethod
-    def _handle_year(client: Client, year: int, datasource: Datasource, is_female: Optional[bool] = None) -> List[Race]:
-        items: List[Race] = []
-
+    def _handle_year(
+        self,
+        client: Client,
+        year: int,
+        datasource: Datasource,
+        allow_merges: bool,
+        is_female: Optional[bool] = None,
+    ):
         race_ids = client.get_race_ids_by_year(year=year)
         race_ids = [
             r
             for r in race_ids
-            if not RaceService.get_by_datasource(r, datasource, gender=GENDER_FEMALE if is_female else None)
+            if not MetadataService.exists(r, datasource, gender=GENDER_FEMALE if is_female else None)
         ]
         logger.info(f"found {len(race_ids)} races for {year=}")
 
-        for race_id in race_ids:
-            time.sleep(1)
+        for ids in chunk(race_ids, chunk_size=5):
+            items: List[Race] = []
 
+            for race_id in ids:
+                time.sleep(1)
+
+                try:
+                    race = client.get_race_by_id(race_id, is_female=is_female)
+                except ValueError as e:
+                    logger.error(e)
+                    continue
+                if not race:
+                    continue
+                logger.info(f"found race={race.name} for {race_id=}")
+
+                is_after_today = race and datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
+                if is_after_today:
+                    break
+
+                items.append(race)
+
+            items = [i for i in items if i is not None]
+            logger.info(f"parsed {len(items)} races for {year=}")
+            self._process_races(items, datasource=datasource, allow_merges=allow_merges)
+
+    @staticmethod
+    def _process_races(races: List[Race], datasource: Datasource, allow_merges: bool):
+        for race in races:
+            participants = race.participants
+
+            clubs = preload_participants(participants)
             try:
-                race = client.get_race_by_id(race_id, is_female=is_female)
-            except ValueError as e:
-                logger.error(e)
+                new_race = save_race_from_scraped_data(race, datasource=datasource, allow_merges=allow_merges)
+                save_participants_from_scraped_data(
+                    new_race,
+                    participants,
+                    preloaded_clubs=clubs,
+                    allow_merges=allow_merges,
+                )
+            except StopProcessing:
+                logger.error(f"unable to save data for {race.race_id}::{race.name}")
                 continue
-            if not race:
-                continue
-            logger.info(f"found race={race.name} for {race_id=}")
-
-            is_after_today = race and datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
-            if is_after_today:
-                break
-
-            items.append(race)
-
-        items = [i for i in items if i is not None]
-        logger.info(f"parsed {len(items)} races for {year=}")
-        return items

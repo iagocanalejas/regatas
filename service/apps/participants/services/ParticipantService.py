@@ -4,9 +4,14 @@ from typing import Tuple
 from django.db.models import Q, QuerySet
 
 from apps.participants.models import Participant
+from apps.races.models import Race
 from rscraping.data.functions import is_branch_club
 
 logger = logging.getLogger(__name__)
+
+
+def get_by_race(race: Race) -> QuerySet[Participant]:
+    return Participant.objects.filter(race=race)
 
 
 def get_participant_or_create(participant: Participant, maybe_branch: bool = False) -> Tuple[bool, Participant]:
