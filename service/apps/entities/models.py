@@ -57,15 +57,6 @@ class Entity(TraceableModel):
         related_name="subsidiaries",
         related_query_name="subsidiary",
     )
-    fused_into = models.ForeignKey(
-        null=True,
-        blank=True,
-        default=None,
-        to="self",
-        on_delete=models.PROTECT,
-        related_name="formed_by",
-        related_query_name="formed_by",
-    )
 
     metadata = JSONField(
         default=default_metadata,
@@ -101,16 +92,18 @@ class EntityPartnership(models.Model):
         on_delete=models.PROTECT,
         related_name="components",
         related_query_name="component",
-        limit_choices_to={"is_partnership", True},  # pyright: ignore
     )
     part = models.ForeignKey(
         to="entities.Entity",
         on_delete=models.PROTECT,
         related_name="part_of",
         related_query_name="part_of",
-        limit_choices_to={"is_partnership", False},  # pyright: ignore
+        limit_choices_to={"is_partnership": False},  # pyright: ignore
     )
     is_active = models.BooleanField(null=False, blank=True, default=True, db_index=True)
+
+    def __str__(self):
+        return f"{self.part} ({self.target})"
 
     class Meta:
         db_table = "entity_partnership"

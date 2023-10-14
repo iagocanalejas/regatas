@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 (
                     "part",
                     models.ForeignKey(
-                        limit_choices_to={False, "is_partnership"},
+                        limit_choices_to={"is_partnership": False},
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="part_of",
                         related_query_name="part_of",
@@ -28,7 +28,6 @@ class Migration(migrations.Migration):
                 (
                     "target",
                     models.ForeignKey(
-                        limit_choices_to={True, "is_partnership"},
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="components",
                         related_query_name="component",

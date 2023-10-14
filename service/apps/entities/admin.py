@@ -1,7 +1,7 @@
 from django.contrib import admin
 from djutils.admin import TraceableModelAdmin
 
-from apps.entities.models import Entity, League
+from apps.entities.models import Entity, EntityPartnership, League
 
 
 class EntityAdmin(TraceableModelAdmin):
@@ -9,4 +9,5 @@ class EntityAdmin(TraceableModelAdmin):
 
 
 admin.site.register(Entity, EntityAdmin)
+admin.site.register(EntityPartnership, admin.ModelAdmin)
 admin.site.register(League, TraceableModelAdmin)
