@@ -289,6 +289,9 @@ def _find_club(name: str) -> Optional[Entity]:
         try:
             return EntityService.get_closest_club_by_name(remove_conjunctions(name))
         except Entity.DoesNotExist:
+            entity_id = inquirer.text(f"no entity found for {name}. Entity ID: ", default=None)
+            if entity_id:
+                return Entity.objects.get(id=entity_id)
             return None
     except Entity.MultipleObjectsReturned:
         raise StopProcessing(f"multiple clubs found for {name=}")

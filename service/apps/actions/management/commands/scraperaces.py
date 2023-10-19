@@ -1,3 +1,4 @@
+import itertools
 import logging
 import time
 from datetime import date, datetime
@@ -12,7 +13,6 @@ from apps.actions.management.helpers.helpers import (
     save_race_from_scraped_data,
 )
 from apps.races.services import MetadataService
-from pyutils.lists import chunk
 from rscraping.clients import Client
 from rscraping.data.constants import GENDER_FEMALE
 from rscraping.data.models import Datasource, Race
@@ -99,53 +99,39 @@ class Command(BaseCommand):
         allow_merges: bool,
         is_female: Optional[bool] = None,
     ):
-        race_ids = client.get_race_ids_by_year(year=year)
-        race_ids = [
-            r
-            for r in race_ids
-            if not MetadataService.exists(r, datasource, gender=GENDER_FEMALE if is_female else None)
-        ]
-        logger.info(f"found {len(race_ids)} races for {year=}")
+        for race_id in client.get_race_ids_by_year(year=year):
+            if MetadataService.exists(race_id, datasource, gender=GENDER_FEMALE if is_female else None):
+                continue
+            time.sleep(1)
 
-        for ids in chunk(race_ids, chunk_size=5):
-            items: List[Race] = []
-
-            for race_id in ids:
-                time.sleep(1)
-
-                try:
-                    race = client.get_race_by_id(race_id, is_female=is_female)
-                except ValueError as e:
-                    logger.error(e)
-                    continue
+            try:
+                race = client.get_race_by_id(race_id, is_female=is_female)
                 if not race:
                     continue
-                logger.info(f"found race={race.name} for {race_id=}")
+            except ValueError as e:
+                logger.error(e)
+                continue
 
-                is_after_today = race and datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
-                if is_after_today:
-                    break
+            logger.info(f"found race={race.name} for {race_id=}")
 
-                items.append(race)
+            is_after_today = datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
+            if is_after_today:
+                break
 
-            items = [i for i in items if i is not None]
-            logger.info(f"parsed {len(items)} races for {year=}")
-            self._process_races(items, datasource=datasource, allow_merges=allow_merges)
+            self._process_race(race, datasource=datasource, allow_merges=allow_merges)
 
     @staticmethod
-    def _process_races(races: List[Race], datasource: Datasource, allow_merges: bool):
-        for race in races:
-            participants = race.participants
+    def _process_race(race: Race, datasource: Datasource, allow_merges: bool):
+        participants = race.participants
 
-            clubs = preload_participants(participants)
-            try:
-                new_race = save_race_from_scraped_data(race, datasource=datasource, allow_merges=allow_merges)
-                save_participants_from_scraped_data(
-                    new_race,
-                    participants,
-                    preloaded_clubs=clubs,
-                    allow_merges=allow_merges,
-                )
-            except StopProcessing:
-                logger.error(f"unable to save data for {race.race_id}::{race.name}")
-                continue
+        clubs = preload_participants(participants)
+        try:
+            new_race = save_race_from_scraped_data(race, datasource=datasource, allow_merges=allow_merges)
+            save_participants_from_scraped_data(
+                new_race,
+                participants,
+                preloaded_clubs=clubs,
+                allow_merges=allow_merges,
+            )
+        except StopProcessing:
+            logger.error(f"unable to save data for {race.race_id}::{race.name}")
