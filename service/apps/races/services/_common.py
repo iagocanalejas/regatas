@@ -1,7 +1,7 @@
 import logging
 import operator
 from functools import reduce
-from typing import Optional, Type, TypeVar
+from typing import TypeVar
 
 from django.db.models import Q
 
@@ -20,7 +20,7 @@ TOKEN_EXPANSIONS = [
 ]
 
 
-def get_closest_by_name(_model: Type[T], name: str) -> T:
+def get_closest_by_name(_model: type[T], name: str) -> T:
     """
     :return: closest found Flag|Trophy in the database
     """
@@ -28,7 +28,7 @@ def get_closest_by_name(_model: Type[T], name: str) -> T:
     return trophy or _get_closest_by_name(_model, name.upper())
 
 
-def get_closest_by_name_or_create(_model: Type[T], name: str) -> T:
+def get_closest_by_name_or_create(_model: type[T], name: str) -> T:
     """
     :return: closest found Flag|Trophy in the database or a newly created one
     """
@@ -42,7 +42,7 @@ def get_closest_by_name_or_create(_model: Type[T], name: str) -> T:
     return item
 
 
-def _get_closest_by_name_with_tokens(_model: Type[T], name: str) -> Optional[T]:
+def _get_closest_by_name_with_tokens(_model: type[T], name: str) -> T | None:
     """
     Use lemma expansion to find a Flag or Trophy by filtering using tokens.
 
@@ -78,7 +78,7 @@ def _get_closest_by_name_with_tokens(_model: Type[T], name: str) -> Optional[T]:
         return trophies.first()
 
 
-def _get_closest_by_name(_model: Type[T], name: str) -> T:
+def _get_closest_by_name(_model: type[T], name: str) -> T:
     """
     Retrieve the closest matching Flag or Trophy from the database.
 

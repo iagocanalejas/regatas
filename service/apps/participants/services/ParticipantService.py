@@ -1,5 +1,4 @@
 import logging
-from typing import Tuple
 
 from django.db.models import Q, QuerySet
 
@@ -14,7 +13,7 @@ def get_by_race(race: Race) -> QuerySet[Participant]:
     return Participant.objects.filter(race=race)
 
 
-def get_participant_or_create(participant: Participant, maybe_branch: bool = False) -> Tuple[bool, Participant]:
+def get_participant_or_create(participant: Participant, maybe_branch: bool = False) -> tuple[bool, Participant]:
     q = Participant.objects.filter(
         club=participant.club,
         race=participant.race,

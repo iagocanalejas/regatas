@@ -1,7 +1,6 @@
 import json
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
 
 import inquirer
 from django.core.exceptions import ValidationError
@@ -26,7 +25,7 @@ from rscraping.data.models import Race as RSRace
 logger = logging.getLogger(__name__)
 
 
-def preload_participants(participants: List[RSParticipant]) -> Dict[str, Entity]:
+def preload_participants(participants: list[RSParticipant]) -> dict[str, Entity]:
     logger.info(f"preloading {len(participants)} clubs")
     clubs = {p.participant: _find_club(normalize_club_name(p.participant)) for p in participants}
     if any(not c for c in clubs.values()):
@@ -134,10 +133,10 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
 
 def save_participants_from_scraped_data(
     race: Race,
-    participants: List[RSParticipant],
-    preloaded_clubs: Dict[str, Entity],
+    participants: list[RSParticipant],
+    preloaded_clubs: dict[str, Entity],
     allow_merges: bool = False,
-) -> List[Participant]:
+) -> list[Participant]:
     def is_same_participant(p: RSParticipant, p1: Participant) -> bool:
         return preloaded_clubs[p.participant] == p1.club and p.category == p1.category and p.gender == p1.gender
 
@@ -177,7 +176,7 @@ def save_participants_from_scraped_data(
     return new_participants
 
 
-def _save_race_from_scraped_data(race: Race, associated: Optional[Race]) -> Race:
+def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
     if not inquirer.confirm(f"Save new race for {race.name} to the database?", default=False):
         raise StopProcessing
 
@@ -212,7 +211,7 @@ def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, dataso
     return db_race
 
 
-def _infer_edition(race: RSRace, trophy: Optional[Trophy] = None, flag: Optional[Flag] = None) -> Optional[int]:
+def _infer_edition(race: RSRace, trophy: Trophy | None = None, flag: Flag | None = None) -> int | None:
     """
     Infer the edition of a race based on its date, associated trophy, or flag.
 
@@ -260,7 +259,7 @@ def _infer_edition(race: RSRace, trophy: Optional[Trophy] = None, flag: Optional
             return None
 
 
-def _find_trophy(names: List[Tuple[str, Optional[int]]]) -> Tuple[Optional[Trophy], Optional[int]]:
+def _find_trophy(names: list[tuple[str, int | None]]) -> tuple[Trophy | None, int | None]:
     for name, edition in names:
         if len(names) > 1 and is_memorial(name):
             continue
@@ -271,7 +270,7 @@ def _find_trophy(names: List[Tuple[str, Optional[int]]]) -> Tuple[Optional[Troph
     return None, None
 
 
-def _find_flag(names: List[Tuple[str, Optional[int]]]) -> Tuple[Optional[Flag], Optional[int]]:
+def _find_flag(names: list[tuple[str, int | None]]) -> tuple[Flag | None, int | None]:
     for name, edition in names:
         if len(names) > 1 and is_memorial(name):
             continue
@@ -282,7 +281,7 @@ def _find_flag(names: List[Tuple[str, Optional[int]]]) -> Tuple[Optional[Flag], 
     return None, None
 
 
-def _find_club(name: str) -> Optional[Entity]:
+def _find_club(name: str) -> Entity | None:
     try:
         return EntityService.get_closest_club_by_name(name)
     except Entity.DoesNotExist:
@@ -297,7 +296,7 @@ def _find_club(name: str) -> Optional[Entity]:
         raise StopProcessing(f"multiple clubs found for {name=}")
 
 
-def _try_manual_input(name: str) -> Tuple[Tuple[Optional[Trophy], Optional[int]], Tuple[Optional[Flag], Optional[int]]]:
+def _try_manual_input(name: str) -> tuple[tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
     trophy = flag = None
     trophy_edition = flag_edition = None
 

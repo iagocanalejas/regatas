@@ -1,5 +1,3 @@
-from typing import Optional
-
 from rest_framework import serializers
 
 from apps.entities.models import Entity, League
@@ -79,7 +77,7 @@ class ParticipantSerializer(serializers.ModelSerializer):
 
     # noinspection DuplicatedCode
     @staticmethod
-    def get_club_name(participant: Participant) -> Optional[str]:
+    def get_club_name(participant: Participant) -> str | None:
         extra = None
         if participant.club_name:
             extra = [e for e in ["B", "C", "D"] if e in participant.club_name.split()]

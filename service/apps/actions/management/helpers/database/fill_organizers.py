@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import inquirer
 from django.db.models.query import RawQuerySet
@@ -57,7 +56,7 @@ def _process(items: RawQuerySet, key: str):
             Race.objects.filter(**{key: item}, organizer_id__isnull=True).update(organizer_id=organizer_id)
 
 
-def _parse_int(value: Optional[str]) -> Optional[int]:
+def _parse_int(value: str | None) -> int | None:
     if not value:
         return None
     try:

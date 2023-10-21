@@ -1,8 +1,6 @@
-import itertools
 import logging
 import time
 from datetime import date, datetime
-from typing import List, Optional
 
 from django.core.management import BaseCommand
 from utils.exceptions import StopProcessing
@@ -97,7 +95,7 @@ class Command(BaseCommand):
         year: int,
         datasource: Datasource,
         allow_merges: bool,
-        is_female: Optional[bool] = None,
+        is_female: bool | None = None,
     ):
         for race_id in client.get_race_ids_by_year(year=year):
             if MetadataService.exists(race_id, datasource, gender=GENDER_FEMALE if is_female else None):

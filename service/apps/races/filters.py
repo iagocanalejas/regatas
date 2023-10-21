@@ -1,5 +1,3 @@
-from typing import Dict, Optional
-
 from django.db.models import Q, QuerySet
 
 from apps.races.models import Race
@@ -30,12 +28,12 @@ class RaceFilters:
         self.filters = {}
         self.queryset = queryset
 
-    def set_keywords(self, keywords: Optional[str]) -> "RaceFilters":
+    def set_keywords(self, keywords: str | None) -> "RaceFilters":
         if keywords:
             self.keywords = whitespaces_clean(remove_conjunctions(remove_symbols(keywords)))
         return self
 
-    def set_filters(self, filters: Dict) -> "RaceFilters":
+    def set_filters(self, filters: dict) -> "RaceFilters":
         self.filters = {
             self._FILTERS_MAP[key]: value for key, value in filters.items() if key in self._FILTERS_MAP.keys()
         }

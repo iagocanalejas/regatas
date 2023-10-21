@@ -1,5 +1,4 @@
 import logging
-from typing import List, Optional
 
 from django.db.models import Q, QuerySet
 
@@ -12,8 +11,8 @@ logger = logging.getLogger(__name__)
 def filter(
     queryset: QuerySet[Race],
     filters: dict,
-    related: Optional[List[str]] = None,
-    prefetch: Optional[List[str]] = None,
+    related: list[str] | None = None,
+    prefetch: list[str] | None = None,
 ) -> QuerySet[Race]:
     queryset = (
         RaceFilters(queryset)
@@ -29,7 +28,7 @@ def filter(
     return queryset.all()
 
 
-def get_by_race(race: Race) -> Optional[Race]:
+def get_by_race(race: Race) -> Race | None:
     q = Race.objects.filter(league=race.league) if race.league else Race.objects.filter(league__isnull=True)
     q = q.filter(trophy=race.trophy) if race.trophy else q.filter(trophy__isnull=True)
     q = q.filter(flag=race.flag) if race.flag else q.filter(flag__isnull=True)
@@ -41,7 +40,7 @@ def get_by_race(race: Race) -> Optional[Race]:
         return None
 
 
-def find_associated(race: Race, year: int, day: int) -> Optional[Race]:
+def find_associated(race: Race, year: int, day: int) -> Race | None:
     try:
         match = Race.objects.get(
             Q(trophy=race.trophy) | Q(trophy_id__isnull=True),

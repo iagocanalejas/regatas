@@ -1,5 +1,4 @@
 import logging
-from typing import Dict, Optional
 
 from django.core.exceptions import ValidationError
 from utils.choices import GENDER_FEMALE, GENDER_MALE
@@ -35,7 +34,7 @@ def default_metadata():
 
 
 class MetadataBuilder:
-    _metadata: Dict
+    _metadata: dict
 
     def __init__(self):
         self._metadata = {"values": {}}
@@ -48,7 +47,7 @@ class MetadataBuilder:
         self._metadata["datasource_name"] = datasource.value
         return self
 
-    def gender(self, gender: Optional[str]) -> "MetadataBuilder":
+    def gender(self, gender: str | None) -> "MetadataBuilder":
         if not gender:
             return self
         if gender not in [GENDER_FEMALE, GENDER_MALE]:
@@ -61,7 +60,7 @@ class MetadataBuilder:
         self._metadata["values"][key] = value
         return self
 
-    def build(self) -> Dict:
+    def build(self) -> dict:
         if "values" not in self._metadata:
             raise ValidationError({"values", 'required object "values" in metadata'})
         if "datasource_name" not in self._metadata:

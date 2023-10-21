@@ -1,6 +1,5 @@
 import operator
 from functools import reduce
-from typing import Optional
 
 from django.db.models import Q
 from utils.choices import ENTITY_CLUB, ENTITY_TYPES
@@ -17,7 +16,7 @@ def get_closest_club_by_name(name: str) -> Entity:
     return get_closest_by_name_type(name, entity_type=ENTITY_CLUB)
 
 
-def get_closest_by_name_type(name: str, entity_type: Optional[str] = None) -> Entity:
+def get_closest_by_name_type(name: str, entity_type: str | None = None) -> Entity:
     """
     :return: closest found @entity_type in the database
     """

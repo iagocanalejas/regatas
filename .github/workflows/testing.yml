@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      matrix: # current + last versions
-        python-version: ["3.11", "3.12"]
+      matrix:
+        python-version: ["3.12"]
         postgres-version: ["15", "16"]
 
     services:
