@@ -50,4 +50,4 @@ src = ["rscraping", "tests"]
 max-complexity = 10
 
 [isort]
-known-first-party = ["rscraping", "pyutils"]
+known-first-party = ["rscraping", "pyutils", "djutils"]

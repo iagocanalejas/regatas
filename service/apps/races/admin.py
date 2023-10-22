@@ -1,8 +1,8 @@
 from django.contrib import admin
-from djutils.admin import ReadOnlyTabularInline, StampedModelAdmin, YearFilter
 
 from apps.participants.models import Participant
 from apps.races.models import Flag, Race, Trophy
+from djutils.admin import ReadOnlyTabularInline, StampedModelAdmin, YearFilter
 
 
 class RaceYearFilter(YearFilter):

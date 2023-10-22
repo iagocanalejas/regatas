@@ -5,11 +5,8 @@ from datetime import date, datetime
 from django.core.management import BaseCommand
 from utils.exceptions import StopProcessing
 
-from apps.actions.management.helpers.helpers import (
-    preload_participants,
-    save_participants_from_scraped_data,
-    save_race_from_scraped_data,
-)
+from apps.actions.management.helpers.participants import preload_participants, save_participants_from_scraped_data
+from apps.actions.management.helpers.races import save_race_from_scraped_data
 from apps.races.services import MetadataService
 from rscraping.clients import Client
 from rscraping.data.constants import GENDER_FEMALE

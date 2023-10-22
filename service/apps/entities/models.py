@@ -1,11 +1,11 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import F, Func, JSONField, QuerySet, Value
-from djutils.models import TraceableModel
-from djutils.validators import JSONSchemaValidator
 from utils.choices import ENTITY_TYPE_CHOICES, GENDER_CHOICES, GENDER_FEMALE, GENDER_MALE
 
 from apps.schemas import METADATA_SCHEMA, default_metadata
+from djutils.models import TraceableModel
+from djutils.validators import JSONSchemaValidator
 
 
 class League(TraceableModel):

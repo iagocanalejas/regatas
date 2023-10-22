@@ -1,7 +1,6 @@
 import logging
 import operator
 from functools import reduce
-from typing import TypeVar
 
 from django.db.models import Q
 
@@ -11,7 +10,6 @@ from rscraping import SYNONYMS, lemmatize
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar("T", Trophy, Flag)
 
 TOKEN_EXPANSIONS = [
     ["trofeo", "bandera", "regata"],
@@ -20,15 +18,25 @@ TOKEN_EXPANSIONS = [
 ]
 
 
-def get_closest_by_name(_model: type[T], name: str) -> T:
+def get_closest_by_name[T: (Trophy, Flag)](_model: type[T], name: str) -> T:
     """
-    :return: closest found Flag|Trophy in the database
+    :return: closest found Flag|Trophy in the database or raise DoesNotExist
     """
     trophy = _get_closest_by_name_with_tokens(_model, name.upper())
     return trophy or _get_closest_by_name(_model, name.upper())
 
 
-def get_closest_by_name_or_create(_model: type[T], name: str) -> T:
+def get_closest_by_name_or_none[T: (Trophy, Flag)](_model: type[T], name: str) -> T | None:
+    """
+    :return: closest found Flag|Trophy in the database or None
+    """
+    try:
+        get_closest_by_name(_model, name)
+    except _model.DoesNotExist:
+        return None
+
+
+def get_closest_by_name_or_create[T: (Trophy, Flag)](_model: type[T], name: str) -> T:
     """
     :return: closest found Flag|Trophy in the database or a newly created one
     """
@@ -42,7 +50,7 @@ def get_closest_by_name_or_create(_model: type[T], name: str) -> T:
     return item
 
 
-def _get_closest_by_name_with_tokens(_model: type[T], name: str) -> T | None:
+def _get_closest_by_name_with_tokens[T: (Trophy, Flag)](_model: type[T], name: str) -> T | None:
     """
     Use lemma expansion to find a Flag or Trophy by filtering using tokens.
 
@@ -78,7 +86,7 @@ def _get_closest_by_name_with_tokens(_model: type[T], name: str) -> T | None:
         return trophies.first()
 
 
-def _get_closest_by_name(_model: type[T], name: str) -> T:
+def _get_closest_by_name[T: (Trophy, Flag)](_model: type[T], name: str) -> T:
     """
     Retrieve the closest matching Flag or Trophy from the database.
 

@@ -1,15 +1,12 @@
 import logging
 
 from django.core.management import BaseCommand
-from service.apps.races.services import MetadataService
 from utils.choices import GENDER_FEMALE
 from utils.exceptions import StopProcessing
 
-from apps.actions.management.helpers.helpers import (
-    preload_participants,
-    save_participants_from_scraped_data,
-    save_race_from_scraped_data,
-)
+from apps.actions.management.helpers.participants import preload_participants, save_participants_from_scraped_data
+from apps.actions.management.helpers.races import save_race_from_scraped_data
+from apps.races.services import MetadataService
 from rscraping import Datasource, find_race
 
 logger = logging.getLogger(__name__)

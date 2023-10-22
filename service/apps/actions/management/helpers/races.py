@@ -7,68 +7,31 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from utils.exceptions import StopProcessing
 
-from apps.actions.serializers import ParticipantSerializer, RaceSerializer
-from apps.entities.models import Entity
-from apps.entities.normalization import normalize_club_name
-from apps.entities.services import EntityService, LeagueService
-from apps.participants.models import Participant, Penalty
-from apps.participants.services import ParticipantService
+from apps.actions.management.helpers.participants import find_club
+from apps.actions.serializers import RaceSerializer
+from apps.entities.services import LeagueService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
-from pyutils.strings import remove_conjunctions, remove_parenthesis
+from pyutils.strings import remove_parenthesis
 from rscraping.data.functions import is_memorial, is_play_off
 from rscraping.data.models import Datasource
-from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 
 logger = logging.getLogger(__name__)
 
 
-def preload_participants(participants: list[RSParticipant]) -> dict[str, Entity]:
-    logger.info(f"preloading {len(participants)} clubs")
-    clubs = {p.participant: _find_club(normalize_club_name(p.participant)) for p in participants}
-    if any(not c for c in clubs.values()):
-        not_found = {k: v for k, v in clubs.items() if not v}
-        raise StopProcessing(f"no club found clubs={not_found}")
-    return {k: v for k, v in clubs.items() if v}
-
-
 def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merges: bool = False) -> Race:
     race.participants = []
-
-    logger.info("preloading trophy & flag")
-    trophy, trophy_edition = _find_trophy(race.normalized_names)
-    flag, flag_edition = _find_flag(race.normalized_names)
-
-    if not trophy and not flag:
-        (trophy, trophy_edition), (flag, flag_edition) = _try_manual_input(race.name)
 
     if not race.url:
         raise StopProcessing(f"no datasource provided for {race.race_id}::{race.name}")
 
-    if trophy and not trophy_edition:
-        edition = _infer_edition(race, trophy=trophy)
-        if not edition:
-            edition = inquirer.text(f"race_id={race.race_id}::Edition for trophy {race.league}:{trophy}", default=None)
-        if edition:
-            trophy_edition = int(edition)
-        else:
-            trophy = None
-    if flag and not flag_edition:
-        edition = _infer_edition(race, flag=flag)
-        if not edition:
-            edition = inquirer.text(f"race_id={race.race_id}::Edition for flag {race.league}:{flag}", default=None)
-        if edition:
-            flag_edition = int(edition)
-        else:
-            flag = None
-
-    if not trophy and not flag:
-        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
+    logger.info("preloading trophy & flag")
+    (trophy, trophy_edition), (flag, flag_edition) = _retrieve_trophy_and_flag(race)
 
     logger.info("preloading organizer")
-    organizer = _find_club(race.organizer) if race.organizer else None
+    organizer = find_club(race.organizer) if race.organizer else None
 
     logger.info("preloading league")
     league = (
@@ -131,51 +94,6 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
         raise e
 
 
-def save_participants_from_scraped_data(
-    race: Race,
-    participants: list[RSParticipant],
-    preloaded_clubs: dict[str, Entity],
-    allow_merges: bool = False,
-) -> list[Participant]:
-    def is_same_participant(p: RSParticipant, p1: Participant) -> bool:
-        return preloaded_clubs[p.participant] == p1.club and p.category == p1.category and p.gender == p1.gender
-
-    if allow_merges:  # TODO: maybe this should also run if 'use_db'
-        existing_participants = ParticipantService.get_by_race(race=race)
-        logger.info(f"{len(existing_participants)} participants found in the database")
-        participants = [p for p in participants if not any(is_same_participant(p, p1) for p1 in existing_participants)]
-
-    logger.info(f"{len(participants)} participants will be added to the database")
-    new_participants = [
-        Participant(
-            club_name=p.club_name,
-            club=preloaded_clubs[p.participant],
-            race=race,
-            distance=p.distance,
-            laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in p.laps],
-            lane=p.lane,
-            series=p.series,
-            handicap=datetime.strptime(p.handicap, "%M:%S.%f").time() if p.handicap else None,
-            gender=p.gender,
-            category=p.category,
-        )
-        for p in participants
-    ]
-
-    serialized_participants = ParticipantSerializer(new_participants, many=True).data
-    for index, serialized_participant in enumerate(serialized_participants):
-        print(json.dumps(serialized_participant, indent=4, skipkeys=True, ensure_ascii=False))
-        if not inquirer.confirm(f"Save new participant for {race=} in the database?", default=False):
-            continue
-
-        new_participants[index].save()
-
-        if participants[index].disqualified:
-            logger.info("creating disqualification penalty")
-            Penalty(disqualification=True, participant=new_participants[index]).save()
-    return new_participants
-
-
 def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
     if not inquirer.confirm(f"Save new race for {race.name} to the database?", default=False):
         raise StopProcessing
@@ -209,6 +127,44 @@ def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, dataso
     db_race.save()
     logger.info(f"{db_race.pk} updated with new data")
     return db_race
+
+
+def _retrieve_trophy_and_flag(race: RSRace) -> tuple[tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
+    trophy, flag = None, None
+    trophy_edition, flag_edition = None, None
+    for name, edition in race.normalized_names:
+        if len(race.normalized_names) > 1 and is_memorial(name):
+            continue
+
+        if not trophy:
+            trophy, trophy_edition = TrophyService.get_closest_by_name_or_none(name), edition
+        if not flag:
+            flag, flag_edition = FlagService.get_closest_by_name_or_none(name), edition
+
+    if trophy and not trophy_edition:
+        edition = _infer_edition(race, trophy=trophy)
+        if not edition:
+            edition = inquirer.text(f"race_id={race.race_id}::Edition for trophy {race.league}:{trophy}", default=None)
+        if edition:
+            trophy_edition = int(edition)
+        else:
+            trophy = None
+    if flag and not flag_edition:
+        edition = _infer_edition(race, flag=flag)
+        if not edition:
+            edition = inquirer.text(f"race_id={race.race_id}::Edition for flag {race.league}:{flag}", default=None)
+        if edition:
+            flag_edition = int(edition)
+        else:
+            flag = None
+
+    if not trophy and not flag:
+        (trophy, trophy_edition), (flag, flag_edition) = _try_manual_input(race.name)
+
+    if not trophy and not flag:
+        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
+
+    return (trophy, trophy_edition), (flag, flag_edition)
 
 
 def _infer_edition(race: RSRace, trophy: Trophy | None = None, flag: Flag | None = None) -> int | None:
@@ -257,43 +213,6 @@ def _infer_edition(race: RSRace, trophy: Trophy | None = None, flag: Flag | None
             return edition + 1 if edition else None
         except Race.DoesNotExist:
             return None
-
-
-def _find_trophy(names: list[tuple[str, int | None]]) -> tuple[Trophy | None, int | None]:
-    for name, edition in names:
-        if len(names) > 1 and is_memorial(name):
-            continue
-        try:
-            return TrophyService.get_closest_by_name(name), edition
-        except Trophy.DoesNotExist:
-            continue
-    return None, None
-
-
-def _find_flag(names: list[tuple[str, int | None]]) -> tuple[Flag | None, int | None]:
-    for name, edition in names:
-        if len(names) > 1 and is_memorial(name):
-            continue
-        try:
-            return FlagService.get_closest_by_name(name), edition
-        except Flag.DoesNotExist:
-            continue
-    return None, None
-
-
-def _find_club(name: str) -> Entity | None:
-    try:
-        return EntityService.get_closest_club_by_name(name)
-    except Entity.DoesNotExist:
-        try:
-            return EntityService.get_closest_club_by_name(remove_conjunctions(name))
-        except Entity.DoesNotExist:
-            entity_id = inquirer.text(f"no entity found for {name}. Entity ID: ", default=None)
-            if entity_id:
-                return Entity.objects.get(id=entity_id)
-            return None
-    except Entity.MultipleObjectsReturned:
-        raise StopProcessing(f"multiple clubs found for {name=}")
 
 
 def _try_manual_input(name: str) -> tuple[tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:

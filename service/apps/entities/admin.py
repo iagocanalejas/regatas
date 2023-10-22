@@ -1,7 +1,7 @@
 from django.contrib import admin
-from djutils.admin import TraceableModelAdmin
 
 from apps.entities.models import Entity, EntityPartnership, League
+from djutils.admin import TraceableModelAdmin
 
 
 class EntityAdmin(TraceableModelAdmin):
