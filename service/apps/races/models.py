@@ -3,7 +3,13 @@ import logging
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
 from django.db.models import JSONField
-from utils.choices import RACE_CONVENTIONAL, RACE_MODALITY_CHOICES, RACE_TRAINERA, RACE_TYPE_CHOICES
+from utils.choices import (
+    RACE_CONVENTIONAL,
+    RACE_GENDER_CHOICES,
+    RACE_MODALITY_CHOICES,
+    RACE_TRAINERA,
+    RACE_TYPE_CHOICES,
+)
 
 from apps.schemas import METADATA_SCHEMA, default_metadata
 from djutils.models import CreationStampModel
@@ -117,6 +123,7 @@ class Race(CreationStampModel):
         related_name="+",
     )
 
+    gender = models.CharField(max_length=15, choices=RACE_GENDER_CHOICES)
     modality = models.CharField(default=RACE_TRAINERA, max_length=15, choices=RACE_MODALITY_CHOICES)
     organizer = models.ForeignKey(
         null=True,
