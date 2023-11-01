@@ -62,13 +62,18 @@ ENTITY_TYPE_CHOICES = [
 ################
 #   GENDERS    #
 ################
+GENDER_ALL = "ALL"
 GENDERS = [GENDER_MALE, GENDER_FEMALE, GENDER_MIX]
 GENDER_CHOICES = [
     (GENDER_MALE, "Male"),
     (GENDER_FEMALE, "Female"),
     (GENDER_MIX, "Mixto"),
 ]
-
+RACE_GENDER_CHOICES = [
+    (GENDER_MALE, "Male"),
+    (GENDER_FEMALE, "Female"),
+    (GENDER_ALL, "All"),
+]
 ################
 #  PENALTIES   #
 ################

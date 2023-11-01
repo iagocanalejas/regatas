@@ -9,16 +9,17 @@ from rscraping import Datasource
 
 class JSONValidatorsTest(TestCase):
     def setUp(self):
-        self.flag = Flag(name='TEST FLAG')
+        self.flag = Flag(name="TEST FLAG")
         self.flag.save()
 
     def test_race_metadata_valid_datasource(self):
-        metadata = MetadataBuilder().ref_id(1).datasource_name(Datasource.ARC).values('details_page', 'test')
+        metadata = MetadataBuilder().ref_id(1).datasource_name(Datasource.ARC).values("details_page", "test")
         race = Race(
             date=timezone.now(),
             flag=self.flag,
             flag_edition=1,
-            metadata={'datasource': [metadata.build()]},
+            gender="ALL",
+            metadata={"datasource": [metadata.build()]},
         )
         race.save()
 
@@ -27,11 +28,8 @@ class JSONValidatorsTest(TestCase):
             date=timezone.now(),
             flag=self.flag,
             flag_edition=1,
-            metadata={'datasource': [{
-                'ref_id': '1',
-                'datasource_name': 'arc',
-                'key': 'details_page'
-            }]},
+            gender="ALL",
+            metadata={"datasource": [{"ref_id": "1", "datasource_name": "arc", "key": "details_page"}]},
         )
         with self.assertRaises(ValidationError):
             race.save()

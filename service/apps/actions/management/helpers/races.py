@@ -5,6 +5,7 @@ from datetime import datetime
 import inquirer
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from service.utils.choices import GENDER_ALL
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.participants import find_club
@@ -56,6 +57,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
         flag_edition=flag_edition,
         league=league,
         modality=race.modality,
+        gender=race.gender,
         organizer=organizer,
         sponsor=race.sponsor,
         metadata={
@@ -111,14 +113,13 @@ def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, dataso
         return ("ref_id" in d and d["ref_id"] == ref_id) and d["datasource_name"] == datasource.value
 
     print(json.dumps(RaceSerializer(db_race).data, indent=4, skipkeys=True, ensure_ascii=False))
-    if not inquirer.confirm(
-        f"Found matching race in the database for race {race.name}. Merge both races?",
-        default=False,
-    ):
+    if not inquirer.confirm(f"Found matching race in the database for race {race.name}. Merge both races?"):
         raise StopProcessing
 
     if not any(is_current_datasource(d) for d in db_race.metadata["datasource"]):
         db_race.metadata["datasource"].append(race.metadata["datasource"][0])
+    if db_race.gender != race.gender:
+        db_race.gender = GENDER_ALL
 
     print(json.dumps(RaceSerializer(db_race).data, indent=4, skipkeys=True, ensure_ascii=False))
     if not inquirer.confirm(f"Save new race for {race.name}?", default=False):
