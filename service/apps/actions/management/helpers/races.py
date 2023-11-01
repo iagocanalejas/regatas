@@ -96,7 +96,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
 
 def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
     if not inquirer.confirm(f"Save new race for {race.name} to the database?", default=False):
-        raise StopProcessing
+        raise StopProcessing(f"Race {race.name} will not be saved")
 
     race.save()
     if associated and inquirer.confirm(f"Link new race {race.name} with associated {associated.name}"):

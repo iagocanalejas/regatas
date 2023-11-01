@@ -31,7 +31,7 @@ def get_closest_by_name_or_none[T: (Trophy, Flag)](_model: type[T], name: str) -
     :return: closest found Flag|Trophy in the database or None
     """
     try:
-        get_closest_by_name(_model, name)
+        return get_closest_by_name(_model, name)
     except _model.DoesNotExist:
         return None
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import logging
 import time
 from datetime import date, datetime
@@ -128,5 +130,6 @@ class Command(BaseCommand):
                 preloaded_clubs=clubs,
                 allow_merges=allow_merges,
             )
-        except StopProcessing:
+        except StopProcessing as e:
+            logger.error(e)
             logger.error(f"unable to save data for {race.race_id}::{race.name}")
