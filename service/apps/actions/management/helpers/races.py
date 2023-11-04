@@ -5,7 +5,7 @@ from datetime import datetime
 import inquirer
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from service.utils.choices import GENDER_ALL
+from utils.choices import GENDER_ALL
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.participants import find_club
@@ -26,7 +26,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
     race.participants = []
 
     if not race.url:
-        raise StopProcessing(f"no datasource provided for {race.race_id}::{race.name}")
+        raise ValueError(f"no datasource provided for {race.race_id}::{race.name}")
 
     logger.info("preloading trophy & flag")
     (trophy, trophy_edition), (flag, flag_edition) = _retrieve_trophy_and_flag(race)
@@ -96,16 +96,26 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
         raise e
 
 
-def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
-    if not inquirer.confirm(f"Save new race for {race.name} to the database?", default=False):
-        raise StopProcessing(f"Race {race.name} will not be saved")
+def input_trophy(name: str) -> tuple[Trophy | None, int | None]:
+    trophy = trophy_edition = None
 
-    race.save()
-    if associated and inquirer.confirm(f"Link new race {race.name} with associated {associated.name}"):
-        Race.objects.filter(pk=race.pk).update(associated=associated)
-        Race.objects.filter(pk=associated.pk).update(associated=race)
-        logger.info(f"update {race.pk} associated race with {associated.pk}")
-    return race
+    trophy_id = inquirer.text(f"no trophy found for {name}. Trophy ID", default=None)
+    if trophy_id:
+        trophy = Trophy.objects.get(id=trophy_id)
+        trophy_edition = int(inquirer.text(f"Edition for trophy {trophy}", default=None))
+
+    return trophy, trophy_edition
+
+
+def input_flag(name: str) -> tuple[Flag | None, int | None]:
+    flag = flag_edition = None
+
+    flag_id = inquirer.text(f"no flag found for {name}. Flag ID", default=None)
+    if flag_id:
+        flag = Flag.objects.get(id=flag_id)
+        flag_edition = int(inquirer.text(f"Edition for flag {flag}", default=None))
+
+    return flag, flag_edition
 
 
 def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, datasource: Datasource) -> Race:
@@ -114,7 +124,7 @@ def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, dataso
 
     print(json.dumps(RaceSerializer(db_race).data, indent=4, skipkeys=True, ensure_ascii=False))
     if not inquirer.confirm(f"Found matching race in the database for race {race.name}. Merge both races?"):
-        raise StopProcessing
+        raise StopProcessing(f"race {race.name} will not be merged")
 
     if not any(is_current_datasource(d) for d in db_race.metadata["datasource"]):
         db_race.metadata["datasource"].append(race.metadata["datasource"][0])
@@ -122,12 +132,19 @@ def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, dataso
         db_race.gender = GENDER_ALL
 
     print(json.dumps(RaceSerializer(db_race).data, indent=4, skipkeys=True, ensure_ascii=False))
-    if not inquirer.confirm(f"Save new race for {race.name}?", default=False):
-        raise StopProcessing
+    return _save_race_from_scraped_data(db_race, associated=None)
 
-    db_race.save()
-    logger.info(f"{db_race.pk} updated with new data")
-    return db_race
+
+def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
+    if not inquirer.confirm(f"Save new race for {race.name} to the database?", default=False):
+        raise StopProcessing(f"race {race.name} will not be saved")
+
+    race.save()
+    if associated and inquirer.confirm(f"Link new race {race.name} with associated {associated.name}"):
+        Race.objects.filter(pk=race.pk).update(associated=associated)
+        Race.objects.filter(pk=associated.pk).update(associated=race)
+        logger.info(f"update {race.pk} associated race with {associated.pk}")
+    return race
 
 
 def _retrieve_trophy_and_flag(race: RSRace) -> tuple[tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
@@ -160,8 +177,7 @@ def _retrieve_trophy_and_flag(race: RSRace) -> tuple[tuple[Trophy | None, int | 
             flag = None
 
     if not trophy and not flag:
-        (trophy, trophy_edition), (flag, flag_edition) = _try_manual_input(race.name)
-
+        (trophy, trophy_edition), (flag, flag_edition) = input_trophy(race.name), input_flag(race.name)
     if not trophy and not flag:
         raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
 
@@ -179,18 +195,8 @@ def _infer_edition(race: RSRace, trophy: Trophy | None = None, flag: Flag | None
 
     Returns:
         Optional[int]: The inferred edition of the race, or None if it cannot be inferred.
-
-    Raises:
-        StopProcessing: If neither a trophy nor a flag is provided, the inference cannot be performed.
-
-    The method attempts to infer the edition of a race based on its date, associated trophy, and/or flag. If a trophy
-    or flag is provided, it looks for a matching race from the database with the same year and associated trophy or
-    flag. If a match is found, the edition of the matching race is returned. If no match is found, it looks for a
-    matching race from the previous year, and if found, increments the edition. If no match is found for both the
-    current year and the previous year, the edition cannot be inferred, and None is returned.
     """
-    if not trophy and not flag:
-        raise StopProcessing
+    assert trophy or flag
 
     args = {"trophy": trophy} if trophy else {"flag": flag}
     try:
@@ -214,20 +220,3 @@ def _infer_edition(race: RSRace, trophy: Trophy | None = None, flag: Flag | None
             return edition + 1 if edition else None
         except Race.DoesNotExist:
             return None
-
-
-def _try_manual_input(name: str) -> tuple[tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
-    trophy = flag = None
-    trophy_edition = flag_edition = None
-
-    trophy_id = inquirer.text(f"no trophy found for {name}. Trophy ID: ", default=None)
-    if trophy_id:
-        trophy = Trophy.objects.get(id=trophy_id)
-        trophy_edition = int(inquirer.text(f"Edition for trophy {trophy}: ", default=None))
-
-    flag_id = inquirer.text(f"no flag found for {name}. Flag ID: ", default=None)
-    if flag_id:
-        flag = Flag.objects.get(id=flag_id)
-        flag_edition = int(inquirer.text(f"Edition for flag {flag}: ", default=None))
-
-    return (trophy, trophy_edition), (flag, flag_edition)
