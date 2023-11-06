@@ -42,6 +42,8 @@ class Command(BaseCommand):
     Options:
         --female: (Optional) If specified, only import data for female races. If not specified,
                   both male and female races will be imported.
+        --merge: (Optional) Allows to merge the scrapped race with a race existing in the database.
+        --ignore: (Optional) List of ignored IDs.
         --all: (Optional) If specified, import data for all available years up to the current date.
                If not specified, data for a specific 'year' should be provided.
 
@@ -52,21 +54,24 @@ class Command(BaseCommand):
     - After importing, the parsed 'Race' and 'Participant' objects are iteratively saved to the database.
     - Avoid running this command frequently to avoid excessive web requests and database operations.
     """
+    _ignored_races: list[str] = []
 
     def add_arguments(self, parser):
         parser.add_argument("datasource", type=str, help="")
         parser.add_argument("year", default=None, type=int, help="")
         parser.add_argument("--female", action="store_true", default=False)
         parser.add_argument("--merge", action="store_true", default=False)
+        parser.add_argument("--ignore", type=str, nargs="*", default=[])
         parser.add_argument("--all", action="store_true", default=False)
 
     def handle(self, *_, **options):
-        year, datasource, is_female, do_all, allow_merges = (
+        year, datasource, is_female, do_all, allow_merges, self._ignored_races = (
             options["year"],
             options["datasource"],
             options["female"],
             options["all"],
             options["merge"],
+            options["ignore"],
         )
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
@@ -78,15 +83,21 @@ class Command(BaseCommand):
 
         client: Client = Client(source=Datasource(datasource), is_female=is_female)  # type: ignore
 
-        if do_all:
-            year = client.FEMALE_START if is_female else client.MALE_START
-            today = date.today()
-            while year <= today.year:
+        try:
+            if do_all:
+                year = client.FEMALE_START if is_female else client.MALE_START
+                today = date.today()
+                while year <= today.year:
+                    self._handle_year(
+                        client, year, Datasource(datasource), allow_merges=allow_merges, is_female=is_female
+                    )
+                    year += 1
+                    time.sleep(5)
+            else:
                 self._handle_year(client, year, Datasource(datasource), allow_merges=allow_merges, is_female=is_female)
-                year += 1
-                time.sleep(5)
-        else:
-            self._handle_year(client, year, Datasource(datasource), allow_merges=allow_merges, is_female=is_female)
+        finally:
+            logging.info("ignored races")
+            logging.info(" ".join(self._ignored_races))
 
     def _handle_year(
         self,
@@ -97,7 +108,8 @@ class Command(BaseCommand):
         is_female: bool | None = None,
     ):
         for race_id in client.get_race_ids_by_year(year=year):
-            if MetadataService.exists(race_id, datasource, gender=GENDER_FEMALE if is_female else None):
+            gender = GENDER_FEMALE if is_female else None
+            if race_id in self._ignored_races or MetadataService.exists(race_id, datasource, gender=gender):
                 continue
             time.sleep(1)
 
@@ -117,8 +129,7 @@ class Command(BaseCommand):
 
             self._process_race(race, datasource=datasource, allow_merges=allow_merges)
 
-    @staticmethod
-    def _process_race(race: Race, datasource: Datasource, allow_merges: bool):
+    def _process_race(self, race: Race, datasource: Datasource, allow_merges: bool):
         participants = race.participants
 
         clubs = preload_participants(participants)
@@ -133,3 +144,4 @@ class Command(BaseCommand):
         except StopProcessing as e:
             logger.error(e)
             logger.error(f"unable to save data for {race.race_id}::{race.name}")
+            self._ignored_races.append(race.race_id)

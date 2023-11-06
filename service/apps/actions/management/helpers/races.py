@@ -4,18 +4,18 @@ from datetime import datetime
 
 import inquirer
 from django.core.exceptions import ValidationError
-from django.db.models import Q
 from utils.choices import GENDER_ALL
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.participants import find_club
 from apps.actions.serializers import RaceSerializer
+from apps.entities.models import League
 from apps.entities.services import LeagueService
-from apps.races.models import Flag, Race, Trophy
-from apps.races.services import FlagService, RaceService, TrophyService
+from apps.races.models import Flag, FlagEdition, Race, Trophy, TrophyEdition
+from apps.races.services import CompetitionService, FlagService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from pyutils.strings import remove_parenthesis
-from rscraping.data.functions import is_memorial, is_play_off
+from rscraping.data.functions import is_play_off
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merges: bool = False) -> Race:
+    db_race = None
     race.participants = []
 
     if not race.url:
@@ -31,15 +32,22 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
     logger.info("preloading trophy & flag")
     (trophy, trophy_edition), (flag, flag_edition) = _retrieve_trophy_and_flag(race)
 
+    if allow_merges:
+        logger.info("preloading race")
+        db_race = _retrieve_race(race, trophy, flag)
+    if db_race and not trophy:
+        trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
+    if db_race and not flag:
+        flag, flag_edition = db_race.flag, db_race.flag_edition
+
+    if not trophy and not flag:
+        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
+
     logger.info("preloading organizer")
     organizer = find_club(race.organizer) if race.organizer else None
 
     logger.info("preloading league")
-    league = (
-        LeagueService.get_by_name(race.league)
-        if race.league and not is_play_off(remove_parenthesis(race.name))
-        else None
-    )
+    league = _retrieve_league(race, db_race)
 
     new_race = Race(
         laps=race.race_laps,
@@ -75,7 +83,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
     print(json.dumps(RaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False))
 
     if allow_merges:
-        db_race = RaceService.get_by_race(new_race)
+        db_race = RaceService.get_by_race(new_race) if not db_race else db_race
         if db_race:
             logger.info(f"{db_race.pk} race found in database matching {race.name}")
             return _merge_race_from_scraped_data(new_race, db_race, ref_id=race.race_id, datasource=datasource)
@@ -96,25 +104,29 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
         raise e
 
 
-def input_trophy(name: str) -> tuple[Trophy | None, int | None]:
-    trophy = trophy_edition = None
+def input_race(name: str) -> Race | None:
+    race = None
+    race_id = inquirer.text(f"no race found for {name}. Race ID", default=None)
+    if race_id:
+        race = Race.objects.get(id=race_id)
+    return race
 
+
+def input_trophy(name: str) -> TrophyEdition:
+    trophy = trophy_edition = None
     trophy_id = inquirer.text(f"no trophy found for {name}. Trophy ID", default=None)
     if trophy_id:
         trophy = Trophy.objects.get(id=trophy_id)
-        trophy_edition = int(inquirer.text(f"Edition for trophy {trophy}", default=None))
-
+        trophy_edition = int(inquirer.text(f"edition for trophy {trophy}", default=None))
     return trophy, trophy_edition
 
 
-def input_flag(name: str) -> tuple[Flag | None, int | None]:
+def input_flag(name: str) -> FlagEdition:
     flag = flag_edition = None
-
     flag_id = inquirer.text(f"no flag found for {name}. Flag ID", default=None)
     if flag_id:
         flag = Flag.objects.get(id=flag_id)
-        flag_edition = int(inquirer.text(f"Edition for flag {flag}", default=None))
-
+        flag_edition = int(inquirer.text(f"edition for flag {flag}", default=None))
     return flag, flag_edition
 
 
@@ -147,30 +159,36 @@ def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
     return race
 
 
-def _retrieve_trophy_and_flag(race: RSRace) -> tuple[tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
-    trophy, flag = None, None
-    trophy_edition, flag_edition = None, None
-    for name, edition in race.normalized_names:
-        if len(race.normalized_names) > 1 and is_memorial(name):
-            continue
+def _retrieve_race(race: RSRace, trophy: Trophy | None, flag: Flag | None) -> Race | None:
+    league = _retrieve_league(race, db_race=None)
+    try:
+        return RaceService.get_closest_match(
+            trophy=trophy,
+            flag=flag,
+            league=league,
+            gender=race.gender,
+            date=datetime.strptime(race.date, "%d/%m/%Y").date(),
+        )
+    except Race.DoesNotExist:
+        return input_race(race.name)
 
-        if not trophy:
-            trophy, trophy_edition = TrophyService.get_closest_by_name_or_none(name), edition
-        if not flag:
-            flag, flag_edition = FlagService.get_closest_by_name_or_none(name), edition
 
+def _retrieve_trophy_and_flag(race: RSRace) -> tuple[TrophyEdition, FlagEdition]:
+    (trophy, trophy_edition), (flag, flag_edition) = CompetitionService.retrieve_competition(race.normalized_names)
+
+    ddate = datetime.strptime(race.date, "%d/%m/%Y").date()
     if trophy and not trophy_edition:
-        edition = _infer_edition(race, trophy=trophy)
+        edition = TrophyService.infer_trophy_edition(trophy, str(race.gender), ddate.year)
         if not edition:
-            edition = inquirer.text(f"race_id={race.race_id}::Edition for trophy {race.league}:{trophy}", default=None)
+            edition = inquirer.text(f"race_id={race.race_id}::edition for trophy {race.league}:{trophy}", default=None)
         if edition:
             trophy_edition = int(edition)
         else:
             trophy = None
     if flag and not flag_edition:
-        edition = _infer_edition(race, flag=flag)
+        edition = FlagService.infer_flag_edition(flag, str(race.gender), ddate.year)
         if not edition:
-            edition = inquirer.text(f"race_id={race.race_id}::Edition for flag {race.league}:{flag}", default=None)
+            edition = inquirer.text(f"race_id={race.race_id}::edition for flag {race.league}:{flag}", default=None)
         if edition:
             flag_edition = int(edition)
         else:
@@ -178,45 +196,15 @@ def _retrieve_trophy_and_flag(race: RSRace) -> tuple[tuple[Trophy | None, int | 
 
     if not trophy and not flag:
         (trophy, trophy_edition), (flag, flag_edition) = input_trophy(race.name), input_flag(race.name)
-    if not trophy and not flag:
-        raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
 
     return (trophy, trophy_edition), (flag, flag_edition)
 
 
-def _infer_edition(race: RSRace, trophy: Trophy | None = None, flag: Flag | None = None) -> int | None:
-    """
-    Infer the edition of a race based on its date, associated trophy, or flag.
+def _retrieve_league(race: RSRace, db_race: Race | None) -> League | None:
+    if db_race:
+        return db_race.league
 
-    Args:
-        race (RSRace): The race for which the edition is to be inferred.
-        trophy (Optional[Trophy]): The trophy associated with the race (optional).
-        flag (Optional[Flag]): The flag associated with the race (optional).
+    if race.league and not is_play_off(remove_parenthesis(race.name)):
+        return LeagueService.get_by_name(race.league)
 
-    Returns:
-        Optional[int]: The inferred edition of the race, or None if it cannot be inferred.
-    """
-    assert trophy or flag
-
-    args = {"trophy": trophy} if trophy else {"flag": flag}
-    try:
-        match = Race.objects.get(
-            Q(league__isnull=True) | Q(league__gender=race.gender),
-            **args,
-            date__year=datetime.strptime(race.date, "%d/%m/%Y").date().year,
-            day=1,
-        )
-        return match.trophy_edition if trophy else match.flag_edition
-    except Race.DoesNotExist:
-        try:
-            args = {"trophy": trophy} if trophy else {"flag": flag}
-            match = Race.objects.get(
-                Q(league__isnull=True) | Q(league__gender=race.gender),
-                **args,
-                date__year=datetime.strptime(race.date, "%d/%m/%Y").date().year - 1,
-                day=1,
-            )
-            edition = (match.trophy_edition if trophy else match.flag_edition) or 0
-            return edition + 1 if edition else None
-        except Race.DoesNotExist:
-            return None
+    return None

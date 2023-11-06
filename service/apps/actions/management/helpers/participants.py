@@ -78,7 +78,7 @@ def preload_participants(participants: list[RSParticipant]) -> dict[str, Entity]
     clubs = {p.participant: find_club(normalize_club_name(p.participant)) for p in participants}
     not_found = {name: club for name, club in clubs.items() if not club}
     if not_found:
-        raise StopProcessing(f"no club found clubs={not_found}")
+        raise StopProcessing(f"clubs not found: {not_found}")
     return {name: club for name, club in clubs.items() if club}
 
 

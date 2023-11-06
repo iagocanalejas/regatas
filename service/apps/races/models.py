@@ -20,6 +20,9 @@ from rscraping import lemmatize
 
 logger = logging.getLogger(__name__)
 
+type TrophyEdition = tuple[Trophy | None, int | None]
+type FlagEdition = tuple[Flag | None, int | None]
+
 
 class Trophy(CreationStampModel):
     name = models.CharField(max_length=150, unique=True)

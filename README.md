@@ -22,6 +22,15 @@ python manage.py scraperaces <datasource> <year>
     # --all: Search all races in the given datasource.
 ```
 
+## Import _MY_ excel data
+
+Imports data from my excel datasource.
+
+```sh
+python manage.py myraces <path> <entity_id>
+    # --female: Search in the female version of the pages.
+```
+
 ## Database commands
 
 Command utilities for cleaning the database.

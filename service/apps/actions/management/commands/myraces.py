@@ -7,6 +7,7 @@ import inquirer
 import pandas as pd
 from django.core.management import BaseCommand
 from django.db.models import Q
+from service.apps.races.services import RaceService
 from utils.choices import GENDER_ALL
 from utils.exceptions import StopProcessing
 
@@ -145,12 +146,12 @@ def _load_races_and_check_errors(dfs: pd.DataFrame, is_female: bool) -> tuple[li
             trophy = TrophyService.get_closest_by_name_or_none(race_name)
             flag = FlagService.get_closest_by_name_or_none(race_name)
             try:
-                dfs.at[index, "race"] = Race.objects.get(
-                    Q(gender=gender) | Q(gender=GENDER_ALL),
-                    Q(trophy__isnull=True) | Q(trophy=trophy),
-                    Q(flag__isnull=True) | Q(flag=flag),
-                    date=row[COLUMN_DATE],
-                    league=row[COLUMN_LEAGUE],
+                dfs.at[index, "race"] = RaceService.get_closest_match(
+                    trophy,
+                    flag,
+                    league=row[COLUMN_LEAGUE],  # pyright: ignore
+                    gender=gender,
+                    date=row[COLUMN_DATE],  # pyright: ignore
                 )
             except Race.DoesNotExist:
                 not_found.append(f"{row[COLUMN_DATE]}::{row[COLUMN_NAME]}")

@@ -1,9 +1,12 @@
 import logging
+from datetime import date
 
 from django.db.models import Q, QuerySet
+from utils.choices import GENDER_ALL
 
+from apps.entities.models import League
 from apps.races.filters import RaceFilters
-from apps.races.models import Race
+from apps.races.models import Flag, Race, Trophy
 
 logger = logging.getLogger(__name__)
 
@@ -54,3 +57,19 @@ def find_associated(race: Race, year: int, day: int) -> Race | None:
         return match
     except Race.DoesNotExist:
         return None
+
+
+def get_closest_match(
+    trophy: Trophy | None,
+    flag: Flag | None,
+    league: League | None,
+    gender: str | None,
+    date: date,
+) -> Race:
+    return Race.objects.get(
+        Q(trophy__isnull=True) | Q(trophy=trophy),
+        Q(flag__isnull=True) | Q(flag=flag),
+        Q(league__isnull=True) | Q(league=league),
+        Q(gender=gender) | Q(gender=GENDER_ALL),
+        date=date,
+    )

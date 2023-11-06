@@ -1,23 +1,30 @@
 from apps.races.models import Flag
-from apps.races.services import _common
+from apps.races.services import CompetitionService
 
 
 def get_closest_by_name(name: str) -> Flag:
     """
-    :return: closest found trophy in the database or raise Flag.DoesNotExist
+    Returns: closest found flag in the database or raise Flag.DoesNotExist
     """
-    return _common.get_closest_by_name(Flag, name)
+    return CompetitionService.get_closest_by_name(Flag, name)
 
 
 def get_closest_by_name_or_none(name: str) -> Flag | None:
     """
-    :return: closest found flag in the database or None
+    Returns: closest found flag in the database or None
     """
-    return _common.get_closest_by_name_or_none(Flag, name)
+    return CompetitionService.get_closest_by_name_or_none(Flag, name)
 
 
 def get_closest_by_name_or_create(name: str) -> Flag:
     """
-    :return: closest found flag in the database or a newly created one
+    Returns: closest found flag in the database or a newly created one
     """
-    return _common.get_closest_by_name_or_create(Flag, name)
+    return CompetitionService.get_closest_by_name_or_create(Flag, name)
+
+
+def infer_flag_edition(flag: Flag, gender: str, year: int) -> int | None:
+    """
+    Returns: inferred edition for the given flag.
+    """
+    return CompetitionService.infer_edition(flag, gender, year)
