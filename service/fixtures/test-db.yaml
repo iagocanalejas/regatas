@@ -7,7 +7,7 @@
     name: ASOCIACIÓN DE CLUBES DE TRAINERAS
     symbol: ACT
     parent: null
-    gender: ''
+    gender: ""
 - model: entities.league
   pk: 2
   fields:
@@ -37,7 +37,7 @@
     name: LIGA GALEGA DE TRAIÑAS
     symbol: LGT
     parent: null
-    gender: ''
+    gender: ""
 - model: entities.league
   pk: 5
   fields:
@@ -77,7 +77,7 @@
     name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
     symbol: ARC
     parent: null
-    gender: ''
+    gender: ""
 - model: entities.league
   pk: 9
   fields:
@@ -116,7 +116,7 @@
     is_active: true
     name: ASOCIACIÓN DE CLUBES DE TRAINERAS
     normalized_name: ASOCIACIÓN DE CLUBES DE TRAINERAS
-    known_names: '[]'
+    known_names: "[]"
     type: LEAGUE
     symbol: ACT
 - model: entities.entity
@@ -127,7 +127,7 @@
     is_active: true
     name: LIGA GALEGA DE TRAIÑAS
     normalized_name: LIGA GALEGA DE TRAIÑAS
-    known_names: '[]'
+    known_names: "[]"
     type: LEAGUE
     symbol: LGT
 - model: entities.entity
@@ -138,7 +138,7 @@
     is_active: true
     name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
     normalized_name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
-    known_names: '[]'
+    known_names: "[]"
     type: LEAGUE
     symbol: ARC
 - model: entities.entity
@@ -149,7 +149,7 @@
     is_active: true
     name: EMAKUMEZKO TRAINERUEN ELKARTEA
     normalized_name: EMAKUMEZKO TRAINERUEN ELKARTEA
-    known_names: '[]'
+    known_names: "[]"
     type: LEAGUE
     symbol: ETE
 - model: entities.entity
@@ -160,7 +160,7 @@
     is_active: true
     name: FEDERACIÓN ESPAÑOLA DE REMO
     normalized_name: FEDERACIÓN ESPAÑOLA DE REMO
-    known_names: '[]'
+    known_names: "[]"
     type: FEDERATION
     symbol: FER
 - model: entities.entity
@@ -171,7 +171,7 @@
     is_active: true
     name: FEDERACIÓN GALEGA DE REMO
     normalized_name: FEDERACIÓN GALEGA DE REMO
-    known_names: '[]'
+    known_names: "[]"
     type: FEDERATION
     symbol: FEGAR
 - model: entities.entity
@@ -182,7 +182,7 @@
     is_active: true
     name: FEDERACIÓN CANTABRA DE REMO
     normalized_name: FEDERACIÓN CANTABRA DE REMO
-    known_names: '[]'
+    known_names: "[]"
     type: FEDERATION
     symbol: FECAN
 - model: entities.entity
@@ -193,7 +193,7 @@
     is_active: true
     name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
     normalized_name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
-    known_names: '[]'
+    known_names: "[]"
     type: FEDERATION
     symbol: REMOASTUR
 - model: entities.entity
@@ -204,7 +204,7 @@
     is_active: true
     name: EUSKAL ARRAU FEDERAKUNTZA
     normalized_name: EUSKAL ARRAU FEDERAKUNTZA
-    known_names: '[]'
+    known_names: "[]"
     type: FEDERATION
     symbol: ARRAUNA
 - model: entities.entity
@@ -215,7 +215,7 @@
     is_active: true
     name: DONOSTIA KULTURA
     normalized_name: DONOSTIA KULTURA
-    known_names: '[]'
+    known_names: "[]"
     type: PRIVATE
     symbol: null
 - model: entities.entity
@@ -226,7 +226,7 @@
     is_active: true
     name: AMEGROVE
     normalized_name: AMEGROVE
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -237,7 +237,7 @@
     is_active: true
     name: BUEU
     normalized_name: BUEU
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -248,7 +248,7 @@
     is_active: true
     name: CABO DA CRUZ
     normalized_name: CABO DA CRUZ
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: CRCC
 - model: entities.entity
@@ -259,7 +259,7 @@
     is_active: true
     name: CASTROPOL
     normalized_name: CASTROPOL
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -270,7 +270,7 @@
     is_active: true
     name: CEDEIRA
     normalized_name: CEDEIRA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -281,7 +281,7 @@
     is_active: true
     name: CESANTES
     normalized_name: CESANTES
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -292,7 +292,7 @@
     is_active: true
     name: CHAPELA
     normalized_name: CHAPELA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -303,7 +303,7 @@
     is_active: true
     name: MECOS
     normalized_name: MECOS
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -314,7 +314,7 @@
     is_active: true
     name: MERA
     normalized_name: MERA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -325,7 +325,7 @@
     is_active: true
     name: MUGARDOS
     normalized_name: MUGARDOS
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -336,7 +336,7 @@
     is_active: true
     name: A CABANA
     normalized_name: A CABANA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -347,7 +347,7 @@
     is_active: true
     name: ARES
     normalized_name: ARES
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -358,7 +358,7 @@
     is_active: true
     name: MUROS
     normalized_name: MUROS
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -369,7 +369,7 @@
     is_active: true
     name: NARÓN
     normalized_name: NARÓN
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -380,7 +380,7 @@
     is_active: true
     name: PUEBLA
     normalized_name: PUEBLA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: CRP
 - model: entities.entity
@@ -391,7 +391,7 @@
     is_active: true
     name: RIANXO
     normalized_name: RIANXO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: CRR
 - model: entities.entity
@@ -402,7 +402,7 @@
     is_active: true
     name: RIVEIRA
     normalized_name: RIVEIRA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -413,7 +413,7 @@
     is_active: true
     name: PERILLO
     normalized_name: PERILLO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -435,7 +435,7 @@
     is_active: true
     name: TIRÁN
     normalized_name: TIRÁN
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -446,7 +446,7 @@
     is_active: true
     name: VILA DE CANGAS
     normalized_name: VILA DE CANGAS
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -457,7 +457,7 @@
     is_active: true
     name: ESTEIRANA
     normalized_name: ESTEIRANA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -468,7 +468,7 @@
     is_active: true
     name: VIRXE DA GUÍA
     normalized_name: VIRXE DA GUÍA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -479,7 +479,7 @@
     is_active: true
     name: VILAXOÁN
     normalized_name: VILAXOÁN
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -490,7 +490,7 @@
     is_active: true
     name: CORUXO
     normalized_name: CORUXO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -501,7 +501,7 @@
     is_active: true
     name: ROBALEIRA
     normalized_name: ROBALEIRA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -545,7 +545,7 @@
     is_active: true
     name: KAIKU
     normalized_name: KAIKU
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -567,7 +567,7 @@
     is_active: true
     name: HONDARRIBIA
     normalized_name: HONDARRIBIA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -578,7 +578,7 @@
     is_active: true
     name: LAREDO
     normalized_name: LAREDO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -600,7 +600,7 @@
     is_active: true
     name: ZIERBENA
     normalized_name: ZIERBENA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -644,7 +644,7 @@
     is_active: true
     name: ZARAUTZ
     normalized_name: ZARAUTZ
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -666,7 +666,7 @@
     is_active: true
     name: ORIO
     normalized_name: ORIO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -677,7 +677,7 @@
     is_active: true
     name: VALLE DE CAMARGO
     normalized_name: VALLE DE CAMARGO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -699,7 +699,7 @@
     is_active: true
     name: PEDREÑA
     normalized_name: PEDREÑA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -710,7 +710,7 @@
     is_active: true
     name: KAIARRIBIA DONOSTIARRA
     normalized_name: KAIARRIBIA DONOSTIARRA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -721,7 +721,7 @@
     is_active: true
     name: ASTILLERO
     normalized_name: ASTILLERO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -732,7 +732,7 @@
     is_active: true
     name: ONDARROA
     normalized_name: ONDARROA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -743,7 +743,7 @@
     is_active: true
     name: DEUSTO
     normalized_name: DEUSTO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -754,7 +754,7 @@
     is_active: true
     name: ARKOTE
     normalized_name: ARKOTE
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -787,7 +787,7 @@
     is_active: true
     name: GU
     normalized_name: GU
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -798,7 +798,7 @@
     is_active: true
     name: CIUDAD DE SANTANDER
     normalized_name: CIUDAD DE SANTANDER
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -809,7 +809,7 @@
     is_active: true
     name: HIBAIKA
     normalized_name: HIBAIKA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -820,7 +820,7 @@
     is_active: true
     name: CANTABRIA
     normalized_name: CANTABRIA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -831,7 +831,7 @@
     is_active: true
     name: GIPUZKOA
     normalized_name: GIPUZKOA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -842,7 +842,7 @@
     is_active: true
     name: CATALUNYA
     normalized_name: CATALUNYA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -853,7 +853,7 @@
     is_active: true
     name: BIZKAIA
     normalized_name: BIZKAIA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -875,7 +875,7 @@
     is_active: true
     name: SANTOÑA
     normalized_name: SANTOÑA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -886,7 +886,7 @@
     is_active: true
     name: HERNANI
     normalized_name: HERNANI
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -897,7 +897,7 @@
     is_active: true
     name: LEA ARTIBAI
     normalized_name: LEA ARTIBAI
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -908,7 +908,7 @@
     is_active: true
     name: MUNDAKA
     normalized_name: MUNDAKA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -919,7 +919,7 @@
     is_active: true
     name: GETXO
     normalized_name: GETXO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -930,7 +930,7 @@
     is_active: true
     name: LUANCO
     normalized_name: LUANCO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -941,7 +941,7 @@
     is_active: true
     name: LUTXANA
     normalized_name: LUTXANA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -952,7 +952,7 @@
     is_active: true
     name: COLINDRES
     normalized_name: COLINDRES
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -963,7 +963,7 @@
     is_active: true
     name: MUTRIKU
     normalized_name: MUTRIKU
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -974,7 +974,7 @@
     is_active: true
     name: BUSTURIALDEA
     normalized_name: BUSTURIALDEA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -985,7 +985,7 @@
     is_active: true
     name: LAPURDI
     normalized_name: LAPURDI
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -996,7 +996,7 @@
     is_active: true
     name: IBERIA
     normalized_name: IBERIA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1007,7 +1007,7 @@
     is_active: true
     name: RASPAS
     normalized_name: RASPAS
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1018,7 +1018,7 @@
     is_active: true
     name: ELANTXOBE
     normalized_name: ELANTXOBE
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1029,7 +1029,7 @@
     is_active: true
     name: OIARTZUN
     normalized_name: OIARTZUN
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1040,7 +1040,7 @@
     is_active: true
     name: PONTEJOS
     normalized_name: PONTEJOS
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1051,7 +1051,7 @@
     is_active: true
     name: AMIGOS DE LA MARUCA
     normalized_name: AMIGOS DE LA MARUCA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1062,7 +1062,7 @@
     is_active: true
     name: ALGORTA
     normalized_name: ALGORTA
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: entities.entity
@@ -1073,7 +1073,7 @@
     is_active: true
     name: CELEIRO
     normalized_name: CELEIRO
-    known_names: '[]'
+    known_names: "[]"
     type: CLUB
     symbol: null
 - model: races.trophy
@@ -1089,6 +1089,13 @@
     creation_date: 2022-11-07 15:05:43.502208+00:00
     name: BANDEIRA VIRXE DO CARME
     tokens: '["bandera", "carme", "virxe"]'
+    verified: true
+- model: races.flag
+  pk: 3
+  fields:
+    creation_date: 2022-11-07 15:05:43.502208+00:00
+    name: BANDEIRA CONCELLO DE MUROS
+    tokens: '["bandera", "ayuntamiento", "muro"]'
     verified: true
 - model: races.flag
   pk: 39
@@ -1129,7 +1136,7 @@
     date: 2022-07-17
     day: 1
     cancelled: false
-    cancellation_reasons: '[]'
+    cancellation_reasons: "[]"
     race_name: XXXIX BANDERA PETRONOR
     sponsor: null
     trophy_edition: null
@@ -1141,10 +1148,10 @@
     organizer: null
     metadata:
       datasource:
-      - values:
-        - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
-        ref_id: '1647864858'
-        datasource_name: act
+        - values:
+            - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
+          ref_id: "1647864858"
+          datasource_name: act
 - model: races.race
   pk: 2
   fields:
@@ -1156,7 +1163,7 @@
     date: 2022-07-25
     day: 1
     cancelled: false
-    cancellation_reasons: '[]'
+    cancellation_reasons: "[]"
     race_name: IX BANDEIRA VIRXE DO CARME
     sponsor: null
     trophy_edition: null
@@ -1168,10 +1175,10 @@
     organizer: 18
     metadata:
       datasource:
-      - values:
-        - details_page: https://www.ligalgt.com/principal/regata/11
-        ref_id: '11'
-        datasource_name: lgt
+        - values:
+            - details_page: https://www.ligalgt.com/principal/regata/11
+          ref_id: "11"
+          datasource_name: lgt
 - model: races.race
   pk: 3
   fields:
@@ -1183,7 +1190,7 @@
     date: 2009-08-22
     day: 1
     cancelled: false
-    cancellation_reasons: '[]'
+    cancellation_reasons: "[]"
     race_name: XIV BANDERA RIA DEL ASON
     sponsor: null
     trophy_edition: null
@@ -1195,10 +1202,10 @@
     organizer: null
     metadata:
       datasource:
-      - values:
-        - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
-        ref_id: '158'
-        datasource_name: arc
+        - values:
+            - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
+          ref_id: "158"
+          datasource_name: arc
 - model: races.race
   pk: 4
   fields:
@@ -1210,7 +1217,7 @@
     date: 2023-02-05
     day: 1
     cancelled: false
-    cancellation_reasons: '[]'
+    cancellation_reasons: "[]"
     race_name: CONTRARRELOXO DE TRAIÑEIRAS CABO DA CRUZ
     sponsor: null
     trophy_edition: null
@@ -1222,8 +1229,8 @@
     organizer: null
     metadata:
       datasource:
-      - ref_id: cabo.jpg
-        datasource_name: inforemo
+        - ref_id: cabo.jpg
+          datasource_name: inforemo
 - model: participants.participant
   pk: 1
   fields:

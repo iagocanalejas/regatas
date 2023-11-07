@@ -37,6 +37,12 @@ class SearchQueryTest(TestCase):
         query = "BANDEIRA DEPUTACION DA CORUNA DE TRAINERAS"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
+    def test_search_concello(self):
+        flag = Flag.objects.get(pk=3)
+
+        query = "BANDEIRA DE MUROS"  # Will return "BANDEIRA CONCELLO DE MUROS"
+        self.assertEqual(flag, FlagService.get_closest_by_name(query))
+
     def test_search_club(self):
         query = "SD TIRÁN PEREIRA"
         query = normalize_club_name(query)

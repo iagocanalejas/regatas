@@ -147,8 +147,8 @@ def _load_races_and_check_errors(dfs: pd.DataFrame, is_female: bool) -> tuple[li
             flag = FlagService.get_closest_by_name_or_none(race_name)
             try:
                 dfs.at[index, "race"] = RaceService.get_closest_match(
-                    trophy,
-                    flag,
+                    trophy=trophy,
+                    flag=flag,
                     league=row[COLUMN_LEAGUE],  # pyright: ignore
                     gender=gender,
                     date=row[COLUMN_DATE],  # pyright: ignore

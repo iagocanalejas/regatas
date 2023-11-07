@@ -8,7 +8,7 @@ from rscraping.data.models import Datasource
 logger = logging.getLogger(__name__)
 
 
-def get_race(
+def get_race_or_none(
     ref_id: str,
     datasource: Datasource,
     gender: str | None = None,

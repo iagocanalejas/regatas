@@ -16,6 +16,7 @@ TOKEN_EXPANSIONS = [
     ["trofeo", "bandera", "regata"],
     ["trainera", None],
     ["femenino", None],
+    ["ayuntamiento", None],
 ]
 
 
@@ -81,32 +82,6 @@ def infer_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) -> int | N
     return edition
 
 
-def _get_matching_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) -> int | None:
-    """
-    Tries to retrieve the edition for a Trophy or Flag model instance.
-
-    Args:
-        item (T): The Trophy or Flag instance for which the edition is sought.
-        gender (str): The gender associated with the race.
-        year (int): The year for which the edition is to be retrieved.
-
-    Returns:
-        int | None: The edition of the Trophy or Flag model for the given year and gender.
-        Returns None if no match is found.
-    """
-    model_name = type(item).__name__.lower()
-    try:
-        match = Race.objects.get(
-            Q(**{f"{model_name}__isnull": True}) | Q(**{f"{model_name}": item}),
-            gender=gender,
-            date__year=year,
-            day=1,
-        )
-        return getattr(match, f"{model_name}_edition")
-    except (Race.DoesNotExist, Race.MultipleObjectsReturned):
-        return None
-
-
 def _get_closest_by_name_with_tokens[T: (Trophy, Flag)](_model: type[T], name: str) -> T | None:
     """
     Use lemma expansion to find a Flag or Trophy by filtering using tokens.
@@ -128,14 +103,19 @@ def _get_closest_by_name_with_tokens[T: (Trophy, Flag)](_model: type[T], name: s
 
     count = items.count()
     if not count:
-        return
+        return None
     if count == 1:
         return items.first()
 
+    # try to improve search with 'ayuntamiento' lenma
+    improved_items = items.filter(tokens__contains=["ayuntamiento"])
+    if improved_items.count() == 1:
+        return improved_items.first()
+
     # try to improve if we have many results
-    items = items.filter(reduce(operator.or_, [Q(tokens__contained_by=list(n)) for n in tokens]))
-    if items.count() == 1:
-        return items.first()
+    improved_items = items.filter(reduce(operator.or_, [Q(tokens__contained_by=list(n)) for n in tokens]))
+    if improved_items.count() == 1:
+        return improved_items.first()
 
 
 def _get_closest_by_name_with_threshold[T: (Trophy, Flag)](_model: type[T], name: str) -> T:
@@ -166,3 +146,32 @@ def _get_closest_by_name_with_threshold[T: (Trophy, Flag)](_model: type[T], name
     # retrieve the un-flag name
     closest = [k for k, m in matches if m == closest][0]
     return _model.objects.get(name=closest)
+
+
+def _get_matching_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) -> int | None:
+    """
+    Tries to retrieve the edition for a Trophy or Flag model instance.
+
+    Args:
+        item (T): The Trophy or Flag instance for which the edition is sought.
+        gender (str): The gender associated with the race.
+        year (int): The year for which the edition is to be retrieved.
+
+    Returns:
+        int | None: The edition of the Trophy or Flag model for the given year and gender.
+        Returns None if no match is found.
+    """
+    model_name = type(item).__name__.lower()
+    matches = Race.objects.filter(
+        Q(**{f"{model_name}__isnull": True}) | Q(**{f"{model_name}": item}),
+        gender=gender,
+        date__year=year,
+        day=1,
+    )
+    if matches.count() == 1:
+        return getattr(matches.get(), f"{model_name}_edition")
+    if matches.count() > 1:
+        editions = list(matches.values_list(f"{model_name}_edition", flat=True))
+        if all(e == editions[0] for e in editions):
+            return editions[0]
+    return None

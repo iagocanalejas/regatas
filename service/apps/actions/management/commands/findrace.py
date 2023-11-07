@@ -67,7 +67,7 @@ class Command(BaseCommand):
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
 
-        db_race = MetadataService.get_race(
+        db_race = MetadataService.get_race_or_none(
             race_id,
             Datasource(datasource),
             gender=GENDER_FEMALE if is_female else None,

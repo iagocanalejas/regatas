@@ -89,7 +89,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
             return _merge_race_from_scraped_data(new_race, db_race, ref_id=race.race_id, datasource=datasource)
 
     logger.info("preloading associated race")
-    associated = RaceService.find_associated(
+    associated = RaceService.get_analogous_or_none(
         race=new_race,
         year=datetime.strptime(race.date, "%d/%m/%Y").date().year,
         day=2 if race.day == 1 else 2,

@@ -43,7 +43,28 @@ def get_by_race(race: Race) -> Race | None:
         return None
 
 
-def find_associated(race: Race, year: int, day: int) -> Race | None:
+def get_analogous_or_none(race: Race, year: int, day: int) -> Race | None:
+    """
+    Retrieve an analogous Race based on the provided race's attributes.
+
+    Args:
+        race (Race): The reference Race object.
+        year (int): The year for which you want to find an analogous race.
+        day (int): The day of the year for which you want to find an analogous race.
+
+    Returns: Race | None: The analogous Race object if found, or None if no analogous race is found.
+
+    Note:
+    The function searches for an analogous race based on the following criteria:
+    - Same Trophy or no Trophy
+    - Same Trophy Edition or no Trophy Edition
+    - Same Flag
+    - Same Flag Edition
+    - Same League
+    - Matching year and day.
+
+    If an analogous race is not found, the function returns None.
+    """
     try:
         match = Race.objects.get(
             Q(trophy=race.trophy) | Q(trophy_id__isnull=True),
@@ -66,10 +87,23 @@ def get_closest_match(
     gender: str | None,
     date: date,
 ) -> Race:
-    return Race.objects.get(
-        Q(trophy__isnull=True) | Q(trophy=trophy),
-        Q(flag__isnull=True) | Q(flag=flag),
-        Q(league__isnull=True) | Q(league=league),
-        Q(gender=gender) | Q(gender=GENDER_ALL),
-        date=date,
-    )
+    """
+    Retrieve the closest matching Race for a given combination of given parameters.
+
+    Args:
+        trophy (Trophy | None): The Trophy object or None.
+        flag (Flag | None): The Flag object or None.
+        league (League | None): The League object or None.
+        gender (str | None): The gender associated with the race or None.
+        date (date): The date of the race.
+
+    Returns: Race: The closest matching Race object that meets the specified criteria.
+    """
+    races = Race.objects.filter(Q(gender=gender) | Q(gender=GENDER_ALL), date=date)
+    if trophy:
+        races = races.filter(Q(trophy__isnull=True) | Q(trophy=trophy))
+    if flag:
+        races = races.filter(Q(flag__isnull=True) | Q(flag=flag))
+    if league:
+        races = races.filter(Q(league__isnull=True) | Q(league=league))
+    return races.get()
