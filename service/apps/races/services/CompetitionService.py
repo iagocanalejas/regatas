@@ -4,7 +4,7 @@ from functools import reduce
 
 from django.db.models import Q
 
-from apps.races.models import Flag, FlagEdition, Race, Trophy, TrophyEdition
+from apps.races.models import Flag, Race, Trophy
 from pyutils.strings import closest_result, expand_lemmas, normalize_synonyms, whitespaces_clean
 from rscraping import SYNONYMS, lemmatize
 from rscraping.data.functions import is_memorial
@@ -52,20 +52,27 @@ def get_closest_by_name_or_create[T: (Trophy, Flag)](_model: type[T], name: str)
     return item
 
 
-def retrieve_competition(normalized_names: list[tuple[str, int | None]]) -> tuple[TrophyEdition, FlagEdition]:
-    trophy, flag = None, None
-    trophy_edition, flag_edition = None, None
+def get_competition_or_none(names: list[str]) -> tuple[Trophy | None, Flag | None]:
+    """
+    Retrieve the closest Trophy and Flag competition based on a list of normalized names and their editions.
 
-    for name, edition in normalized_names:
-        if len(normalized_names) > 1 and is_memorial(name):
+    Args:
+        normalized_names (list[str]): A list of normalized names.
+
+    Returns: tuple[Trophy, Flag]: A tuple containing the closest Trophy and Flag.
+    """
+    trophy, flag = None, None
+
+    for name in names:
+        if len(names) > 1 and is_memorial(name):
             continue
 
         if not trophy:
-            trophy, trophy_edition = get_closest_by_name_or_none(Trophy, name), edition
+            trophy = get_closest_by_name_or_none(Trophy, name)
         if not flag:
-            flag, flag_edition = get_closest_by_name_or_none(Flag, name), edition
+            flag = get_closest_by_name_or_none(Flag, name)
 
-    return (trophy, trophy_edition), (flag, flag_edition)
+    return trophy, flag
 
 
 def infer_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) -> int | None:

@@ -22,9 +22,8 @@ def save_participants_from_scraped_data(
     race: Race,
     participants: list[RSParticipant],
     preloaded_clubs: dict[str, Entity],
-    allow_merges: bool = False,
 ) -> list[Participant]:
-    participants = _merge_participants_if_needed(race, participants, preloaded_clubs, allow_merges)
+    participants = _merge_participants_if_needed(race, participants, preloaded_clubs)
 
     logger.info(f"{len(participants)} participants will be added to the database")
     new_participants = [
@@ -103,11 +102,7 @@ def _merge_participants_if_needed(
     race: Race,
     participants: list[RSParticipant],
     preloaded_clubs: dict[str, Entity],
-    allow_merges: bool = False,
 ) -> list[RSParticipant]:
-    if not allow_merges:  # TODO: maybe this should also run if 'use_db'
-        return participants
-
     def is_same_participant(p: RSParticipant, p1: Participant) -> bool:
         return preloaded_clubs[p.participant] == p1.club and p.category == p1.category and p.gender == p1.gender
 

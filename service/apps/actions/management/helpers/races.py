@@ -12,33 +12,23 @@ from apps.actions.serializers import RaceSerializer
 from apps.entities.models import League
 from apps.entities.services import LeagueService
 from apps.races.models import Flag, FlagEdition, Race, Trophy, TrophyEdition
-from apps.races.services import CompetitionService, FlagService, RaceService, TrophyService
+from apps.races.services import FlagService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from pyutils.strings import remove_parenthesis
-from rscraping.data.functions import is_play_off
+from rscraping.data.functions import is_memorial, is_play_off
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
 logger = logging.getLogger(__name__)
 
 
-def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merges: bool = False) -> Race:
-    db_race = None
+def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
     race.participants = []
 
     if not race.url:
         raise ValueError(f"no datasource provided for {race.race_id}::{race.name}")
 
-    logger.info("preloading trophy & flag")
-    (trophy, trophy_edition), (flag, flag_edition) = _retrieve_trophy_and_flag(race)
-
-    if allow_merges:
-        logger.info("preloading race")
-        db_race = _retrieve_race(race, trophy, flag)
-    if db_race and not trophy:
-        trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
-    if db_race and not flag:
-        flag, flag_edition = db_race.flag, db_race.flag_edition
+    db_race, (trophy, trophy_edition), (flag, flag_edition) = _retrieve_race_trophy_and_flag(race)
 
     if not trophy and not flag:
         raise StopProcessing(f"no trophy/flag found for {race.race_id}::{race.normalized_names}")
@@ -82,11 +72,10 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource, allow_merg
 
     print(json.dumps(RaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False))
 
-    if allow_merges:
-        db_race = RaceService.get_by_race(new_race) if not db_race else db_race
-        if db_race:
-            logger.info(f"{db_race.pk} race found in database matching {race.name}")
-            return _merge_race_from_scraped_data(new_race, db_race, ref_id=race.race_id, datasource=datasource)
+    db_race = RaceService.get_by_race(new_race) if not db_race else db_race
+    if db_race:
+        logger.info(f"{db_race.pk} race found in database matching {race.name}")
+        return _merge_race_from_scraped_data(new_race, db_race, ref_id=race.race_id, datasource=datasource)
 
     logger.info("preloading associated race")
     associated = RaceService.get_analogous_or_none(
@@ -159,22 +148,55 @@ def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
     return race
 
 
-def _retrieve_race(race: RSRace, trophy: Trophy | None, flag: Flag | None) -> Race | None:
-    league = _retrieve_league(race, db_race=None)
-    try:
-        return RaceService.get_closest_match(
-            trophy=trophy,
-            flag=flag,
-            league=league,
-            gender=race.gender,
-            date=datetime.strptime(race.date, "%d/%m/%Y").date(),
-        )
-    except Race.DoesNotExist:
-        return input_race(race.name)
+def _retrieve_race_trophy_and_flag(race: RSRace) -> tuple[Race | None, TrophyEdition, FlagEdition]:
+    # 1. try to loads the database race
+    logger.info("preloading race")
+    db_race = RaceService.get_closest_match_by_name_or_none(
+        names=[n for n, _ in race.normalized_names],
+        league=race.league,
+        gender=race.gender,
+        date=datetime.strptime(race.date, "%d/%m/%Y").date(),
+        day=race.day,
+    )
+
+    trophy, flag = None, None
+    trophy_edition, flag_edition = None, None
+    if db_race and not trophy:
+        trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
+    if db_race and not flag:
+        flag, flag_edition = db_race.flag, db_race.flag_edition
+
+    # 2. try to found matching values
+    if not trophy and not flag:
+        logger.info("preloading trophy & flag")
+        (trophy, trophy_edition), (flag, flag_edition) = _retrieve_trophy_and_flag(race)
+
+    # 3. try manual input
+    if not trophy and not flag:
+        db_race = input_race(race.name)
+        if db_race and not trophy:
+            trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
+        if db_race and not flag:
+            flag, flag_edition = db_race.flag, db_race.flag_edition
+
+    if not trophy and not flag:
+        (trophy, trophy_edition), (flag, flag_edition) = input_trophy(race.name), input_flag(race.name)
+
+    return db_race, (trophy, trophy_edition), (flag, flag_edition)
 
 
 def _retrieve_trophy_and_flag(race: RSRace) -> tuple[TrophyEdition, FlagEdition]:
-    (trophy, trophy_edition), (flag, flag_edition) = CompetitionService.retrieve_competition(race.normalized_names)
+    trophy, flag = None, None
+    trophy_edition, flag_edition = None, None
+
+    for name, edition in race.normalized_names:
+        if len(race.normalized_names) > 1 and is_memorial(name):
+            continue
+
+        if not trophy:
+            trophy, trophy_edition = TrophyService.get_closest_by_name_or_none(name), edition
+        if not flag:
+            flag, flag_edition = FlagService.get_closest_by_name_or_none(name), edition
 
     ddate = datetime.strptime(race.date, "%d/%m/%Y").date()
     if trophy and not trophy_edition:
@@ -193,9 +215,6 @@ def _retrieve_trophy_and_flag(race: RSRace) -> tuple[TrophyEdition, FlagEdition]
             flag_edition = int(edition)
         else:
             flag = None
-
-    if not trophy and not flag:
-        (trophy, trophy_edition), (flag, flag_edition) = input_trophy(race.name), input_flag(race.name)
 
     return (trophy, trophy_edition), (flag, flag_edition)
 

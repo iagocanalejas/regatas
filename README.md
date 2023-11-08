@@ -18,7 +18,7 @@ Imports data from a web datasource.
 ```sh
 python manage.py scraperaces <datasource> <year>
     # --female: Search in the female version of the pages.
-    # --merge: Allow to merge the race with an existing database one (if exists).
+	# --ignore: List of ignored race IDs.
     # --all: Search all races in the given datasource.
 ```
 

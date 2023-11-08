@@ -5,8 +5,10 @@ from django.db.models import Q, QuerySet
 from utils.choices import GENDER_ALL
 
 from apps.entities.models import League
+from apps.entities.services import LeagueService
 from apps.races.filters import RaceFilters
 from apps.races.models import Flag, Race, Trophy
+from apps.races.services import CompetitionService
 
 logger = logging.getLogger(__name__)
 
@@ -80,12 +82,42 @@ def get_analogous_or_none(race: Race, year: int, day: int) -> Race | None:
         return None
 
 
+def get_closest_match_by_name_or_none(
+    names: list[str],
+    league: League | str | None,
+    gender: str | None,
+    date: date,
+    day: int = 1,
+) -> Race | None:
+    try:
+        return get_closest_match_by_name(names=names, league=league, gender=gender, date=date, day=day)
+    except Race.DoesNotExist:
+        return None
+
+
+def get_closest_match_by_name(
+    names: list[str],
+    league: League | str | None,
+    gender: str | None,
+    date: date,
+    day: int = 1,
+) -> Race:
+    trophy, flag = CompetitionService.get_competition_or_none(names)
+    if not trophy and not flag:
+        raise Race.DoesNotExist
+    if league and isinstance(league, str):
+        league = LeagueService.get_by_name(league)
+    assert league is None or isinstance(league, League)
+    return get_closest_match(trophy=trophy, flag=flag, league=league, gender=gender, date=date, day=day)
+
+
 def get_closest_match(
     trophy: Trophy | None,
     flag: Flag | None,
     league: League | None,
     gender: str | None,
     date: date,
+    day: int = 1,
 ) -> Race:
     """
     Retrieve the closest matching Race for a given combination of given parameters.
@@ -99,7 +131,7 @@ def get_closest_match(
 
     Returns: Race: The closest matching Race object that meets the specified criteria.
     """
-    races = Race.objects.filter(Q(gender=gender) | Q(gender=GENDER_ALL), date=date)
+    races = Race.objects.filter(Q(gender=gender) | Q(gender=GENDER_ALL), date=date, day=day)
     if trophy:
         races = races.filter(Q(trophy__isnull=True) | Q(trophy=trophy))
     if flag:
