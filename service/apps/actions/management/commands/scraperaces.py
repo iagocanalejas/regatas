@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import os
 import time
 from datetime import date, datetime
 
@@ -8,56 +9,49 @@ from django.core.management import BaseCommand
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.participants import preload_participants, save_participants_from_scraped_data
-from apps.actions.management.helpers.races import save_race_from_scraped_data
+from apps.actions.management.helpers.races import load_race_from_file, save_race_from_scraped_data, save_race_to_file
 from apps.races.services import MetadataService
 from rscraping.clients import Client
 from rscraping.data.constants import GENDER_FEMALE
 from rscraping.data.models import Datasource, Race
+from rscraping.parsers.html import MultiDayRaceException
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
     help = """
-    Command class for importing data from a web datasource.
-
-    This class provides functionality to import race data from a web datasource.
-    The datasource can be specified as the first positional argument. The supported
-    datasources are specified in the 'Datasource' enum.
-
-    The command supports two ways of importing data:
-    1. Importing data for a specific year.
-    2. Importing data for all available years up to the current date.
+    Retrieve and process race data, in bulk, from a web datasource or folder.
 
     Usage:
-    ------
-    python manage.py scraperaces datasource year [--female] [--all]
+    python manage.py your_command datasource_or_folder [year] [--female] [--ignore ID [ID ...]] [-o OUTPUT]
 
     Arguments:
-        datasource (str): The name of the web datasource to import data from. Supported
-                          datasources are specified in the 'Datasource' enum.
-        year (int): The year for which race data should be imported. This argument is required if
-                    the '--all' option is not specified.
+        datasource_or_folder    The name of the web datasource or path to a folder to import data from.
+        year (optional)         The year for which races data should be imported.
 
     Options:
-        --female: (Optional) If specified, import data for female races. If not specified,
-                  both male and female races will be imported.
-        --ignore: (Optional) List of ignored IDs.
-        --all: (Optional) If specified, import data for all available years up to the current date.
-               If not specified, data for a specific 'year' should be provided.
-
-    Note:
-    -----
-    - The command should be executed with appropriate arguments to import data from the desired web datasource.
-    - The '--all' option allows importing data for all available years.
-    - After importing, the parsed 'Race' and 'Participant' objects are iteratively saved to the database.
-    - Avoid running this command frequently to avoid excessive web requests and database operations.
+        --female                If specified, import data for female races.
+        --ignore ID [ID ...]    List of race IDs to ignore during import.
+        -o, --output OUTPUT     Output path to save the scrapped data.
     """
+
     _ignored_races: list[str] = []
+    _processed_files: list[str] = []
 
     def add_arguments(self, parser):
-        parser.add_argument("datasource", type=str, help="The name of the web datasource to import data from.")
-        parser.add_argument("year", default=None, type=int, help="The year for which race data should be imported.")
+        parser.add_argument(
+            "datasource_or_folder",
+            type=str,
+            help="The name of the web datasource to import data from.",
+        )
+        parser.add_argument(
+            "year",
+            nargs="?",
+            type=int,
+            default=None,
+            help="The year for which race data should be imported.",
+        )
         parser.add_argument(
             "--female",
             action="store_true",
@@ -65,75 +59,102 @@ class Command(BaseCommand):
             help="If specified, import data for female races.",
         )
         parser.add_argument("--ignore", type=str, nargs="*", default=[], help="List of ignored IDs.")
-        parser.add_argument(
-            "--all",
-            action="store_true",
-            default=False,
-            help="If specified, import data for all available years up to the current date.",
-        )
+        parser.add_argument("-o", "--output", type=str, default=None, help="Output path to save the scrapped data.")
 
     def handle(self, *_, **options):
-        year, datasource, is_female, do_all, self._ignored_races = (
+        logger.info(f"{options}")
+
+        year, datasource_or_folder, is_female, self._ignored_races, output_path = (
             options["year"],
-            options["datasource"],
+            options["datasource_or_folder"],
             options["female"],
-            options["all"],
             options["ignore"],
+            options["output"],
         )
+
+        if not os.path.isdir(datasource_or_folder):
+            datasource = datasource_or_folder
+            if not year:
+                raise ValueError("required value for 'year'")
+        else:
+            try:
+                self._handle_folder(datasource_or_folder)
+            finally:
+                logging.info(f"procesed files: {" ".join(self._processed_files)}")
+                logging.info(f"ignored races: {" ".join(self._ignored_races)}")
+            return
+
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
-        if not year and not do_all:
-            raise ValueError("missing param 'year' | 'all'")
+        datasource = Datasource(datasource)
 
-        if Datasource(datasource) == Datasource.LGT:
+        if datasource == Datasource.LGT:
             is_female = None
 
-        client: Client = Client(source=Datasource(datasource), is_female=is_female)  # type: ignore
+        client: Client = Client(source=datasource, is_female=is_female)  # type: ignore
 
         try:
-            if do_all:
-                year = client.FEMALE_START if is_female else client.MALE_START
-                today = date.today()
-                while year <= today.year:
-                    self._handle_year(client, year, Datasource(datasource), is_female=is_female)
-                    year += 1
-                    time.sleep(5)
-            else:
-                self._handle_year(client, year, Datasource(datasource), is_female=is_female)
+            self._handle_year(client, year, datasource, output_path, is_female=is_female)
         finally:
-            logging.info("ignored races")
-            logging.info(" ".join(self._ignored_races))
+            logging.info(f"ignored races: {" ".join(self._ignored_races)}")
+
+    def _handle_folder(self, path: str):
+        for file_name in os.listdir(path):
+            file = os.path.join(path, file_name)
+            if os.path.isfile(file):
+                logger.info(f"opening {file=}")
+                race = load_race_from_file(file)
+                self._process_race(race, Datasource(race.datasource), None)
+                self._processed_files.append(file_name)
 
     def _handle_year(
         self,
         client: Client,
         year: int,
         datasource: Datasource,
+        output_path: str | None,
         is_female: bool | None = None,
     ):
+        def is_after_today(race: Race) -> bool:
+            return datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
+
         for race_id in client.get_race_ids_by_year(year=year):
+            time.sleep(1)
+
             gender = GENDER_FEMALE if is_female else None
             if race_id in self._ignored_races or MetadataService.exists(race_id, datasource, gender=gender):
                 continue
-            time.sleep(1)
 
             try:
                 race = client.get_race_by_id(race_id, is_female=is_female)
-                if not race:
-                    continue
+            except MultiDayRaceException as e:
+                race_1 = client.get_race_by_id(race_id, is_female=is_female, day=1)
+                race_2 = client.get_race_by_id(race_id, is_female=is_female, day=2)
+                if not race_1 or not race_2:
+                    raise e
+                if is_after_today(race_1) or is_after_today(race_2):
+                    break
+                self._process_race(race_1, datasource=datasource, output_path=output_path)
+                self._process_race(race_2, datasource=datasource, output_path=output_path)
+                continue
             except ValueError as e:
                 logger.error(e)
                 continue
 
-            logger.info(f"found race={race.name} for {race_id=}")
+            if not race:
+                continue
 
-            is_after_today = datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
-            if is_after_today:
+            if is_after_today(race):
                 break
 
-            self._process_race(race, datasource=datasource)
+            logger.info(f"found race={race.name} for {race_id=}")
+            self._process_race(race, datasource=datasource, output_path=output_path)
 
-    def _process_race(self, race: Race, datasource: Datasource):
+    def _process_race(self, race: Race, datasource: Datasource, output_path: str | None):
+        if output_path and os.path.isdir(output_path):
+            save_race_to_file(race, output_path)
+            return
+
         participants = race.participants
 
         clubs = preload_participants(participants)

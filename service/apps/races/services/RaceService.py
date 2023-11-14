@@ -133,9 +133,9 @@ def get_closest_match(
     """
     races = Race.objects.filter(Q(gender=gender) | Q(gender=GENDER_ALL), date=date, day=day)
     if trophy:
-        races = races.filter(Q(trophy__isnull=True) | Q(trophy=trophy))
+        races = races.filter(trophy=trophy)
     if flag:
-        races = races.filter(Q(flag__isnull=True) | Q(flag=flag))
+        races = races.filter(flag=flag)
     if league:
-        races = races.filter(Q(league__isnull=True) | Q(league=league))
+        races = races.filter(league=league)
     return races.get()

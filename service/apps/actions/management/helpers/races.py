@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import datetime
 
 import inquirer
@@ -117,6 +118,16 @@ def input_flag(name: str) -> FlagEdition:
         flag = Flag.objects.get(id=flag_id)
         flag_edition = int(str(inquirer.text(f"edition for flag {flag}", default=None)))
     return flag, flag_edition
+
+
+def load_race_from_file(path: str) -> RSRace:
+    with open(path) as race_file:
+        return RSRace.from_json(race_file.read())
+
+
+def save_race_to_file(race: RSRace, output_path: str):
+    with open(os.path.join(output_path, f"{race.race_id}.json"), "w") as file:
+        json.dump(race.to_dict(), file)
 
 
 def _merge_race_from_scraped_data(race: Race, db_race: Race, ref_id: str, datasource: Datasource) -> Race:

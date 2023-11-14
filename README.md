@@ -2,13 +2,19 @@
 
 ## Find race
 
-Finds and scrapes a specific race from a web datasource.
+Retrieve and process race data from a web datasource or file.
 
 ```sh
-python manage.py findrace <datasource> <race_id>
-    # --female: Search in the female version of the pages.
-    # --day: For multi-day pages (like in traineras.es) tries to find the given day of a race.
-    # --use-db: Uses a race found in the database instead the one parsed.
+python manage.py findrace datasource_or_file [race_id] [--female] [--day DAY] [--use-db]
+# Arguments:
+#   datasource_or_file   Datasource or file from where to retrieve the race data.
+#   race_id (optional)   Race to find (required if the datasource_or_file is a file).
+#
+# Options:
+#   --day DAY            Day of the race (used in multi-race pages).
+#   --female             Specify if the race is female.
+#   -o, --output OUTPUT  Output path to save the scrapped data.
+#   --use-db             Use the database to retrieve race data.
 ```
 
 ## Scrape races
@@ -16,10 +22,15 @@ python manage.py findrace <datasource> <race_id>
 Imports data from a web datasource.
 
 ```sh
-python manage.py scraperaces <datasource> <year>
-    # --female: Search in the female version of the pages.
-	# --ignore: List of ignored race IDs.
-    # --all: Search all races in the given datasource.
+python manage.py your_command datasource_or_folder [year] [--female] [--ignore ID [ID ...]] [-o OUTPUT]
+# Arguments:
+#   datasource_or_folder    The name of the web datasource or path to a folder to import data from.
+#   year (optional)         The year for which races data should be imported.
+#
+# Options:
+#   --female                If specified, import data for female races.
+#   --ignore ID [ID ...]    List of race IDs to ignore during import.
+#   -o, --output OUTPUT     Output path to save the scrapped data.
 ```
 
 ## Import _MY_ excel data
