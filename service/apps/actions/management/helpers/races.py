@@ -106,7 +106,7 @@ def input_trophy(name: str) -> TrophyEdition:
     trophy_id = inquirer.text(f"no trophy found for {name}. Trophy ID", default=None)
     if trophy_id:
         trophy = Trophy.objects.get(id=trophy_id)
-        trophy_edition = int(inquirer.text(f"edition for trophy {trophy}", default=None))
+        trophy_edition = int(str(inquirer.text(f"edition for trophy {trophy}", default=None)))
     return trophy, trophy_edition
 
 
@@ -115,7 +115,7 @@ def input_flag(name: str) -> FlagEdition:
     flag_id = inquirer.text(f"no flag found for {name}. Flag ID", default=None)
     if flag_id:
         flag = Flag.objects.get(id=flag_id)
-        flag_edition = int(inquirer.text(f"edition for flag {flag}", default=None))
+        flag_edition = int(str(inquirer.text(f"edition for flag {flag}", default=None)))
     return flag, flag_edition
 
 

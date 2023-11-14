@@ -1098,6 +1098,27 @@
     tokens: '["bandera", "ayuntamiento", "muro"]'
     verified: true
 - model: races.flag
+  pk: 4
+  fields:
+    creation_date: 2022-11-07 15:05:43.892603+00:00
+    name: ELANTXOBEKO ESTROPADA
+    tokens: '["regata", "elantxobeko"]'
+    verified: true
+- model: races.flag
+  pk: 5
+  fields:
+    creation_date: 2022-11-07 15:05:43.583894+00:00
+    name: BANDERA AYUNTAMIENTO DE SESTAO
+    tokens: '["bandera", "ayuntamiento", "sestao"]'
+    verified: true
+- model: races.flag
+  pk: 6
+  fields:
+    creation_date: 2022-11-07 15:05:43.557922+00:00
+    name: BANDERA VILLA DE LAREDO
+    tokens: '["bandera", "ayuntamiento", "laredo"]'
+    verified: true
+- model: races.flag
   pk: 39
   fields:
     creation_date: 2022-11-07 15:05:43.532504+00:00

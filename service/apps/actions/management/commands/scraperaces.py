@@ -40,7 +40,7 @@ class Command(BaseCommand):
                     the '--all' option is not specified.
 
     Options:
-        --female: (Optional) If specified, only import data for female races. If not specified,
+        --female: (Optional) If specified, import data for female races. If not specified,
                   both male and female races will be imported.
         --ignore: (Optional) List of ignored IDs.
         --all: (Optional) If specified, import data for all available years up to the current date.
@@ -56,11 +56,21 @@ class Command(BaseCommand):
     _ignored_races: list[str] = []
 
     def add_arguments(self, parser):
-        parser.add_argument("datasource", type=str, help="")
-        parser.add_argument("year", default=None, type=int, help="")
-        parser.add_argument("--female", action="store_true", default=False)
-        parser.add_argument("--ignore", type=str, nargs="*", default=[])
-        parser.add_argument("--all", action="store_true", default=False)
+        parser.add_argument("datasource", type=str, help="The name of the web datasource to import data from.")
+        parser.add_argument("year", default=None, type=int, help="The year for which race data should be imported.")
+        parser.add_argument(
+            "--female",
+            action="store_true",
+            default=False,
+            help="If specified, import data for female races.",
+        )
+        parser.add_argument("--ignore", type=str, nargs="*", default=[], help="List of ignored IDs.")
+        parser.add_argument(
+            "--all",
+            action="store_true",
+            default=False,
+            help="If specified, import data for all available years up to the current date.",
+        )
 
     def handle(self, *_, **options):
         year, datasource, is_female, do_all, self._ignored_races = (
