@@ -2,13 +2,14 @@ import logging
 from datetime import date
 
 from django.db.models import Q, QuerySet
-from utils.choices import GENDER_ALL
 
 from apps.entities.models import League
 from apps.entities.services import LeagueService
 from apps.races.filters import RaceFilters
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import CompetitionService
+from rscraping.data.constants import GENDER_ALL
+from rscraping.data.functions import is_play_off
 
 logger = logging.getLogger(__name__)
 
@@ -55,29 +56,16 @@ def get_analogous_or_none(race: Race, year: int, day: int) -> Race | None:
         day (int): The day of the year for which you want to find an analogous race.
 
     Returns: Race | None: The analogous Race object if found, or None if no analogous race is found.
-
-    Note:
-    The function searches for an analogous race based on the following criteria:
-    - Same Trophy or no Trophy
-    - Same Trophy Edition or no Trophy Edition
-    - Same Flag
-    - Same Flag Edition
-    - Same League
-    - Matching year and day.
-
-    If an analogous race is not found, the function returns None.
     """
+    matches = Race.objects.filter(date__year=year, day=day)
+    if race.league:
+        matches = matches.filter(league__isnull=True) if is_play_off(race.name) else matches.filter(league=race.league)
+    if race.flag:
+        matches = matches.filter(flag=race.flag, flag_edition=race.flag_edition)
+    if race.trophy:
+        matches = matches.filter(trophy=race.trophy, trophy_edition=race.trophy_edition)
     try:
-        match = Race.objects.get(
-            Q(trophy=race.trophy) | Q(trophy_id__isnull=True),
-            Q(trophy_edition=race.trophy_edition) | Q(trophy_edition__isnull=True),
-            flag=race.flag,
-            flag_edition=race.flag_edition,
-            league=race.league,
-            date__year=year,
-            day=day,
-        )
-        return match
+        return matches.get()
     except Race.DoesNotExist:
         return None
 

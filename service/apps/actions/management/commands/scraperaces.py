@@ -86,12 +86,9 @@ class Command(BaseCommand):
 
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
+
         datasource = Datasource(datasource)
-
-        if datasource == Datasource.LGT:
-            is_female = None
-
-        client: Client = Client(source=datasource, is_female=is_female)  # type: ignore
+        client: Client = Client(source=datasource)  # type: ignore
 
         try:
             self._handle_year(client, year, datasource, output_path, is_female=is_female)
@@ -113,12 +110,12 @@ class Command(BaseCommand):
         year: int,
         datasource: Datasource,
         output_path: str | None,
-        is_female: bool | None = None,
+        is_female: bool,
     ):
         def is_after_today(race: Race) -> bool:
             return datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
 
-        for race_id in client.get_race_ids_by_year(year=year):
+        for race_id in client.get_race_ids_by_year(year=year, is_female=is_female):
             time.sleep(1)
 
             gender = GENDER_FEMALE if is_female else None

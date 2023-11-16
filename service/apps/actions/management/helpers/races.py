@@ -5,7 +5,6 @@ from datetime import datetime
 
 import inquirer
 from django.core.exceptions import ValidationError
-from utils.choices import GENDER_ALL
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.participants import find_club
@@ -16,6 +15,7 @@ from apps.races.models import Flag, FlagEdition, Race, Trophy, TrophyEdition
 from apps.races.services import FlagService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from pyutils.strings import remove_parenthesis
+from rscraping.data.constants import GENDER_ALL
 from rscraping.data.functions import is_memorial, is_play_off
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
@@ -82,7 +82,7 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
     associated = RaceService.get_analogous_or_none(
         race=new_race,
         year=datetime.strptime(race.date, "%d/%m/%Y").date().year,
-        day=2 if race.day == 1 else 2,
+        day=2 if race.day == 1 else 1,
     )
 
     try:
@@ -151,11 +151,13 @@ def _save_race_from_scraped_data(race: Race, associated: Race | None) -> Race:
     if not inquirer.confirm(f"Save new race for {race.name} to the database?", default=False):
         raise StopProcessing(f"race {race.name} will not be saved")
 
-    race.save()
     if associated and inquirer.confirm(f"Link new race {race.name} with associated {associated.name}"):
-        Race.objects.filter(pk=race.pk).update(associated=associated)
+        race.associated = associated  # pyright: ignore
+        race.save()
         Race.objects.filter(pk=associated.pk).update(associated=race)
         logger.info(f"update {race.pk} associated race with {associated.pk}")
+    else:
+        race.save()
     return race
 
 
@@ -227,7 +229,7 @@ def _retrieve_trophy_and_flag(race: RSRace) -> tuple[TrophyEdition, FlagEdition]
         else:
             flag = None
 
-    return (trophy, trophy_edition), (flag, flag_edition)
+    return (trophy, trophy_edition if trophy else None), (flag, flag_edition if flag else None)
 
 
 def _retrieve_league(race: RSRace, db_race: Race | None) -> League | None:

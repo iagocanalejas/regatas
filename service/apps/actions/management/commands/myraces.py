@@ -8,7 +8,6 @@ import pandas as pd
 from django.core.management import BaseCommand
 from django.db.models import Q
 from service.apps.races.services import RaceService
-from utils.choices import GENDER_ALL
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.races import input_flag, input_trophy
@@ -19,9 +18,10 @@ from apps.races.models import Race, Trophy
 from apps.races.services import FlagService, TrophyService
 from pyutils.strings import remove_genders, remove_parenthesis, roman_to_int
 from rscraping.data.constants import (
+    CATEGORY_ABSOLUT,
+    GENDER_ALL,
     GENDER_FEMALE,
     GENDER_MALE,
-    PARTICIPANT_CATEGORY_ABSOLUT,
     RACE_CONVENTIONAL,
     RACE_TIME_TRIAL,
     RACE_TRAINERA,
@@ -232,6 +232,6 @@ def _update_existing_races(dfs: pd.DataFrame, entity: Entity, is_female: bool):
                 laps=[row[COLUMN_TIME]] if pd.isna(row[COLUMN_TIME]) else [],  # pyright: ignore
                 lane=row[COLUMN_LANE],
                 gender=GENDER_FEMALE if is_female else GENDER_MALE,
-                category=PARTICIPANT_CATEGORY_ABSOLUT,
+                category=CATEGORY_ABSOLUT,
             )
             participant.save()

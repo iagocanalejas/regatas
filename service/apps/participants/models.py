@@ -1,11 +1,11 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
 from utils.choices import (
+    CATEGORY_ABSOLUT,
     ENTITY_CLUB,
     GENDER_CHOICES,
     GENDER_MALE,
     PARTICIPANT_CATEGORIES_CHOICES,
-    PARTICIPANT_CATEGORY_ABSOLUT,
     PENALTY_CHOICES,
 )
 
@@ -35,7 +35,7 @@ class Participant(models.Model):
 
     gender = models.CharField(default=GENDER_MALE, max_length=10, choices=GENDER_CHOICES)
     category = models.CharField(
-        default=PARTICIPANT_CATEGORY_ABSOLUT,
+        default=CATEGORY_ABSOLUT,
         max_length=10,
         choices=PARTICIPANT_CATEGORIES_CHOICES,
     )
