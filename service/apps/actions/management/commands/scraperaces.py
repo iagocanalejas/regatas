@@ -103,6 +103,7 @@ class Command(BaseCommand):
                 race = load_race_from_file(file)
                 self._process_race(race, Datasource(race.datasource), None)
                 self._processed_files.append(file_name)
+                os.remove(file)
 
     def _handle_year(
         self,

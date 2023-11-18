@@ -94,9 +94,9 @@ def save_race_from_scraped_data(race: RSRace, datasource: Datasource) -> Race:
         raise e
 
 
-def input_race(name: str) -> Race | None:
+def input_race(name: str, date: str) -> Race | None:
     race = None
-    race_id = inquirer.text(f"no race found for {name}. Race ID", default=None)
+    race_id = inquirer.text(f"no race found for {date}::{name}. Race ID", default=None)
     if race_id:
         race = Race.objects.get(id=race_id)
     return race
@@ -186,7 +186,7 @@ def _retrieve_race_trophy_and_flag(race: RSRace) -> tuple[Race | None, TrophyEdi
 
     # 3. try manual input
     if not trophy and not flag:
-        db_race = input_race(race.name)
+        db_race = input_race(race.name, race.date)
         if db_race and not trophy:
             trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
         if db_race and not flag:
