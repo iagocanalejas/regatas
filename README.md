@@ -5,16 +5,17 @@
 Retrieve and process race data from a web datasource or file.
 
 ```sh
-python manage.py findrace datasource_or_file [race_id] [--female] [--day DAY] [--use-db]
+python manage.py findrace datasource_or_file [race_ids] [--female] [--day DAY] [--use-db]
 # Arguments:
 #   datasource_or_file   Datasource or file from where to retrieve the race data.
-#   race_id (optional)   Race to find (required if the datasource_or_file is a file).
+#   race_ids (optional)  List of races to find (required if the datasource_or_file is a file).
 #
 # Options:
 #   --day DAY            Day of the race (used in multi-race pages).
 #   --female             Specify if the race is female.
 #   -o, --output OUTPUT  Output path to save the scrapped data.
 #   --use-db             Use the database to retrieve race data.
+#	--ignore-entities    Ignore the entities that doesn't exist in the database.
 ```
 
 ## Scrape races
@@ -28,9 +29,10 @@ python manage.py your_command datasource_or_folder [year] [--female] [--ignore I
 #   year (optional)         The year for which races data should be imported.
 #
 # Options:
-#   --female                If specified, import data for female races.
-#   --ignore ID [ID ...]    List of race IDs to ignore during import.
-#   -o, --output OUTPUT     Output path to save the scrapped data.
+#   -f, --female                If specified, import data for female races.
+#   -c, --category              If specified, import data for the given category (ABSOLUT | VETERAN | SCHOOL).
+#   --ignore ID [ID ...]        List of race IDs to ignore during import.
+#   -o, --output OUTPUT         Output path to save the scrapped data.
 ```
 
 ## Import _MY_ excel data

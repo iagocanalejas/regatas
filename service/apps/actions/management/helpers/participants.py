@@ -40,6 +40,7 @@ def save_participants_from_scraped_data(
             category=p.category,
         )
         for p in participants
+        if p.participant in preloaded_clubs
     ]
 
     serialized_participants = ParticipantSerializer(new_participants, many=True).data
@@ -56,7 +57,7 @@ def save_participants_from_scraped_data(
     return new_participants
 
 
-def preload_participants(participants: list[RSParticipant]) -> dict[str, Entity]:
+def preload_participants(participants: list[RSParticipant], ignore_exception: bool = False) -> dict[str, Entity]:
     """
     Preload club information for a list of participants.
 
@@ -66,6 +67,7 @@ def preload_participants(participants: list[RSParticipant]) -> dict[str, Entity]
 
     Args:
         participants (List[RSParticipant]): A list of participants to preload club information for.
+        ignore_exception (bool): Ignores the exception for not found clubs.
 
     Returns:
         Dict[str, Entity]: A dictionary mapping participant names to their respective clubs.
@@ -76,7 +78,7 @@ def preload_participants(participants: list[RSParticipant]) -> dict[str, Entity]
     logger.info(f"preloading {len(participants)} clubs")
     clubs = {p.participant: find_club(normalize_club_name(p.participant)) for p in participants}
     not_found = {name: club for name, club in clubs.items() if not club}
-    if not_found:
+    if not_found and not ignore_exception:
         raise StopProcessing(f"clubs not found: {not_found}")
     return {name: club for name, club in clubs.items() if club}
 
@@ -104,6 +106,8 @@ def _merge_participants_if_needed(
     preloaded_clubs: dict[str, Entity],
 ) -> list[RSParticipant]:
     def is_same_participant(p: RSParticipant, p1: Participant) -> bool:
+        if p.participant not in preloaded_clubs:
+            return False
         return preloaded_clubs[p.participant] == p1.club and p.category == p1.category and p.gender == p1.gender
 
     existing_participants = ParticipantService.get_by_race(race=race)

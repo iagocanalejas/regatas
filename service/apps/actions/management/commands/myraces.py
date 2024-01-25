@@ -7,7 +7,6 @@ import inquirer
 import pandas as pd
 from django.core.management import BaseCommand
 from django.db.models import Q
-from service.apps.races.services import RaceService
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.races import input_flag, input_trophy
@@ -15,7 +14,7 @@ from apps.actions.serializers import RaceSerializer
 from apps.entities.models import Entity, League
 from apps.participants.models import Participant
 from apps.races.models import Race, Trophy
-from apps.races.services import FlagService, TrophyService
+from apps.races.services import FlagService, RaceService, TrophyService
 from pyutils.strings import remove_genders, remove_parenthesis, roman_to_int
 from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
@@ -205,32 +204,43 @@ def _create_missing_races(dfs: pd.DataFrame, is_female: bool):
 
 
 def _update_existing_races(dfs: pd.DataFrame, entity: Entity, is_female: bool):
+    def is_digit(value) -> bool:
+        return value and (isinstance(value, int) or value.isdigit())
+
     for _, row in dfs.iterrows():
         if pd.isna(row["race"]):  # pyright: ignore
             continue
 
         race: Race = row["race"]  # pyright: ignore
-        if row[COLUMN_EDITION] != race.flag_edition and row[COLUMN_EDITION] != race.trophy_edition:
-            text = f"found flag edition {race.flag_edition}, provided one is {row[COLUMN_EDITION]}"
+        if (
+            row[COLUMN_EDITION]  # pyright: ignore
+            and row[COLUMN_EDITION] != race.flag_edition
+            and row[COLUMN_EDITION] != race.trophy_edition
+        ):
+            logger.debug(f"Processing {race=}")
+            text = f"current flag edition {race.flag_edition}, provided one is {row[COLUMN_EDITION]}"
             if race.flag_edition and inquirer.confirm(f"{text}. Do you want to update it?", default=False):
                 race.flag_edition = int(row[COLUMN_EDITION])
-            text = f"found trophy edition {race.trophy_edition}, provided one is {row[COLUMN_EDITION]}"
+            text = f"current trophy edition {race.trophy_edition}, provided one is {row[COLUMN_EDITION]}"
             if race.trophy_edition and inquirer.confirm(f"{text}. Do you want to update it?", default=False):
                 race.trophy_edition = int(row[COLUMN_EDITION])
             race.save()
 
         try:
             participant = Participant.objects.get(race=row["race"], club=entity)
-            if row[COLUMN_DISTANCE]:  # pyright: ignore
+            if is_digit(row[COLUMN_DISTANCE]):
                 participant.distance = int(row[COLUMN_DISTANCE])
+                participant.save()
+            if is_digit(row[COLUMN_LANE]):
+                participant.lane = int(row[COLUMN_LANE])
                 participant.save()
         except Participant.DoesNotExist:
             participant = Participant(
                 race=race,
                 club=entity,
-                distance=row[COLUMN_DISTANCE],
-                laps=[row[COLUMN_TIME]] if pd.isna(row[COLUMN_TIME]) else [],  # pyright: ignore
-                lane=row[COLUMN_LANE],
+                distance=int(row[COLUMN_DISTANCE]) if is_digit(row[COLUMN_DISTANCE]) else None,
+                laps=[row[COLUMN_TIME]] if row[COLUMN_TIME] else [],  # pyright: ignore
+                lane=int(row[COLUMN_LANE]) if is_digit(row[COLUMN_LANE]) else None,
                 gender=GENDER_FEMALE if is_female else GENDER_MALE,
                 category=CATEGORY_ABSOLUT,
             )

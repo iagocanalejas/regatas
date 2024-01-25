@@ -12,7 +12,7 @@ from apps.actions.management.helpers.participants import preload_participants, s
 from apps.actions.management.helpers.races import load_race_from_file, save_race_from_scraped_data, save_race_to_file
 from apps.races.services import MetadataService
 from rscraping.clients import Client
-from rscraping.data.constants import GENDER_FEMALE
+from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN, GENDER_FEMALE
 from rscraping.data.models import Datasource, Race
 from rscraping.parsers.html import MultiDayRaceException
 
@@ -31,9 +31,10 @@ class Command(BaseCommand):
         year (optional)         The year for which races data should be imported.
 
     Options:
-        --female                If specified, import data for female races.
-        --ignore ID [ID ...]    List of race IDs to ignore during import.
-        -o, --output OUTPUT     Output path to save the scrapped data.
+        -f, --female                If specified, import data for female races.
+        -c, --category              If specified, import data for the given category (ABSOLUT | VETERAN | SCHOOL).
+        --ignore ID [ID ...]        List of race IDs to ignore during import.
+        -o, --output OUTPUT         Output path to save the scrapped data.
     """
 
     _ignored_races: list[str] = []
@@ -53,10 +54,18 @@ class Command(BaseCommand):
             help="The year for which race data should be imported.",
         )
         parser.add_argument(
+            "-f",
             "--female",
             action="store_true",
             default=False,
             help="If specified, import data for female races.",
+        )
+        parser.add_argument(
+            "-c",
+            "--category",
+            type=str,
+            default=None,
+            help="If specified, import data for the given category.",
         )
         parser.add_argument("--ignore", type=str, nargs="*", default=[], help="List of ignored IDs.")
         parser.add_argument("-o", "--output", type=str, default=None, help="Output path to save the scrapped data.")
@@ -64,10 +73,11 @@ class Command(BaseCommand):
     def handle(self, *_, **options):
         logger.info(f"{options}")
 
-        year, datasource_or_folder, is_female, self._ignored_races, output_path = (
+        year, datasource_or_folder, is_female, category, self._ignored_races, output_path = (
             options["year"],
             options["datasource_or_folder"],
             options["female"],
+            options["category"],
             options["ignore"],
             options["output"],
         )
@@ -86,12 +96,17 @@ class Command(BaseCommand):
 
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
+        if category and datasource != Datasource.TRAINERAS:
+            raise ValueError(f"category filtering is not suported in {datasource=}")
+        if category and category.upper() not in [CATEGORY_ABSOLUT, CATEGORY_VETERAN, CATEGORY_SCHOOL]:
+            raise ValueError(f"invalid {category=}")
 
         datasource = Datasource(datasource)
+        category = category.upper() if category else None
         client: Client = Client(source=datasource)  # type: ignore
 
         try:
-            self._handle_year(client, year, datasource, output_path, is_female=is_female)
+            self._handle_year(client, year, datasource, output_path, is_female=is_female, category=category)
         finally:
             logging.info(f"ignored races: {" ".join(self._ignored_races)}")
 
@@ -112,11 +127,12 @@ class Command(BaseCommand):
         datasource: Datasource,
         output_path: str | None,
         is_female: bool,
+        category: str | None,
     ):
         def is_after_today(race: Race) -> bool:
             return datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
 
-        for race_id in client.get_race_ids_by_year(year=year, is_female=is_female):
+        for race_id in client.get_race_ids_by_year(year=year, is_female=is_female, category=category):
             time.sleep(1)
 
             gender = GENDER_FEMALE if is_female else None

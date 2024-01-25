@@ -34,58 +34,65 @@ class Command(BaseCommand):
         --female             Specify if the race is female.
         -o, --output OUTPUT  Output path to save the scrapped data.
         --use-db             Use the database to retrieve race data.
+        --ignore-entities    Ignore the entities that doesn't exist in the database.
     """
 
     def add_arguments(self, parser):
         parser.add_argument("datasource_or_file", type=str, help="Datasource or file from where to retrieve.")
-        parser.add_argument("race_id", nargs="?", type=str, default=None, help="Race to find.")
+        parser.add_argument("race_ids", nargs="*", default=None, help="Race to find.")
         parser.add_argument("--day", type=int, help="Day of the race we want (used in multi-race pages).")
         parser.add_argument("--female", action="store_true", default=False, help="When to use female logic.")
         parser.add_argument("-o", "--output", type=str, default=None, help="Output path to save the scrapped data.")
         parser.add_argument("--use-db", action="store_true", default=False, help="When to use database data.")
+        parser.add_argument("--ignore-entities", action="store_true", default=False, help="When to ignore entities.")
 
     def handle(self, *_, **options):
         logger.info(f"{options}")
 
-        race_id, datasource_or_file, is_female, day, use_db, output_path = (
-            options["race_id"],
+        race_ids, datasource_or_file, is_female, day, use_db, ignore_entities, output_path = (
+            options["race_ids"],
             options["datasource_or_file"],
             options["female"],
             options["day"],
             options["use_db"],
+            options["ignore_entities"],
             options["output"],
         )
 
         race: RSRace | None = None
         if not os.path.isfile(datasource_or_file):
             datasource = datasource_or_file
-            if not race_id:
-                raise ValueError("required value for 'race_id'")
+            if not race_ids or len(race_ids) == 0:
+                raise ValueError("required value for 'race_ids'")
         else:
             race = self._load_race_from_file(datasource_or_file)
-            race_id, datasource = race.race_id, race.datasource
+            race_ids, datasource = [race.race_id], race.datasource
 
         if not datasource or not Datasource.has_value(datasource):
             raise ValueError(f"invalid {datasource=}")
         datasource = Datasource(datasource)
 
-        db_race = self._retrieve_database_race(race_id, datasource, day, is_female, use_db)
+        for race_id in race_ids:
+            db_race = self._retrieve_database_race(race_id, datasource, day, is_female, use_db)
 
-        if not race:
-            race = find_race(race_id, datasource=Datasource(datasource), is_female=is_female, day=day)
+            if not race:
+                race = find_race(race_id, datasource=Datasource(datasource), is_female=is_female, day=day)
 
-        if not race:
-            raise StopProcessing("no race found")
+            if not race:
+                raise StopProcessing("no race found")
 
-        if output_path and os.path.isdir(output_path):
-            save_race_to_file(race, output_path)
-            return
+            if output_path and os.path.isdir(output_path):
+                save_race_to_file(race, output_path)
+                return
 
-        participants = race.participants
-        clubs = preload_participants(participants)
+            participants = race.participants
+            clubs = preload_participants(participants, ignore_exception=ignore_entities)
 
-        new_race = db_race if use_db and db_race else save_race_from_scraped_data(race, Datasource(datasource))
-        save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)
+            new_race = db_race if use_db and db_race else save_race_from_scraped_data(race, Datasource(datasource))
+            save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)
+
+            # reset in case more race_ids where passed
+            race = None
 
     def _load_race_from_file(self, path: str) -> RSRace:
         race = load_race_from_file(path)
