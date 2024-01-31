@@ -1,9 +1,9 @@
-from apps.races.models import Flag, Race
-from apps.schemas import MetadataBuilder
 from django.test import TestCase
 from django.utils import timezone
 from jsonschema.exceptions import ValidationError
 
+from apps.races.models import Flag, Race
+from apps.schemas import MetadataBuilder
 from rscraping import Datasource
 
 

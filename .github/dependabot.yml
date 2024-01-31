@@ -1,15 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/service/config/requirements"
-    open-pull-requests-limit: 5
-    schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "npm"
-    directory: "/web"
-    ignore:
-      - dependency-name: "typescript"
+    directory: "/config/requirements"
     open-pull-requests-limit: 5
     schedule:
       interval: "monthly"

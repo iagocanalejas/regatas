@@ -1,10 +1,11 @@
 import os.path
 
-from apps.participants.models import Participant
-from apps.participants.services import ParticipantService
 from django.conf import settings
 from django.test import TestCase
 from utils.choices import CATEGORY_ABSOLUT, GENDER_MALE
+
+from apps.participants.models import Participant
+from apps.participants.services import ParticipantService
 
 
 class ParticipantServiceTest(TestCase):

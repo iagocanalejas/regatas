@@ -43,7 +43,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install -r service/config/requirements/ci.txt
+          pip install -r config/requirements/ci.txt
 
       - name: Copy environment variables (CI requires .env file)
         run: |
@@ -51,39 +51,8 @@ jobs:
 
       - name: Ensure migrations are consistent
         run: |
-          cd service
           python manage.py migrate
 
       - name: Run python tests
         run: |
-          cd service
           python manage.py test --pattern="*_test.py"
-
-  test_web:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: # current + last versions
-        node-version: [lts/*]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: "recursive"
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install packages
-        run: |
-          cd web
-          pnpm install
-
-      - name: Run linter
-        run: |
-          cd web
-          npm run lint
