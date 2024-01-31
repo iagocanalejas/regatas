@@ -10,7 +10,7 @@ repos:
         exclude: |
           (?x)^(
               .+h5|
-              service/fixtures/races-db.yaml
+              fixtures/races-db.yaml
           )$
       - id: check-yaml
       - id: check-toml
@@ -36,8 +36,3 @@ repos:
         args: [--fix, --exit-non-zero-on-fix]
         types_or: [python, pyi]
         exclude: (migrations)
-
-  - repo: https://github.com/tekwizely/pre-commit-golang
-    rev: v1.0.0-rc.1
-    hooks:
-      - id: go-fmt

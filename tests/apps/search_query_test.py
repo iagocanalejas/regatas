@@ -1,13 +1,14 @@
 import os.path
 
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.test import TestCase
+
 from apps.entities.models import Entity
 from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService
 from apps.races.models import Flag, Trophy
 from apps.races.services import FlagService, TrophyService
-from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
-from django.test import TestCase
 
 
 class SearchQueryTest(TestCase):
