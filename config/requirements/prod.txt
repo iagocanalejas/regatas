@@ -10,7 +10,7 @@ djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.26.5
 environs==9.5.0
 gunicorn==21.2.0
-inquirer==3.1.3
+inquirer==3.2.3
 jsonschema==4.19.2
 matplotlib==3.8.1
 numpy==1.26.2
