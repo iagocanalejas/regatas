@@ -20,7 +20,7 @@ pandas==2.2.0
 Pillow==10.2.0
 psycopg2-binary==2.9.9
 pytesseract==0.3.10
-python-memcached==1.59
+python-memcached==1.62
 pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.1
 requests==2.31.0
