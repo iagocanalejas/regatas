@@ -23,7 +23,7 @@ python manage.py findrace datasource_or_file [race_ids] [--female] [--day DAY] [
 Imports data from a web datasource.
 
 ```sh
-python manage.py your_command datasource_or_folder [year] [--female] [--ignore ID [ID ...]] [-o OUTPUT]
+python manage.py scraperaces datasource_or_folder [year] [--female] [--category CATEGORY] [--ignore ID [ID ...]] [-o OUTPUT]
 # Arguments:
 #   datasource_or_folder    The name of the web datasource or path to a folder to import data from.
 #   year (optional)         The year for which races data should be imported.
@@ -40,7 +40,7 @@ python manage.py your_command datasource_or_folder [year] [--female] [--ignore I
 Imports data from my excel datasource.
 
 ```sh
-python manage.py myraces <path> <entity_id>
+python manage.py importfile <path> <entity_id>
     # --female: Search in the female version of the pages.
 ```
 

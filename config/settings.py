@@ -23,7 +23,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-TEMPLATES_ROOT = os.path.join(STATIC_ROOT, "templates")
+TEMPLATES_ROOT = os.path.join(BASE_DIR, "templates")
 LOG_ROOT = os.path.join(BASE_DIR, "logs")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 

@@ -9,6 +9,12 @@ from apps.actions.management.helpers.database import fill_organizers, missing_ed
 logger = logging.getLogger(__name__)
 
 
+# TODO: command to run throught races and find towns with low levenstein distance
+# TODO: command to find missing organizers
+# TODO: command to find missing editions
+# TODO: command to find distinct types (CONVENTIONAL|TIME_TRIAL) for the same race
+
+
 class Command(BaseCommand):
     help = ""
 
