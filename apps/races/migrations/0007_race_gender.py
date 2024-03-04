@@ -5,7 +5,7 @@ from django.db import migrations, models
 from rscraping.data.constants import GENDER_ALL
 
 
-def update_gender(apps, schema_editor):
+def update_gender(apps, _):
     Race = apps.get_model("races", "Race")
 
     for race in Race.objects.select_related("league").prefetch_related("participants").all():

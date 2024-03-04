@@ -13,7 +13,7 @@ class ParticipantServiceTest(TestCase):
 
     def test_will_create_branch_participant(self):
         self._save_participant("CR CHAPELA")
-        created, new_participant = ParticipantService.get_participant_or_create(
+        created, _ = ParticipantService.get_participant_or_create(
             participant=Participant(
                 club_name="CR CHAPELA B",
                 club_id=17,
@@ -31,7 +31,7 @@ class ParticipantServiceTest(TestCase):
 
     def test_will_create_main_participant_existing_branch(self):
         self._save_participant("CR CHAPELA B")
-        created, new_participant = ParticipantService.get_participant_or_create(
+        created, _ = ParticipantService.get_participant_or_create(
             participant=Participant(
                 club_name="CR CHAPELA",
                 club_id=17,

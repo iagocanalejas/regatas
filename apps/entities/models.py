@@ -25,7 +25,7 @@ class League(TraceableModel):
     def is_female(self):
         return self.gender == GENDER_FEMALE
 
-    class Meta:
+    class Meta(TraceableModel.Meta):
         db_table = "league"
         verbose_name = "Liga"
         ordering = ["id"]
@@ -79,7 +79,7 @@ class Entity(TraceableModel):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta(TraceableModel.Meta):
         db_table = "entity"
         verbose_name = "Entidad"
         verbose_name_plural = "Entidades"

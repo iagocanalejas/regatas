@@ -1,7 +1,6 @@
 import logging
 
 from django.core.exceptions import ValidationError
-from utils.choices import GENDER_FEMALE, GENDER_MALE
 
 from rscraping import Datasource
 
@@ -46,13 +45,6 @@ class MetadataBuilder:
     def datasource_name(self, datasource: Datasource) -> "MetadataBuilder":
         self._metadata["datasource_name"] = datasource.value
         return self
-
-    def gender(self, gender: str | None) -> "MetadataBuilder":
-        if not gender:
-            return self
-        if gender not in [GENDER_FEMALE, GENDER_MALE]:
-            raise ValidationError({"values", f"invalid {gender=}"})
-        return self.values("gender", gender)
 
     def values(self, key: str, value: str) -> "MetadataBuilder":
         if key in self._metadata["values"]:

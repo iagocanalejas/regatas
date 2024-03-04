@@ -1,122 +1,108 @@
 #!/usr/bin/env python3
 
+import json
 import logging
 import os
 
 from django.core.management import BaseCommand
-from utils.choices import GENDER_FEMALE
-from utils.exceptions import StopProcessing
 
-from apps.actions.management.helpers.participants import preload_participants, save_participants_from_scraped_data
-from apps.actions.management.helpers.races import load_race_from_file, save_race_from_scraped_data, save_race_to_file
-from apps.races.models import Race
-from apps.races.services import MetadataService
-from rscraping import Datasource, find_race
-from rscraping.data.models import Race as RSRace
+from apps.actions.management.ingestor import build_ingestor
+from rscraping import Datasource
+from rscraping.clients import TabularClientConfig
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
     help = """
-    Retrieve and process race data from a web datasource or file.
+    Retrieve and process race data from a web datasource, JSON file and spreadsheet.
 
     Usage:
     ------
-    python manage.py findrace datasource_or_file [race_id] [--female] [--day DAY] [--use-db]
+    python manage.py findrace datasource_or_file [race_id] \
+        [-f, --female] \
+        [-d, --day DAY] \
+        [-o, --output OUTPUT]
 
     Arguments:
-        datasource_or_file   Datasource or file from where to retrieve the race data.
-        race_id (optional)   Race to find (required if the datasource_or_file is a file).
+        input_source:
+            The name of the Datasource or path to import data from.
+
+        race_ids (optional)
+            Races to find and ingest.
+            NOTE: This argument is mandatory for Datasource and not supported for local files.
 
     Options:
-        --day DAY            Day of the race (used in multi-race pages).
-        --female             Specify if the race is female.
-        -o, --output OUTPUT  Output path to save the scrapped data.
-        --use-db             Use the database to retrieve race data.
-        --ignore-entities    Ignore the entities that doesn't exist in the database.
+        -d, --day DAY
+            Day of the race.
+            NOTE: This option is only supported for the TRAINERAS datasource.
+
+        -f, --female:
+            Import data for female races.
+
+        -o, --output:
+            Outputs the race data to the given folder path in JSON format.
     """
 
     def add_arguments(self, parser):
-        parser.add_argument("datasource_or_file", type=str, help="Datasource or file from where to retrieve.")
-        parser.add_argument("race_ids", nargs="*", default=None, help="Race to find.")
-        parser.add_argument("--day", type=int, help="Day of the race we want (used in multi-race pages).")
-        parser.add_argument("--female", action="store_true", default=False, help="When to use female logic.")
-        parser.add_argument("-o", "--output", type=str, default=None, help="Output path to save the scrapped data.")
-        parser.add_argument("--use-db", action="store_true", default=False, help="When to use database data.")
-        parser.add_argument("--ignore-entities", action="store_true", default=False, help="When to ignore entities.")
+        parser.add_argument("input_source", type=str, help="The name of the Datasource or path to import data from.")
+        parser.add_argument("race_ids", nargs="*", default=None, help="Races to find and ingest.")
+        parser.add_argument("-d", "--day", type=int, help="Day of the race.")
+        parser.add_argument("-f", "--female", action="store_true", default=False, help="Import data for female races.")
+        parser.add_argument(
+            "-o",
+            "--output",
+            type=str,
+            default=None,
+            help="Outputs the race data to the given folder path in JSON format.",
+        )
 
     def handle(self, *_, **options):
         logger.info(f"{options}")
 
-        race_ids, datasource_or_file, is_female, day, use_db, ignore_entities, output_path = (
-            options["race_ids"],
-            options["datasource_or_file"],
+        input_source, race_ids = options["input_source"], options["race_ids"]
+        is_female, day, output_path = (
             options["female"],
             options["day"],
-            options["use_db"],
-            options["ignore_entities"],
             options["output"],
         )
 
-        race: RSRace | None = None
-        if not os.path.isfile(datasource_or_file):
-            datasource = datasource_or_file
-            if not race_ids or len(race_ids) == 0:
-                raise ValueError("required value for 'race_ids'")
-        else:
-            race = self._load_race_from_file(datasource_or_file)
-            race_ids, datasource = [race.race_id], race.datasource
-
-        if not datasource or not Datasource.has_value(datasource):
-            raise ValueError(f"invalid {datasource=}")
-        datasource = Datasource(datasource)
-
-        for race_id in race_ids:
-            db_race = self._retrieve_database_race(race_id, datasource, day, is_female, use_db)
-
-            if not race:
-                race = find_race(race_id, datasource=Datasource(datasource), is_female=is_female, day=day)
-
-            if not race:
-                raise StopProcessing("no race found")
-
+        datasource_or_file, race_ids = self._validate_arguments(input_source, race_ids)
+        ingestor = build_ingestor(datasource_or_file, TabularClientConfig(), is_female, None, [])
+        for race in ingestor.fetch_by_ids(race_ids, day=day):
+            logger.info(f"processing {race=}")
             if output_path and os.path.isdir(output_path):
-                save_race_to_file(race, output_path)
-                return
+                file_name = f"{race.race_ids[0]}.json"
+                logger.info(f"saving race to {file_name=}")
+                with open(os.path.join(output_path, file_name), "w") as file:
+                    json.dump(race.to_dict(), file)
+                continue
 
             participants = race.participants
-            clubs = preload_participants(participants, ignore_exception=ignore_entities)
+            race.participants = []
 
-            new_race = db_race if use_db and db_race else save_race_from_scraped_data(race, Datasource(datasource))
-            save_participants_from_scraped_data(new_race, participants, preloaded_clubs=clubs)
+            new_race, associated = ingestor.ingest(race)
+            new_race, saved = ingestor.save(new_race, associated=associated)
 
-            # reset in case more race_ids where passed
-            race = None
+            if not saved:
+                logger.info(f"{race=} was not saved")
+                continue
 
-    def _load_race_from_file(self, path: str) -> RSRace:
-        race = load_race_from_file(path)
-        if not race.race_id:
-            raise ValueError("required value for 'race_id'")
-        if not race.datasource:
-            raise ValueError("required value for 'datasource'")
-        logger.info("loaded race from file")
-        return race
+            logger.info(f"processing {len(participants)} participants for {race=}")
+            for index, participant in enumerate(participants):
+                logger.info(f"processing participant {index + 1}/{len(participants)}:{participant}")
+                new_participant = ingestor.ingest_participant(new_race, participant)
+                new_participant, saved = ingestor.save_participant(
+                    new_participant, is_disqualified=participant.disqualified
+                )
 
-    def _retrieve_database_race(
-        self,
-        race_id: str,
-        datasource: Datasource,
-        day: int,
-        is_female: bool,
-        use_db: bool,
-    ) -> Race | None:
-        race = MetadataService.get_race_or_none(
-            race_id,
-            Datasource(datasource),
-            gender=GENDER_FEMALE if is_female else None,
-            day=day,
-        )
-        if not use_db and race is not None:
-            raise StopProcessing(f"race={race_id} already in database")
-        return race
+    @staticmethod
+    def _validate_arguments(maybe_datasource: str, race_ids: list[str]) -> tuple[Datasource | str, list[str]]:
+        if os.path.isfile(maybe_datasource):
+            return maybe_datasource, []
+
+        if not maybe_datasource or not Datasource.has_value(maybe_datasource):
+            raise ValueError(f"invalid datasource={maybe_datasource}")
+        if not race_ids or len(race_ids) == 0:
+            raise ValueError("required value for 'race_ids'")
+        return Datasource(maybe_datasource), race_ids

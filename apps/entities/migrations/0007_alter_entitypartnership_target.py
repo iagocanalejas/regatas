@@ -4,7 +4,7 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
-def update_entities(apps, schema_editor):
+def update_entities(apps, _):
     Entity = apps.get_model("entities", "Entity")
     EntityPartnership = apps.get_model("entities", "EntityPartnership")
 

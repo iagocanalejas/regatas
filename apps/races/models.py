@@ -20,9 +20,6 @@ from rscraping import lemmatize
 
 logger = logging.getLogger(__name__)
 
-type TrophyEdition = tuple[Trophy | None, int | None]
-type FlagEdition = tuple[Flag | None, int | None]
-
 
 class Trophy(CreationStampModel):
     name = models.CharField(max_length=150, unique=True)
@@ -39,7 +36,7 @@ class Trophy(CreationStampModel):
             self.tokens = list(lemmatize(self.name))
         super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta(CreationStampModel.Meta):
         db_table = "trophy"
         verbose_name = "Trofeo"
         verbose_name_plural = "Trofeos"
@@ -61,7 +58,7 @@ class Flag(CreationStampModel):
             self.tokens = list(lemmatize(self.name))
         super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta(CreationStampModel.Meta):
         db_table = "flag"
         verbose_name = "Bandera"
         verbose_name_plural = "Banderas"
@@ -70,8 +67,8 @@ class Flag(CreationStampModel):
 
 # TODO: enum of cancellation reasons
 class Race(CreationStampModel):
-    laps = models.PositiveSmallIntegerField(null=True, blank=True, default=None)  # TODO: convert to NON-NULLABLE
-    lanes = models.PositiveSmallIntegerField(null=True, blank=True, default=None)  # TODO: convert to NON-NULLABLE
+    laps = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
+    lanes = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     town = models.CharField(max_length=100, null=True, blank=True, default=None)
 
     type = models.CharField(max_length=50, choices=RACE_TYPE_CHOICES, default=RACE_CONVENTIONAL)
@@ -178,7 +175,7 @@ class Race(CreationStampModel):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta(CreationStampModel.Meta):
         db_table = "race"
         verbose_name = "Regata"
         unique_together = [

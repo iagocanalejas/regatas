@@ -3,7 +3,7 @@
 from django.db import migrations
 
 
-def update_gender(apps, schema_editor):
+def update_gender(apps, _):
     Race = apps.get_model("races", "Race")
     for race in Race.objects.all():
         new_datasources = []

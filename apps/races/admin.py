@@ -6,7 +6,9 @@ from djutils.admin import ReadOnlyTabularInline, StampedModelAdmin, YearFilter
 
 
 class RaceYearFilter(YearFilter):
-    model = Race
+    @property
+    def model(self):
+        return Race
 
 
 class RaceInline(ReadOnlyTabularInline):

@@ -5,7 +5,7 @@ from django.db import migrations, models
 from django.db.models.query import Q
 
 
-def update_associated(apps, schema_editor):
+def update_associated(apps, _):
     Race = apps.get_model("races", "Race")
 
     for race in Race.objects.filter(day=2):

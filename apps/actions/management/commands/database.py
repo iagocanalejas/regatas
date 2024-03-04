@@ -16,7 +16,27 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = ""
+    help = """
+    missingeditions: Check for missing continuous editions in trophies and flags.
+
+    Parameters:
+        model (str): Specifies which models to check for missing editions.
+                     Possible values: "all", "trophy"/"trophies", "flag"/"flags".
+                     Defaults to "all".
+
+    Returns:
+        None
+
+    fillorganizers: Fill missing organizer_id for trophies and flags.
+
+    Parameters:
+        model (str): Specifies which models to process for missing organizer_id.
+                     Possible values: "all", "trophy"/"trophies", "flag"/"flags".
+                     Defaults to "all".
+
+    Returns:
+        None
+    """
 
     def add_arguments(self, parser):
         parser.add_argument("command", type=str, help="Command to execute.")

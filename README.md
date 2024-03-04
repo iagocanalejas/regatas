@@ -2,46 +2,78 @@
 
 ## Find race
 
-Retrieve and process race data from a web datasource or file.
+Retrieve and process race data from a web datasource, JSON file and spreadsheet.
 
 ```sh
-python manage.py findrace datasource_or_file [race_ids] [--female] [--day DAY] [--use-db]
-# Arguments:
-#   datasource_or_file   Datasource or file from where to retrieve the race data.
-#   race_ids (optional)  List of races to find (required if the datasource_or_file is a file).
+python manage.py findrace input_source [race_ids] \
+	[-f, --female] \
+	[--day DAY] \
+	[-o, --output OUTPUT]
+
+#   Arguments:
+#       input_source:
+#           The name of the Datasource or path to import data from.
 #
-# Options:
-#   --day DAY            Day of the race (used in multi-race pages).
-#   --female             Specify if the race is female.
-#   -o, --output OUTPUT  Output path to save the scrapped data.
-#   --use-db             Use the database to retrieve race data.
-#	--ignore-entities    Ignore the entities that doesn't exist in the database.
+#       race_ids (optional)
+#           Races to find and ingest.
+#           NOTE: This argument is mandatory for Datasource and not supported for local files.
+#
+#   Options:
+#       -d, --day DAY
+#           Day of the race.
+#           NOTE: This option is only supported for the TRAINERAS datasource.
+#
+#       -f, --female:
+#           Import data for female races.
+#
+#       -o, --output:
+#           Outputs the race data to the given folder path in JSON format.
 ```
 
 ## Scrape races
 
-Imports data from a web datasource.
+Retrieve and process race data from a web datasource, JSON file and spreadsheet.
 
 ```sh
-python manage.py scraperaces datasource_or_folder [year] [--female] [--category CATEGORY] [--ignore ID [ID ...]] [-o OUTPUT]
-# Arguments:
-#   datasource_or_folder    The name of the web datasource or path to a folder to import data from.
-#   year (optional)         The year for which races data should be imported.
+python manage.py scraperaces input_source [year] \
+	[-f, --female] \
+	[-c, --category CATEGORY] \
+	[--sheet-id SHEET_ID] \
+	[--sheet-name SHEET_NAME] \
+	[--file-path FILE_PATH] \
+	[-i, --ignore ID [ID ...]] \
+	[-o, --output OUTPUT]
+
+#   Arguments:
+#       input_source:
+#           The name of the Datasource or path to import data from.
 #
-# Options:
-#   -f, --female                If specified, import data for female races.
-#   -c, --category              If specified, import data for the given category (ABSOLUT | VETERAN | SCHOOL).
-#   --ignore ID [ID ...]        List of race IDs to ignore during import.
-#   -o, --output OUTPUT         Output path to save the scrapped data.
-```
-
-## Import _MY_ excel data
-
-Imports data from my excel datasource.
-
-```sh
-python manage.py importfile <path> <entity_id>
-    # --female: Search in the female version of the pages.
+#       year:
+#           The year for which race data should be imported.
+#           NOTE: This argument is mandatory for Datasource and not supported for local files.
+#
+#   Options:
+#       -f, --female:
+#           Import data for female races.
+#
+#       -c, --category:
+#           Import data for the given category (ABSOLUT | VETERAN | SCHOOL).
+#           NOTE: This option is only supported for the TRAINERAS datasource.
+#
+#       --sheet-id:
+#           Google sheet ID used for TABULAR datasource.
+#
+#       --sheet-name:
+#           Google sheet name used for TABULAR datasource.
+#
+#       --file-path:
+#           Sheet file path used for TABULAR datasource.
+#
+#       -i, --ignore:
+#           List of race IDs to ignore during ingestion.
+#
+#       -o, --output:
+#           Outputs the race data to the given folder path in JSON format.
 ```
 
 ## Database commands
@@ -54,14 +86,6 @@ python manage.py database <command>
         # missingeditions: search for races with non consecutive editions.
         # fillorganizers: prompts the user to set the organizer of empty races.
     # -m, --model [trophy|flag]: Model to target for the command.
-```
-
-# Bump version
-
-Syncs the versions of all the subprojects choosing the on in the root's `package.json`.
-
-```sh
-python bump.py
 ```
 
 # Development

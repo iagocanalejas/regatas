@@ -2,6 +2,7 @@ import logging
 
 from django.db.models import Q, QuerySet
 
+from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.races.models import Race
 from rscraping.data.functions import is_branch_club
@@ -13,6 +14,23 @@ def get_by_race(race: Race) -> QuerySet[Participant]:
     return Participant.objects.filter(race=race)
 
 
+def get_by_race_and_filter_by(
+    race: Race,
+    club: Entity,
+    category: str,
+    gender: str,
+    raw_club_name: str | None = None,
+) -> Participant | None:
+    q = get_by_race(race).filter(club=club, category=category, gender=gender)
+    if raw_club_name:
+        q = _add_branch_filters(q, raw_club_name)
+
+    try:
+        return q.get()
+    except Participant.DoesNotExist:
+        return None
+
+
 def get_participant_or_create(participant: Participant, maybe_branch: bool = False) -> tuple[bool, Participant]:
     q = Participant.objects.filter(
         club=participant.club,
@@ -22,7 +40,7 @@ def get_participant_or_create(participant: Participant, maybe_branch: bool = Fal
     )
 
     if maybe_branch:
-        q = _add_branch_filters(q, participant)
+        q = _add_branch_filters(q, participant.club_name)
 
     try:
         # check for multiple results and get the non-branch club
@@ -35,16 +53,16 @@ def get_participant_or_create(participant: Participant, maybe_branch: bool = Fal
         return True, participant
 
 
-def _add_branch_filters(q: QuerySet, participant: Participant) -> QuerySet:
-    if not participant.club_name:
+def _add_branch_filters(q: QuerySet, club_name: str | None) -> QuerySet:
+    if not club_name:
         return q
 
-    if not is_branch_club(participant.club_name) and not is_branch_club(participant.club_name, letter="C"):
+    if not is_branch_club(club_name) and not is_branch_club(club_name, letter="C"):
         return q.exclude(Q(club_name__endswith=" B") | Q(club_name__endswith=" C"))
 
-    if is_branch_club(participant.club_name):
+    if is_branch_club(club_name):
         return q.filter(club_name__endswith=" B")
-    if is_branch_club(participant.club_name, letter="C"):
+    if is_branch_club(club_name, letter="C"):
         return q.filter(club_name__endswith=" C")
 
     return q
