@@ -8,8 +8,8 @@ from apps.races.models import Flag, Race, Trophy
 from rscraping.data.models import Race as RSRace
 
 
-def input_update_value(value: Any, new_value: Any) -> bool:
-    text = f"current value is {value}, provided one is {new_value}"
+def input_update_value(key: str, value: Any, db_value: Any) -> bool:
+    text = f"current {key} value is {db_value}, provided one is {value}"
     return inquirer.confirm(f"{text}. Do you want to update it?", default=False)
 
 
@@ -24,13 +24,17 @@ def input_should_merge_participant(db_participant: Participant) -> bool:
 
 
 def input_should_save(race: Race) -> bool:
-    return inquirer.confirm(f"save new race for {race} to the database?", default=False)
+    text = f"update existing {race=}?" if race.pk else f"save new {race=}?"
+    return inquirer.confirm(text, default=False)
 
 
 def input_should_save_participant(participant: Participant) -> bool:
-    return inquirer.confirm(
-        f"save new participant {participant} for race {participant.race} to the database?", default=False
+    text = (
+        f"update existing {participant=} for race {participant.race}?"
+        if participant.pk
+        else f"save new {participant=} for race {participant.race}?"
     )
+    return inquirer.confirm(text, default=False)
 
 
 def input_should_associate_races(race: Race, associated: Race) -> bool:

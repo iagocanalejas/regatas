@@ -62,6 +62,7 @@ class RaceSerializer(serializers.ModelSerializer):
             "flag",
             "flag_edition",
             "league",
+            "gender",
             "sponsor",
             "laps",
             "lanes",

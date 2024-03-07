@@ -29,7 +29,7 @@ def retrieve_competition[
 
     # 1. try to load from local race
     if db_race and getattr(db_race, model_name):
-        logger.info("found in database race")
+        logger.info(f"found {_model.__name__.lower()} in database race")
         return getattr(db_race, model_name), getattr(db_race, f"{model_name}_edition")
 
     # 2. try to found matching value
@@ -42,13 +42,14 @@ def retrieve_competition[
 
     # 2.1. try to infer edition
     if value and not edition:
+        logger.info(f"found {_model.__name__.lower()} closest by name")
         logger.info(f"infering edition for {value=}")
         edition = infer_edition(value, str(race.gender), datetime.strptime(race.date, "%d/%m/%Y").date().year)
         edition = input_edition(model=value, league=race.league) if not edition else edition
 
     # 2.2. return value and edition
     if value and edition:
-        logger.info("found in normalized_names")
+        logger.info(f"inferred edition for {_model.__name__.lower()}")
         return value, int(edition)
 
     logger.info("unable to infer edition")

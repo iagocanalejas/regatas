@@ -37,10 +37,8 @@ def get_race_or_none(
         return None
 
 
-def exists(ref_id: str, datasource: Datasource, gender: str | None = None, day: int | None = None) -> bool:
+def exists(ref_id: str, datasource: Datasource, day: int | None = None) -> bool:
     metadata: dict = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
-    if gender and gender in [GENDER_MALE, GENDER_FEMALE]:
-        metadata["values"] = {"gender": gender}
 
     filters: dict = {"metadata": [metadata]}
     if day:

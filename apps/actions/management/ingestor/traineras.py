@@ -5,7 +5,7 @@ from typing import Any, override
 
 from apps.races.services import MetadataService
 from rscraping import Datasource
-from rscraping.data.constants import GENDER_ALL, GENDER_FEMALE
+from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 from rscraping.parsers.html import MultiDayRaceException
@@ -17,13 +17,12 @@ logger = logging.getLogger(__name__)
 
 class TrainerasIngestor(Ingestor):
     @override
-    def fetch(self, *_, year: int, is_female: bool, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         race: RSRace | None = None
         participants: list[RSParticipant] = []
 
-        gender = GENDER_FEMALE if is_female else None
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(race_id, Datasource.TRAINERAS, gender=gender):
+            if race_id in self._ignored_races or MetadataService.exists(race_id, Datasource.TRAINERAS):
                 logger.info(f"ignoring {race_id=}")
                 continue
 
@@ -37,7 +36,7 @@ class TrainerasIngestor(Ingestor):
                     # if we reach a race after today, we can stop and yield the current race
                     if race:
                         race.participants = participants
-                        logger.info(f"found race for {race_id=}\n{race}")
+                        logger.info(f"found race for {race_id=}:\n\t{race}")
                         yield race
                     break
 
@@ -45,7 +44,7 @@ class TrainerasIngestor(Ingestor):
                 if not race or race.name != local_race.name:
                     if race:
                         race.participants = participants
-                        logger.info(f"found race for {race_id=}\n{race}")
+                        logger.info(f"found race for {race_id=}:\n\t{race}")
                         yield race
                     race = local_race
                     participants = race.participants

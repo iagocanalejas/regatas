@@ -28,7 +28,7 @@ from apps.races.services import FlagService, MetadataService, RaceService, Troph
 from apps.schemas import MetadataBuilder
 from rscraping import Datasource
 from rscraping.clients import ClientProtocol
-from rscraping.data.constants import GENDER_ALL, GENDER_FEMALE
+from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 
@@ -47,10 +47,9 @@ class Ingestor(IngestorProtocol):
         return datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
 
     @override
-    def fetch(self, *_, year: int, is_female: bool, **kwargs) -> Generator[RSRace, Any, Any]:
-        gender = GENDER_FEMALE if is_female else None
+    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(race_id, self.client.DATASOURCE, gender=gender):
+            if race_id in self._ignored_races or MetadataService.exists(race_id, self.client.DATASOURCE):
                 logger.info(f"ignoring {race_id=}")
                 continue
 
@@ -61,7 +60,7 @@ class Ingestor(IngestorProtocol):
                     continue
                 if self._is_race_after_today(race):
                     break
-                logger.info(f"found race for {race_id=}\n{race}")
+                logger.info(f"found race for {race_id=}:\n\t{race}")
                 yield race
 
             except ValueError as e:
@@ -73,7 +72,7 @@ class Ingestor(IngestorProtocol):
         for race_id in race_ids:
             race = self.client.get_race_by_id(race_id, day=day)
             if race:
-                logger.info(f"found race for {race_id=}\n{race}")
+                logger.info(f"found race for {race_id=}:\n\t{race}")
                 yield race
             time.sleep(1)
 
@@ -165,7 +164,7 @@ class Ingestor(IngestorProtocol):
         if not has_datasource:
             logger.info(f"adding {datasource}")
             db_race.metadata["datasource"].append(datasource)
-        if db_race.gender != race.gender:
+        if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
             logger.info("setting gender=ALL")
             db_race.gender = GENDER_ALL
         return db_race, True
