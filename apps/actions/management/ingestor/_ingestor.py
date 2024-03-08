@@ -17,6 +17,7 @@ from apps.actions.management.helpers.input import (
     input_should_save,
     input_should_save_participant,
     input_should_save_second_day,
+    input_update_value,
 )
 from apps.actions.management.helpers.retrieval import retrieve_competition, retrieve_entity, retrieve_league
 from apps.actions.serializers import ParticipantSerializer, RaceSerializer
@@ -103,7 +104,7 @@ class Ingestor(IngestorProtocol):
         logger.info(f"using {flag=}:{flag_edition=}")
 
         logger.info("searching organizer")
-        organizer = retrieve_entity(normalize_club_name(race.organizer)) if race.organizer else None
+        organizer = retrieve_entity(normalize_club_name(race.organizer), entity_type=None) if race.organizer else None
         logger.info(f"using {organizer=}")
 
         new_race = Race(
@@ -164,9 +165,18 @@ class Ingestor(IngestorProtocol):
         if not has_datasource:
             logger.info(f"adding {datasource}")
             db_race.metadata["datasource"].append(datasource)
+
         if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
             logger.info("setting gender=ALL")
             db_race.gender = GENDER_ALL
+
+        if race.laps and db_race.laps != race.laps and input_update_value("laps", race.laps, db_race.laps):
+            logger.info(f"updating {db_race.laps} with {race.laps}")
+            db_race.laps = race.laps
+
+        if race.lanes and db_race.lanes != race.lanes and input_update_value("lanes", race.lanes, db_race.lanes):
+            logger.info(f"updating {db_race.lanes} with {race.lanes}")
+            db_race.lanes = race.lanes
         return db_race, True
 
     @override
@@ -175,7 +185,7 @@ class Ingestor(IngestorProtocol):
             logger.info(f"race {race} was not saved")
             return race, False
 
-        if associated and input_should_associate_races(race, associated):
+        if associated and not race.associated and input_should_associate_races(race, associated):
             logger.info(f"associating races {race} and {associated}")
             race.associated = associated  # pyright: ignore
             race.save()

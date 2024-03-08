@@ -29,11 +29,7 @@ def input_should_save(race: Race) -> bool:
 
 
 def input_should_save_participant(participant: Participant) -> bool:
-    text = (
-        f"update existing {participant=} for race {participant.race}?"
-        if participant.pk
-        else f"save new {participant=} for race {participant.race}?"
-    )
+    text = f"update existing {participant=}?" if participant.pk else f"save new {participant=}?"
     return inquirer.confirm(text, default=False)
 
 

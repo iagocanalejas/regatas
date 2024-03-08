@@ -9,6 +9,7 @@ from apps.entities.models import Entity, League
 from apps.entities.services import EntityService, LeagueService
 from apps.races.models import Flag, Race, Trophy
 from pyutils.strings import remove_parenthesis
+from rscraping.data.constants import ENTITY_CLUB
 from rscraping.data.functions import is_memorial, is_play_off
 from rscraping.data.models import Race as RSRace
 
@@ -66,9 +67,13 @@ def retrieve_league(race: RSRace, db_race: Race | None) -> League | None:
     return None
 
 
-def retrieve_entity(name: str, clean: Callable[[str], str] | None = None) -> Entity | None:
+def retrieve_entity(
+    name: str,
+    clean: Callable[[str], str] | None = None,
+    entity_type: str | None = ENTITY_CLUB,
+) -> Entity | None:
     try:
-        return EntityService.get_closest_club_by_name(name)
+        return EntityService.get_closest_by_name_type(name, entity_type=entity_type)
     except Entity.MultipleObjectsReturned:
         raise StopProcessing(f"multiple organizers found for {name=}")
     except Entity.DoesNotExist:
