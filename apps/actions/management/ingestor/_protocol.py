@@ -96,7 +96,7 @@ class IngestorProtocol(Protocol):
 
         Returns: tuple[Participant, bool]:
             Participant: The merged participant result.
-            bool: Wheter the participants were merged or not.
+            bool: Wheter the participants was changed or not.
         """
         ...
 

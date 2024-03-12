@@ -23,6 +23,10 @@ def input_should_merge_participant(db_participant: Participant) -> bool:
     )
 
 
+def input_shoud_create_B_participant(participant: Participant) -> bool:
+    return inquirer.confirm(f"create B team participation for {participant=}?", default=False)
+
+
 def input_should_save(race: Race) -> bool:
     text = f"update existing {race=}?" if race.pk else f"save new {race=}?"
     return inquirer.confirm(text, default=False)

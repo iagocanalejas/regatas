@@ -196,7 +196,8 @@ class Ingestor(IngestorProtocol):
             logger.info(f"race {race} was saved")
             race.save()
             return race, True
-        except ValidationError:
+        except ValidationError as e:
+            logger.error(e)
             if race.day == 1 and input_should_save_second_day(race):
                 logger.info(f"change day for {race} and trying again")
                 race.day = 2
@@ -231,7 +232,7 @@ class Ingestor(IngestorProtocol):
         logger.info(f"found {db_participant=}")
 
         new_participant = Participant(
-            club_name=participant.club_name,
+            club_name=participant.club_name.upper() if participant.club_name else None,
             club=club,
             race=race,
             distance=participant.distance,
