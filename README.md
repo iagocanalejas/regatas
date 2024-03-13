@@ -76,21 +76,6 @@ python manage.py scraperaces input_source [year] \
 #           Outputs the race data to the given folder path in JSON format.
 ```
 
-## Database commands
-
-Command utilities for cleaning the database.
-
-```sh
-python manage.py database <command>
-    # COMMANDS:
-        # checkeditions: search for races with non consecutive editions.
-        # fillorganizers: prompts the user to set the organizer of empty races.
-        # checklaps: search for races with different laps.
-        # checklanes: search for races with different lanes.
-		# checkgenders: search for different gender in the participants of races not marked as 'ALL'.
-    # -m, --model [trophy|flag]: Model to target for the command.
-```
-
 # Development
 
 ## Environment variables
