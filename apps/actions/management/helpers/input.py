@@ -5,10 +5,13 @@ import inquirer
 from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.races.models import Flag, Race, Trophy
+from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 
 
-def input_update_value(key: str, value: Any, db_value: Any) -> bool:
+def input_new_value(key: str, value: Any, db_value: Any) -> bool:
+    if not value or db_value == value:
+        return False
     text = f"current {key} value is {db_value}, provided one is {value}"
     return inquirer.confirm(f"{text}. Do you want to update it?", default=False)
 
@@ -21,6 +24,10 @@ def input_should_merge_participant(db_participant: Participant) -> bool:
     return inquirer.confirm(
         f"found matching participant {db_participant} in the database. Merge both participants?", default=False
     )
+
+
+def input_shoud_create_participant(participant: RSParticipant) -> bool:
+    return inquirer.confirm(f"create new participation for {participant=}?", default=False)
 
 
 def input_shoud_create_B_participant(participant: Participant) -> bool:
@@ -48,7 +55,7 @@ def input_should_save_second_day(race: Race):
 def input_competition(
     race: RSRace,
 ) -> tuple[Race | None, tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
-    race_id = inquirer.text(f"no race found for {race.date}::{race.name}.\nRace ID", default=None)
+    race_id = inquirer.text(f"no race found for {race.date}::{race.name}. Race ID", default=None)
     db_race = Race.objects.get(id=race_id) if race_id else None
     if db_race:
         trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
@@ -59,7 +66,7 @@ def input_competition(
 
 def _input_competition[T: Trophy | Flag](_model: type[T], name: str) -> tuple[T | None, int | None]:
     value = value_edition = None
-    value_id = inquirer.text(f"no {_model.__name__.lower()} found for {name}.\n{_model.__name__} ID", default=None)
+    value_id = inquirer.text(f"no {_model.__name__.lower()} found for {name}. {_model.__name__} ID", default=None)
     if value_id:
         value = _model.objects.get(id=value_id)
         value_edition = int(inquirer.text(f"new edition for {_model.__name__}:{value}:", default=None))
@@ -67,7 +74,7 @@ def _input_competition[T: Trophy | Flag](_model: type[T], name: str) -> tuple[T 
 
 
 def input_club(name: str) -> Entity | None:
-    entity_id = inquirer.text(f"no entity found for {name}.\nEntity ID: ", default=None)
+    entity_id = inquirer.text(f"no entity found for {name}. Entity ID: ", default=None)
     if entity_id:
         return Entity.objects.get(id=entity_id)
     return None

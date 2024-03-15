@@ -2,7 +2,7 @@ import logging
 from collections.abc import Generator
 from typing import Any, override
 
-from apps.actions.management.helpers.input import input_shoud_create_B_participant, input_update_value
+from apps.actions.management.helpers.input import input_new_value, input_shoud_create_B_participant
 from apps.participants.models import Participant
 from apps.races.models import Race
 from apps.races.services import MetadataService
@@ -44,23 +44,15 @@ class TabularIngestor(Ingestor):
         if not should_merge:
             return race, False
 
-        if race.trophy_edition != db_race.trophy_edition and input_update_value(
-            "trophy_edition", race.trophy_edition, db_race.trophy_edition
-        ):
+        if input_new_value("trophy_edition", race.trophy_edition, db_race.trophy_edition):
             logger.info(f"updating {db_race.trophy_edition=} with {race.trophy_edition=}")
             db_race.trophy_edition = race.trophy_edition
 
-        if race.flag_edition != db_race.flag_edition and input_update_value(
-            "flag_edition", race.flag_edition, db_race.flag_edition
-        ):
+        if input_new_value("flag_edition", race.flag_edition, db_race.flag_edition):
             logger.info(f"updating {db_race.flag_edition} with {race.flag_edition}")
             db_race.flag_edition = race.flag_edition
 
-        if (
-            race.organizer
-            and race.organizer != db_race.organizer
-            and input_update_value("organizer", race.organizer, db_race.organizer)
-        ):
+        if input_new_value("organizer", race.organizer, db_race.organizer):
             logger.info(f"updating {db_race.organizer} with {race.organizer}")
             db_race.organizer = race.organizer
 
@@ -79,32 +71,19 @@ class TabularIngestor(Ingestor):
             return participant, False
 
         logger.info(f"merging {participant=} and {db_participant=}")
-        if (
-            participant.laps
-            and not db_participant.laps
-            and input_update_value("laps", participant.laps, db_participant.laps)
-        ):
+        if input_new_value("laps", participant.laps, db_participant.laps):
             logger.info(f"updating {db_participant.laps} with {participant.laps}")
             db_participant.laps = participant.laps
 
-        if participant.distance != db_participant.distance and input_update_value(
-            "distance", participant.distance, db_participant.distance
-        ):
+        if input_new_value("distance", participant.distance, db_participant.distance):
             logger.info(f"updating {db_participant.distance=} with {participant.distance=}")
             db_participant.distance = participant.distance
 
-        if (
-            participant.lane
-            and participant.lane != db_participant.lane
-            and input_update_value("lane", participant.lane, db_participant.lane)
-        ):
+        if input_new_value("lane", participant.lane, db_participant.lane):
             logger.info(f"updating {db_participant.lane=} with {participant.lane=}")
             db_participant.lane = participant.lane
 
-        if participant.club_name != db_participant.club_name and (
-            db_participant.club_name is None
-            or input_update_value("raw name", participant.club_name, db_participant.club_name)
-        ):
+        if db_participant.club_name is None or input_new_value("name", participant.club_name, db_participant.club_name):
             logger.info(f"updating {db_participant.club_name=} with {participant.club_name=}")
             db_participant.club_name = participant.club_name
 

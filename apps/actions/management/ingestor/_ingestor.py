@@ -11,13 +11,14 @@ from utils.exceptions import StopProcessing
 from apps.actions.management.helpers.input import (
     input_club,
     input_competition,
+    input_new_value,
+    input_shoud_create_participant,
     input_should_associate_races,
     input_should_merge,
     input_should_merge_participant,
     input_should_save,
     input_should_save_participant,
     input_should_save_second_day,
-    input_update_value,
 )
 from apps.actions.management.helpers.retrieval import retrieve_competition, retrieve_entity, retrieve_league
 from apps.actions.serializers import ParticipantSerializer, RaceSerializer
@@ -27,6 +28,7 @@ from apps.participants.services import ParticipantService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
+from pyutils.shortcuts import all_or_none
 from rscraping import Datasource
 from rscraping.clients import ClientProtocol
 from rscraping.data.constants import GENDER_ALL
@@ -76,6 +78,10 @@ class Ingestor(IngestorProtocol):
                 logger.info(f"found race for {race_id=}:\n\t{race}")
                 yield race
             time.sleep(1)
+
+    @override
+    def fetch_by_url(self, url: str, **kwargs) -> RSRace | None:
+        return self.client.get_race_by_url(url, **kwargs)
 
     @override
     def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None]:
@@ -170,14 +176,84 @@ class Ingestor(IngestorProtocol):
             logger.info("setting gender=ALL")
             db_race.gender = GENDER_ALL
 
-        if race.laps and db_race.laps != race.laps and input_update_value("laps", race.laps, db_race.laps):
+        if input_new_value("laps", race.laps, db_race.laps):
             logger.info(f"updating {db_race.laps} with {race.laps}")
             db_race.laps = race.laps
 
-        if race.lanes and db_race.lanes != race.lanes and input_update_value("lanes", race.lanes, db_race.lanes):
+        if input_new_value("lanes", race.lanes, db_race.lanes):
             logger.info(f"updating {db_race.lanes} with {race.lanes}")
             db_race.lanes = race.lanes
+
+        if input_new_value("town", race.town, db_race.town):
+            logger.info(f"updating {db_race.town} with {race.town}")
+            db_race.town = race.town
+
+        if input_new_value("sponsor", race.sponsor, db_race.sponsor):
+            logger.info(f"updating {db_race.sponsor} with {race.sponsor}")
+            db_race.sponsor = race.sponsor
         return db_race, True
+
+    @override
+    def verify(self, race: Race, rs_race: RSRace) -> tuple[Race, bool, bool]:
+        _, (trophy, trophy_edition), (flag, flag_edition) = self._retrieve_competition(rs_race, db_race=None)
+        if (not trophy and not flag) or (trophy and not trophy_edition) or (flag and not flag_edition):
+            return race, False, False
+        logger.info(f"using {trophy=}:{trophy_edition=}")
+        logger.info(f"using {flag=}:{flag_edition=}")
+
+        logger.info("searching league")
+        league = retrieve_league(rs_race, db_race=None)
+        logger.info(f"using {league=}")
+
+        if (
+            (trophy is not None and (race.trophy != trophy or race.trophy_edition != trophy_edition))
+            or (flag is not None and (race.flag != flag or race.flag_edition != flag_edition))
+            or (not all_or_none(league, race.league) or race.league != league)
+        ):
+            logger.info(f"unable to verify {race=} with {rs_race=}")
+            return race, False, False
+
+        logger.info("updating metadata")
+        needs_update = False
+        ref_id = rs_race.race_ids[0]
+        for d in race.metadata["datasource"]:
+            if d["ref_id"] == ref_id and d["datasource_name"] == rs_race.datasource:
+                logger.info("updating date inside metadata")
+                d["date"] = datetime.now().date().isoformat()
+                needs_update = True
+                break
+
+        logger.info("searching organizer")
+        organizer = rs_race.organizer
+        organizer = retrieve_entity(normalize_club_name(organizer), entity_type=None) if organizer else None
+        logger.info(f"using {organizer=}")
+
+        if input_new_value("laps", rs_race.race_laps, race.laps):
+            logger.info(f"updating {race.laps} with {rs_race.race_laps}")
+            race.laps = rs_race.race_laps
+            needs_update = True
+
+        if input_new_value("lanes", rs_race.race_lanes, race.lanes):
+            logger.info(f"updating {race.lanes} with {rs_race.race_lanes}")
+            race.lanes = rs_race.race_lanes
+            needs_update = True
+
+        if input_new_value("organizer", organizer, race.organizer):
+            logger.info(f"updating {race.organizer} with {organizer}")
+            race.organizer = organizer  # pyright: ignore
+            needs_update = True
+
+        if input_new_value("town", rs_race.town, race.town):
+            logger.info(f"updating {race.town} with {rs_race.town}")
+            race.town = rs_race.town
+            needs_update = True
+
+        if input_new_value("sponsor", rs_race.sponsor, race.sponsor):
+            logger.info(f"updating {race.sponsor} with {rs_race.sponsor}")
+            race.sponsor = rs_race.sponsor
+            needs_update = True
+
+        return race, True, needs_update
 
     @override
     def save(self, race: Race, associated: Race | None = None, **_) -> tuple[Race, bool]:
@@ -261,6 +337,62 @@ class Ingestor(IngestorProtocol):
             logger.info(f"participants will not be merged, using {participant=}")
             return participant, False
         return db_participant, True
+
+    @override
+    def verify_participants(
+        self,
+        race: Race,
+        participants: list[Participant],
+        rs_participants: list[RSParticipant],
+    ) -> list[tuple[Participant, bool, bool]]:
+        verified_participants: list[tuple[Participant, bool, bool]] = []
+
+        for rsp in rs_participants:
+            logger.info("searching entity in the database")
+            club = retrieve_entity(normalize_club_name(rsp.participant))
+            if not club:
+                logger.info(f"unable to verify {rsp=}")
+                continue
+            logger.info(f"using {club=}")
+
+            p = next(
+                (p for p in participants if ParticipantService.is_same_participant(p, rsp, club=club)),
+                None,
+            )
+
+            if not p:
+                if input_shoud_create_participant(rsp):
+                    logger.info(f"creating new participation for {rsp}")
+                    p = self.ingest_participant(race, rsp)
+                    p, created = self.save_participant(p)
+                    verified_participants.append((p, created, True))
+                continue
+
+            needs_update = False
+            laps = [datetime.strptime(lap, "%M:%S.%f").time() for lap in rsp.laps]
+            if len(laps) >= len(p.laps) and input_new_value("laps", laps, p.laps):
+                logger.info(f"updating {p.laps} with {laps}")
+                p.laps = laps
+                needs_update = True
+
+            if input_new_value("distance", rsp.distance, p.distance):
+                logger.info(f"updating {p.distance=} with {rsp.distance=}")
+                p.distance = rsp.distance
+                needs_update = True
+
+            if input_new_value("lane", rsp.lane, p.lane):
+                logger.info(f"updating {p.lane=} with {rsp.lane=}")
+                p.lane = rsp.lane
+                needs_update = True
+
+            if p.club_name is None or input_new_value("name", rsp.club_name, p.club_name):
+                logger.info(f"updating {p.club_name=} with {rsp.club_name=}")
+                p.club_name = rsp.club_name
+                needs_update = True
+
+            verified_participants.append((p, True, needs_update))
+
+        return verified_participants
 
     @override
     def save_participant(

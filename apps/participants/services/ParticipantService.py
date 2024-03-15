@@ -6,6 +6,7 @@ from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.races.models import Race
 from rscraping.data.functions import is_branch_club
+from rscraping.data.models import Participant as RSParticipant
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +52,26 @@ def get_participant_or_create(participant: Participant, maybe_branch: bool = Fal
 
         logger.info(f"created:: {participant}")
         return True, participant
+
+
+def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: Entity | None = None) -> bool:
+    if isinstance(p2, RSParticipant):
+        return club is not None and (
+            p1.club == club
+            and p1.gender == p2.gender
+            and p1.category == p2.category
+            and (p1.club_name is not None and is_branch_club(p1.club_name) == is_branch_club(p2.club_name))
+        )
+    return (
+        p1.club == p2.club
+        and p1.gender == p2.gender
+        and p1.category == p2.category
+        and (
+            p1.club_name is not None
+            and p2.club_name is not None
+            and is_branch_club(p1.club_name) == is_branch_club(p2.club_name)
+        )
+    )
 
 
 def _add_branch_filters(q: QuerySet, club_name: str | None) -> QuerySet:

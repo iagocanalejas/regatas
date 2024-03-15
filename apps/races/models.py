@@ -33,7 +33,7 @@ class Trophy(CreationStampModel):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.tokens = list(lemmatize(self.name))
+            self.tokens = lemmatize(self.name)
         super().save(*args, **kwargs)
 
     class Meta(CreationStampModel.Meta):
@@ -55,7 +55,7 @@ class Flag(CreationStampModel):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.tokens = list(lemmatize(self.name))
+            self.tokens = lemmatize(self.name)
         super().save(*args, **kwargs)
 
     class Meta(CreationStampModel.Meta):

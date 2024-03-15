@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from django.core.exceptions import ValidationError
 
@@ -18,9 +19,11 @@ METADATA_SCHEMA = {
                     "ref_id": {"type": "string"},
                     "datasource_name": {"type": "string"},
                     "values": {"type": "object", "additionalProperties": {"type": "string"}},
+                    "date": {"type": "string"},
                 },
                 "additionalProperties": False,
-                "required": ["datasource_name", "values"],
+                # "required": ["ref_id", "datasource_name", "values", "date"],
+                "required": ["ref_id", "datasource_name", "values"],  # TODO: swap this when verification ends
             },
         }
     },
@@ -36,7 +39,7 @@ class MetadataBuilder:
     _metadata: dict
 
     def __init__(self):
-        self._metadata = {"values": {}}
+        self._metadata = {"values": {}, "date": datetime.now().date().isoformat()}
 
     def ref_id(self, value: str | int) -> "MetadataBuilder":
         self._metadata["ref_id"] = str(value)

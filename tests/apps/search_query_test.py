@@ -35,6 +35,9 @@ class SearchQueryTest(TestCase):
         query = "BANDEIRA DEPUTACION DA CORUNA"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 
+        query = "BANDEIRA MASCULINA DEPUTACIÓN DA CORUÑA"
+        self.assertEqual(flag, FlagService.get_closest_by_name(query))
+
         query = "BANDEIRA DEPUTACION DA CORUNA DE TRAINERAS"
         self.assertEqual(flag, FlagService.get_closest_by_name(query))
 

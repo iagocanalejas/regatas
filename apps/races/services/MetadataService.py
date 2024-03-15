@@ -1,8 +1,9 @@
 import logging
 
+from django.db.models import QuerySet
+
 from apps.races.filters import RaceFilters
 from apps.races.models import Race
-from rscraping.data.constants import GENDER_FEMALE, GENDER_MALE
 from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
@@ -11,12 +12,9 @@ logger = logging.getLogger(__name__)
 def get_race_or_none(
     ref_id: str,
     datasource: Datasource,
-    gender: str | None = None,
     day: int | None = None,
 ) -> Race | None:
     metadata: dict = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
-    if gender and gender in [GENDER_MALE, GENDER_FEMALE]:
-        metadata["values"] = {"gender": gender}
 
     filters: dict = {"metadata": [metadata]}
     if day:
@@ -30,7 +28,7 @@ def get_race_or_none(
         .build_query()
     )
 
-    logger.debug(f"Trying to find {ref_id=} in {datasource=}")
+    logger.debug(f"trying to find {ref_id=} in {datasource=}")
     try:
         return queryset.get()
     except Race.DoesNotExist:
@@ -52,3 +50,10 @@ def exists(ref_id: str, datasource: Datasource, day: int | None = None) -> bool:
         .build_query()
     )
     return queryset.exists()
+
+
+def get_races_by_datasource(datasource: Datasource) -> QuerySet[Race]:
+    filters: dict = {"metadata": [{"datasource_name": datasource.value.lower()}]}
+    queryset = RaceFilters(Race.objects).set_filters(filters).build_query()
+    logger.debug(f"retrieving races for {datasource=}")
+    return queryset.all()

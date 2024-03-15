@@ -28,6 +28,17 @@ class IngestorProtocol(Protocol):
         """
         ...
 
+    def fetch_by_url(self, url: str, **_) -> RSRace | None:
+        """
+        Fetch race by given URL.
+
+        Args:
+            url: str: The URL to search for.
+
+        Returns: RSRace | None: The found race.
+        """
+        ...
+
     def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None]:
         """
         Converts the fetched RSRace into a database Race trying to retrieve valid data from the database.
@@ -52,6 +63,22 @@ class IngestorProtocol(Protocol):
         Returns: tuple[Race, bool]:
             Race: The merged race result.
             bool: Whether the races were merged or not.
+        """
+        ...
+
+    def verify(self, race: Race, rs_race: RSRace) -> tuple[Race, bool, bool]:
+        """
+        Verify all the data in an existing database race matches the scrapped race.
+        Will ask to update some fields if needed.
+
+        Args:
+            race: Race: The existing database race.
+            rs_race: RSRace: The new scrapped data.
+
+        Returns: tuple[Race, bool]:
+            Race: The verified race.
+            bool: Whether the race was verified or not.
+            bool: Whether the race needs to be updated or not.
         """
         ...
 
@@ -97,6 +124,27 @@ class IngestorProtocol(Protocol):
         Returns: tuple[Participant, bool]:
             Participant: The merged participant result.
             bool: Wheter the participants was changed or not.
+        """
+        ...
+
+    def verify_participants(
+        self,
+        race: Race,
+        participants: list[Participant],
+        rs_participants: list[RSParticipant],
+    ) -> list[tuple[Participant, bool, bool]]:
+        """
+        Verify all the data in an existing database participants matches the scrapped participants.
+
+        Args:
+            race Race: The Race to witch the participant belongs.
+            participants: list[Participant]: The existing database participants.
+            rs_participants: list[RSParticipant]: The new scrapped data.
+
+        Returns: list[tuple[Participant, bool]]:
+            Participant: The verified participant.
+            bool: Whether the participant was verified or not.
+            bool: Whether the participant needs to be updated or not.
         """
         ...
 

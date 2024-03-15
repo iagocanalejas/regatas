@@ -1,6 +1,6 @@
 # Commands
 
-## Find race
+## Find Race
 
 Retrieve and process race data from a web datasource, JSON file and spreadsheet.
 
@@ -30,7 +30,7 @@ python manage.py findrace input_source [race_ids] \
 #           Outputs the race data to the given folder path in JSON format.
 ```
 
-## Scrape races
+## Scrape Races
 
 Retrieve and process race data from a web datasource, JSON file and spreadsheet.
 
@@ -74,6 +74,21 @@ python manage.py scraperaces input_source [year] \
 #
 #       -o, --output:
 #           Outputs the race data to the given folder path in JSON format.
+```
+
+## Verify Races
+
+Retrieve races from the database and verifies it's datasources ara correct.
+
+```sh
+python manage.py validatedatasource datasource [year]
+
+#   Arguments:
+#       datasource:
+#           The name of the Datasource that will be validated.
+#
+#       year:
+#           The year of the races that will be processed.
 ```
 
 # Development
