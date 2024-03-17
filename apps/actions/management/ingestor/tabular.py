@@ -6,9 +6,9 @@ from apps.actions.management.helpers.input import input_new_value, input_shoud_c
 from apps.participants.models import Participant
 from apps.races.models import Race
 from apps.races.services import MetadataService
-from rscraping import Datasource
 from rscraping.clients import TabularDataClient
 from rscraping.data.constants import GENDER_FEMALE
+from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 from rscraping.data.normalization.leagues import normalize_league_name
 

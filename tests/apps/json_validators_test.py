@@ -4,7 +4,7 @@ from jsonschema.exceptions import ValidationError
 
 from apps.races.models import Flag, Race
 from apps.schemas import MetadataBuilder
-from rscraping import Datasource
+from rscraping.data.models import Datasource
 
 
 class JSONValidatorsTest(TestCase):

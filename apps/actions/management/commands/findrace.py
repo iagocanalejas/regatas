@@ -7,8 +7,8 @@ import os
 from django.core.management import BaseCommand
 
 from apps.actions.management.ingestor import build_ingestor
-from rscraping import Datasource
 from rscraping.clients import TabularClientConfig
+from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
 

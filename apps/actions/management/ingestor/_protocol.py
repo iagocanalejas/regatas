@@ -3,7 +3,7 @@ from typing import Any, Protocol
 
 from apps.participants.models import Participant
 from apps.races.models import Race
-from rscraping import Datasource
+from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 

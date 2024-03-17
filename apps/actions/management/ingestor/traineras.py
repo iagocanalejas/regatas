@@ -4,8 +4,8 @@ from collections.abc import Generator
 from typing import Any, override
 
 from apps.races.services import MetadataService
-from rscraping import Datasource
 from rscraping.data.constants import GENDER_ALL
+from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 from rscraping.parsers.html import MultiDayRaceException

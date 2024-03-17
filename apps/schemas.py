@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 
-from rscraping import Datasource
+from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
 

@@ -29,9 +29,9 @@ from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from pyutils.shortcuts import all_or_none
-from rscraping import Datasource
 from rscraping.clients import ClientProtocol
 from rscraping.data.constants import GENDER_ALL
+from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 

@@ -4,7 +4,7 @@ from django.db import migrations, models
 
 import apps.schemas
 import djutils.validators.schema
-from rscraping import Datasource
+from rscraping.data.models import Datasource
 
 
 def update_metadata(apps, _):

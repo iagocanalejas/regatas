@@ -6,7 +6,8 @@ from django.db.models import Q
 
 from apps.races.models import Flag, Race, Trophy
 from pyutils.strings import closest_result, expand_lemmas, normalize_synonyms, unaccent, whitespaces_clean
-from rscraping import SYNONYMS, lemmatize
+from rscraping import lemmatize
+from rscraping.data.constants import SYNONYMS
 from rscraping.data.functions import is_memorial
 
 logger = logging.getLogger(__name__)
