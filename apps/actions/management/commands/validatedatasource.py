@@ -84,6 +84,13 @@ class Command(BaseCommand):
                         logger.info(f"updating {race=}")
                         ingestor.save(race)
 
+                    if datasource == Datasource.LGT:
+                        logger.error(
+                            "We can't verify LGT participants because the are !!!FUCKING DUMB!!! "
+                            + "and replace the names of the participants each year."
+                        )
+                        continue
+
                     participants = list(Participant.objects.filter(race=race))
                     participants = ingestor.verify_participants(race, participants, scrapped_race.participants)
                     for p, verified, needs_update in participants:
