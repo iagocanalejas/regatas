@@ -22,6 +22,7 @@ from apps.actions.management.helpers.input import (
 )
 from apps.actions.management.helpers.retrieval import retrieve_competition, retrieve_entity, retrieve_league
 from apps.actions.serializers import ParticipantSerializer, RaceSerializer
+from apps.entities.models import Entity
 from apps.entities.normalization import normalize_club_name
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
@@ -113,10 +114,28 @@ class Ingestor(IngestorProtocol):
         organizer = retrieve_entity(normalize_club_name(race.organizer), entity_type=None) if race.organizer else None
         logger.info(f"using {organizer=}")
 
+        town = race.town
+        logger.info(f"using {town=}")
+
+        competitions = RaceService.get_races_by_competition(trophy, flag, league)
+        if competitions.count():
+            logger.info(f"found {competitions.count()} matching races")
+            towns = competitions.values_list("town", flat=True).distinct()
+            if towns.count() == 1 and (not town or input_new_value("town", town, towns.first())):
+                logger.info(f"updating {town=} with {towns.first()}")
+                town = towns.first()
+
+            organizers = competitions.values_list("organizer", flat=True).distinct()
+            if organizers.count() == 1:
+                new_organizer = Entity.objects.get(pk=organizers.first())
+                if not organizer or input_new_value("organizer", organizer, new_organizer):
+                    logger.info(f"updating {organizer=} with {new_organizer}")
+                    organizer = new_organizer
+
         new_race = Race(
             laps=race.race_laps,
             lanes=race.race_lanes,
-            town=race.town,
+            town=town,
             type=race.type,
             date=datetime.strptime(race.date, "%d/%m/%Y").date(),
             day=race.day,
@@ -369,13 +388,13 @@ class Ingestor(IngestorProtocol):
                 continue
 
             needs_update = False
-            laps = [datetime.strptime(lap, "%M:%S.%f").time() for lap in rsp.laps]
-            if len(laps) >= len(p.laps) and input_new_value("laps", laps, p.laps):
-                logger.info(f"updating {p.laps} with {laps}")
-                p.laps = laps
+            laps = [lap.strftime("%M:%S.%f") for lap in p.laps]
+            if len(rsp.laps) >= len(p.laps) and input_new_value("laps", rsp.laps, laps):
+                logger.info(f"updating {laps} with {rsp.laps}")
+                p.laps = [datetime.strptime(lap, "%M:%S.%f").time() for lap in rsp.laps]
                 needs_update = True
 
-            if input_new_value("distance", rsp.distance, p.distance):
+            if (p.distance is None or rsp.distance != 5556) and input_new_value("distance", rsp.distance, p.distance):
                 logger.info(f"updating {p.distance=} with {rsp.distance=}")
                 p.distance = rsp.distance
                 needs_update = True

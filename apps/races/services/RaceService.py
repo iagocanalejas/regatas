@@ -34,6 +34,15 @@ def filter(
     return queryset.all()
 
 
+def get_races_by_competition(trophy: Trophy | None, flag: Flag | None, league: League | None) -> QuerySet[Race]:
+    filters = [
+        Q(trophy=trophy) if trophy else Q(trophy__isnull=True),
+        Q(flag=flag) if flag else Q(flag__isnull=True),
+        Q(league=league) if league else Q(league__isnull=True),
+    ]
+    return Race.objects.filter(*filters)
+
+
 def get_by_race(race: Race) -> Race | None:
     q = Race.objects.filter(league=race.league) if race.league else Race.objects.filter(league__isnull=True)
     q = q.filter(trophy=race.trophy) if race.trophy else q.filter(trophy__isnull=True)

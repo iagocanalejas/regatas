@@ -238,6 +238,7 @@ AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 LANGUAGE_CODE = "es-es"
 TIME_ZONE = "UTC"
+TIME_FORMAT = "%H:%M:%S.%f"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

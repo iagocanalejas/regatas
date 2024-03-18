@@ -81,6 +81,11 @@ class SearchQueryTest(TestCase):
         entity = Entity.objects.get(pk=11)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
 
+        query = "MUGARDOS - A CABANA FERROL"
+        query = normalize_club_name(query)
+        entity = Entity.objects.get(pk=90)
+        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
+
         query = "SAN JUAN DE TIRAN"
         with self.assertRaises(ObjectDoesNotExist):
             EntityService.get_closest_club_by_name(query)

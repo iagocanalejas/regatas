@@ -2,6 +2,7 @@ from django.db.models import Q
 from utils.choices import ENTITY_CLUB
 
 from apps.entities.models import Entity
+from pyutils.shortcuts import all_none
 from pyutils.strings import whitespaces_clean
 from rscraping.data.normalization.clubs import _KNOWN_SPONSORS
 from rscraping.data.normalization.clubs import normalize_club_name as rs_normalize_club_name
@@ -33,7 +34,7 @@ def remove_club_sponsor(name: str) -> str:
         if not maybe_sponsor or not query.exists() or maybe_sponsor in _KNOWN_SPONSORS:
             maybe_sponsor = None
 
-        if all(i is None for i in [maybe_club, maybe_sponsor]):
+        if all_none(maybe_club, maybe_sponsor):
             return name
 
         name = " - ".join(i for i in [maybe_club, maybe_sponsor] if i is not None)

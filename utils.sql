@@ -11,7 +11,7 @@ ORDER BY trophy_id, trophy_edition, flag_id, flag_edition;
 -- RETRIEVE RACES FILTERING BY METADATA DATASOURCE
 SELECT *
 FROM race
-WHERE extract(YEAR from date) = 2015 
+WHERE extract(YEAR from date) = 2015
 	and metadata->'datasource' @> '[{"datasource_name": "abe"}]';
 
 -- TODO: command to find same trophy/flag races with different laps/lanes/towns

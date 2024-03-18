@@ -1,1266 +1,1277 @@
 - model: entities.league
   pk: 1
   fields:
-    from_date: 2022-11-07 15:05:28.946792+00:00
-    to_date: null
-    is_active: true
-    name: ASOCIACIÓN DE CLUBES DE TRAINERAS
-    symbol: ACT
-    parent: null
-    gender: ""
+      from_date: 2022-11-07 15:05:28.946792+00:00
+      to_date: null
+      is_active: true
+      name: ASOCIACIÓN DE CLUBES DE TRAINERAS
+      symbol: ACT
+      parent: null
+      gender: ""
 - model: entities.league
   pk: 2
   fields:
-    from_date: 2022-11-07 15:05:28.948245+00:00
-    to_date: null
-    is_active: true
-    name: EUSKO LABEL LIGA
-    symbol: ACT
-    parent: 1
-    gender: MALE
+      from_date: 2022-11-07 15:05:28.948245+00:00
+      to_date: null
+      is_active: true
+      name: EUSKO LABEL LIGA
+      symbol: ACT
+      parent: 1
+      gender: MALE
 - model: entities.league
   pk: 3
   fields:
-    from_date: 2022-11-07 15:05:28.948710+00:00
-    to_date: null
-    is_active: true
-    name: LIGA EUSKOTREN
-    symbol: ACT
-    parent: 1
-    gender: FEMALE
+      from_date: 2022-11-07 15:05:28.948710+00:00
+      to_date: null
+      is_active: true
+      name: LIGA EUSKOTREN
+      symbol: ACT
+      parent: 1
+      gender: FEMALE
 - model: entities.league
   pk: 4
   fields:
-    from_date: 2022-11-07 15:05:28.949129+00:00
-    to_date: null
-    is_active: true
-    name: LIGA GALEGA DE TRAIÑAS
-    symbol: LGT
-    parent: null
-    gender: ""
+      from_date: 2022-11-07 15:05:28.949129+00:00
+      to_date: null
+      is_active: true
+      name: LIGA GALEGA DE TRAIÑAS
+      symbol: LGT
+      parent: null
+      gender: ""
 - model: entities.league
   pk: 5
   fields:
-    from_date: 2022-11-07 15:05:28.949597+00:00
-    to_date: null
-    is_active: true
-    name: LIGA GALEGA DE TRAIÑAS A
-    symbol: LGT A
-    parent: 4
-    gender: MALE
+      from_date: 2022-11-07 15:05:28.949597+00:00
+      to_date: null
+      is_active: true
+      name: LIGA GALEGA DE TRAIÑAS A
+      symbol: LGT A
+      parent: 4
+      gender: MALE
 - model: entities.league
   pk: 6
   fields:
-    from_date: 2022-11-07 15:05:28.949992+00:00
-    to_date: null
-    is_active: true
-    name: LIGA GALEGA DE TRAIÑAS FEMENINA
-    symbol: LGT FEM
-    parent: 4
-    gender: FEMALE
+      from_date: 2022-11-07 15:05:28.949992+00:00
+      to_date: null
+      is_active: true
+      name: LIGA GALEGA DE TRAIÑAS FEMENINA
+      symbol: LGT FEM
+      parent: 4
+      gender: FEMALE
 - model: entities.league
   pk: 7
   fields:
-    from_date: 2022-11-07 15:05:28.950383+00:00
-    to_date: null
-    is_active: true
-    name: LIGA GALEGA DE TRAIÑAS B
-    symbol: LGT B
-    parent: 4
-    gender: MALE
+      from_date: 2022-11-07 15:05:28.950383+00:00
+      to_date: null
+      is_active: true
+      name: LIGA GALEGA DE TRAIÑAS B
+      symbol: LGT B
+      parent: 4
+      gender: MALE
 - model: entities.league
   pk: 8
   fields:
-    from_date: 2022-11-07 15:05:28.950776+00:00
-    to_date: null
-    is_active: true
-    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
-    symbol: ARC
-    parent: null
-    gender: ""
+      from_date: 2022-11-07 15:05:28.950776+00:00
+      to_date: null
+      is_active: true
+      name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
+      symbol: ARC
+      parent: null
+      gender: ""
 - model: entities.league
   pk: 9
   fields:
-    from_date: 2022-11-07 15:05:28.951174+00:00
-    to_date: null
-    is_active: true
-    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO 1
-    symbol: ARC 1
-    parent: 8
-    gender: MALE
+      from_date: 2022-11-07 15:05:28.951174+00:00
+      to_date: null
+      is_active: true
+      name: ASOCIACIÓN DE REMO DEL CANTÁBRICO 1
+      symbol: ARC 1
+      parent: 8
+      gender: MALE
 - model: entities.league
   pk: 10
   fields:
-    from_date: 2022-11-07 15:05:28.951562+00:00
-    to_date: null
-    is_active: true
-    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO 2
-    symbol: ARC 2
-    parent: 8
-    gender: MALE
+      from_date: 2022-11-07 15:05:28.951562+00:00
+      to_date: null
+      is_active: true
+      name: ASOCIACIÓN DE REMO DEL CANTÁBRICO 2
+      symbol: ARC 2
+      parent: 8
+      gender: MALE
 - model: entities.league
   pk: 11
   fields:
-    from_date: 2022-11-07 15:05:28.952057+00:00
-    to_date: null
-    is_active: true
-    name: EMAKUMEZKO TRAINERUEN ELKARTEA
-    symbol: ETE
-    parent: 8
-    gender: FEMALE
+      from_date: 2022-11-07 15:05:28.952057+00:00
+      to_date: null
+      is_active: true
+      name: EMAKUMEZKO TRAINERUEN ELKARTEA
+      symbol: ETE
+      parent: 8
+      gender: FEMALE
 - model: entities.entity
   pk: 1
   fields:
-    from_date: 2022-11-07 15:05:28.952561+00:00
-    to_date: null
-    is_active: true
-    name: ASOCIACIÓN DE CLUBES DE TRAINERAS
-    normalized_name: ASOCIACIÓN DE CLUBES DE TRAINERAS
-    known_names: "[]"
-    type: LEAGUE
-    symbol: ACT
+      from_date: 2022-11-07 15:05:28.952561+00:00
+      to_date: null
+      is_active: true
+      name: ASOCIACIÓN DE CLUBES DE TRAINERAS
+      normalized_name: ASOCIACIÓN DE CLUBES DE TRAINERAS
+      known_names: "[]"
+      type: LEAGUE
+      symbol: ACT
 - model: entities.entity
   pk: 2
   fields:
-    from_date: 2022-11-07 15:05:28.953333+00:00
-    to_date: null
-    is_active: true
-    name: LIGA GALEGA DE TRAIÑAS
-    normalized_name: LIGA GALEGA DE TRAIÑAS
-    known_names: "[]"
-    type: LEAGUE
-    symbol: LGT
+      from_date: 2022-11-07 15:05:28.953333+00:00
+      to_date: null
+      is_active: true
+      name: LIGA GALEGA DE TRAIÑAS
+      normalized_name: LIGA GALEGA DE TRAIÑAS
+      known_names: "[]"
+      type: LEAGUE
+      symbol: LGT
 - model: entities.entity
   pk: 3
   fields:
-    from_date: 2022-11-07 15:05:28.953779+00:00
-    to_date: null
-    is_active: true
-    name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
-    normalized_name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
-    known_names: "[]"
-    type: LEAGUE
-    symbol: ARC
+      from_date: 2022-11-07 15:05:28.953779+00:00
+      to_date: null
+      is_active: true
+      name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
+      normalized_name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
+      known_names: "[]"
+      type: LEAGUE
+      symbol: ARC
 - model: entities.entity
   pk: 4
   fields:
-    from_date: 2022-11-07 15:05:28.954224+00:00
-    to_date: null
-    is_active: true
-    name: EMAKUMEZKO TRAINERUEN ELKARTEA
-    normalized_name: EMAKUMEZKO TRAINERUEN ELKARTEA
-    known_names: "[]"
-    type: LEAGUE
-    symbol: ETE
+      from_date: 2022-11-07 15:05:28.954224+00:00
+      to_date: null
+      is_active: true
+      name: EMAKUMEZKO TRAINERUEN ELKARTEA
+      normalized_name: EMAKUMEZKO TRAINERUEN ELKARTEA
+      known_names: "[]"
+      type: LEAGUE
+      symbol: ETE
 - model: entities.entity
   pk: 5
   fields:
-    from_date: 2022-11-07 15:05:28.954653+00:00
-    to_date: null
-    is_active: true
-    name: FEDERACIÓN ESPAÑOLA DE REMO
-    normalized_name: FEDERACIÓN ESPAÑOLA DE REMO
-    known_names: "[]"
-    type: FEDERATION
-    symbol: FER
+      from_date: 2022-11-07 15:05:28.954653+00:00
+      to_date: null
+      is_active: true
+      name: FEDERACIÓN ESPAÑOLA DE REMO
+      normalized_name: FEDERACIÓN ESPAÑOLA DE REMO
+      known_names: "[]"
+      type: FEDERATION
+      symbol: FER
 - model: entities.entity
   pk: 6
   fields:
-    from_date: 2022-11-07 15:05:28.955089+00:00
-    to_date: null
-    is_active: true
-    name: FEDERACIÓN GALEGA DE REMO
-    normalized_name: FEDERACIÓN GALEGA DE REMO
-    known_names: "[]"
-    type: FEDERATION
-    symbol: FEGAR
+      from_date: 2022-11-07 15:05:28.955089+00:00
+      to_date: null
+      is_active: true
+      name: FEDERACIÓN GALEGA DE REMO
+      normalized_name: FEDERACIÓN GALEGA DE REMO
+      known_names: "[]"
+      type: FEDERATION
+      symbol: FEGAR
 - model: entities.entity
   pk: 7
   fields:
-    from_date: 2022-11-07 15:05:28.955520+00:00
-    to_date: null
-    is_active: true
-    name: FEDERACIÓN CANTABRA DE REMO
-    normalized_name: FEDERACIÓN CANTABRA DE REMO
-    known_names: "[]"
-    type: FEDERATION
-    symbol: FECAN
+      from_date: 2022-11-07 15:05:28.955520+00:00
+      to_date: null
+      is_active: true
+      name: FEDERACIÓN CANTABRA DE REMO
+      normalized_name: FEDERACIÓN CANTABRA DE REMO
+      known_names: "[]"
+      type: FEDERATION
+      symbol: FECAN
 - model: entities.entity
   pk: 8
   fields:
-    from_date: 2022-11-07 15:05:28.955945+00:00
-    to_date: null
-    is_active: true
-    name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
-    normalized_name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
-    known_names: "[]"
-    type: FEDERATION
-    symbol: REMOASTUR
+      from_date: 2022-11-07 15:05:28.955945+00:00
+      to_date: null
+      is_active: true
+      name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
+      normalized_name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
+      known_names: "[]"
+      type: FEDERATION
+      symbol: REMOASTUR
 - model: entities.entity
   pk: 9
   fields:
-    from_date: 2022-11-07 15:05:28.956366+00:00
-    to_date: null
-    is_active: true
-    name: EUSKAL ARRAU FEDERAKUNTZA
-    normalized_name: EUSKAL ARRAU FEDERAKUNTZA
-    known_names: "[]"
-    type: FEDERATION
-    symbol: ARRAUNA
+      from_date: 2022-11-07 15:05:28.956366+00:00
+      to_date: null
+      is_active: true
+      name: EUSKAL ARRAU FEDERAKUNTZA
+      normalized_name: EUSKAL ARRAU FEDERAKUNTZA
+      known_names: "[]"
+      type: FEDERATION
+      symbol: ARRAUNA
 - model: entities.entity
   pk: 10
   fields:
-    from_date: 2022-11-07 15:05:28.956814+00:00
-    to_date: null
-    is_active: true
-    name: DONOSTIA KULTURA
-    normalized_name: DONOSTIA KULTURA
-    known_names: "[]"
-    type: PRIVATE
-    symbol: null
+      from_date: 2022-11-07 15:05:28.956814+00:00
+      to_date: null
+      is_active: true
+      name: DONOSTIA KULTURA
+      normalized_name: DONOSTIA KULTURA
+      known_names: "[]"
+      type: PRIVATE
+      symbol: null
 - model: entities.entity
   pk: 11
   fields:
-    from_date: 2022-11-07 15:05:28.962668+00:00
-    to_date: null
-    is_active: true
-    name: AMEGROVE
-    normalized_name: AMEGROVE
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.962668+00:00
+      to_date: null
+      is_active: true
+      name: AMEGROVE
+      normalized_name: AMEGROVE
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 12
   fields:
-    from_date: 2022-11-07 15:05:28.963129+00:00
-    to_date: null
-    is_active: true
-    name: BUEU
-    normalized_name: BUEU
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.963129+00:00
+      to_date: null
+      is_active: true
+      name: BUEU
+      normalized_name: BUEU
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 13
   fields:
-    from_date: 2022-11-07 15:05:28.963578+00:00
-    to_date: null
-    is_active: true
-    name: CABO DA CRUZ
-    normalized_name: CABO DA CRUZ
-    known_names: "[]"
-    type: CLUB
-    symbol: CRCC
+      from_date: 2022-11-07 15:05:28.963578+00:00
+      to_date: null
+      is_active: true
+      name: CABO DA CRUZ
+      normalized_name: CABO DA CRUZ
+      known_names: "[]"
+      type: CLUB
+      symbol: CRCC
 - model: entities.entity
   pk: 14
   fields:
-    from_date: 2022-11-07 15:05:28.964013+00:00
-    to_date: null
-    is_active: true
-    name: CASTROPOL
-    normalized_name: CASTROPOL
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.964013+00:00
+      to_date: null
+      is_active: true
+      name: CASTROPOL
+      normalized_name: CASTROPOL
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 15
   fields:
-    from_date: 2022-11-07 15:05:28.964447+00:00
-    to_date: null
-    is_active: true
-    name: CEDEIRA
-    normalized_name: CEDEIRA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.964447+00:00
+      to_date: null
+      is_active: true
+      name: CEDEIRA
+      normalized_name: CEDEIRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 16
   fields:
-    from_date: 2022-11-07 15:05:28.964867+00:00
-    to_date: null
-    is_active: true
-    name: CESANTES
-    normalized_name: CESANTES
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.964867+00:00
+      to_date: null
+      is_active: true
+      name: CESANTES
+      normalized_name: CESANTES
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 17
   fields:
-    from_date: 2022-11-07 15:05:28.965288+00:00
-    to_date: null
-    is_active: true
-    name: CHAPELA
-    normalized_name: CHAPELA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.965288+00:00
+      to_date: null
+      is_active: true
+      name: CHAPELA
+      normalized_name: CHAPELA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 18
   fields:
-    from_date: 2022-11-07 15:05:28.965712+00:00
-    to_date: null
-    is_active: true
-    name: MECOS
-    normalized_name: MECOS
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.965712+00:00
+      to_date: null
+      is_active: true
+      name: MECOS
+      normalized_name: MECOS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 19
   fields:
-    from_date: 2022-11-07 15:05:28.966136+00:00
-    to_date: null
-    is_active: true
-    name: MERA
-    normalized_name: MERA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.966136+00:00
+      to_date: null
+      is_active: true
+      name: MERA
+      normalized_name: MERA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 20
   fields:
-    from_date: 2022-11-07 15:05:28.966564+00:00
-    to_date: null
-    is_active: true
-    name: MUGARDOS
-    normalized_name: MUGARDOS
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.966564+00:00
+      to_date: null
+      is_active: true
+      name: MUGARDOS
+      normalized_name: MUGARDOS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 21
   fields:
-    from_date: 2022-11-07 15:05:28.966997+00:00
-    to_date: null
-    is_active: true
-    name: A CABANA
-    normalized_name: A CABANA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.966997+00:00
+      to_date: null
+      is_active: true
+      name: A CABANA
+      normalized_name: A CABANA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 22
   fields:
-    from_date: 2022-11-07 15:05:28.967421+00:00
-    to_date: null
-    is_active: true
-    name: ARES
-    normalized_name: ARES
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.967421+00:00
+      to_date: null
+      is_active: true
+      name: ARES
+      normalized_name: ARES
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 23
   fields:
-    from_date: 2022-11-07 15:05:28.967847+00:00
-    to_date: null
-    is_active: true
-    name: MUROS
-    normalized_name: MUROS
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.967847+00:00
+      to_date: null
+      is_active: true
+      name: MUROS
+      normalized_name: MUROS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 24
   fields:
-    from_date: 2022-11-07 15:05:28.968270+00:00
-    to_date: null
-    is_active: true
-    name: NARÓN
-    normalized_name: NARÓN
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.968270+00:00
+      to_date: null
+      is_active: true
+      name: NARÓN
+      normalized_name: NARÓN
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 25
   fields:
-    from_date: 2022-11-07 15:05:28.968688+00:00
-    to_date: null
-    is_active: true
-    name: PUEBLA
-    normalized_name: PUEBLA
-    known_names: "[]"
-    type: CLUB
-    symbol: CRP
+      from_date: 2022-11-07 15:05:28.968688+00:00
+      to_date: null
+      is_active: true
+      name: PUEBLA
+      normalized_name: PUEBLA
+      known_names: "[]"
+      type: CLUB
+      symbol: CRP
 - model: entities.entity
   pk: 26
   fields:
-    from_date: 2022-11-07 15:05:28.969110+00:00
-    to_date: null
-    is_active: true
-    name: RIANXO
-    normalized_name: RIANXO
-    known_names: "[]"
-    type: CLUB
-    symbol: CRR
+      from_date: 2022-11-07 15:05:28.969110+00:00
+      to_date: null
+      is_active: true
+      name: RIANXO
+      normalized_name: RIANXO
+      known_names: "[]"
+      type: CLUB
+      symbol: CRR
 - model: entities.entity
   pk: 27
   fields:
-    from_date: 2022-11-07 15:05:28.969530+00:00
-    to_date: null
-    is_active: true
-    name: RIVEIRA
-    normalized_name: RIVEIRA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.969530+00:00
+      to_date: null
+      is_active: true
+      name: RIVEIRA
+      normalized_name: RIVEIRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 28
   fields:
-    from_date: 2022-11-07 15:05:28.969945+00:00
-    to_date: null
-    is_active: true
-    name: PERILLO
-    normalized_name: PERILLO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.969945+00:00
+      to_date: null
+      is_active: true
+      name: PERILLO
+      normalized_name: PERILLO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 29
   fields:
-    from_date: 2022-11-07 15:05:28.970361+00:00
-    to_date: null
-    is_active: true
-    name: SAMERTOLAMEU
-    normalized_name: SAMERTOLAMEU
-    known_names: '["MEIRA"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.970361+00:00
+      to_date: null
+      is_active: true
+      name: SAMERTOLAMEU
+      normalized_name: SAMERTOLAMEU
+      known_names: '["MEIRA"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 30
   fields:
-    from_date: 2022-11-07 15:05:28.970798+00:00
-    to_date: null
-    is_active: true
-    name: TIRÁN
-    normalized_name: TIRÁN
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.970798+00:00
+      to_date: null
+      is_active: true
+      name: TIRÁN
+      normalized_name: TIRÁN
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 31
   fields:
-    from_date: 2022-11-07 15:05:28.971224+00:00
-    to_date: null
-    is_active: true
-    name: VILA DE CANGAS
-    normalized_name: VILA DE CANGAS
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.971224+00:00
+      to_date: null
+      is_active: true
+      name: VILA DE CANGAS
+      normalized_name: VILA DE CANGAS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 32
   fields:
-    from_date: 2022-11-07 15:05:28.971654+00:00
-    to_date: null
-    is_active: true
-    name: ESTEIRANA
-    normalized_name: ESTEIRANA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.971654+00:00
+      to_date: null
+      is_active: true
+      name: ESTEIRANA
+      normalized_name: ESTEIRANA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 33
   fields:
-    from_date: 2022-11-07 15:05:28.972071+00:00
-    to_date: null
-    is_active: true
-    name: VIRXE DA GUÍA
-    normalized_name: VIRXE DA GUÍA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.972071+00:00
+      to_date: null
+      is_active: true
+      name: VIRXE DA GUÍA
+      normalized_name: VIRXE DA GUÍA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 34
   fields:
-    from_date: 2022-11-07 15:05:28.972495+00:00
-    to_date: null
-    is_active: true
-    name: VILAXOÁN
-    normalized_name: VILAXOÁN
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.972495+00:00
+      to_date: null
+      is_active: true
+      name: VILAXOÁN
+      normalized_name: VILAXOÁN
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 35
   fields:
-    from_date: 2022-11-07 15:05:28.972924+00:00
-    to_date: null
-    is_active: true
-    name: CORUXO
-    normalized_name: CORUXO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.972924+00:00
+      to_date: null
+      is_active: true
+      name: CORUXO
+      normalized_name: CORUXO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 36
   fields:
-    from_date: 2022-11-07 15:05:28.973340+00:00
-    to_date: null
-    is_active: true
-    name: ROBALEIRA
-    normalized_name: ROBALEIRA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.973340+00:00
+      to_date: null
+      is_active: true
+      name: ROBALEIRA
+      normalized_name: ROBALEIRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 37
   fields:
-    from_date: 2022-11-07 15:05:28.973760+00:00
-    to_date: null
-    is_active: true
-    name: GETARIA
-    normalized_name: GETARIAKO
-    known_names: '["GETARIA"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.973760+00:00
+      to_date: null
+      is_active: true
+      name: GETARIA
+      normalized_name: GETARIAKO
+      known_names: '["GETARIA"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 38
   fields:
-    from_date: 2022-11-07 15:05:28.974189+00:00
-    to_date: null
-    is_active: true
-    name: CASTRO URDIALES
-    normalized_name: CASTRO URDIALES
-    known_names: '["CASTRE\u00d1A", "CASTRO"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.974189+00:00
+      to_date: null
+      is_active: true
+      name: CASTRO URDIALES
+      normalized_name: CASTRO URDIALES
+      known_names: '["CASTRE\u00d1A", "CASTRO"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 39
   fields:
-    from_date: 2022-11-07 15:05:28.974628+00:00
-    to_date: null
-    is_active: true
-    name: URDAIBAI
-    normalized_name: URDAIBAI
-    known_names: '["BERMEO"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.974628+00:00
+      to_date: null
+      is_active: true
+      name: URDAIBAI
+      normalized_name: URDAIBAI
+      known_names: '["BERMEO"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 40
   fields:
-    from_date: 2022-11-07 15:05:28.975057+00:00
-    to_date: null
-    is_active: true
-    name: KAIKU
-    normalized_name: KAIKU
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.975057+00:00
+      to_date: null
+      is_active: true
+      name: KAIKU
+      normalized_name: KAIKU
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 41
   fields:
-    from_date: 2022-11-07 15:05:28.975475+00:00
-    to_date: null
-    is_active: true
-    name: SANPEDROTARRA
-    normalized_name: SANPEDROTARRA
-    known_names: '["SAN PEDRO"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.975475+00:00
+      to_date: null
+      is_active: true
+      name: SANPEDROTARRA
+      normalized_name: SANPEDROTARRA
+      known_names: '["SAN PEDRO"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 42
   fields:
-    from_date: 2022-11-07 15:05:28.975898+00:00
-    to_date: null
-    is_active: true
-    name: HONDARRIBIA
-    normalized_name: HONDARRIBIA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.975898+00:00
+      to_date: null
+      is_active: true
+      name: HONDARRIBIA
+      normalized_name: HONDARRIBIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 43
   fields:
-    from_date: 2022-11-07 15:05:28.976331+00:00
-    to_date: null
-    is_active: true
-    name: LAREDO
-    normalized_name: LAREDO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.976331+00:00
+      to_date: null
+      is_active: true
+      name: LAREDO
+      normalized_name: LAREDO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 44
   fields:
-    from_date: 2022-11-07 15:05:28.976752+00:00
-    to_date: null
-    is_active: true
-    name: PORTUGALETE
-    normalized_name: SAN NICOLÁS DE PORTUGALETE
-    known_names: '["PORTUGALETE"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.976752+00:00
+      to_date: null
+      is_active: true
+      name: PORTUGALETE
+      normalized_name: SAN NICOLÁS DE PORTUGALETE
+      known_names: '["PORTUGALETE"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 45
   fields:
-    from_date: 2022-11-07 15:05:28.977174+00:00
-    to_date: null
-    is_active: true
-    name: ZIERBENA
-    normalized_name: ZIERBENA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.977174+00:00
+      to_date: null
+      is_active: true
+      name: ZIERBENA
+      normalized_name: ZIERBENA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 46
   fields:
-    from_date: 2022-11-07 15:05:28.977604+00:00
-    to_date: null
-    is_active: true
-    name: SAN JUAN
-    normalized_name: PASAIA DONIBANE KOXTAPE
-    known_names: '["SAN JUAN KOXTAPE", "SAN JUAN"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.977604+00:00
+      to_date: null
+      is_active: true
+      name: SAN JUAN
+      normalized_name: PASAIA DONIBANE KOXTAPE
+      known_names: '["SAN JUAN KOXTAPE", "SAN JUAN"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 47
   fields:
-    from_date: 2022-11-07 15:05:28.978043+00:00
-    to_date: null
-    is_active: true
-    name: ZUMAIA
-    normalized_name: AITA MARI
-    known_names: '["ZUMAIA", "ZUMAIAKO", "UROLA KOSTA"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.978043+00:00
+      to_date: null
+      is_active: true
+      name: ZUMAIA
+      normalized_name: AITA MARI
+      known_names: '["ZUMAIA", "ZUMAIAKO", "UROLA KOSTA"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 48
   fields:
-    from_date: 2022-11-07 15:05:28.978480+00:00
-    to_date: null
-    is_active: true
-    name: LEKITTARRA
-    normalized_name: ISUNTZA
-    known_names: '["LEKITTARRA"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.978480+00:00
+      to_date: null
+      is_active: true
+      name: LEKITTARRA
+      normalized_name: ISUNTZA
+      known_names: '["LEKITTARRA"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 49
   fields:
-    from_date: 2022-11-07 15:05:28.978911+00:00
-    to_date: null
-    is_active: true
-    name: ZARAUTZ
-    normalized_name: ZARAUTZ
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.978911+00:00
+      to_date: null
+      is_active: true
+      name: ZARAUTZ
+      normalized_name: ZARAUTZ
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 50
   fields:
-    from_date: 2022-11-07 15:05:28.979331+00:00
-    to_date: null
-    is_active: true
-    name: SANTURTZI
-    normalized_name: ITSASOKO AMA
-    known_names: '["SANTURTZI"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.979331+00:00
+      to_date: null
+      is_active: true
+      name: SANTURTZI
+      normalized_name: ITSASOKO AMA
+      known_names: '["SANTURTZI"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 51
   fields:
-    from_date: 2022-11-07 15:05:28.979774+00:00
-    to_date: null
-    is_active: true
-    name: ORIO
-    normalized_name: ORIO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.979774+00:00
+      to_date: null
+      is_active: true
+      name: ORIO
+      normalized_name: ORIO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 52
   fields:
-    from_date: 2022-11-07 15:05:28.980205+00:00
-    to_date: null
-    is_active: true
-    name: VALLE DE CAMARGO
-    normalized_name: VALLE DE CAMARGO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.980205+00:00
+      to_date: null
+      is_active: true
+      name: VALLE DE CAMARGO
+      normalized_name: VALLE DE CAMARGO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 53
   fields:
-    from_date: 2022-11-07 15:05:28.980644+00:00
-    to_date: null
-    is_active: true
-    name: ILLUMBE
-    normalized_name: ILLUMBE
-    known_names: '["TRINTXERPE"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.980644+00:00
+      to_date: null
+      is_active: true
+      name: ILLUMBE
+      normalized_name: ILLUMBE
+      known_names: '["TRINTXERPE"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 54
   fields:
-    from_date: 2022-11-07 15:05:28.981081+00:00
-    to_date: null
-    is_active: true
-    name: PEDREÑA
-    normalized_name: PEDREÑA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.981081+00:00
+      to_date: null
+      is_active: true
+      name: PEDREÑA
+      normalized_name: PEDREÑA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 55
   fields:
-    from_date: 2022-11-07 15:05:28.981503+00:00
-    to_date: null
-    is_active: true
-    name: KAIARRIBIA DONOSTIARRA
-    normalized_name: KAIARRIBIA DONOSTIARRA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.981503+00:00
+      to_date: null
+      is_active: true
+      name: KAIARRIBIA DONOSTIARRA
+      normalized_name: KAIARRIBIA DONOSTIARRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 56
   fields:
-    from_date: 2022-11-07 15:05:28.981932+00:00
-    to_date: null
-    is_active: true
-    name: ASTILLERO
-    normalized_name: ASTILLERO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.981932+00:00
+      to_date: null
+      is_active: true
+      name: ASTILLERO
+      normalized_name: ASTILLERO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 57
   fields:
-    from_date: 2022-11-07 15:05:28.982382+00:00
-    to_date: null
-    is_active: true
-    name: ONDARROA
-    normalized_name: ONDARROA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.982382+00:00
+      to_date: null
+      is_active: true
+      name: ONDARROA
+      normalized_name: ONDARROA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 58
   fields:
-    from_date: 2022-11-07 15:05:28.982807+00:00
-    to_date: null
-    is_active: true
-    name: DEUSTO
-    normalized_name: DEUSTO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.982807+00:00
+      to_date: null
+      is_active: true
+      name: DEUSTO
+      normalized_name: DEUSTO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 59
   fields:
-    from_date: 2022-11-07 15:05:28.983229+00:00
-    to_date: null
-    is_active: true
-    name: ARKOTE
-    normalized_name: ARKOTE
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.983229+00:00
+      to_date: null
+      is_active: true
+      name: ARKOTE
+      normalized_name: ARKOTE
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 60
   fields:
-    from_date: 2022-11-07 15:05:28.983645+00:00
-    to_date: null
-    is_active: true
-    name: CLUB DE REMO OLÍMPICO DONOSTIA ARRAUN LAGUNAK
-    normalized_name: DONOSTIA ARRAUN LAGUNAK
-    known_names: '["CRO DONOSTIA ARRAUN LAGUNAK","GU ARRAUN"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.983645+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO OLÍMPICO DONOSTIA ARRAUN LAGUNAK
+      normalized_name: DONOSTIA ARRAUN LAGUNAK
+      known_names: '["CRO DONOSTIA ARRAUN LAGUNAK","GU ARRAUN"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 61
   fields:
-    from_date: 2022-11-07 15:05:28.984072+00:00
-    to_date: null
-    is_active: true
-    name: TOLOSA
-    normalized_name: TOLOSA
-    known_names: '["TOLOSALDEA"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.984072+00:00
+      to_date: null
+      is_active: true
+      name: TOLOSA
+      normalized_name: TOLOSA
+      known_names: '["TOLOSALDEA"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 62
   fields:
-    from_date: 2022-11-07 15:05:28.984512+00:00
-    to_date: null
-    is_active: true
-    name: GU
-    normalized_name: GU
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.984512+00:00
+      to_date: null
+      is_active: true
+      name: GU
+      normalized_name: GU
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 63
   fields:
-    from_date: 2022-11-07 15:05:28.984937+00:00
-    to_date: null
-    is_active: true
-    name: CIUDAD DE SANTANDER
-    normalized_name: CIUDAD DE SANTANDER
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.984937+00:00
+      to_date: null
+      is_active: true
+      name: CIUDAD DE SANTANDER
+      normalized_name: CIUDAD DE SANTANDER
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 64
   fields:
-    from_date: 2022-11-07 15:05:28.985358+00:00
-    to_date: null
-    is_active: true
-    name: HIBAIKA
-    normalized_name: HIBAIKA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.985358+00:00
+      to_date: null
+      is_active: true
+      name: HIBAIKA
+      normalized_name: HIBAIKA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 65
   fields:
-    from_date: 2022-11-07 15:05:28.985774+00:00
-    to_date: null
-    is_active: true
-    name: CANTABRIA
-    normalized_name: CANTABRIA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.985774+00:00
+      to_date: null
+      is_active: true
+      name: CANTABRIA
+      normalized_name: CANTABRIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 66
   fields:
-    from_date: 2022-11-07 15:05:28.986191+00:00
-    to_date: null
-    is_active: true
-    name: GIPUZKOA
-    normalized_name: GIPUZKOA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.986191+00:00
+      to_date: null
+      is_active: true
+      name: GIPUZKOA
+      normalized_name: GIPUZKOA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 67
   fields:
-    from_date: 2022-11-07 15:05:28.986610+00:00
-    to_date: null
-    is_active: true
-    name: CATALUNYA
-    normalized_name: CATALUNYA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.986610+00:00
+      to_date: null
+      is_active: true
+      name: CATALUNYA
+      normalized_name: CATALUNYA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 68
   fields:
-    from_date: 2022-11-07 15:05:28.987021+00:00
-    to_date: null
-    is_active: true
-    name: BIZKAIA
-    normalized_name: BIZKAIA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.987021+00:00
+      to_date: null
+      is_active: true
+      name: BIZKAIA
+      normalized_name: BIZKAIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 69
   fields:
-    from_date: 2022-11-07 15:05:28.987436+00:00
-    to_date: null
-    is_active: true
-    name: GALICIA
-    normalized_name: GALICIA
-    known_names: '["RIANXEIRA MECALIA"]'
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.987436+00:00
+      to_date: null
+      is_active: true
+      name: GALICIA
+      normalized_name: GALICIA
+      known_names: '["RIANXEIRA MECALIA"]'
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 70
   fields:
-    from_date: 2022-11-07 15:05:28.987858+00:00
-    to_date: null
-    is_active: true
-    name: SANTOÑA
-    normalized_name: SANTOÑA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.987858+00:00
+      to_date: null
+      is_active: true
+      name: SANTOÑA
+      normalized_name: SANTOÑA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 71
   fields:
-    from_date: 2022-11-07 15:05:28.988283+00:00
-    to_date: null
-    is_active: true
-    name: HERNANI
-    normalized_name: HERNANI
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.988283+00:00
+      to_date: null
+      is_active: true
+      name: HERNANI
+      normalized_name: HERNANI
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 72
   fields:
-    from_date: 2022-11-07 15:05:28.988698+00:00
-    to_date: null
-    is_active: true
-    name: LEA ARTIBAI
-    normalized_name: LEA ARTIBAI
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.988698+00:00
+      to_date: null
+      is_active: true
+      name: LEA ARTIBAI
+      normalized_name: LEA ARTIBAI
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 73
   fields:
-    from_date: 2022-11-07 15:05:28.989113+00:00
-    to_date: null
-    is_active: true
-    name: MUNDAKA
-    normalized_name: MUNDAKA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.989113+00:00
+      to_date: null
+      is_active: true
+      name: MUNDAKA
+      normalized_name: MUNDAKA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 74
   fields:
-    from_date: 2022-11-07 15:05:28.989535+00:00
-    to_date: null
-    is_active: true
-    name: GETXO
-    normalized_name: GETXO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.989535+00:00
+      to_date: null
+      is_active: true
+      name: GETXO
+      normalized_name: GETXO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 75
   fields:
-    from_date: 2022-11-07 15:05:28.989955+00:00
-    to_date: null
-    is_active: true
-    name: LUANCO
-    normalized_name: LUANCO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.989955+00:00
+      to_date: null
+      is_active: true
+      name: LUANCO
+      normalized_name: LUANCO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 76
   fields:
-    from_date: 2022-11-07 15:05:28.990376+00:00
-    to_date: null
-    is_active: true
-    name: LUTXANA
-    normalized_name: LUTXANA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.990376+00:00
+      to_date: null
+      is_active: true
+      name: LUTXANA
+      normalized_name: LUTXANA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 77
   fields:
-    from_date: 2022-11-07 15:05:28.990804+00:00
-    to_date: null
-    is_active: true
-    name: COLINDRES
-    normalized_name: COLINDRES
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.990804+00:00
+      to_date: null
+      is_active: true
+      name: COLINDRES
+      normalized_name: COLINDRES
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 78
   fields:
-    from_date: 2022-11-07 15:05:28.991282+00:00
-    to_date: null
-    is_active: true
-    name: MUTRIKU
-    normalized_name: MUTRIKU
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.991282+00:00
+      to_date: null
+      is_active: true
+      name: MUTRIKU
+      normalized_name: MUTRIKU
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 79
   fields:
-    from_date: 2022-11-07 15:05:28.991704+00:00
-    to_date: null
-    is_active: true
-    name: BUSTURIALDEA
-    normalized_name: BUSTURIALDEA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.991704+00:00
+      to_date: null
+      is_active: true
+      name: BUSTURIALDEA
+      normalized_name: BUSTURIALDEA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 80
   fields:
-    from_date: 2022-11-07 15:05:28.992117+00:00
-    to_date: null
-    is_active: true
-    name: LAPURDI
-    normalized_name: LAPURDI
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.992117+00:00
+      to_date: null
+      is_active: true
+      name: LAPURDI
+      normalized_name: LAPURDI
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 81
   fields:
-    from_date: 2022-11-07 15:05:28.992520+00:00
-    to_date: null
-    is_active: true
-    name: IBERIA
-    normalized_name: IBERIA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.992520+00:00
+      to_date: null
+      is_active: true
+      name: IBERIA
+      normalized_name: IBERIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 82
   fields:
-    from_date: 2022-11-07 15:05:28.992917+00:00
-    to_date: null
-    is_active: true
-    name: RASPAS
-    normalized_name: RASPAS
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.992917+00:00
+      to_date: null
+      is_active: true
+      name: RASPAS
+      normalized_name: RASPAS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 84
   fields:
-    from_date: 2022-11-07 15:05:28.993913+00:00
-    to_date: null
-    is_active: true
-    name: ELANTXOBE
-    normalized_name: ELANTXOBE
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.993913+00:00
+      to_date: null
+      is_active: true
+      name: ELANTXOBE
+      normalized_name: ELANTXOBE
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 85
   fields:
-    from_date: 2022-11-07 15:05:28.994321+00:00
-    to_date: null
-    is_active: true
-    name: OIARTZUN
-    normalized_name: OIARTZUN
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.994321+00:00
+      to_date: null
+      is_active: true
+      name: OIARTZUN
+      normalized_name: OIARTZUN
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 86
   fields:
-    from_date: 2022-11-07 15:05:28.994719+00:00
-    to_date: null
-    is_active: true
-    name: PONTEJOS
-    normalized_name: PONTEJOS
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.994719+00:00
+      to_date: null
+      is_active: true
+      name: PONTEJOS
+      normalized_name: PONTEJOS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 87
   fields:
-    from_date: 2022-11-07 15:05:28.995113+00:00
-    to_date: null
-    is_active: true
-    name: AMIGOS DE LA MARUCA
-    normalized_name: AMIGOS DE LA MARUCA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.995113+00:00
+      to_date: null
+      is_active: true
+      name: AMIGOS DE LA MARUCA
+      normalized_name: AMIGOS DE LA MARUCA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 88
   fields:
-    from_date: 2022-11-07 15:05:28.995511+00:00
-    to_date: null
-    is_active: true
-    name: ALGORTA
-    normalized_name: ALGORTA
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.995511+00:00
+      to_date: null
+      is_active: true
+      name: ALGORTA
+      normalized_name: ALGORTA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: entities.entity
   pk: 89
   fields:
-    from_date: 2022-11-07 15:05:28.995511+00:00
-    to_date: null
-    is_active: true
-    name: CELEIRO
-    normalized_name: CELEIRO
-    known_names: "[]"
-    type: CLUB
-    symbol: null
+      from_date: 2022-11-07 15:05:28.995511+00:00
+      to_date: null
+      is_active: true
+      name: CELEIRO
+      normalized_name: CELEIRO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+- model: entities.entity
+  pk: 90
+  fields:
+      from_date: 2022-11-07 15:05:28.966564+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DO MAR MUGARDOS - CLUB DE REMO A CABANA
+      normalized_name: MUGARDOS - A CABANA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
 - model: races.trophy
   pk: 25
   fields:
-    creation_date: 2022-11-11 11:06:07.846882+00:00
-    name: TROFEO TERESA HERRERA (CLASIFICATORIA)
-    tokens: '["trofeo", "herrera", "teresa", "clasificatorio"]'
-    verified: true
+      creation_date: 2022-11-11 11:06:07.846882+00:00
+      name: TROFEO TERESA HERRERA (CLASIFICATORIA)
+      tokens: '["trofeo", "herrera", "teresa", "clasificatorio"]'
+      verified: true
 - model: races.flag
   pk: 2
   fields:
-    creation_date: 2022-11-07 15:05:43.502208+00:00
-    name: BANDEIRA VIRXE DO CARME
-    tokens: '["bandera", "carme", "virxe"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.502208+00:00
+      name: BANDEIRA VIRXE DO CARME
+      tokens: '["bandera", "carme", "virxe"]'
+      verified: true
 - model: races.flag
   pk: 3
   fields:
-    creation_date: 2022-11-07 15:05:43.502208+00:00
-    name: BANDEIRA CONCELLO DE MUROS
-    tokens: '["bandera", "ayuntamiento", "muro"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.502208+00:00
+      name: BANDEIRA CONCELLO DE MUROS
+      tokens: '["bandera", "ayuntamiento", "muro"]'
+      verified: true
 - model: races.flag
   pk: 4
   fields:
-    creation_date: 2022-11-07 15:05:43.892603+00:00
-    name: ELANTXOBEKO ESTROPADA
-    tokens: '["regata", "elantxobeko"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.892603+00:00
+      name: ELANTXOBEKO ESTROPADA
+      tokens: '["regata", "elantxobeko"]'
+      verified: true
 - model: races.flag
   pk: 5
   fields:
-    creation_date: 2022-11-07 15:05:43.583894+00:00
-    name: BANDERA AYUNTAMIENTO DE SESTAO
-    tokens: '["bandera", "ayuntamiento", "sestao"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.583894+00:00
+      name: BANDERA AYUNTAMIENTO DE SESTAO
+      tokens: '["bandera", "ayuntamiento", "sestao"]'
+      verified: true
 - model: races.flag
   pk: 6
   fields:
-    creation_date: 2022-11-07 15:05:43.557922+00:00
-    name: BANDERA VILLA DE LAREDO
-    tokens: '["bandera", "ayuntamiento", "laredo"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.557922+00:00
+      name: BANDERA VILLA DE LAREDO
+      tokens: '["bandera", "ayuntamiento", "laredo"]'
+      verified: true
 - model: races.flag
   pk: 39
   fields:
-    creation_date: 2022-11-07 15:05:43.532504+00:00
-    name: BANDEIRA TERESA HERRERA (CLASIFICATORIA)
-    tokens: '["bandera", "teresa", "herrera", "clasificatorio"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.532504+00:00
+      name: BANDEIRA TERESA HERRERA (CLASIFICATORIA)
+      tokens: '["bandera", "teresa", "herrera", "clasificatorio"]'
+      verified: true
 - model: races.flag
   pk: 85
   fields:
-    creation_date: 2022-11-07 15:05:43.572140+00:00
-    name: BANDERA PETRONOR
-    tokens: '["bandera", "petronor"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.572140+00:00
+      name: BANDERA PETRONOR
+      tokens: '["bandera", "petronor"]'
+      verified: true
 - model: races.flag
   pk: 133
   fields:
-    creation_date: 2022-11-07 15:05:43.793166+00:00
-    name: BANDEIRA DEPUTACIÓN DA CORUÑA
-    tokens: '["bandera", "diputacion", "coruna", "masculino"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.793166+00:00
+      name: BANDEIRA DEPUTACIÓN DA CORUÑA
+      tokens: '["bandera", "diputacion", "coruna", "masculino"]'
+      verified: true
 - model: races.flag
   pk: 198
   fields:
-    creation_date: 2022-11-07 15:05:43.858917+00:00
-    name: BANDERA RÍA DEL ASÓN
-    tokens: '["bandera", "ason", "ria"]'
-    verified: true
+      creation_date: 2022-11-07 15:05:43.858917+00:00
+      name: BANDERA RÍA DEL ASÓN
+      tokens: '["bandera", "ason", "ria"]'
+      verified: true
 - model: races.race
   pk: 1
   fields:
-    creation_date: 2022-11-07 15:05:44.319219+00:00
-    laps: 4
-    lanes: 4
-    town: ZIERBENA
-    type: CONVENTIONAL
-    date: 2022-07-17
-    day: 1
-    cancelled: false
-    cancellation_reasons: "[]"
-    race_name: XXXIX BANDERA PETRONOR
-    sponsor: null
-    trophy_edition: null
-    trophy: null
-    flag_edition: 39
-    flag: 85
-    league: 2
-    modality: TRAINERA
-    organizer: null
-    metadata:
-      datasource:
-        - values:
-            - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
-          ref_id: "1647864858"
-          datasource_name: act
+      creation_date: 2022-11-07 15:05:44.319219+00:00
+      laps: 4
+      lanes: 4
+      town: ZIERBENA
+      type: CONVENTIONAL
+      date: 2022-07-17
+      day: 1
+      cancelled: false
+      cancellation_reasons: "[]"
+      race_name: XXXIX BANDERA PETRONOR
+      sponsor: null
+      trophy_edition: null
+      trophy: null
+      flag_edition: 39
+      flag: 85
+      league: 2
+      modality: TRAINERA
+      organizer: null
+      metadata:
+          datasource:
+              - values:
+                    - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
+                ref_id: "1647864858"
+                datasource_name: act
 - model: races.race
   pk: 2
   fields:
-    creation_date: 2022-11-07 15:05:43.956393+00:00
-    laps: 4
-    lanes: 4
-    town: O GROVE
-    type: CONVENTIONAL
-    date: 2022-07-25
-    day: 1
-    cancelled: false
-    cancellation_reasons: "[]"
-    race_name: IX BANDEIRA VIRXE DO CARME
-    sponsor: null
-    trophy_edition: null
-    trophy: null
-    flag_edition: 9
-    flag: 2
-    league: 5
-    modality: TRAINERA
-    organizer: 18
-    metadata:
-      datasource:
-        - values:
-            - details_page: https://www.ligalgt.com/principal/regata/11
-          ref_id: "11"
-          datasource_name: lgt
+      creation_date: 2022-11-07 15:05:43.956393+00:00
+      laps: 4
+      lanes: 4
+      town: O GROVE
+      type: CONVENTIONAL
+      date: 2022-07-25
+      day: 1
+      cancelled: false
+      cancellation_reasons: "[]"
+      race_name: IX BANDEIRA VIRXE DO CARME
+      sponsor: null
+      trophy_edition: null
+      trophy: null
+      flag_edition: 9
+      flag: 2
+      league: 5
+      modality: TRAINERA
+      organizer: 18
+      metadata:
+          datasource:
+              - values:
+                    - details_page: https://www.ligalgt.com/principal/regata/11
+                ref_id: "11"
+                datasource_name: lgt
 - model: races.race
   pk: 3
   fields:
-    creation_date: 2022-11-07 15:05:44.603093+00:00
-    laps: 4
-    lanes: 1
-    town: COLINDRES
-    type: TIME_TRIAL
-    date: 2009-08-22
-    day: 1
-    cancelled: false
-    cancellation_reasons: "[]"
-    race_name: XIV BANDERA RIA DEL ASON
-    sponsor: null
-    trophy_edition: null
-    trophy: null
-    flag_edition: 17
-    flag: 198
-    league: 10
-    modality: TRAINERA
-    organizer: null
-    metadata:
-      datasource:
-        - values:
-            - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
-          ref_id: "158"
-          datasource_name: arc
+      creation_date: 2022-11-07 15:05:44.603093+00:00
+      laps: 4
+      lanes: 1
+      town: COLINDRES
+      type: TIME_TRIAL
+      date: 2009-08-22
+      day: 1
+      cancelled: false
+      cancellation_reasons: "[]"
+      race_name: XIV BANDERA RIA DEL ASON
+      sponsor: null
+      trophy_edition: null
+      trophy: null
+      flag_edition: 17
+      flag: 198
+      league: 10
+      modality: TRAINERA
+      organizer: null
+      metadata:
+          datasource:
+              - values:
+                    - details_page: https://www.liga-arc.com/historico/resultados_detalle.php?id=158
+                ref_id: "158"
+                datasource_name: arc
 - model: races.race
   pk: 4
   fields:
-    creation_date: 2023-02-11 13:11:17.831402+00:00
-    laps: 2
-    lanes: 1
-    town: BOIRO
-    type: TIME_TRIAL
-    date: 2023-02-05
-    day: 1
-    cancelled: false
-    cancellation_reasons: "[]"
-    race_name: CONTRARRELOXO DE TRAIÑEIRAS CABO DA CRUZ
-    sponsor: null
-    trophy_edition: null
-    trophy: null
-    flag_edition: 20
-    flag: 133
-    league: null
-    modality: TRAINERA
-    organizer: null
-    metadata:
-      datasource:
-        - ref_id: cabo.jpg
-          datasource_name: inforemo
+      creation_date: 2023-02-11 13:11:17.831402+00:00
+      laps: 2
+      lanes: 1
+      town: BOIRO
+      type: TIME_TRIAL
+      date: 2023-02-05
+      day: 1
+      cancelled: false
+      cancellation_reasons: "[]"
+      race_name: CONTRARRELOXO DE TRAIÑEIRAS CABO DA CRUZ
+      sponsor: null
+      trophy_edition: null
+      trophy: null
+      flag_edition: 20
+      flag: 133
+      league: null
+      modality: TRAINERA
+      organizer: null
+      metadata:
+          datasource:
+              - ref_id: cabo.jpg
+                datasource_name: inforemo
 - model: participants.participant
   pk: 1
   fields:
-    club_name: CR RIANXO
-    club: 26
-    race: 1
-    distance: 5556
-    laps: '["00:05:49", "00:11:23", "00:17:24", "00:22:47.690000"]'
-    lane: 2
-    series: 1
-    gender: MALE
-    category: ABSOLUT
+      club_name: CR RIANXO
+      club: 26
+      race: 1
+      distance: 5556
+      laps: '["00:05:49", "00:11:23", "00:17:24", "00:22:47.690000"]'
+      lane: 2
+      series: 1
+      gender: MALE
+      category: ABSOLUT
