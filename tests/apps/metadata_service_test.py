@@ -1,0 +1,33 @@
+import os.path
+
+from django.conf import settings
+from django.test import TestCase
+
+from apps.races.models import Race
+from apps.races.services import MetadataService
+from apps.schemas import MetadataBuilder
+from rscraping.data.constants import GENDER_ALL
+from rscraping.data.models import Datasource
+
+
+class MetadataServiceTest(TestCase):
+    fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "test-db.yaml")]
+
+    def test_race_exists_using_sheet(self):
+        race = Race.objects.get(pk=1)
+        race.gender = GENDER_ALL
+        race.metadata = {
+            "datasource": [
+                (
+                    MetadataBuilder()
+                    .ref_id("1")
+                    .datasource_name(Datasource.TABULAR)
+                    .values("sheet_id", "test")
+                    .values("sheet_name", "test")
+                    .build()
+                )
+            ]
+        }
+        race.save()
+
+        self.assertTrue(MetadataService.exists("1", Datasource.TABULAR, sheet_id="test", sheet_name="test"))

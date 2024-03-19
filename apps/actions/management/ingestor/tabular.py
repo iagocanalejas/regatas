@@ -6,6 +6,7 @@ from apps.actions.management.helpers.input import input_new_value, input_shoud_c
 from apps.participants.models import Participant
 from apps.races.models import Race
 from apps.races.services import MetadataService
+from apps.schemas import MetadataBuilder, default_metadata
 from rscraping.clients import TabularDataClient
 from rscraping.data.constants import GENDER_FEMALE
 from rscraping.data.models import Datasource
@@ -25,7 +26,12 @@ class TabularIngestor(Ingestor):
     @override
     def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(race_id, Datasource.TABULAR):
+            if race_id in self._ignored_races or MetadataService.exists(
+                race_id,
+                Datasource.TABULAR,
+                sheet_id=self.client.config.sheet_id,
+                sheet_name=self.client.config.sheet_name,
+            ):
                 continue
 
             race = self.client.get_race_by_id(race_id)
@@ -88,3 +94,26 @@ class TabularIngestor(Ingestor):
             db_participant.club_name = participant.club_name
 
         return db_participant, True
+
+    @override
+    def _validate_datasource_and_build_metadata(self, race: RSRace, datasource: Datasource) -> dict:
+        if not race.url:
+            raise ValueError(f"no datasource provided for {race.race_ids[0]}::{race.name}")
+
+        if not self.client.config.sheet_id:
+            return default_metadata()
+
+        metadata = [
+            MetadataBuilder()
+            .ref_id(race_id)
+            .datasource_name(datasource)
+            .values("details_page", race.url)
+            .values("sheet_id", self.client.config.sheet_id)
+            for race_id in race.race_ids
+        ]
+
+        if self.client.config.sheet_name:
+            for meta in metadata:
+                meta.values("sheet_name", self.client.config.sheet_name)
+
+        return {"datasource": [m.build() for m in metadata]}

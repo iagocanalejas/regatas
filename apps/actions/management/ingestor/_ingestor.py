@@ -236,6 +236,7 @@ class Ingestor(IngestorProtocol):
         needs_update = False
         ref_id = rs_race.race_ids[0]
         for d in race.metadata["datasource"]:
+            # TODO: this will not match tabular datasource correctly
             if d["ref_id"] == ref_id and d["datasource_name"] == rs_race.datasource:
                 logger.info("updating date inside metadata")
                 d["date"] = datetime.now().date().isoformat()
@@ -432,8 +433,7 @@ class Ingestor(IngestorProtocol):
         return participant, True
 
     @override
-    @staticmethod
-    def _validate_datasource_and_build_metadata(race: RSRace, datasource: Datasource) -> dict:
+    def _validate_datasource_and_build_metadata(self, race: RSRace, datasource: Datasource) -> dict:
         if not race.url:
             raise ValueError(f"no datasource provided for {race.race_ids[0]}::{race.name}")
 

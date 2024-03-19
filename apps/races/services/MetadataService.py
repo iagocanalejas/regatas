@@ -35,8 +35,18 @@ def get_race_or_none(
         return None
 
 
-def exists(ref_id: str, datasource: Datasource, day: int | None = None) -> bool:
+def exists(
+    ref_id: str,
+    datasource: Datasource,
+    day: int | None = None,
+    sheet_id: str | None = None,
+    sheet_name: str | None = None,
+) -> bool:
     metadata: dict = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
+    if datasource == Datasource.TABULAR and sheet_id:
+        metadata["values"] = {"sheet_id": sheet_id}
+    if datasource == Datasource.TABULAR and sheet_name:
+        metadata["values"]["sheet_name"] = sheet_name
 
     filters: dict = {"metadata": [metadata]}
     if day:

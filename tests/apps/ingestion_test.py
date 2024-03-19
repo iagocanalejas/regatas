@@ -55,8 +55,10 @@ class IngestionTest(TestCase):
 
         self.assertEqual(original_race.lanes, 3)
         self.assertEqual(race.lanes, 4)
+
+        [d.pop("date", None) for d in race.metadata["datasource"]]  # can't compare dates
         self.assertIn(
-            {"values": {"details_page": "test"}, "date": "2024-03-18", "ref_id": "1", "datasource_name": "abe"},
+            {"values": {"details_page": "test"}, "ref_id": "1", "datasource_name": "abe"},
             race.metadata["datasource"],
         )
 
