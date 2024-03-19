@@ -5,15 +5,18 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('entities', '0004_refactor_entities'),
+        ("entities", "0004_refactor_entities"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='league',
-            name='gender',
+            model_name="league",
+            name="gender",
             field=models.CharField(
-                choices=[('MALE', 'Male'), ('FEMALE', 'Female'), ('MIX', 'Mixto')], default=None, max_length=10, null=True
+                choices=[("MALE", "Male"), ("FEMALE", "Female"), ("MIX", "Mixto")],
+                default=None,
+                max_length=10,
+                null=True,
             ),
         ),
     ]

@@ -37,8 +37,7 @@ class FolderIngestor(Ingestor):
         return self.fetch()
 
     @override
-    @staticmethod
-    def _validate_datasource_and_build_metadata(*_, **__) -> dict:
+    def _validate_datasource_and_build_metadata(self, *_, **__) -> dict:
         return default_metadata()
 
     def _process_file(self, file: str) -> RSRace | None:

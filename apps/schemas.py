@@ -7,7 +7,7 @@ from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
 
-METADATA_SCHEMA = {
+RACE_METADATA_SCHEMA = {
     "$schema": "http://json-schema.org/schema#",
     "name": "RaceMetadata",
     "properties": {
@@ -24,6 +24,28 @@ METADATA_SCHEMA = {
                 "additionalProperties": False,
                 # "required": ["ref_id", "datasource_name", "values", "date"],
                 "required": ["ref_id", "datasource_name", "values"],  # TODO: swap this when verification ends
+            },
+        }
+    },
+    "required": ["datasource"],
+}
+
+
+ENTITY_METADATA_SCHEMA = {
+    "$schema": "http://json-schema.org/schema#",
+    "name": "EntityMetadata",
+    "properties": {
+        "datasource": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ref_id": {"type": "string"},
+                    "datasource_name": {"type": "string"},
+                    "values": {"type": "object", "additionalProperties": {"type": "string"}},
+                },
+                "additionalProperties": False,
+                "required": ["ref_id", "datasource_name", "values"],
             },
         }
     },

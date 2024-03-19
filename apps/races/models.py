@@ -11,7 +11,7 @@ from utils.choices import (
     RACE_TYPE_CHOICES,
 )
 
-from apps.schemas import METADATA_SCHEMA, default_metadata
+from apps.schemas import RACE_METADATA_SCHEMA, default_metadata
 from djutils.models import CreationStampModel
 from djutils.validators import JSONSchemaValidator
 from pyutils.shortcuts import all_or_none
@@ -134,7 +134,7 @@ class Race(CreationStampModel):
     )
     metadata = JSONField(
         default=default_metadata,
-        validators=[JSONSchemaValidator(schema=METADATA_SCHEMA)],
+        validators=[JSONSchemaValidator(schema=RACE_METADATA_SCHEMA)],
     )
 
     def __str__(self):
