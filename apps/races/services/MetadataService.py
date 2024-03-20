@@ -35,9 +35,27 @@ def get_race_or_none(
         return None
 
 
+def get_datasource(
+    race: Race,
+    datasource: Datasource,
+    ref_id: str,
+    sheet_id: str | None = None,
+    sheet_name: str | None = None,
+) -> list[dict]:
+    datasources = race.metadata["datasource"]
+    matches = [d for d in datasources if d["datasource_name"] == datasource.value.lower() and d["ref_id"] == ref_id]
+    if datasource == Datasource.TABULAR:
+        assert sheet_id is not None
+        matches = [d for d in matches if d["values"]["sheet_id"] == sheet_id]
+        if sheet_name:
+            matches = [d for d in matches if d["values"]["sheet_name"] == sheet_name]
+    return matches
+
+
 def exists(
     ref_id: str,
     datasource: Datasource,
+    *_,
     day: int | None = None,
     sheet_id: str | None = None,
     sheet_name: str | None = None,

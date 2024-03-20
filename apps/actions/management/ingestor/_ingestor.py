@@ -88,7 +88,7 @@ class Ingestor(IngestorProtocol):
     def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None]:
         logger.info(f"ingesting {race=}")
 
-        metadata = self._validate_datasource_and_build_metadata(race, self.client.DATASOURCE)
+        metadata = self._build_metadata(race, self.client.DATASOURCE)
 
         logger.info("searching race in the database")
         db_race = RaceService.get_closest_match_by_name_or_none(
@@ -183,12 +183,8 @@ class Ingestor(IngestorProtocol):
 
         logger.info(f"merging {race=} and {db_race=}")
         datasource = race.metadata["datasource"][0]
-        has_datasource = any(
-            d["ref_id"] == datasource["ref_id"] and d["datasource_name"] == datasource["datasource_name"]
-            for d in db_race.metadata["datasource"]
-        )
-        if not has_datasource:
-            logger.info(f"adding {datasource}")
+        if not self._get_datasource(db_race, datasource["ref_id"]):
+            logger.info("updating datasource")
             db_race.metadata["datasource"].append(datasource)
 
         if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
@@ -232,16 +228,12 @@ class Ingestor(IngestorProtocol):
             logger.info(f"unable to verify {race=} with {rs_race=}")
             return race, False, False
 
-        logger.info("updating metadata")
         needs_update = False
-        ref_id = rs_race.race_ids[0]
-        for d in race.metadata["datasource"]:
-            # TODO: this will not match tabular datasource correctly
-            if d["ref_id"] == ref_id and d["datasource_name"] == rs_race.datasource:
-                logger.info("updating date inside metadata")
-                d["date"] = datetime.now().date().isoformat()
-                needs_update = True
-                break
+        datasource = self._get_datasource(race, rs_race.race_ids[0])
+        if datasource:
+            logger.info("updating date inside metadata")
+            datasource["date"] = datetime.now().date().isoformat()
+            needs_update = True
 
         logger.info("searching organizer")
         organizer = rs_race.organizer
@@ -433,7 +425,14 @@ class Ingestor(IngestorProtocol):
         return participant, True
 
     @override
-    def _validate_datasource_and_build_metadata(self, race: RSRace, datasource: Datasource) -> dict:
+    def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
+        datasources = MetadataService.get_datasource(race, self.client.DATASOURCE, ref_id)
+        if len(datasources) > 1:
+            logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
+        return datasources[0] if datasources else None
+
+    @override
+    def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict:
         if not race.url:
             raise ValueError(f"no datasource provided for {race.race_ids[0]}::{race.name}")
 

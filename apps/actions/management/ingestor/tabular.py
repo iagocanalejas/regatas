@@ -96,7 +96,15 @@ class TabularIngestor(Ingestor):
         return db_participant, True
 
     @override
-    def _validate_datasource_and_build_metadata(self, race: RSRace, datasource: Datasource) -> dict:
+    def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
+        kwargs = {"sheet_id": self.client.config.sheet_id, "sheet_name": self.client.config.sheet_name}
+        datasources = MetadataService.get_datasource(race, self.client.DATASOURCE, ref_id, **kwargs)
+        if len(datasources) > 1:
+            logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
+        return datasources[0] if datasources else None
+
+    @override
+    def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict:
         if not race.url:
             raise ValueError(f"no datasource provided for {race.race_ids[0]}::{race.name}")
 
