@@ -5,7 +5,7 @@ django-debug-toolbar==4.3.0
 django-extensions==3.2.3
 django-prettyjson==0.4.1
 django-stdimage==6.0.2
-djangorestframework==3.14.0
+djangorestframework==3.15.0
 djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.27.1
 environs==11.0.0
@@ -25,5 +25,5 @@ pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.1
 requests==2.31.0
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
-setuptools==69.1.1
+setuptools==69.2.0
 simplemma==0.9.1

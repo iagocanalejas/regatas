@@ -1157,6 +1157,13 @@
       name: BANDERA RÍA DEL ASÓN
       tokens: '["bandera", "ason", "ria"]'
       verified: true
+- model: races.flag
+  pk: 200
+  fields:
+      creation_date: 2022-11-07 15:05:43.858917+00:00
+      name: BANDEIRA 525 ANIVERSARIO DA ARRIBADA CONCELLO DE BAIONA
+      tokens: '["bandera", "arribada", "ayuntamiento", "aniversario", "525", "baiona"]'
+      verified: true
 - model: races.race
   pk: 1
   fields:

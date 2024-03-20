@@ -117,15 +117,16 @@ class Ingestor(IngestorProtocol):
         town = race.town
         logger.info(f"using {town=}")
 
+        # TODO: this code asking in the terminal is quite weird.... maybe move it to the merge method?
         competitions = RaceService.get_races_by_competition(trophy, flag, league)
         if competitions.count():
             logger.info(f"found {competitions.count()} matching races")
-            towns = competitions.values_list("town", flat=True).distinct()
+            towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
             if towns.count() == 1 and (not town or input_new_value("town", town, towns.first())):
                 logger.info(f"updating {town=} with {towns.first()}")
                 town = towns.first()
 
-            organizers = competitions.values_list("organizer", flat=True).distinct()
+            organizers = competitions.filter(organizer__isnull=False).values_list("organizer", flat=True).distinct()
             if organizers.count() == 1:
                 new_organizer = Entity.objects.get(pk=organizers.first())
                 if not organizer or input_new_value("organizer", organizer, new_organizer):
@@ -199,13 +200,14 @@ class Ingestor(IngestorProtocol):
             logger.info(f"updating {db_race.lanes} with {race.lanes}")
             db_race.lanes = race.lanes
 
+        if input_new_value("sponsor", race.sponsor, db_race.sponsor):
+            logger.info(f"updating {db_race.sponsor} with {race.sponsor}")
+            db_race.sponsor = race.sponsor
+
         if input_new_value("town", race.town, db_race.town):
             logger.info(f"updating {db_race.town} with {race.town}")
             db_race.town = race.town
 
-        if input_new_value("sponsor", race.sponsor, db_race.sponsor):
-            logger.info(f"updating {db_race.sponsor} with {race.sponsor}")
-            db_race.sponsor = race.sponsor
         return db_race, True
 
     @override
@@ -348,6 +350,24 @@ class Ingestor(IngestorProtocol):
         if not input_should_merge_participant(db_participant):
             logger.info(f"participants will not be merged, using {participant=}")
             return participant, False
+
+        logger.info(f"merging {participant=} and {db_participant=}")
+        if len(participant.laps) > len(db_participant.laps) and input_new_value(
+            "laps", participant.laps, db_participant.laps
+        ):
+            logger.info(f"updating {db_participant.laps} with {participant.laps}")
+            db_participant.laps = participant.laps
+
+        if input_new_value("lane", participant.lane, db_participant.lane):
+            logger.info(f"updating {db_participant.lane=} with {participant.lane=}")
+            db_participant.lane = participant.lane
+
+        if db_participant.club_name is None and input_new_value(
+            "name", participant.club_name, db_participant.club_name
+        ):
+            logger.info(f"updating {db_participant.club_name=} with {participant.club_name=}")
+            db_participant.club_name = participant.club_name
+
         return db_participant, True
 
     @override

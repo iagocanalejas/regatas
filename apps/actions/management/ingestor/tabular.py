@@ -76,22 +76,9 @@ class TabularIngestor(Ingestor):
                 return participant, True
             return participant, False
 
-        logger.info(f"merging {participant=} and {db_participant=}")
-        if input_new_value("laps", participant.laps, db_participant.laps):
-            logger.info(f"updating {db_participant.laps} with {participant.laps}")
-            db_participant.laps = participant.laps
-
         if input_new_value("distance", participant.distance, db_participant.distance):
             logger.info(f"updating {db_participant.distance=} with {participant.distance=}")
             db_participant.distance = participant.distance
-
-        if input_new_value("lane", participant.lane, db_participant.lane):
-            logger.info(f"updating {db_participant.lane=} with {participant.lane=}")
-            db_participant.lane = participant.lane
-
-        if db_participant.club_name is None or input_new_value("name", participant.club_name, db_participant.club_name):
-            logger.info(f"updating {db_participant.club_name=} with {participant.club_name=}")
-            db_participant.club_name = participant.club_name
 
         return db_participant, True
 
