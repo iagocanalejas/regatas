@@ -22,7 +22,7 @@ from apps.actions.management.helpers.input import (
 )
 from apps.actions.management.helpers.retrieval import retrieve_competition, retrieve_entity, retrieve_league
 from apps.actions.serializers import ParticipantSerializer, RaceSerializer
-from apps.entities.models import Entity
+from apps.entities.models import Entity, League
 from apps.entities.normalization import normalize_club_name
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
@@ -110,28 +110,9 @@ class Ingestor(IngestorProtocol):
         logger.info(f"using {trophy=}:{trophy_edition=}")
         logger.info(f"using {flag=}:{flag_edition=}")
 
-        logger.info("searching organizer")
-        organizer = retrieve_entity(normalize_club_name(race.organizer), entity_type=None) if race.organizer else None
-        logger.info(f"using {organizer=}")
-
-        town = race.town
-        logger.info(f"using {town=}")
-
-        # TODO: this code asking in the terminal is quite weird.... maybe move it to the merge method?
-        competitions = RaceService.get_races_by_competition(trophy, flag, league)
-        if competitions.count():
-            logger.info(f"found {competitions.count()} matching races")
-            towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
-            if towns.count() == 1 and (not town or input_new_value("town", town, towns.first())):
-                logger.info(f"updating {town=} with {towns.first()}")
-                town = towns.first()
-
-            organizers = competitions.filter(organizer__isnull=False).values_list("organizer", flat=True).distinct()
-            if organizers.count() == 1:
-                new_organizer = Entity.objects.get(pk=organizers.first())
-                if not organizer or input_new_value("organizer", organizer, new_organizer):
-                    logger.info(f"updating {organizer=} with {new_organizer}")
-                    organizer = new_organizer
+        logger.info("searching organizer & town")
+        town, organizer = self._update_race_with_competition_info(trophy, flag, league, race.town, race.organizer)
+        logger.info(f"using {organizer=} {town=}")
 
         new_race = Race(
             laps=race.race_laps,
@@ -463,6 +444,31 @@ class Ingestor(IngestorProtocol):
             ]
         }
 
+    def _update_race_with_competition_info(
+        self,
+        trophy: Trophy | None,
+        flag: Flag | None,
+        league: League | None,
+        town: str | None,
+        organizer_name: str | None,
+    ) -> tuple[str | None, Entity | None]:
+        organizer = retrieve_entity(normalize_club_name(organizer_name), entity_type=None) if organizer_name else None
+        competitions = RaceService.get_races_by_competition(trophy, flag, league)
+        if competitions.count():
+            logger.info(f"found {competitions.count()} matching races")
+            towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
+            if not town and towns.count() == 1:
+                logger.info(f"updating {town=} with {towns.first()}")
+                town = towns.first()
+
+            organizers = Entity.objects.filter(
+                id__in=competitions.filter(organizer__isnull=False).values_list("organizer", flat=True).distinct()
+            )
+            if not organizer and organizers.count() == 1:
+                logger.info(f"updating {organizer=} with {organizers.first()}")
+                organizer = organizers.first()
+        return town, organizer
+
     @staticmethod
     def _retrieve_competition(
         race: RSRace,
@@ -485,9 +491,4 @@ class Ingestor(IngestorProtocol):
             FlagService.get_closest_by_name_or_none,
             FlagService.infer_flag_edition,
         )
-
-        if not trophy and not flag:
-            logger.info("no trophy or flag found, asking user for input")
-            db_race, (trophy, trophy_edition), (flag, flag_edition) = input_competition(race)
-
-        return db_race, (trophy, trophy_edition), (flag, flag_edition)
+        return (db_race, (trophy, trophy_edition), (flag, flag_edition)) if trophy or flag else input_competition(race)
