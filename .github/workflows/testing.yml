@@ -1,58 +1,56 @@
 name: testing
 on:
-  workflow_call:
-  workflow_dispatch:
-  push:
-    branches: [master, develop, feature/*]
-  pull_request:
-    branches: [master, develop]
+    workflow_call:
+    workflow_dispatch:
+    push:
+        branches: [master, develop, feature/*]
+    pull_request:
+        branches: [master, develop]
 
 jobs:
-  test_service:
-    runs-on: ubuntu-latest
+    test_service:
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: ["3.12"]
-        postgres-version: ["15", "16"]
+        strategy:
+            matrix:
+                python-version: ["3.12"]
+                postgres-version: ["15", "16"]
 
-    services:
-      postgres:
-        image: postgres:${{ matrix.postgres-version }}
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        services:
+            postgres:
+                image: postgres:${{ matrix.postgres-version }}
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: postgres
+                ports:
+                    - 5432:5432
+                options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: "recursive"
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: ${{ matrix.python-version }}
 
-      - name: Pre-commit checks
-        uses: pre-commit/action@v3.0.0
+            - name: Pre-commit checks
+              uses: pre-commit/action@v3.0.1
 
-      - name: Install requirements
-        run: |
-          pip install -r config/requirements/ci.txt
+            - name: Install requirements
+              run: |
+                  pip install -r config/requirements/ci.txt
 
-      - name: Copy environment variables (CI requires .env file)
-        run: |
-          cat .testenv > .env
+            - name: Copy environment variables (CI requires .env file)
+              run: |
+                  cat .testenv > .env
 
-      - name: Ensure migrations are consistent
-        run: |
-          python manage.py migrate
+            - name: Ensure migrations are consistent
+              run: |
+                  python manage.py migrate
 
-      - name: Run python tests
-        run: |
-          python manage.py test --pattern="*_test.py"
+            - name: Run python tests
+              run: |
+                  python manage.py test --pattern="*_test.py"

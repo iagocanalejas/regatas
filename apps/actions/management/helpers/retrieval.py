@@ -73,7 +73,7 @@ def retrieve_entity(
     entity_type: str | None = ENTITY_CLUB,
 ) -> Entity | None:
     try:
-        return EntityService.get_closest_by_name_type(name, entity_type=entity_type)
+        return EntityService.get_closest_by_name_type(name, entity_type=entity_type, include_deleted=True)
     except Entity.MultipleObjectsReturned:
         raise StopProcessing(f"multiple organizers found for {name=}")
     except Entity.DoesNotExist:

@@ -16,7 +16,7 @@ def get_closest_club_by_name(name: str) -> Entity:
     return get_closest_by_name_type(name, entity_type=ENTITY_CLUB)
 
 
-def get_closest_by_name_type(name: str, entity_type: str | None = None) -> Entity:
+def get_closest_by_name_type(name: str, entity_type: str | None = None, include_deleted: bool = False) -> Entity:
     """
     :return: closest found @entity_type in the database
     """
@@ -29,7 +29,8 @@ def get_closest_by_name_type(name: str, entity_type: str | None = None) -> Entit
     name = name.upper()
     parts = remove_conjunctions(remove_symbols(name)).split()
 
-    q = Entity.queryset_for_search().filter(type=entity_type) if entity_type else Entity.queryset_for_search()
+    q = Entity.queryset_for_search(include_deleted=include_deleted)
+    q = q.filter(type=entity_type) if entity_type else q
 
     # quick route, just an exact match
     clubs = q.filter(Q(normalized_name__iexact=name) | Q(name__iexact=name))

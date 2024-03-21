@@ -67,11 +67,12 @@ class Entity(TraceableModel):
         return self.name
 
     @staticmethod
-    def queryset_for_search() -> QuerySet:
+    def queryset_for_search(include_deleted: bool = False) -> QuerySet:
         """
         :return: #QuerySet annotated for named search
         """
-        return Entity.objects.annotate(
+        objects = Entity.all_objects if include_deleted else Entity.objects
+        return objects.annotate(
             joined_names=Func(F("known_names"), Value(" "), function="array_to_string", output_field=models.CharField())
         )
 

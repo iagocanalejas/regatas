@@ -13,7 +13,7 @@ def input_new_value(key: str, value: Any, db_value: Any) -> bool:
     if not value or db_value == value:
         return False
     text = f"current {key} value is {db_value}, provided one is {value}"
-    return inquirer.confirm(f"{text}. Do you want to update it?", default=False)
+    return inquirer.confirm(f"{text}. Do you want to UPDATE it?", default=False)
 
 
 def input_should_merge(db_race: Race) -> bool:
@@ -35,12 +35,12 @@ def input_shoud_create_B_participant(participant: Participant) -> bool:
 
 
 def input_should_save(race: Race) -> bool:
-    text = f"update existing {race=}?" if race.pk else f"save new {race=}?"
+    text = f"UPDATE existing {race=}?" if race.pk else f"SAVE new {race=}?"
     return inquirer.confirm(text, default=False)
 
 
 def input_should_save_participant(participant: Participant) -> bool:
-    text = f"update existing {participant=}?" if participant.pk else f"save new {participant=}?"
+    text = f"UPDATE existing {participant=}?" if participant.pk else f"SAVE new {participant=}?"
     return inquirer.confirm(text, default=False)
 
 
