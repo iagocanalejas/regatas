@@ -54,7 +54,7 @@ class Ingestor(IngestorProtocol):
     def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         for race_id in self.client.get_race_ids_by_year(year=year):
             if race_id in self._ignored_races or MetadataService.exists(race_id, self.client.DATASOURCE):
-                logger.info(f"ignoring {race_id=}")
+                logger.debug(f"ignoring {race_id=}")
                 continue
 
             try:
@@ -64,7 +64,7 @@ class Ingestor(IngestorProtocol):
                     continue
                 if self._is_race_after_today(race):
                     break
-                logger.info(f"found race for {race_id=}:\n\t{race}")
+                logger.debug(f"found race for {race_id=}:\n\t{race}")
                 yield race
 
             except ValueError as e:
@@ -76,7 +76,7 @@ class Ingestor(IngestorProtocol):
         for race_id in race_ids:
             race = self.client.get_race_by_id(race_id, day=day)
             if race:
-                logger.info(f"found race for {race_id=}:\n\t{race}")
+                logger.debug(f"found race for {race_id=}:\n\t{race}")
                 yield race
             time.sleep(1)
 
@@ -90,7 +90,7 @@ class Ingestor(IngestorProtocol):
 
         metadata = self._build_metadata(race, self.client.DATASOURCE)
 
-        logger.info("searching race in the database")
+        logger.debug("searching race in the database")
         db_race = RaceService.get_closest_match_by_name_or_none(
             names=[n for n, _ in race.normalized_names],
             league=race.league,
@@ -98,9 +98,9 @@ class Ingestor(IngestorProtocol):
             date=datetime.strptime(race.date, "%d/%m/%Y").date(),
             day=race.day,
         )
-        logger.info(f"found {db_race=}")
+        logger.info(f"using {db_race=}")
 
-        logger.info("searching league")
+        logger.debug("searching league")
         league = retrieve_league(race, db_race)
         logger.info(f"using {league=}")
 
@@ -110,7 +110,7 @@ class Ingestor(IngestorProtocol):
         logger.info(f"using {trophy=}:{trophy_edition=}")
         logger.info(f"using {flag=}:{flag_edition=}")
 
-        logger.info("searching organizer & town")
+        logger.debug("searching organizer & town")
         town, organizer = self._update_race_with_competition_info(trophy, flag, league, race.town, race.organizer)
         logger.info(f"using {organizer=} {town=}")
 
@@ -136,7 +136,7 @@ class Ingestor(IngestorProtocol):
             metadata=metadata,
         )
 
-        logger.info("searching analogous race")
+        logger.debug("searching analogous race")
         associated = RaceService.get_analogous_or_none(
             race=new_race,
             year=datetime.strptime(race.date, "%d/%m/%Y").date().year,
@@ -145,7 +145,7 @@ class Ingestor(IngestorProtocol):
         logger.info(f"using {associated=}")
 
         if not db_race:
-            logger.info("searching race in the database")
+            logger.debug("searching race in the database")
             db_race = RaceService.get_by_race(new_race)
             logger.info(f"using {db_race=}")
 
@@ -160,33 +160,33 @@ class Ingestor(IngestorProtocol):
         serialized_race = RaceSerializer(db_race).data
         print(f"DATABASE RACE:\n{json.dumps(serialized_race, indent=4, skipkeys=True, ensure_ascii=False)}")
         if not input_should_merge(db_race):
-            logger.info(f"races will not be merged, using {race=}")
+            logger.debug(f"races will not be merged, using {race=}")
             return race, False
 
         logger.info(f"merging {race=} and {db_race=}")
         datasource = race.metadata["datasource"][0]
         if not self._get_datasource(db_race, datasource["ref_id"]):
-            logger.info("updating datasource")
+            logger.debug("updating datasource")
             db_race.metadata["datasource"].append(datasource)
 
         if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
-            logger.info("setting gender=ALL")
+            logger.debug("setting gender=ALL")
             db_race.gender = GENDER_ALL
 
         if input_new_value("laps", race.laps, db_race.laps):
-            logger.info(f"updating {db_race.laps} with {race.laps}")
+            logger.debug(f"updating {db_race.laps} with {race.laps}")
             db_race.laps = race.laps
 
         if input_new_value("lanes", race.lanes, db_race.lanes):
-            logger.info(f"updating {db_race.lanes} with {race.lanes}")
+            logger.debug(f"updating {db_race.lanes} with {race.lanes}")
             db_race.lanes = race.lanes
 
         if input_new_value("sponsor", race.sponsor, db_race.sponsor):
-            logger.info(f"updating {db_race.sponsor} with {race.sponsor}")
+            logger.debug(f"updating {db_race.sponsor} with {race.sponsor}")
             db_race.sponsor = race.sponsor
 
         if input_new_value("town", race.town, db_race.town):
-            logger.info(f"updating {db_race.town} with {race.town}")
+            logger.debug(f"updating {db_race.town} with {race.town}")
             db_race.town = race.town
 
         return db_race, True
@@ -199,7 +199,7 @@ class Ingestor(IngestorProtocol):
         logger.info(f"using {trophy=}:{trophy_edition=}")
         logger.info(f"using {flag=}:{flag_edition=}")
 
-        logger.info("searching league")
+        logger.debug("searching league")
         league = retrieve_league(rs_race, db_race=None)
         logger.info(f"using {league=}")
 
@@ -208,7 +208,7 @@ class Ingestor(IngestorProtocol):
             or (flag is not None and (race.flag != flag or race.flag_edition != flag_edition))
             or (not all_or_none(league, race.league) or race.league != league)
         ):
-            logger.info(f"unable to verify {race=} with {rs_race=}")
+            logger.warning(f"unable to verify {race=} with {rs_race=}")
             return race, False, False
 
         needs_update = False
@@ -218,33 +218,33 @@ class Ingestor(IngestorProtocol):
             datasource["date"] = datetime.now().date().isoformat()
             needs_update = True
 
-        logger.info("searching organizer")
+        logger.debug("searching organizer")
         organizer = rs_race.organizer
         organizer = retrieve_entity(normalize_club_name(organizer), entity_type=None) if organizer else None
         logger.info(f"using {organizer=}")
 
         if input_new_value("laps", rs_race.race_laps, race.laps):
-            logger.info(f"updating {race.laps} with {rs_race.race_laps}")
+            logger.debug(f"updating {race.laps} with {rs_race.race_laps}")
             race.laps = rs_race.race_laps
             needs_update = True
 
         if input_new_value("lanes", rs_race.race_lanes, race.lanes):
-            logger.info(f"updating {race.lanes} with {rs_race.race_lanes}")
+            logger.debug(f"updating {race.lanes} with {rs_race.race_lanes}")
             race.lanes = rs_race.race_lanes
             needs_update = True
 
         if input_new_value("organizer", organizer, race.organizer):
-            logger.info(f"updating {race.organizer} with {organizer}")
+            logger.debug(f"updating {race.organizer} with {organizer}")
             race.organizer = organizer  # pyright: ignore
             needs_update = True
 
         if input_new_value("town", rs_race.town, race.town):
-            logger.info(f"updating {race.town} with {rs_race.town}")
+            logger.debug(f"updating {race.town} with {rs_race.town}")
             race.town = rs_race.town
             needs_update = True
 
         if input_new_value("sponsor", rs_race.sponsor, race.sponsor):
-            logger.info(f"updating {race.sponsor} with {rs_race.sponsor}")
+            logger.debug(f"updating {race.sponsor} with {rs_race.sponsor}")
             race.sponsor = rs_race.sponsor
             needs_update = True
 
@@ -253,7 +253,7 @@ class Ingestor(IngestorProtocol):
     @override
     def save(self, race: Race, associated: Race | None = None, **_) -> tuple[Race, bool]:
         if not input_should_save(race):
-            logger.info(f"race {race} was not saved")
+            logger.warning(f"race {race} was not saved")
             return race, False
 
         if associated and not race.associated and input_should_associate_races(race, associated):
@@ -264,13 +264,13 @@ class Ingestor(IngestorProtocol):
             return race, True
 
         try:
-            logger.info(f"race {race} was saved")
+            logger.info(f"saving {race=}")
             race.save()
             return race, True
         except ValidationError as e:
             logger.error(e)
             if race.day == 1 and input_should_save_second_day(race):
-                logger.info(f"change day for {race} and trying again")
+                logger.debug(f"change day for {race} and trying again")
                 race.day = 2
                 return self.save(race, associated)
             return race, False
@@ -284,7 +284,7 @@ class Ingestor(IngestorProtocol):
     ) -> Participant:
         logger.info(f"ingesting {participant=}")
 
-        logger.info("searching entity in the database")
+        logger.debug("searching entity in the database")
         club = retrieve_entity(normalize_club_name(participant.participant))
         if not club:
             club = input_club(participant.participant)
@@ -292,7 +292,7 @@ class Ingestor(IngestorProtocol):
             raise StopProcessing("missing club data")
         logger.info(f"using {club=}")
 
-        logger.info("searching participant in the database")
+        logger.debug("searching participant in the database")
         db_participant = ParticipantService.get_by_race_and_filter_by(
             race,
             club=club,
@@ -300,7 +300,7 @@ class Ingestor(IngestorProtocol):
             gender=participant.gender,
             raw_club_name=participant.club_name,
         )
-        logger.info(f"found {db_participant=}")
+        logger.info(f"using {db_participant=}")
 
         new_participant = Participant(
             club_name=participant.club_name.upper() if participant.club_name else None,
@@ -329,24 +329,24 @@ class Ingestor(IngestorProtocol):
         json_participant = json.dumps(serialized_participant, indent=4, skipkeys=True, ensure_ascii=False)
         print(f"DATABASE PARTICIPANT:\n{json_participant}")
         if not input_should_merge_participant(db_participant):
-            logger.info(f"participants will not be merged, using {participant=}")
+            logger.warning(f"participants will not be merged, using {participant=}")
             return participant, False
 
         logger.info(f"merging {participant=} and {db_participant=}")
         if len(participant.laps) > len(db_participant.laps) and input_new_value(
             "laps", participant.laps, db_participant.laps
         ):
-            logger.info(f"updating {db_participant.laps} with {participant.laps}")
+            logger.debug(f"updating {db_participant.laps} with {participant.laps}")
             db_participant.laps = participant.laps
 
         if input_new_value("lane", participant.lane, db_participant.lane):
-            logger.info(f"updating {db_participant.lane=} with {participant.lane=}")
+            logger.debug(f"updating {db_participant.lane=} with {participant.lane=}")
             db_participant.lane = participant.lane
 
         if db_participant.club_name is None and input_new_value(
             "name", participant.club_name, db_participant.club_name
         ):
-            logger.info(f"updating {db_participant.club_name=} with {participant.club_name=}")
+            logger.debug(f"updating {db_participant.club_name=} with {participant.club_name=}")
             db_participant.club_name = participant.club_name
 
         return db_participant, True
@@ -361,10 +361,10 @@ class Ingestor(IngestorProtocol):
         verified_participants: list[tuple[Participant, bool, bool]] = []
 
         for rsp in rs_participants:
-            logger.info("searching entity in the database")
+            logger.debug("searching entity in the database")
             club = retrieve_entity(normalize_club_name(rsp.participant))
             if not club:
-                logger.info(f"unable to verify {rsp=}")
+                logger.warning(f"unable to verify {rsp=}")
                 continue
             logger.info(f"using {club=}")
 
@@ -384,22 +384,22 @@ class Ingestor(IngestorProtocol):
             needs_update = False
             laps = [lap.strftime("%M:%S.%f") for lap in p.laps]
             if len(rsp.laps) >= len(p.laps) and input_new_value("laps", rsp.laps, laps):
-                logger.info(f"updating {laps} with {rsp.laps}")
+                logger.debug(f"updating {laps} with {rsp.laps}")
                 p.laps = [datetime.strptime(lap, "%M:%S.%f").time() for lap in rsp.laps]
                 needs_update = True
 
             if (p.distance is None or rsp.distance != 5556) and input_new_value("distance", rsp.distance, p.distance):
-                logger.info(f"updating {p.distance=} with {rsp.distance=}")
+                logger.debug(f"updating {p.distance=} with {rsp.distance=}")
                 p.distance = rsp.distance
                 needs_update = True
 
             if input_new_value("lane", rsp.lane, p.lane):
-                logger.info(f"updating {p.lane=} with {rsp.lane=}")
+                logger.debug(f"updating {p.lane=} with {rsp.lane=}")
                 p.lane = rsp.lane
                 needs_update = True
 
             if p.club_name is None or input_new_value("name", rsp.club_name, p.club_name):
-                logger.info(f"updating {p.club_name=} with {rsp.club_name=}")
+                logger.debug(f"updating {p.club_name=} with {rsp.club_name=}")
                 p.club_name = rsp.club_name
                 needs_update = True
 
@@ -415,10 +415,10 @@ class Ingestor(IngestorProtocol):
         **_,
     ) -> tuple[Participant, bool]:
         if not input_should_save_participant(participant):
-            logger.info(f"participant {participant} was not saved")
+            logger.warning(f"participant {participant} was not saved")
             return participant, False
 
-        logger.info(f"participant {participant} was saved")
+        logger.info(f"saving {participant=}")
         participant.save()
         if is_disqualified:
             logger.info(f"creating disqualification penalty for {participant}")
@@ -455,7 +455,7 @@ class Ingestor(IngestorProtocol):
         organizer = retrieve_entity(normalize_club_name(organizer_name), entity_type=None) if organizer_name else None
         competitions = RaceService.get_races_by_competition(trophy, flag, league)
         if competitions.count():
-            logger.info(f"found {competitions.count()} matching races")
+            logger.debug(f"found {competitions.count()} matching races")
             towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
             if not town and towns.count() == 1:
                 logger.info(f"updating {town=} with {towns.first()}")
@@ -474,7 +474,7 @@ class Ingestor(IngestorProtocol):
         race: RSRace,
         db_race: Race | None,
     ) -> tuple[Race | None, tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
-        logger.info("searching trophy")
+        logger.debug("searching trophy")
         trophy, trophy_edition = retrieve_competition(
             Trophy,
             race,
@@ -483,7 +483,7 @@ class Ingestor(IngestorProtocol):
             TrophyService.infer_trophy_edition,
         )
 
-        logger.info("searching flag")
+        logger.debug("searching flag")
         flag, flag_edition = retrieve_competition(
             Flag,
             race,

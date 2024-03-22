@@ -37,7 +37,7 @@ class TabularIngestor(Ingestor):
             race = self.client.get_race_by_id(race_id)
             if not race:
                 continue
-            logger.info(f"found race for {race_id=}:\n\t{race}")
+            logger.debug(f"found race for {race_id=}:\n\t{race}")
 
             race.league = (
                 normalize_league_name(race.league, is_female=race.gender == GENDER_FEMALE) if race.league else None
@@ -51,15 +51,15 @@ class TabularIngestor(Ingestor):
             return race, False
 
         if input_new_value("trophy_edition", race.trophy_edition, db_race.trophy_edition):
-            logger.info(f"updating {db_race.trophy_edition=} with {race.trophy_edition=}")
+            logger.debug(f"updating {db_race.trophy_edition=} with {race.trophy_edition=}")
             db_race.trophy_edition = race.trophy_edition
 
         if input_new_value("flag_edition", race.flag_edition, db_race.flag_edition):
-            logger.info(f"updating {db_race.flag_edition} with {race.flag_edition}")
+            logger.debug(f"updating {db_race.flag_edition} with {race.flag_edition}")
             db_race.flag_edition = race.flag_edition
 
         if input_new_value("organizer", race.organizer, db_race.organizer):
-            logger.info(f"updating {db_race.organizer} with {race.organizer}")
+            logger.debug(f"updating {db_race.organizer} with {race.organizer}")
             db_race.organizer = race.organizer
 
         return db_race, True
@@ -69,7 +69,7 @@ class TabularIngestor(Ingestor):
         db_participant, should_merge = super().merge_participants(participant, db_participant)
         if not should_merge:
             if input_shoud_create_B_participant(participant):
-                logger.info(f"creating B team participation for {participant=}")
+                logger.debug(f"creating B team participation for {participant=}")
                 participant.club_name = (
                     f"{participant.club_name} B" if participant.club_name else f"{participant.club.name} B"
                 ).upper()
@@ -77,7 +77,7 @@ class TabularIngestor(Ingestor):
             return participant, False
 
         if input_new_value("distance", participant.distance, db_participant.distance):
-            logger.info(f"updating {db_participant.distance=} with {participant.distance=}")
+            logger.debug(f"updating {db_participant.distance=} with {participant.distance=}")
             db_participant.distance = participant.distance
 
         return db_participant, True
@@ -96,6 +96,7 @@ class TabularIngestor(Ingestor):
             raise ValueError(f"no datasource provided for {race.race_ids[0]}::{race.name}")
 
         if not self.client.config.sheet_id:
+            logger.warning("using default metadata")
             return default_metadata()
 
         metadata = [

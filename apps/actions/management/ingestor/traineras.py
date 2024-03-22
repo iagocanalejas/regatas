@@ -23,7 +23,7 @@ class TrainerasIngestor(Ingestor):
 
         for race_id in self.client.get_race_ids_by_year(year=year):
             if race_id in self._ignored_races or MetadataService.exists(race_id, Datasource.TRAINERAS):
-                logger.info(f"ignoring {race_id=}")
+                logger.debug(f"ignoring {race_id=}")
                 continue
 
             try:
@@ -36,7 +36,7 @@ class TrainerasIngestor(Ingestor):
                     # if we reach a race after today, we can stop and yield the current race
                     if race:
                         race.participants = participants
-                        logger.info(f"found race for {race_id=}:\n\t{race}")
+                        logger.debug(f"found race for {race_id=}:\n\t{race}")
                         yield race
                     break
 
@@ -44,7 +44,7 @@ class TrainerasIngestor(Ingestor):
                 if not race or race.name != local_race.name:
                     if race:
                         race.participants = participants
-                        logger.info(f"found race for {race_id=}:\n\t{race}")
+                        logger.debug(f"found race for {race_id=}:\n\t{race}")
                         yield race
                     race = local_race
                     participants = race.participants
@@ -63,7 +63,7 @@ class TrainerasIngestor(Ingestor):
                     raise e
                 if self._is_race_after_today(race_1) or self._is_race_after_today(race_2):
                     break
-                logger.info(f"found multiday race for {race_id=}\n{race_1=}\n{race_2=}")
+                logger.debug(f"found multiday race for {race_id=}\n{race_1=}\n{race_2=}")
                 yield race_1
                 yield race_2
                 continue

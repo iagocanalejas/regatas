@@ -98,6 +98,7 @@ media/
 static/
 _backups/*
 out/*
+apps/actions/management/commands/fixes.py
 
 # Exception for media module
 !/apps/modules/media/

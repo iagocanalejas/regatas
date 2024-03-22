@@ -6,6 +6,7 @@ import os
 
 from django.core.management import BaseCommand
 
+from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingestor import build_ingestor
 from rscraping.clients import TabularClientConfig
 from rscraping.data.models import Datasource
@@ -58,7 +59,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_, **options):
-        logger.info(f"{options}")
+        logger.debug(f"{options}")
 
         input_source, race_ids = options["input_source"], options["race_ids"]
         is_female, day, output_path = (
@@ -85,12 +86,17 @@ class Command(BaseCommand):
             new_race, saved = ingestor.save(new_race, associated=associated)
 
             if not saved:
-                logger.info(f"{race=} was not saved")
-                continue
+                db_race = input_race(race)
+                if not db_race:
+                    continue
 
-            logger.info(f"processing {len(participants)} participants for {race=}")
-            for index, participant in enumerate(participants):
-                logger.info(f"processing participant {index + 1}/{len(participants)}:{participant}")
+                new_race, _ = ingestor.merge(new_race, db_race)
+                new_race, saved = ingestor.save(new_race, associated=associated)
+                if not saved:
+                    logger.warning(f"{race=} was not saved")
+                    continue
+
+            for participant in participants:
                 new_participant = ingestor.ingest_participant(new_race, participant)
                 new_participant, saved = ingestor.save_participant(
                     new_participant, is_disqualified=participant.disqualified

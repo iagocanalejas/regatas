@@ -6,6 +6,7 @@ import os
 
 from django.core.management import BaseCommand
 
+from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingestor import build_ingestor
 from rscraping.clients import TabularClientConfig
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN
@@ -108,7 +109,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_, **options):
-        logger.info(f"{options}")
+        logger.debug(f"{options}")
 
         input_source, year = options["input_source"], options["year"]
         tabular_config = TabularClientConfig(
@@ -126,7 +127,6 @@ class Command(BaseCommand):
         datasource_or_path, year, category = self._validate_arguments(input_source, year, category)
         ingestor = build_ingestor(datasource_or_path, tabular_config, is_female, category, self._ignored_races)
         for race in ingestor.fetch(year=year, is_female=is_female):
-            logger.info(f"processing {race=}")
             if output_path and os.path.isdir(output_path):
                 file_name = f"{race.race_ids[0]}.json"
                 logger.info(f"saving race to {file_name=}")
@@ -141,12 +141,17 @@ class Command(BaseCommand):
             new_race, saved = ingestor.save(new_race, associated=associated)
 
             if not saved:
-                logger.info(f"{race=} was not saved")
-                continue
+                db_race = input_race(race)
+                if not db_race:
+                    continue
 
-            logger.info(f"processing {len(participants)} participants for {race=}")
-            for index, participant in enumerate(participants):
-                logger.info(f"processing participant {index + 1}/{len(participants)}:{participant}")
+                new_race, _ = ingestor.merge(new_race, db_race)
+                new_race, saved = ingestor.save(new_race, associated=associated)
+                if not saved:
+                    logger.warning(f"{race=} was not saved")
+                    continue
+
+            for participant in participants:
                 new_participant = ingestor.ingest_participant(new_race, participant)
                 new_participant, saved = ingestor.save_participant(
                     new_participant, is_disqualified=participant.disqualified

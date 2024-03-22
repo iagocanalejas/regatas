@@ -52,11 +52,15 @@ def input_should_save_second_day(race: Race):
     return inquirer.confirm(f"race {race} already in DB. Is this race a second day?")
 
 
+def input_race(race: RSRace) -> Race | None:
+    race_id = inquirer.text(f"no race found for {race.date}::{race.name}. Race ID", default=None)
+    return Race.objects.get(id=race_id) if race_id else None
+
+
 def input_competition(
     race: RSRace,
 ) -> tuple[Race | None, tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
-    race_id = inquirer.text(f"no race found for {race.date}::{race.name}. Race ID", default=None)
-    db_race = Race.objects.get(id=race_id) if race_id else None
+    db_race = input_race(race)
     if db_race:
         trophy, trophy_edition = db_race.trophy, db_race.trophy_edition
         flag, flag_edition = db_race.flag, db_race.flag_edition

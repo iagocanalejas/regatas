@@ -260,7 +260,8 @@ LOGGING = {
             "style": "{",
         },
         "simple": {
-            "format": "{levelname} {asctime} {message}",
+            "()": "colorlog.ColoredFormatter",
+            "format": "{log_color}{levelname} {asctime} {message}{reset}",
             "style": "{",
         },
     },
