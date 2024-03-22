@@ -22,7 +22,7 @@ class TrainerasIngestor(Ingestor):
         participants: list[RSParticipant] = []
 
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(race_id, Datasource.TRAINERAS):
+            if race_id in self._ignored_races or MetadataService.exists(Datasource.TRAINERAS, race_id):
                 logger.debug(f"ignoring {race_id=}")
                 continue
 

@@ -14,6 +14,38 @@ from rscraping.data.functions import is_play_off
 logger = logging.getLogger(__name__)
 
 
+def get_race_or_none(race_id: int) -> Race | None:
+    try:
+        return Race.objects.get(pk=race_id)
+    except Race.DoesNotExist:
+        return None
+
+
+def get_race_matching_race(race: Race) -> Race | None:
+    """
+    :returns: a Race object that matches the provided one.
+    """
+    q = get_races_by_competition(race.trophy, race.flag, race.league)
+    q = q.filter(date=race.date)
+
+    try:
+        return q.get()
+    except Race.DoesNotExist:
+        return None
+
+
+def get_races_by_competition(trophy: Trophy | None, flag: Flag | None, league: League | None) -> QuerySet[Race]:
+    """
+    :returns: a QuerySet of races that match the provided competition arguments.
+    """
+    filters = [
+        Q(trophy=trophy) if trophy else Q(trophy__isnull=True),
+        Q(flag=flag) if flag else Q(flag__isnull=True),
+        Q(league=league) if league else Q(league__isnull=True),
+    ]
+    return Race.objects.filter(*filters)
+
+
 def filter(
     queryset: QuerySet[Race],
     filters: dict,
@@ -32,27 +64,6 @@ def filter(
     queryset = queryset.prefetch_related(*prefetch) if prefetch else queryset
 
     return queryset.all()
-
-
-def get_races_by_competition(trophy: Trophy | None, flag: Flag | None, league: League | None) -> QuerySet[Race]:
-    filters = [
-        Q(trophy=trophy) if trophy else Q(trophy__isnull=True),
-        Q(flag=flag) if flag else Q(flag__isnull=True),
-        Q(league=league) if league else Q(league__isnull=True),
-    ]
-    return Race.objects.filter(*filters)
-
-
-def get_by_race(race: Race) -> Race | None:
-    q = Race.objects.filter(league=race.league) if race.league else Race.objects.filter(league__isnull=True)
-    q = q.filter(trophy=race.trophy) if race.trophy else q.filter(trophy__isnull=True)
-    q = q.filter(flag=race.flag) if race.flag else q.filter(flag__isnull=True)
-    q = q.filter(date=race.date)
-
-    try:
-        return q.get()
-    except Race.DoesNotExist:
-        return None
 
 
 def get_analogous_or_none(race: Race, year: int, day: int) -> Race | None:

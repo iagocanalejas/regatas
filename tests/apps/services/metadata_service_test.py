@@ -30,4 +30,4 @@ class MetadataServiceTest(TestCase):
         }
         race.save()
 
-        self.assertTrue(MetadataService.exists("1", Datasource.TABULAR, sheet_id="test", sheet_name="test"))
+        self.assertTrue(MetadataService.exists(Datasource.TABULAR, "1", sheet_id="test", sheet_name="test"))

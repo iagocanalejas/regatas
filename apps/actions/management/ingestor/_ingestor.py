@@ -53,7 +53,7 @@ class Ingestor(IngestorProtocol):
     @override
     def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(race_id, self.client.DATASOURCE):
+            if race_id in self._ignored_races or MetadataService.exists(self.client.DATASOURCE, race_id):
                 logger.debug(f"ignoring {race_id=}")
                 continue
 
@@ -146,7 +146,7 @@ class Ingestor(IngestorProtocol):
 
         if not db_race:
             logger.debug("searching race in the database")
-            db_race = RaceService.get_by_race(new_race)
+            db_race = RaceService.get_race_matching_race(new_race)
             logger.info(f"using {db_race=}")
 
         print(f"NEW RACE:\n{json.dumps(RaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False)}")
@@ -427,7 +427,7 @@ class Ingestor(IngestorProtocol):
 
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
-        datasources = MetadataService.get_datasource(race, self.client.DATASOURCE, ref_id)
+        datasources = MetadataService.get_datasource_from_race(self.client.DATASOURCE, race, ref_id)
         if len(datasources) > 1:
             logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
         return datasources[0] if datasources else None

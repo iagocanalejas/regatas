@@ -56,6 +56,20 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #   NOTE: One of 'year' | 'race_ids' is required and they are mutually exclusive.
 ```
 
+## Find Races
+
+Retrieve races from the database searching by race ID or datasource and ref_id.
+
+```sh
+python manage.py find datasource_or_race [REF_ID]
+
+#   Arguments:
+#       datasource_or_race:
+#           The name of the Datasource or race ID to retrieve.
+#       ref_id:
+#           The reference ID to search for.
+```
+
 ## Verify Races
 
 Retrieve races from the database and verifies it's datasources ara correct.

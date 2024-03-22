@@ -49,7 +49,7 @@ class Command(BaseCommand):
             raise ValueError(f"invalid datasource={maybe_datasource}")
         datasource = Datasource(maybe_datasource)
 
-        races = MetadataService.get_races_by_datasource(datasource)
+        races = MetadataService.get_races(datasource)
         if year:
             races = races.filter(date__year=year)
 

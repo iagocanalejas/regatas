@@ -27,8 +27,8 @@ class TabularIngestor(Ingestor):
     def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         for race_id in self.client.get_race_ids_by_year(year=year):
             if race_id in self._ignored_races or MetadataService.exists(
-                race_id,
                 Datasource.TABULAR,
+                race_id,
                 sheet_id=self.client.config.sheet_id,
                 sheet_name=self.client.config.sheet_name,
             ):
@@ -85,7 +85,7 @@ class TabularIngestor(Ingestor):
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
         kwargs = {"sheet_id": self.client.config.sheet_id, "sheet_name": self.client.config.sheet_name}
-        datasources = MetadataService.get_datasource(race, self.client.DATASOURCE, ref_id, **kwargs)
+        datasources = MetadataService.get_datasource_from_race(self.client.DATASOURCE, race, ref_id, **kwargs)
         if len(datasources) > 1:
             logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
         return datasources[0] if datasources else None
