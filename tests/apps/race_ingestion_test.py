@@ -15,7 +15,7 @@ from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
 
-class IngestionTest(TestCase):
+class RaceIngestionTest(TestCase):
     fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "races-db.json")]
 
     @patch("rscraping.clients.Client")
@@ -62,7 +62,7 @@ class IngestionTest(TestCase):
             race.metadata["datasource"],
         )
 
-    def test_ingest_data_filling(self):
+    def test_ingest_with_data_filling(self):
         rs_race = RSRace(
             name="XV BANDEIRA CONCELLO DE A POBRA",
             date="22/08/1890",
