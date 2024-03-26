@@ -1,6 +1,7 @@
 from collections.abc import Generator
 from typing import Any, Protocol
 
+from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.races.models import Race
 from rscraping.data.models import Datasource
@@ -23,6 +24,18 @@ class IngestorProtocol(Protocol):
 
         Args:
             race_ids: list[str]: The list of IDs to search for.
+
+        Yields: RSRace: The races found.
+        """
+        ...
+
+    def fetch_by_club(self, club: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+        """
+        Fetch races that should be ingested from one of many clients using the club and year to filter.
+
+        Args:
+            club: Entity: The club to search for.
+            year: int: The year to search for.
 
         Yields: RSRace: The races found.
         """
@@ -113,6 +126,18 @@ class IngestorProtocol(Protocol):
         """
         ...
 
+    def should_merge_participants(self, participant: Participant, db_participant: Participant) -> bool:
+        """
+        Check if two participants should be merged.
+
+        Args:
+            participant Participant: The newly ingested Participant.
+            db_participant Participant: An existing database participant.
+
+        Returns: bool: Whether the participants should be merged or not.
+        """
+        ...
+
     def merge_participants(self, participant: Participant, db_participant: Participant) -> tuple[Participant, bool]:
         """
         Merge two participants into one.
@@ -170,3 +195,5 @@ class IngestorProtocol(Protocol):
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None: ...
 
     def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict: ...
+
+    def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]: ...

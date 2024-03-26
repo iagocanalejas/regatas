@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+from typing import override
 
 from django.core.management import BaseCommand
 
@@ -31,6 +32,7 @@ class Command(BaseCommand):
 
     _cached_ingestor: dict[str, IngestorProtocol] = {}
 
+    @override
     def add_arguments(self, parser):
         parser.add_argument("datasource", type=str, help="The name of the Datasource that will be validated")
         parser.add_argument(
@@ -41,6 +43,7 @@ class Command(BaseCommand):
             help="The year for which race data should be verified.",
         )
 
+    @override
     def handle(self, *_, **options):
         logger.info(f"{options}")
 

@@ -22,21 +22,12 @@ class TrainerasIngestor(Ingestor):
         participants: list[RSParticipant] = []
 
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(Datasource.TRAINERAS, race_id):
-                logger.debug(f"ignoring {race_id=}")
-                continue
-
-            try:
-                time.sleep(1)
-                local_race = self.client.get_race_by_id(race_id)
-
-                if not local_race:
-                    continue
+            for local_race in self._retrieve_race(race_id):
                 if self._is_race_after_today(local_race):
                     # if we reach a race after today, we can stop and yield the current race
                     if race:
                         race.participants = participants
-                        logger.debug(f"found race for {race_id=}:\n\t{race}")
+                        logger.debug(f"found race for {year=}:\n\t{race}")
                         yield race
                     break
 
@@ -44,7 +35,7 @@ class TrainerasIngestor(Ingestor):
                 if not race or race.name != local_race.name:
                     if race:
                         race.participants = participants
-                        logger.debug(f"found race for {race_id=}:\n\t{race}")
+                        logger.debug(f"found race for {year=}:\n\t{race}")
                         yield race
                     race = local_race
                     participants = race.participants
@@ -55,19 +46,33 @@ class TrainerasIngestor(Ingestor):
                     race.gender = GENDER_ALL
                 participants.extend(local_race.participants)
 
-            except MultiDayRaceException as e:
-                time.sleep(1)
-                race_1 = self.client.get_race_by_id(race_id, day=1)
-                race_2 = self.client.get_race_by_id(race_id, day=2)
-                if not race_1 or not race_2:
-                    raise e
-                if self._is_race_after_today(race_1) or self._is_race_after_today(race_2):
-                    break
-                logger.debug(f"found multiday race for {race_id=}\n{race_1=}\n{race_2=}")
-                yield race_1
-                yield race_2
-                continue
+        # yield the last race
+        if race:
+            race.participants = participants
+            logger.debug(f"found race for {year=}:\n\t{race}")
+            yield race
 
-            except ValueError as e:
-                logger.error(e)
-                continue
+    @override
+    def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]:
+        if race_id in self._ignored_races or MetadataService.exists(Datasource.TRAINERAS, race_id):
+            logger.debug(f"ignoring {race_id=}")
+            return
+
+        try:
+            time.sleep(1)
+            race = self.client.get_race_by_id(race_id)
+            if race:
+                yield race
+        except MultiDayRaceException as e:
+            time.sleep(1)
+            race_1 = self.client.get_race_by_id(race_id, day=1)
+            race_2 = self.client.get_race_by_id(race_id, day=2)
+            if not race_1 or not race_2:
+                raise e
+
+            logger.debug(f"multiday race for {race_id=}")
+            yield race_1
+            yield race_2
+        except ValueError as e:
+            logger.error(e)
+            return

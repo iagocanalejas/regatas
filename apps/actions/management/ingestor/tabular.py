@@ -65,6 +65,10 @@ class TabularIngestor(Ingestor):
         return db_race, True
 
     @override
+    def should_merge_participants(self, *_, **__) -> bool:
+        return True
+
+    @override
     def merge_participants(self, participant: Participant, db_participant: Participant) -> tuple[Participant, bool]:
         db_participant, should_merge = super().merge_participants(participant, db_participant)
         if not should_merge:

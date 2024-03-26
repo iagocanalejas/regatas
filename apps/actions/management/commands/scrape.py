@@ -4,11 +4,15 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
+from typing import override
 
 from django.core.management import BaseCommand
 
 from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingestor import build_ingestor
+from apps.entities.models import Entity
+from apps.entities.services import EntityService
+from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN
 from rscraping.data.models import Datasource
@@ -41,7 +45,10 @@ class Command(BaseCommand):
 
     Options:
         --year YEAR
-            The year for which race data should be imported.
+            The year for which races should be imported.
+
+        --club CLUB
+            The club for which races should be imported.
 
         -f, --female:
             Import data for female races.
@@ -72,10 +79,12 @@ class Command(BaseCommand):
     NOTE: One of 'year' | 'race_ids' is required and they are mutually exclusive.
     """
 
+    @override
     def add_arguments(self, parser):
         parser.add_argument("input_source", type=str, help="The name of the Datasource or path to import data from.")
         parser.add_argument("race_ids", nargs="*", default=None, help="Races to find and ingest.")
-        parser.add_argument("--year", type=int, default=None, help="The year for which race data should be imported.")
+        parser.add_argument("--year", type=int, default=None, help="The year for which races should be imported.")
+        parser.add_argument("--club", type=int, default=None, help="The club for which races should be imported.")
 
         # for tabular data
         parser.add_argument("--sheet-id", type=str, default=None, help="Google sheet ID used for TABULAR datasource..")
@@ -113,6 +122,7 @@ class Command(BaseCommand):
             help="Outputs the race data to the given folder path in JSON format.",
         )
 
+    @override
     def handle(self, *_, **options):
         logger.debug(f"{options}")
         config = ScrapeConfig.from_args(**options)
@@ -128,10 +138,12 @@ class Command(BaseCommand):
         )
 
         races = []
-        if config.year:
-            races = ingestor.fetch(year=config.year, is_female=config.is_female)
-        if config.race_ids:
+        if config.club and config.year:
+            races = ingestor.fetch_by_club(config.club, year=config.year)
+        elif config.race_ids:
             races = ingestor.fetch_by_ids(config.race_ids, day=config.day)
+        elif config.year:
+            races = ingestor.fetch(year=config.year, is_female=config.is_female)
 
         for race in races:
             if config.output_path and os.path.isdir(config.output_path):
@@ -173,6 +185,7 @@ class ScrapeConfig:
     path: str | None = None
     race_ids: list[str] = field(default_factory=list)
     year: int | None = None
+    club: Entity | None = None
 
     category: str | None = None
     is_female: bool = False
@@ -183,7 +196,12 @@ class ScrapeConfig:
 
     @classmethod
     def from_args(cls, **options) -> "ScrapeConfig":
-        input_source, race_ids, year = options["input_source"], options["race_ids"], options["year"]
+        input_source, race_ids, year, club_id = (
+            options["input_source"],
+            options["race_ids"],
+            options["year"],
+            options["club"],
+        )
         tabular_config = TabularClientConfig(
             sheet_id=options["sheet_id"],
             sheet_name=options["sheet_name"],
@@ -204,10 +222,17 @@ class ScrapeConfig:
                 raise ValueError(f"Invalid datasource: {input_source}")
             datasource, path = Datasource(input_source), None
 
-        if not year and len(race_ids) == 0:
-            raise ValueError("required value for 'race_ids' or 'year'")
-        if year and len(race_ids) > 0:
-            raise ValueError("cannot provide both 'race_ids' and 'year'")
+        has_races = True if len(race_ids) > 0 else None
+        if not only_one_not_none(year, has_races):
+            raise ValueError("only one of 'year', 'race_ids' can be provided")
+        if not year and not club_id and len(race_ids) == 0:
+            raise ValueError("required value for 'race_ids' or 'club' or 'year'")
+        if club_id and not year:
+            raise ValueError("'year' is required when 'club' is provided")
+        if club_id and datasource != Datasource.TRAINERAS:
+            raise ValueError("'club' is only supported in TRAINERAS datasource")
+
+        # TODO: allow year=all
         if year and year < 1950 or year > 2100:
             raise ValueError(f"invalid {year=}")
         if category and datasource != Datasource.TRAINERAS:
@@ -217,12 +242,17 @@ class ScrapeConfig:
         if day and len(race_ids) != 1:
             raise ValueError("day filtering is only supported for one race_id")
 
+        club = EntityService.get_entity_or_none(club_id) if club_id else None
+        if club_id and not club:
+            raise ValueError(f"invalid {club_id=}")
+
         return cls(
             tabular_config=tabular_config,
             datasource=datasource,
             path=path,
             race_ids=race_ids,
             year=year,
+            club=club,
             category=category.upper() if category else None,
             is_female=is_female,
             day=day,

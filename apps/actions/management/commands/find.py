@@ -3,6 +3,7 @@
 import json
 import logging
 from dataclasses import dataclass
+from typing import override
 
 from django.core.management import BaseCommand
 
@@ -30,10 +31,12 @@ class Command(BaseCommand):
             The reference ID to search for.
     """
 
+    @override
     def add_arguments(self, parser):
         parser.add_argument("datasource_or_race", help="The name of the Datasource or path to import data from.")
         parser.add_argument("ref_id", nargs="?", default=None, help="Races to find and ingest.")
 
+    @override
     def handle(self, *_, **options):
         logger.debug(f"{options}")
         config = FindConfig.from_args(**options)

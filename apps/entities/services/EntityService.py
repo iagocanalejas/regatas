@@ -9,6 +9,13 @@ from pyutils.lists import flatten
 from pyutils.strings import closest_result, levenshtein_distance, remove_conjunctions, remove_symbols
 
 
+def get_entity_or_none(entity_id: int) -> Entity | None:
+    try:
+        return Entity.objects.get(id=entity_id)
+    except Entity.DoesNotExist:
+        return None
+
+
 def get_closest_club_by_name(name: str) -> Entity:
     """
     :return: closest found club in the database

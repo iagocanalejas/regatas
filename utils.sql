@@ -28,6 +28,7 @@ ORDER BY date;
 -- RETRIEVE TROPHIES/FLAGS WITH DIFFERENT LAPS
 SELECT id,
        date,
+       type,
        race_name,
        trophy_id,
        trophy_edition,
@@ -37,13 +38,13 @@ SELECT id,
        laps,
        lanes,
        town,
-       type,
        gender,
        metadata
 FROM race r
-WHERE (SELECT count(distinct lanes) -- change here (laps | lanes | town | organizer)
+WHERE (SELECT count(DISTINCT lanes) -- change here (laps | lanes | town | organizer)
        FROM race r2
        WHERE r.gender = r2.gender
+         AND r.type = r2.type
          AND (r.trophy_id = r2.trophy_id AND r.flag_id = r2.flag_id)) > 1
 ORDER BY trophy_id, trophy_edition, flag_id, flag_edition;
 
@@ -51,5 +52,5 @@ ORDER BY trophy_id, trophy_edition, flag_id, flag_edition;
 SELECT *
 FROM participant p1
 WHERE (SELECT type FROM race WHERE race.id = p1.race_id) = 'TIME_TRIAL'
-  AND (SELECT count(distinct lane) FROM participant p2 WHERE p2.race_id = p1.race_id) > 1
+  AND (SELECT count(DISTINCT lane) FROM participant p2 WHERE p2.race_id = p1.race_id) > 1
 ORDER BY race_id;
