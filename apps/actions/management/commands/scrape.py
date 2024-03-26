@@ -4,6 +4,8 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
+from datetime import datetime
+from itertools import chain
 from typing import override
 
 from django.core.management import BaseCommand
@@ -45,7 +47,7 @@ class Command(BaseCommand):
 
     Options:
         --year YEAR
-            The year for which races should be imported.
+            The year for which races should be imported or 'all'.
 
         --club CLUB
             The club for which races should be imported.
@@ -82,19 +84,14 @@ class Command(BaseCommand):
     @override
     def add_arguments(self, parser):
         parser.add_argument("input_source", type=str, help="The name of the Datasource or path to import data from.")
-        parser.add_argument("race_ids", nargs="*", default=None, help="Races to find and ingest.")
-        parser.add_argument("--year", type=int, default=None, help="The year for which races should be imported.")
-        parser.add_argument("--club", type=int, default=None, help="The club for which races should be imported.")
+        parser.add_argument("race_ids", nargs="*", help="Races to find and ingest.")
+        parser.add_argument("--year", type=str, help="The year for which races should be imported or 'all'.")
+        parser.add_argument("--club", type=int, help="The club for which races should be imported.")
 
         # for tabular data
-        parser.add_argument("--sheet-id", type=str, default=None, help="Google sheet ID used for TABULAR datasource..")
-        parser.add_argument(
-            "--sheet-name",
-            type=str,
-            default=None,
-            help="Google sheet name used for TABULAR datasource.",
-        )
-        parser.add_argument("--file-path", type=str, default=None, help="Sheet file path used for TABULAR datasource..")
+        parser.add_argument("--sheet-id", type=str, help="Google sheet ID used for TABULAR datasource..")
+        parser.add_argument("--sheet-name", type=str, help="Google sheet name used for TABULAR datasource.")
+        parser.add_argument("--file-path", type=str, help="Sheet file path used for TABULAR datasource..")
 
         # options
         parser.add_argument("-d", "--day", type=int, help="Day of the race.")
@@ -103,7 +100,6 @@ class Command(BaseCommand):
             "-c",
             "--category",
             type=str,
-            default=None,
             help="Import data for the given category (ABSOLUT | VETERAN | SCHOOL).",
         )
         parser.add_argument(
@@ -118,7 +114,6 @@ class Command(BaseCommand):
             "-o",
             "--output",
             type=str,
-            default=None,
             help="Outputs the race data to the given folder path in JSON format.",
         )
 
@@ -137,13 +132,21 @@ class Command(BaseCommand):
             ignored_races=config.ignored_races,
         )
 
+        years = []
+        if config.year:
+            if config.year == ScrapeConfig.ALL_YEARS:
+                start = ingestor.client.FEMALE_START if config.is_female else ingestor.client.MALE_START
+                years = range(start, datetime.now().year + 1)
+            else:
+                years = [config.year]
+
         races = []
         if config.club and config.year:
-            races = ingestor.fetch_by_club(config.club, year=config.year)
+            races = chain(*[ingestor.fetch_by_club(config.club, year=year) for year in years])
         elif config.race_ids:
             races = ingestor.fetch_by_ids(config.race_ids, day=config.day)
         elif config.year:
-            races = ingestor.fetch(year=config.year, is_female=config.is_female)
+            races = chain(*[ingestor.fetch(year=year, is_female=config.is_female) for year in years])
 
         for race in races:
             if config.output_path and os.path.isdir(config.output_path):
@@ -177,8 +180,12 @@ class Command(BaseCommand):
                 )
 
 
+
+
 @dataclass
 class ScrapeConfig:
+    ALL_YEARS = -1
+
     tabular_config: TabularClientConfig
 
     datasource: Datasource | None = None
@@ -232,9 +239,8 @@ class ScrapeConfig:
         if club_id and datasource != Datasource.TRAINERAS:
             raise ValueError("'club' is only supported in TRAINERAS datasource")
 
-        # TODO: allow year=all
-        if year and year < 1950 or year > 2100:
-            raise ValueError(f"invalid {year=}")
+        year = cls.parse_year(year)
+
         if category and datasource != Datasource.TRAINERAS:
             raise ValueError(f"category filtering is not suported in {datasource=}")
         if category and category.upper() not in [CATEGORY_ABSOLUT, CATEGORY_VETERAN, CATEGORY_SCHOOL]:
@@ -259,3 +265,17 @@ class ScrapeConfig:
             ignored_races=ignored_races,
             output_path=output_path,
         )
+
+    @classmethod
+    def parse_year(cls, year: str | None) -> int | None:
+        if year:
+            if year == "all":
+                return cls.ALL_YEARS
+            elif year.isdigit():
+                y = int(year)
+                if y < 1950 or y > 2100:
+                    raise ValueError(f"invalid {year=}")
+                return y
+            else:
+                raise ValueError(f"invalid {year=}")
+        return None

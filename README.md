@@ -25,7 +25,11 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #
 #   Options:
 #       --year YEAR
-#           The year for which race data should be imported.
+#           The year for which race data should be imported or 'all'.
+#
+#       --club CLUB
+#           The club for which races should be imported.
+#           NOTE: This option is only supported for the TRAINERAS datasource.
 #
 #       -f, --female:
 #           Import data for female races.
