@@ -20,21 +20,12 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = """
     Retrieve races from the database searching by race ID or datasource and ref_id.
-
-    Usage:
-        python manage.py find datasource_or_race [REF_ID]
-
-    Arguments:
-        datasource_or_race:
-            The name of the Datasource or race ID to retrieve.
-        ref_id:
-            The reference ID to search for.
     """
 
     @override
     def add_arguments(self, parser):
-        parser.add_argument("datasource_or_race", help="The name of the Datasource or path to import data from.")
-        parser.add_argument("ref_id", nargs="?", default=None, help="Races to find and ingest.")
+        parser.add_argument("datasource_or_race", help="name of the Datasource or race ID in the database.")
+        parser.add_argument("ref_id", nargs="?", default=None, help="reference ID for the given Datasource.")
 
     @override
     def handle(self, *_, **options):

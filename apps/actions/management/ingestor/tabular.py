@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 
 
 class TabularIngestor(Ingestor):
+    client: TabularDataClient
+
     def __init__(self, client: TabularDataClient, ignored_races: list[str]):
         self.client = client
         self._ignored_races = ignored_races

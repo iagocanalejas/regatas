@@ -18,16 +18,6 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = """
     Retrieve races from the database and verifies it's datasources ara correct.
-
-    Usage:
-    python manage.py validatedatasource datasource [year]
-
-    Arguments:
-        datasource:
-            The name of the Datasource that will be validated.
-
-        year:
-            The year of the races that will be processed.
     """
 
     _cached_ingestor: dict[str, IngestorProtocol] = {}

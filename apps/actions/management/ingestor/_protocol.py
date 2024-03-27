@@ -117,7 +117,7 @@ class IngestorProtocol(Protocol):
         race: Race,
         participant: RSParticipant,
         **kwargs,
-    ) -> Participant:
+    ) -> tuple[Participant, bool]:
         """
         Converts the fetched RSParticipant into a database Participant trying to retrieve valid data from the database.
 
@@ -125,7 +125,9 @@ class IngestorProtocol(Protocol):
             race Race: The Race to witch the participant belongs.
             participant: RSParticipant: The participant to ingest.
 
-        Returns: Participant: The new ingested participant.
+        Returns: tuple[Participant, bool]:
+            Participant: The new ingested participant.
+            bool: Whether the participant is different from the database one or not.
         """
         ...
 

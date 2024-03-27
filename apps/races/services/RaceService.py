@@ -26,7 +26,7 @@ def get_race_matching_race(race: Race) -> Race | None:
     :returns: a Race object that matches the provided one.
     """
     q = get_races_by_competition(race.trophy, race.flag, race.league)
-    q = q.filter(date=race.date)
+    q = q.filter(date=race.date, day=race.day, gender=race.gender)
 
     try:
         return q.get()

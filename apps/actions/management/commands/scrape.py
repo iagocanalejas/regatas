@@ -25,90 +25,41 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = """
     Retrieve and process race data from a web datasource, JSON file or spreadsheet.
-
-    Usage:
-        python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
-            [--year YEAR] \
-            [-f, --female] \
-            [-c, --category CATEGORY] \
-            [-d, --day DAY] \
-            [--sheet-id SHEET_ID] \
-            [--sheet-name SHEET_NAME] \
-            [--file-path FILE_PATH] \
-            [-i, --ignore ID [ID ...]] \
-            [-o, --output OUTPUT]
-
-    Arguments:
-        input_source:
-            The name of the Datasource or path to import data.
-
-        race_ids (optional)
-            Races to find and ingest.
-
-    Options:
-        --year YEAR
-            The year for which races should be imported or 'all'.
-
-        --club CLUB
-            The club for which races should be imported.
-
-        -f, --female:
-            Import data for female races.
-
-        -c, --category:
-            Import data for the given category (ABSOLUT | VETERAN | SCHOOL).
-            NOTE: This option is only supported for the TRAINERAS datasource.
-
-        -d, --day DAY
-            Day of the race.
-            NOTE: This option is only supported for the TRAINERAS datasource.
-
-        --sheet-id:
-            Google sheet ID used for TABULAR datasource.
-
-        --sheet-name:
-            Google sheet name used for TABULAR datasource.
-
-        --file-path:
-            Sheet file path used for TABULAR datasource.
-
-        -i, --ignore:
-            List of race IDs to ignore during ingestion.
-
-        -o, --output:
-            Outputs the race data to the given folder path in JSON format.
-
-    NOTE: One of 'year' | 'race_ids' is required and they are mutually exclusive.
     """
 
     @override
     def add_arguments(self, parser):
-        parser.add_argument("input_source", type=str, help="The name of the Datasource or path to import data from.")
-        parser.add_argument("race_ids", nargs="*", help="Races to find and ingest.")
-        parser.add_argument("--year", type=str, help="The year for which races should be imported or 'all'.")
-        parser.add_argument("--club", type=int, help="The club for which races should be imported.")
+        parser.add_argument("input_source", type=str, help="name of the Datasource or path to import data from.")
+        parser.add_argument("race_ids", nargs="*", help="race IDs to find in the source and ingest.")
+        parser.add_argument("--club", type=int, help="club for which races should be imported.")
+
+        parser.add_argument(
+            "--year",
+            type=str,
+            help="year for which races should be imported, 'all' to import from the source beginnig.",
+        )
+        parser.add_argument(
+            "--start-year",
+            type=int,
+            help="year for which we should start processing years. Only used with year='all'.",
+        )
 
         # for tabular data
-        parser.add_argument("--sheet-id", type=str, help="Google sheet ID used for TABULAR datasource..")
-        parser.add_argument("--sheet-name", type=str, help="Google sheet name used for TABULAR datasource.")
-        parser.add_argument("--file-path", type=str, help="Sheet file path used for TABULAR datasource..")
+        parser.add_argument("--sheet-id", type=str, help="google-sheet ID used for TABULAR datasource.")
+        parser.add_argument("--sheet-name", type=str, help="google-sheet name used for TABULAR datasource.")
+        parser.add_argument("--file-path", type=str, help="sheet file path used for TABULAR datasource.")
 
         # options
-        parser.add_argument("-d", "--day", type=int, help="Day of the race.")
-        parser.add_argument("-f", "--female", action="store_true", default=False, help="Import data for female races.")
-        parser.add_argument(
-            "-c",
-            "--category",
-            type=str,
-            help="Import data for the given category (ABSOLUT | VETERAN | SCHOOL).",
-        )
+        parser.add_argument("-d", "--day", type=int, help="day of the race for multiday races.")
+        parser.add_argument("-f", "--female", action="store_true", default=False, help="female races.")
+        parser.add_argument("-c", "--category", type=str, help="one of (ABSOLUT | VETERAN | SCHOOL).")
         parser.add_argument(
             "-i",
             "--ignore",
             type=str,
             nargs="*",
             default=[],
-            help="List of race IDs to ignore during ingestion.",
+            help="race IDs to ignore during ingestion.",
         )
         parser.add_argument(
             "-o",
@@ -132,21 +83,22 @@ class Command(BaseCommand):
             ignored_races=config.ignored_races,
         )
 
-        years = []
-        if config.year:
-            if config.year == ScrapeConfig.ALL_YEARS:
-                start = ingestor.client.FEMALE_START if config.is_female else ingestor.client.MALE_START
-                years = range(start, datetime.now().year + 1)
-            else:
-                years = [config.year]
+        # compute years to scrape
+        if config.year == ScrapeConfig.ALL_YEARS:
+            start = ingestor.client.FEMALE_START if config.is_female else ingestor.client.MALE_START
+            years = range(config.start_year if config.start_year else start, datetime.now().year + 1)
+        else:
+            years = [config.year] if config.year else []
 
-        races = []
+        # fetch races depending on the configuration
         if config.club and config.year:
             races = chain(*[ingestor.fetch_by_club(config.club, year=year) for year in years])
         elif config.race_ids:
             races = ingestor.fetch_by_ids(config.race_ids, day=config.day)
         elif config.year:
             races = chain(*[ingestor.fetch(year=year, is_female=config.is_female) for year in years])
+        else:
+            raise ValueError("invalid state")
 
         for race in races:
             if config.output_path and os.path.isdir(config.output_path):
@@ -174,12 +126,11 @@ class Command(BaseCommand):
                     continue
 
             for participant in participants:
-                new_participant = ingestor.ingest_participant(new_race, participant)
-                new_participant, saved = ingestor.save_participant(
-                    new_participant, is_disqualified=participant.disqualified
-                )
-
-
+                new_participant, new_or_updated = ingestor.ingest_participant(new_race, participant)
+                if new_or_updated:
+                    new_participant, saved = ingestor.save_participant(
+                        new_participant, is_disqualified=participant.disqualified
+                    )
 
 
 @dataclass
@@ -197,6 +148,7 @@ class ScrapeConfig:
     category: str | None = None
     is_female: bool = False
     day: int | None = None
+    start_year: int | None = None
 
     ignored_races: list[str] = field(default_factory=list)
     output_path: str | None = None
@@ -214,10 +166,11 @@ class ScrapeConfig:
             sheet_name=options["sheet_name"],
             file_path=options["file_path"],
         )
-        category, is_female, day, ignored_races, output_path = (
+        category, is_female, day, start_year, ignored_races, output_path = (
             options["category"],
             options["female"],
             options["day"],
+            options["start_year"],
             options["ignore"],
             options["output"],
         )
@@ -262,6 +215,7 @@ class ScrapeConfig:
             category=category.upper() if category else None,
             is_female=is_female,
             day=day,
+            start_year=start_year,
             ignored_races=ignored_races,
             output_path=output_path,
         )

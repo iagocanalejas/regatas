@@ -7,6 +7,7 @@ Retrieve and process race data from a web datasource, JSON file or spreadsheet.
 ```sh
 python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[--year YEAR] \
+	[--start-year YEAR] \
 	[-f, --female] \
 	[-c, --category CATEGORY] \
 	[-d, --day DAY] \
@@ -16,48 +17,33 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[-i, --ignore ID [ID ...]] \
 	[-o, --output OUTPUT]
 
-#   Arguments:
-#       input_source:
-#           The name of the Datasource or path to import data.
+# positional arguments:
+#   input_source          name of the Datasource or path to import data from.
+#   race_ids              race IDs to find in the source and ingest.
 #
-#       race_ids (optional)
-#           Races to find and ingest.
-#
-#   Options:
-#       --year YEAR
-#           The year for which race data should be imported or 'all'.
-#
-#       --club CLUB
-#           The club for which races should be imported.
-#           NOTE: This option is only supported for the TRAINERAS datasource.
-#
-#       -f, --female:
-#           Import data for female races.
-#
-#       -c, --category:
-#           Import data for the given category (ABSOLUT | VETERAN | SCHOOL).
-#           NOTE: This option is only supported for the TRAINERAS datasource.
-#
-#       -d, --day DAY
-#           Day of the race.
-#           NOTE: This option is only supported for the TRAINERAS datasource.
-#
-#       --sheet-id:
-#           Google sheet ID used for TABULAR datasource.
-#
-#       --sheet-name:
-#           Google sheet name used for TABULAR datasource.
-#
-#       --file-path:
-#           Sheet file path used for TABULAR datasource.
-#
-#       -i, --ignore:
-#           List of race IDs to ignore during ingestion.
-#
-#       -o, --output:
-#           Outputs the race data to the given folder path in JSON format.
-#
-#   NOTE: One of 'year' | 'race_ids' is required and they are mutually exclusive.
+# options:
+#   --club CLUB
+#                         club for which races should be imported.
+#   --year YEAR
+#                         year for which races should be imported, 'all' to import from the source beginnig.
+#   --start-year START_YEAR
+#                         year for which we should start processing years. Only used with year='all'.
+#   --sheet-id SHEET_ID
+#                         google-sheet ID used for TABULAR datasource.
+#   --sheet-name SHEET_NAME
+#                         google-sheet name used for TABULAR datasource.
+#   --file-path FILE_PATH
+#                         sheet file path used for TABULAR datasource.
+#   -d DAY, --day DAY
+#                         day of the race for multiday races.
+#   -f, --female
+#                         female races.
+#   -c CATEGORY, --category CATEGORY
+#                         one of (ABSOLUT | VETERAN | SCHOOL).
+#   -i [IGNORE ...], --ignore [IGNORE ...]
+#                         race IDs to ignore during ingestion.
+#   -o OUTPUT, --output OUTPUT
+#                         Outputs the race data to the given folder path in JSON format.
 ```
 
 ## Find Races
@@ -67,11 +53,9 @@ Retrieve races from the database searching by race ID or datasource and ref_id.
 ```sh
 python manage.py find datasource_or_race [REF_ID]
 
-#   Arguments:
-#       datasource_or_race:
-#           The name of the Datasource or race ID to retrieve.
-#       ref_id:
-#           The reference ID to search for.
+# positional arguments:
+#   datasource_or_race    name of the Datasource or race ID in the database.
+#   ref_id                reference ID for the given Datasource.
 ```
 
 ## Verify Races
@@ -79,14 +63,11 @@ python manage.py find datasource_or_race [REF_ID]
 Retrieve races from the database and verifies it's datasources ara correct.
 
 ```sh
-python manage.py validatedatasource datasource [year]
+python manage.py validate datasource [year]
 
-#   Arguments:
-#       datasource:
-#           The name of the Datasource that will be validated.
-#
-#       year:
-#           The year of the races that will be processed.
+# positional arguments:
+#   datasource            The name of the Datasource that will be validated
+#   year                  The year for which race data should be verified.
 ```
 
 # Development

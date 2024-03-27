@@ -291,7 +291,7 @@ class Ingestor(IngestorProtocol):
         race: Race,
         participant: RSParticipant,
         **_,
-    ) -> Participant:
+    ) -> tuple[Participant, bool]:
         logger.info(f"ingesting {participant=}")
 
         logger.debug("searching entity in the database")
@@ -329,13 +329,13 @@ class Ingestor(IngestorProtocol):
             if not self.should_merge_participants(new_participant, db_participant):
                 serialized = ParticipantSerializer(db_participant).data
                 print(f"EXISTING PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
-                new_participant = db_participant
+                return db_participant, False
             else:
                 serialized = ParticipantSerializer(new_participant).data
                 print(f"NEW PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
                 new_participant, _ = self.merge_participants(new_participant, db_participant)
 
-        return new_participant
+        return new_participant, True
 
     @override
     def should_merge_participants(self, participant: Participant, db_participant: Participant) -> bool:
@@ -402,7 +402,7 @@ class Ingestor(IngestorProtocol):
             if not p:
                 if input_shoud_create_participant(rsp):
                     logger.info(f"creating new participation for {rsp}")
-                    p = self.ingest_participant(race, rsp)
+                    p, _ = self.ingest_participant(race, rsp)
                     p, created = self.save_participant(p)
                     verified_participants.append((p, created, True))
                 continue
