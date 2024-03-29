@@ -8,7 +8,7 @@ from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
-from rscraping.parsers.html import MultiDayRaceException
+from rscraping.parsers.html import MultiRaceException
 
 from ._ingestor import Ingestor
 
@@ -63,16 +63,15 @@ class TrainerasIngestor(Ingestor):
             race = self.client.get_race_by_id(race_id)
             if race:
                 yield race
-        except MultiDayRaceException as e:
-            time.sleep(1)
-            race_1 = self.client.get_race_by_id(race_id, day=1)
-            race_2 = self.client.get_race_by_id(race_id, day=2)
-            if not race_1 or not race_2:
-                raise e
-
-            logger.debug(f"multiday race for {race_id=}")
-            yield race_1
-            yield race_2
+        except MultiRaceException:
+            table= 1
+            while True:
+                time.sleep(1)
+                race = self.client.get_race_by_id(race_id, table=table)
+                if not race:
+                    break
+                logger.debug(f"found multi race for {race_id=}:\n\t{race}")
+                yield race
         except ValueError as e:
             logger.error(e)
             return

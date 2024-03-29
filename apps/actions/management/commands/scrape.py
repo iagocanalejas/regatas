@@ -50,7 +50,7 @@ class Command(BaseCommand):
         parser.add_argument("--file-path", type=str, help="sheet file path used for TABULAR datasource.")
 
         # options
-        parser.add_argument("-d", "--day", type=int, help="day of the race for multiday races.")
+        parser.add_argument("-t", "--table", type=int, help="rable of the race for multipage races.")
         parser.add_argument("-f", "--female", action="store_true", default=False, help="female races.")
         parser.add_argument("-c", "--category", type=str, help="one of (ABSOLUT | VETERAN | SCHOOL).")
         parser.add_argument(
@@ -94,7 +94,7 @@ class Command(BaseCommand):
         if config.club and config.year:
             races = chain(*[ingestor.fetch_by_club(config.club, year=year) for year in years])
         elif config.race_ids:
-            races = ingestor.fetch_by_ids(config.race_ids, day=config.day)
+            races = ingestor.fetch_by_ids(config.race_ids, table=config.table)
         elif config.year:
             races = chain(*[ingestor.fetch(year=year, is_female=config.is_female) for year in years])
         else:
@@ -147,7 +147,7 @@ class ScrapeConfig:
 
     category: str | None = None
     is_female: bool = False
-    day: int | None = None
+    table: int | None = None
     start_year: int | None = None
 
     ignored_races: list[str] = field(default_factory=list)
@@ -166,10 +166,10 @@ class ScrapeConfig:
             sheet_name=options["sheet_name"],
             file_path=options["file_path"],
         )
-        category, is_female, day, start_year, ignored_races, output_path = (
+        category, is_female, table, start_year, ignored_races, output_path = (
             options["category"],
             options["female"],
-            options["day"],
+            options["table"],
             options["start_year"],
             options["ignore"],
             options["output"],
@@ -198,7 +198,7 @@ class ScrapeConfig:
             raise ValueError(f"category filtering is not suported in {datasource=}")
         if category and category.upper() not in [CATEGORY_ABSOLUT, CATEGORY_VETERAN, CATEGORY_SCHOOL]:
             raise ValueError(f"invalid {category=}")
-        if day and len(race_ids) != 1:
+        if table and len(race_ids) != 1:
             raise ValueError("day filtering is only supported for one race_id")
 
         club = EntityService.get_entity_or_none(club_id) if club_id else None
@@ -214,7 +214,7 @@ class ScrapeConfig:
             club=club,
             category=category.upper() if category else None,
             is_female=is_female,
-            day=day,
+            table=table,
             start_year=start_year,
             ignored_races=ignored_races,
             output_path=output_path,

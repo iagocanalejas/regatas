@@ -11,7 +11,7 @@ from pyutils.strings import closest_result, levenshtein_distance, remove_conjunc
 
 def get_entity_or_none(entity_id: int) -> Entity | None:
     try:
-        return Entity.objects.get(id=entity_id)
+        return Entity.all_objects.get(id=entity_id)
     except Entity.DoesNotExist:
         return None
 

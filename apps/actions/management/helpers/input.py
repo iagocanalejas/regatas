@@ -80,7 +80,7 @@ def _input_competition[T: Trophy | Flag](_model: type[T], name: str) -> tuple[T 
 def input_club(name: str) -> Entity | None:
     entity_id = inquirer.text(f"no entity found for {name}. Entity ID: ", default=None)
     if entity_id:
-        return Entity.objects.get(id=entity_id)
+        return Entity.all_objects.get(id=entity_id)
     return None
 
 
