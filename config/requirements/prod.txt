@@ -6,7 +6,7 @@ django-debug-toolbar==4.3.0
 django-extensions==3.2.3
 django-prettyjson==0.4.1
 django-stdimage==6.0.2
-djangorestframework==3.15.0
+djangorestframework==3.15.1
 djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.27.1
 environs==11.0.0
