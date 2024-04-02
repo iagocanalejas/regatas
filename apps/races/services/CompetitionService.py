@@ -105,8 +105,16 @@ def _get_closest_by_name_with_tokens[T: (Trophy, Flag)](_model: type[T], name: s
     Returns: Optional[T]: The closest matching object of type `T` (Flag or Trophy), or None if no match is found.
     """
 
-    # try search by tokens
+    # try search by tokens without expansion
     name = whitespaces_clean(normalize_synonyms(name, SYNONYMS))
+    tokens = [lemmatize(name)]
+    unaccented_tokens = [[unaccent(name) for name in sublist] for sublist in tokens]
+
+    items = _model.objects.filter(reduce(operator.or_, [Q(tokens__contains=sublist) for sublist in unaccented_tokens]))
+    if items.count() == 1:
+        return items.first()
+
+    # try search by tokens with expansion
     tokens = expand_lemmas(lemmatize(name), TOKEN_EXPANSIONS)
     unaccented_tokens = [[unaccent(name) for name in sublist] for sublist in tokens]
 

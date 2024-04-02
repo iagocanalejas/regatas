@@ -11,13 +11,15 @@ from typing import override
 from django.core.management import BaseCommand
 
 from apps.actions.management.helpers.input import input_race
-from apps.actions.management.ingestor import build_ingestor
+from apps.actions.management.ingestor import IngestorProtocol, build_ingestor
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
+from apps.races.models import Race
 from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN
 from rscraping.data.models import Datasource
+from rscraping.data.models import Race as RSRace
 
 logger = logging.getLogger(__name__)
 
@@ -111,26 +113,36 @@ class Command(BaseCommand):
             participants = race.participants
             race.participants = []
 
-            new_race, associated = ingestor.ingest(race)
-            new_race, saved = ingestor.save(new_race, associated=associated)
-
-            if not saved:
-                db_race = input_race(race)
-                if not db_race:
-                    continue
-
-                new_race, _ = ingestor.merge(new_race, db_race)
-                new_race, saved = ingestor.save(new_race, associated=associated)
-                if not saved:
-                    logger.warning(f"{race=} was not saved")
-                    continue
+            new_race = self.ingest_race(ingestor, race)
+            if not new_race:
+                logger.warning(f"{race=} was not saved")
+                continue
 
             for participant in participants:
                 new_participant, new_or_updated = ingestor.ingest_participant(new_race, participant)
                 if new_or_updated:
-                    new_participant, saved = ingestor.save_participant(
+                    new_participant, _ = ingestor.save_participant(
                         new_participant, is_disqualified=participant.disqualified
                     )
+
+    def ingest_race(self, ingestor: IngestorProtocol, race: RSRace) -> Race | None:
+        try:
+            new_race, associated = ingestor.ingest(race)
+            new_race, saved = ingestor.save(new_race, associated=associated)
+            if not saved:
+                db_race = input_race(race)
+                if not db_race:
+                    return None
+
+                new_race, _ = ingestor.merge(new_race, db_race)
+                new_race, saved = ingestor.save(new_race, associated=associated)
+                if not saved:
+                    return None
+            return new_race
+        except KeyboardInterrupt as e:
+            with open(f'{race.race_ids[0]}.json', 'w') as f:
+                json.dump(race.to_dict(), f, ensure_ascii=False)
+            raise e
 
 
 @dataclass

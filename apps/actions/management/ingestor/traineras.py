@@ -64,14 +64,15 @@ class TrainerasIngestor(Ingestor):
             if race:
                 yield race
         except MultiRaceException:
-            table= 1
+            table = 1
             while True:
                 time.sleep(1)
                 race = self.client.get_race_by_id(race_id, table=table)
                 if not race:
                     break
                 logger.debug(f"found multi race for {race_id=}:\n\t{race}")
+                table += 1
                 yield race
         except ValueError as e:
             logger.error(e)
-            return
+        return
