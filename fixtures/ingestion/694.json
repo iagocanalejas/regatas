@@ -1,0 +1,20 @@
+{
+    "name": "BANDERA CONCELLO DE VIGO",
+    "date": "21/07/2013",
+    "day": 1,
+    "modality": "TRAINERA",
+    "type": "CONVENTIONAL",
+    "league": null,
+    "town": "CORUXO",
+    "organizer": null,
+    "sponsor": null,
+    "normalized_names": [["BANDERA CONCELLO DE VIGO", null]],
+    "race_ids": ["516"],
+    "url": "https://traineras.es/clasificaciones/516",
+    "datasource": "traineras",
+    "gender": "MALE",
+    "participants": [],
+    "race_laps": 2,
+    "race_lanes": 3,
+    "cancelled": false
+}

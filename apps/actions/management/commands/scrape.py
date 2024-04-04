@@ -79,8 +79,8 @@ class Command(BaseCommand):
         assert isinstance(source, (Datasource, str))
         ingestor = build_ingestor(
             source=source,
-            tabular_config=config.tabular_config,
             is_female=config.is_female,
+            tabular_config=config.tabular_config,
             category=config.category,
             ignored_races=config.ignored_races,
         )
@@ -140,7 +140,7 @@ class Command(BaseCommand):
                     return None
             return new_race
         except KeyboardInterrupt as e:
-            with open(f'{race.race_ids[0]}.json', 'w') as f:
+            with open(f"{race.race_ids[0]}.json", "w") as f:
                 json.dump(race.to_dict(), f, ensure_ascii=False)
             raise e
 

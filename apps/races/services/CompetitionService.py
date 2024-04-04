@@ -5,7 +5,14 @@ from functools import reduce
 from django.db.models import Q
 
 from apps.races.models import Flag, Race, Trophy
-from pyutils.strings import closest_result, expand_lemmas, normalize_synonyms, unaccent, whitespaces_clean
+from pyutils.strings import (
+    closest_result,
+    expand_lemmas,
+    normalize_synonyms,
+    remove_parenthesis,
+    unaccent,
+    whitespaces_clean,
+)
 from rscraping import lemmatize
 from rscraping.data.constants import SYNONYMS
 from rscraping.data.functions import is_memorial
@@ -106,6 +113,7 @@ def _get_closest_by_name_with_tokens[T: (Trophy, Flag)](_model: type[T], name: s
     """
 
     # try search by tokens without expansion
+    name = remove_parenthesis(name, preserve_content=True)
     name = whitespaces_clean(normalize_synonyms(name, SYNONYMS))
     tokens = [lemmatize(name)]
     unaccented_tokens = [[unaccent(name) for name in sublist] for sublist in tokens]

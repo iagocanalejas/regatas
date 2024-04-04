@@ -1,0 +1,20 @@
+{
+    "name": "BANDERA MARIÑA (CABO DA CRUZ)",
+    "date": "10/07/2016",
+    "day": 1,
+    "modality": "TRAINERA",
+    "type": "CONVENTIONAL",
+    "league": null,
+    "town": "BOIRO",
+    "organizer": null,
+    "sponsor": null,
+    "normalized_names": [["BANDERA MARIÑA (CABO DA CRUZ)", null]],
+    "race_ids": ["2193"],
+    "url": "https://traineras.es/clasificaciones/2193",
+    "datasource": "traineras",
+    "gender": "MALE",
+    "participants": [],
+    "race_laps": 2,
+    "race_lanes": 4,
+    "cancelled": false
+}

@@ -12,10 +12,10 @@ from .traineras import TrainerasIngestor as TrainerasIngestor
 
 def build_ingestor(
     source: Datasource | str,
-    tabular_config: TabularClientConfig,
-    is_female: bool,
-    category: str | None,
-    ignored_races: list[str],
+    is_female: bool = False,
+    tabular_config: TabularClientConfig | None = None,
+    category: str | None = None,
+    ignored_races: list[str] = [],
 ) -> IngestorProtocol:
     if os.path.isdir(source) or os.path.isfile(source):
         return FolderIngestor(source)

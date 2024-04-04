@@ -96,7 +96,7 @@ class Command(BaseCommand):
             return self._cached_ingestor[url]
 
         config = TabularClientConfig(sheet_url=url)
-        ingestor = build_ingestor(datasource, config, is_female, None, [])
+        ingestor = build_ingestor(datasource, is_female, config)
         if datasource == Datasource.TABULAR:
             self._cached_ingestor[url] = ingestor
         return ingestor

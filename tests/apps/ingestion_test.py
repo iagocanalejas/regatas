@@ -93,30 +93,32 @@ class IngestionTest(TestCase):
         self.assertEqual(race.organizer, Entity.objects.get(pk=25))
 
     @patch("inquirer.confirm")
-    def test_ingest_vigo(self, mock_confirm):
+    def test_ingestion(self, mock_confirm):
+        """
+        This test will ingest all the races inside fixtures/ingestion that match *.json
+        """
         mock_confirm.return_value = True
 
-        race = Race.objects.get(pk=694)
-        rs_race = RSRace(
-            name="BANDERA CONCELLO DE VIGO",
-            date="21/07/2013",
-            day=1,
-            modality=RACE_TRAINERA,
-            type=RACE_CONVENTIONAL,
-            league=None,
-            town="CORUXO",
-            organizer=None,
-            sponsor=None,
-            normalized_names=[("BANDERA CONCELLO DE VIGO", None)],
-            race_ids=["516"],
-            url="https://traineras.es/clasificaciones/516",
-            datasource=Datasource.TRAINERAS.value.lower(),
-            gender=GENDER_MALE,
-            participants=[],
-            race_laps=2,
-            race_lanes=3,
-            cancelled=False,
-        )
+        for file in os.listdir(os.path.join(settings.BASE_DIR, "fixtures", "ingestion")):
+            if not file.endswith(".json"):
+                continue
+
+            race_id = int(file.split(".")[0])
+            race = Race.objects.get(pk=race_id)
+            with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", file)) as f:
+                rs_race = RSRace.from_json(f.read())
+
+            new_race, _ = self.ingestor.ingest(rs_race)
+            self.assertEqual(race, new_race)
+
+    @patch("inquirer.confirm")
+    def x_test_given_race(self, mock_confirm):
+        mock_confirm.return_value = True
+
+        race_id = 776
+        with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", f"{race_id}.json")) as f:
+            rs_race = RSRace.from_json(f.read())
+            race = Race.objects.get(pk=race_id)
 
         new_race, _ = self.ingestor.ingest(rs_race)
         self.assertEqual(race, new_race)

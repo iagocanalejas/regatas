@@ -12,6 +12,7 @@ from apps.actions.management.helpers.input import (
     input_club,
     input_competition,
     input_new_value,
+    input_race,
     input_shoud_create_participant,
     input_should_associate_races,
     input_should_merge,
@@ -101,13 +102,17 @@ class Ingestor(IngestorProtocol):
         metadata = self._build_metadata(race, self.client.DATASOURCE)
 
         logger.debug("searching race in the database")
-        db_race = RaceService.get_closest_match_by_name_or_none(
-            names=[n for n, _ in race.normalized_names],
-            league=race.league,
-            gender=race.gender,
-            date=datetime.strptime(race.date, "%d/%m/%Y").date(),
-            day=race.day,
-        )
+        try:
+            db_race = RaceService.get_closest_match_by_name_or_none(
+                names=[n for n, _ in race.normalized_names],
+                league=race.league,
+                gender=race.gender,
+                date=datetime.strptime(race.date, "%d/%m/%Y").date(),
+                day=race.day,
+            )
+        except Race.MultipleObjectsReturned:
+            logger.error(f"multiple races found for {race.date}:{race.name}")
+            db_race = input_race(race)
         logger.info(f"using {db_race=}")
 
         logger.debug("searching league")

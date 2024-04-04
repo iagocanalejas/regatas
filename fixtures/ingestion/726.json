@@ -1,0 +1,20 @@
+{
+    "name": "BANDERA CONCELLO DE RIVEIRA",
+    "date": "14/06/2015",
+    "day": 1,
+    "modality": "TRAINERA",
+    "type": "CONVENTIONAL",
+    "league": null,
+    "town": "RIBEIRA",
+    "organizer": null,
+    "sponsor": null,
+    "normalized_names": [["BANDERA CONCELLO DE RIBEIRA", null]],
+    "race_ids": ["491"],
+    "url": "https://traineras.es/clasificaciones/491",
+    "datasource": "traineras",
+    "gender": "MALE",
+    "participants": [],
+    "race_laps": 2,
+    "race_lanes": 0,
+    "cancelled": false
+}
