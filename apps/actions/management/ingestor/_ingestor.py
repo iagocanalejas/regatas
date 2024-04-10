@@ -92,6 +92,10 @@ class Ingestor(IngestorProtocol):
                     yield race
 
     @override
+    def fetch_by_flag(self, *args, **kwargs) -> Generator[RSRace, Any, Any]:
+        raise NotImplementedError
+
+    @override
     def fetch_by_url(self, url: str, **kwargs) -> RSRace | None:
         return self.client.get_race_by_url(url, **kwargs)
 

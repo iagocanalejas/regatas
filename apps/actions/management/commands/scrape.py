@@ -21,6 +21,8 @@ from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
+from utils.exceptions import StopProcessing
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +36,7 @@ class Command(BaseCommand):
         parser.add_argument("input_source", type=str, help="name of the Datasource or path to import data from.")
         parser.add_argument("race_ids", nargs="*", help="race IDs to find in the source and ingest.")
         parser.add_argument("--club", type=int, help="club for which races should be imported.")
+        parser.add_argument("--flag", type=int, help="flag for which races should be imported.")
 
         parser.add_argument(
             "--year",
@@ -95,6 +98,8 @@ class Command(BaseCommand):
         # fetch races depending on the configuration
         if config.club and config.year:
             races = chain(*[ingestor.fetch_by_club(config.club, year=year) for year in years])
+        elif config.flag:
+            races = ingestor.fetch_by_flag(config.flag, is_female=config.is_female)
         elif config.race_ids:
             races = ingestor.fetch_by_ids(config.race_ids, table=config.table)
         elif config.year:
@@ -139,6 +144,9 @@ class Command(BaseCommand):
                 if not saved:
                     return None
             return new_race
+        except StopProcessing as e:
+            logger.error(e)
+            return None
         except KeyboardInterrupt as e:
             with open(f"{race.race_ids[0]}.json", "w") as f:
                 json.dump(race.to_dict(), f, ensure_ascii=False)
@@ -156,6 +164,7 @@ class ScrapeConfig:
     race_ids: list[str] = field(default_factory=list)
     year: int | None = None
     club: Entity | None = None
+    flag: str | None = None
 
     category: str | None = None
     is_female: bool = False
@@ -167,11 +176,12 @@ class ScrapeConfig:
 
     @classmethod
     def from_args(cls, **options) -> "ScrapeConfig":
-        input_source, race_ids, year, club_id = (
+        input_source, race_ids, year, club_id, flag_id = (
             options["input_source"],
             options["race_ids"],
             options["year"],
             options["club"],
+            options["flag"],
         )
         tabular_config = TabularClientConfig(
             sheet_id=options["sheet_id"],
@@ -195,14 +205,16 @@ class ScrapeConfig:
             datasource, path = Datasource(input_source), None
 
         has_races = True if len(race_ids) > 0 else None
-        if not only_one_not_none(year, has_races):
-            raise ValueError("only one of 'year', 'race_ids' can be provided")
-        if not year and not club_id and len(race_ids) == 0:
-            raise ValueError("required value for 'race_ids' or 'club' or 'year'")
+        if not only_one_not_none(year, has_races, flag_id):
+            raise ValueError("only one of 'year', 'race_ids', 'flag' can be provided")
+        if not year and not club_id and not flag_id and len(race_ids) == 0:
+            raise ValueError("required value for 'race_ids' or 'club' or 'flag' or 'year'")
         if club_id and not year:
             raise ValueError("'year' is required when 'club' is provided")
         if club_id and datasource != Datasource.TRAINERAS:
             raise ValueError("'club' is only supported in TRAINERAS datasource")
+        if flag_id and datasource != Datasource.TRAINERAS:
+            raise ValueError("'flag' is only supported in TRAINERAS datasource")
 
         year = cls.parse_year(year)
 
@@ -224,6 +236,7 @@ class ScrapeConfig:
             race_ids=race_ids,
             year=year,
             club=club,
+            flag=flag_id,
             category=category.upper() if category else None,
             is_female=is_female,
             table=table,

@@ -4,6 +4,7 @@ from collections.abc import Generator
 from typing import Any, override
 
 from apps.races.services import MetadataService
+from rscraping.clients import TrainerasClient
 from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
@@ -51,6 +52,16 @@ class TrainerasIngestor(Ingestor):
             race.participants = participants
             logger.debug(f"found race for {year=}:\n\t{race}")
             yield race
+
+    @override
+    def fetch_by_flag(self, *_, flag: str, **kwargs) -> Generator[RSRace, Any, Any]:
+        assert isinstance(self.client, TrainerasClient)
+
+        for race_id in self.client.get_race_ids_by_flag(flag):
+            for race in self._retrieve_race(race_id):
+                if race:
+                    logger.debug(f"found race for {race_id=}:\n\t{race}")
+                    yield race
 
     @override
     def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]:

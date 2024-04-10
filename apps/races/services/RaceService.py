@@ -8,8 +8,8 @@ from apps.entities.services import LeagueService
 from apps.races.filters import RaceFilters
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import CompetitionService
+from rscraping.data.checks import is_play_off
 from rscraping.data.constants import GENDER_ALL
-from rscraping.data.functions import is_play_off
 
 logger = logging.getLogger(__name__)
 

@@ -44,6 +44,17 @@ class IngestorProtocol(Protocol):
         """
         ...
 
+    def fetch_by_flag(self, flag: str, **kwargs) -> Generator[RSRace, Any, Any]:
+        """
+        Fetch races that should be ingested from one of many clients using the flag to filter.
+
+        Args:
+            flag: str: The flag to search for.
+
+        Yields: RSRace: The races found.
+        """
+        ...
+
     def fetch_by_url(self, url: str, **_) -> RSRace | None:
         """
         Fetch race by given URL.

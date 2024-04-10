@@ -3,6 +3,7 @@ from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
     CATEGORY_VETERAN,
+    COVID_ABSENCE,
     ENTITY_CLUB,
     ENTITY_FEDERATION,
     ENTITY_LEAGUE,
@@ -81,4 +82,5 @@ PENALTY_CHOICES = [
     (NO_LINE_START, "Salida sin estacha"),
     (NULL_START, "Salida nula"),
     (BLADE_TOUCH, "Toque de palas"),
+    (COVID_ABSENCE, "Ausencia por COVID-19"),
 ]

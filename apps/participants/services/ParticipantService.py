@@ -5,7 +5,7 @@ from django.db.models import Q, QuerySet
 from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.races.models import Race
-from rscraping.data.functions import is_branch_club
+from rscraping.data.checks import is_branch_club
 from rscraping.data.models import Participant as RSParticipant
 
 logger = logging.getLogger(__name__)

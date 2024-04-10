@@ -9,16 +9,14 @@ from apps.entities.models import Entity, League
 from apps.entities.services import EntityService, LeagueService
 from apps.races.models import Flag, Race, Trophy
 from pyutils.strings import remove_parenthesis
+from rscraping.data.checks import is_memorial, is_play_off
 from rscraping.data.constants import ENTITY_CLUB
-from rscraping.data.functions import is_memorial, is_play_off
 from rscraping.data.models import Race as RSRace
 
 logger = logging.getLogger(__name__)
 
 
-def retrieve_competition[
-    T: (Trophy, Flag)
-](
+def retrieve_competition[T: (Trophy, Flag)](
     _model: type[T],
     race: RSRace,
     db_race: Race | None,
