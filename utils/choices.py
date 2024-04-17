@@ -3,6 +3,7 @@ from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
     CATEGORY_VETERAN,
+    COLISION,
     COVID_ABSENCE,
     ENTITY_CLUB,
     ENTITY_FEDERATION,
@@ -14,6 +15,7 @@ from rscraping.data.constants import (
     GENDER_MIX,
     NO_LINE_START,
     NULL_START,
+    OFF_THE_FIELD,
     RACE_BATEL,
     RACE_CONVENTIONAL,
     RACE_TIME_TRIAL,
@@ -81,6 +83,8 @@ RACE_GENDER_CHOICES = [
 PENALTY_CHOICES = [
     (NO_LINE_START, "Salida sin estacha"),
     (NULL_START, "Salida nula"),
+    (COLISION, "Colisión"),
     (BLADE_TOUCH, "Toque de palas"),
+    (OFF_THE_FIELD, "Fuera de campo"),
     (COVID_ABSENCE, "Ausencia por COVID-19"),
 ]

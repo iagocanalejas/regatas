@@ -1,62 +1,65 @@
 import os.path
+from datetime import datetime
 
 from django.conf import settings
 from django.test import TestCase
-from utils.choices import CATEGORY_ABSOLUT, GENDER_MALE
 
+from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
+from apps.races.models import Race
+from rscraping.data.constants import GENDER_MALE
 
 
 class ParticipantServiceTest(TestCase):
     fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "test-db.yaml")]
 
-    def test_will_create_branch_participant(self):
-        self._save_participant("CR CHAPELA")
-        created, _ = ParticipantService.get_participant_or_create(
-            participant=Participant(
-                club_name="CR CHAPELA B",
-                club_id=17,
-                race_id=4,
+    def test_get_year_speeds_by_club(self):
+        club = Entity.objects.get(pk=25)
+        participants = [
+            Participant(
+                club=club,
+                race=Race.objects.get(pk=1),
                 distance=5556,
-                laps=["00:10:37", "00:26:07.040000"],
+                laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in ["21:30.21"]],
                 lane=1,
                 series=1,
+                handicap=None,
                 gender=GENDER_MALE,
-                category=CATEGORY_ABSOLUT,
             ),
-            maybe_branch=True,
-        )
-        self.assertTrue(created)
-
-    def test_will_create_main_participant_existing_branch(self):
-        self._save_participant("CR CHAPELA B")
-        created, _ = ParticipantService.get_participant_or_create(
-            participant=Participant(
-                club_name="CR CHAPELA",
-                club_id=17,
-                race_id=4,
+            Participant(
+                club=club,
+                race=Race.objects.get(pk=2),
                 distance=5556,
-                laps=["00:10:37", "00:26:07.040000"],
+                laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in []],
                 lane=1,
                 series=1,
+                handicap=None,
                 gender=GENDER_MALE,
-                category=CATEGORY_ABSOLUT,
             ),
-            maybe_branch=True,
-        )
-        self.assertTrue(created)
+            Participant(
+                club=club,
+                race=Race.objects.get(pk=3),
+                distance=5556,
+                laps=[
+                    datetime.strptime(lap, "%M:%S.%f").time()
+                    for lap in ["05:12.00", "10:15.00", "15:43.00", "21:30.21"]
+                ],
+                lane=1,
+                series=1,
+                handicap=None,
+                gender=GENDER_MALE,
+            ),
+        ]
 
-    @staticmethod
-    def _save_participant(name: str):
-        Participant(
-            club_name=name,
-            club_id=17,
-            race_id=4,
-            distance=5556,
-            laps=["00:10:37", "00:26:07.040000"],
-            lane=1,
-            series=1,
+        for participant in participants:
+            participant.save()
+
+        speeds = ParticipantService.get_year_speeds_by_club(
+            club,
             gender=GENDER_MALE,
-            category=CATEGORY_ABSOLUT,
-        ).save()
+            branch_teams=False,
+            only_league_races=False,
+        )
+
+        self.assertEqual(speeds, {2009: [15.502592601204455], 2022: [15.502592601204455]})

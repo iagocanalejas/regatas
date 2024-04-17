@@ -70,6 +70,22 @@ python manage.py validate datasource [year]
 #   year                  The year for which race data should be verified.
 ```
 
+## Plot Data
+
+Use boxplot graphs to visualize each year speeds.
+
+```sh
+python manage.py plot [club]
+
+# positional arguments:
+#   club                  club ID to filter participants.
+#
+# options:
+#   -f, --female          female races.
+#   --leagues-only        only races from a league.
+#   --branch-teams        filter only branch teams.
+```
+
 # Development
 
 ## Environment variables

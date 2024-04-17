@@ -1,11 +1,13 @@
 import logging
 
+from django.db import connection
 from django.db.models import Q, QuerySet
 
 from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.races.models import Race
 from rscraping.data.checks import is_branch_club
+from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Participant as RSParticipant
 
 logger = logging.getLogger(__name__)
@@ -32,26 +34,41 @@ def get_by_race_and_filter_by(
         return None
 
 
-def get_participant_or_create(participant: Participant, maybe_branch: bool = False) -> tuple[bool, Participant]:
-    q = Participant.objects.filter(
-        club=participant.club,
-        race=participant.race,
-        gender=participant.gender,
-        category=participant.category,
+def get_year_speeds_by_club(
+    club: Entity,
+    gender: str,
+    branch_teams: bool,
+    only_league_races: bool,
+) -> dict[int, list[float]]:
+    gender_filter = (
+        f"(p.gender = '{gender}' AND r.gender = '{gender}')"
+        if only_league_races
+        else f"(p.gender = '{gender}' AND (r.gender = '{gender}' OR r.gender = '{GENDER_ALL}'))"
     )
+    filters = (
+        "p.laps <> '{}'",
+        gender_filter,
+        "p.club_name LIKE '% B'" if branch_teams else "(p.club_name IS NULL OR p.club_name <> '% B')",
+        "r.league_id IS NOT NULL" if only_league_races else "",
+        f"p.club_id = {club.pk}",
+    )
+    where_clause = " AND ".join([str(filter) for filter in filters if filter])
+    speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
+    raw_query = f"""
+        SELECT
+            extract(YEAR from date)::INTEGER as year,
+            array_agg(CAST({speed_expression} AS DOUBLE PRECISION)) as speeds
+        FROM participant p JOIN race r ON p.race_id = r.id
+        WHERE {where_clause}
+        GROUP BY extract(YEAR from date)
+        ORDER BY extract(YEAR from date);
+        """
 
-    if maybe_branch:
-        q = _add_branch_filters(q, participant.club_name)
+    with connection.cursor() as cursor:
+        cursor.execute(raw_query)
+        speeds = cursor.fetchall()
 
-    try:
-        # check for multiple results and get the non-branch club
-        q = q.exclude(club_name__endswith=" B").exclude(club_name__endswith=" C") if q.count() > 1 else q
-        return False, q.get()
-    except Participant.DoesNotExist:
-        participant.save()
-
-        logger.info(f"created:: {participant}")
-        return True, participant
+    return {year: speed for year, speed in speeds}
 
 
 def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: Entity | None = None) -> bool:

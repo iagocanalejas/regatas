@@ -1183,6 +1183,7 @@
       flag_edition: 39
       flag: 85
       league: 2
+      gender: MALE
       modality: TRAINERA
       organizer: null
       metadata:
@@ -1210,6 +1211,7 @@
       flag_edition: 9
       flag: 2
       league: 5
+      gender: MALE
       modality: TRAINERA
       organizer: 18
       metadata:
@@ -1237,6 +1239,7 @@
       flag_edition: 17
       flag: 198
       league: 10
+      gender: MALE
       modality: TRAINERA
       organizer: null
       metadata:

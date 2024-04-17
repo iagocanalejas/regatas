@@ -17,7 +17,9 @@ class Migration(migrations.Migration):
                 choices=[
                     ("NO_LINE_START", "Salida sin estacha"),
                     ("NULL_START", "Salida nula"),
+                    ("COLLISION", "Colisión"),
                     ("BLADE_TOUCH", "Toque de palas"),
+                    ("OFF_THE_FIELD", "Fuera de campo"),
                     ("COVID_ABSENCE", "Ausencia por COVID-19"),
                 ],
                 default=None,

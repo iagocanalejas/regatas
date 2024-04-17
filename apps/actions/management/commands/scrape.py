@@ -9,6 +9,7 @@ from itertools import chain
 from typing import override
 
 from django.core.management import BaseCommand
+from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingestor import IngestorProtocol, build_ingestor
@@ -20,8 +21,6 @@ from rscraping.clients import TabularClientConfig
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
-
-from utils.exceptions import StopProcessing
 
 logger = logging.getLogger(__name__)
 
