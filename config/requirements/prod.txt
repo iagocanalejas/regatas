@@ -10,7 +10,7 @@ djangorestframework==3.15.1
 djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.27.2
 environs==11.0.0
-gunicorn==21.2.0
+gunicorn==22.0.0
 inquirer==3.2.4
 jsonschema==4.21.1
 matplotlib==3.8.4
