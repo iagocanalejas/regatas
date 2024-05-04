@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 import apps.schemas
 import djutils.validators.schema
-from rscraping.data.models import Datasource
 
 
 def update_metadata(apps, _):
@@ -13,13 +12,9 @@ def update_metadata(apps, _):
     for race in races:
         print(f"updating metadata: {race.metadata['datasource'][0]}")
         datasource = race.metadata["datasource"][0]
-        if datasource["datasource_name"] == Datasource.INFOREMO.value:
-            # for 'inforemo' save only the datasource name as no more useful information can be retrieved
-            datasource = {"datasource_name": Datasource.INFOREMO.value, "values": {}}
-        else:
-            # for all the scrappers update the 'race_id' and 'values'
-            datasource["race_id"] = str(datasource["race_id"])
-            datasource["values"] = datasource["values"][0] if len(datasource["values"][0]) > 0 else {}
+        # for all the scrappers update the 'race_id' and 'values'
+        datasource["race_id"] = str(datasource["race_id"])
+        datasource["values"] = datasource["values"][0] if len(datasource["values"][0]) > 0 else {}
         print(datasource)
         race.metadata["datasource"][0] = datasource
 

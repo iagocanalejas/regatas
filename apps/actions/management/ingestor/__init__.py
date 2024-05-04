@@ -1,6 +1,7 @@
 import os
 
 from rscraping.clients import Client, TabularClientConfig, TabularDataClient
+from rscraping.data.constants import GENDER_MALE
 from rscraping.data.models import Datasource
 
 from ._ingestor import Ingestor as Ingestor
@@ -12,7 +13,7 @@ from .traineras import TrainerasIngestor as TrainerasIngestor
 
 def build_ingestor(
     source: Datasource | str,
-    is_female: bool = False,
+    gender: str = GENDER_MALE,
     tabular_config: TabularClientConfig | None = None,
     category: str | None = None,
     ignored_races: list[str] = [],
@@ -22,12 +23,10 @@ def build_ingestor(
 
     assert isinstance(source, Datasource)
     if source == Datasource.TABULAR:
-        client = TabularDataClient(source=source, config=tabular_config, is_female=is_female)
+        client = TabularDataClient(source=source, config=tabular_config, gender=gender)
         assert isinstance(client, TabularDataClient)
         return TabularIngestor(client, ignored_races=ignored_races)
     if source == Datasource.TRAINERAS:
-        return TrainerasIngestor(
-            Client(source=source, is_female=is_female, category=category), ignored_races=ignored_races
-        )
+        return TrainerasIngestor(Client(source=source, gender=gender, category=category), ignored_races=ignored_races)
 
-    return Ingestor(Client(source=source, is_female=is_female), ignored_races=ignored_races)
+    return Ingestor(Client(source=source, gender=gender), ignored_races=ignored_races)

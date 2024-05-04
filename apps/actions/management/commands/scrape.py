@@ -18,7 +18,15 @@ from apps.entities.services import EntityService
 from apps.races.models import Race
 from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
-from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN
+from rscraping.data.constants import (
+    CATEGORY_ABSOLUT,
+    CATEGORY_SCHOOL,
+    CATEGORY_VETERAN,
+    GENDER_ALL,
+    GENDER_FEMALE,
+    GENDER_MALE,
+    GENDER_MIX,
+)
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
@@ -55,7 +63,7 @@ class Command(BaseCommand):
 
         # options
         parser.add_argument("-t", "--table", type=int, help="rable of the race for multipage races.")
-        parser.add_argument("-f", "--female", action="store_true", default=False, help="female races.")
+        parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
         parser.add_argument("-c", "--category", type=str, help="one of (ABSOLUT | VETERAN | SCHOOL).")
         parser.add_argument(
             "-i",
@@ -81,7 +89,7 @@ class Command(BaseCommand):
         assert isinstance(source, (Datasource, str))
         ingestor = build_ingestor(
             source=source,
-            is_female=config.is_female,
+            gender=config.gender,
             tabular_config=config.tabular_config,
             category=config.category,
             ignored_races=config.ignored_races,
@@ -89,20 +97,20 @@ class Command(BaseCommand):
 
         # compute years to scrape
         if config.year == ScrapeConfig.ALL_YEARS:
-            start = ingestor.client.FEMALE_START if config.is_female else ingestor.client.MALE_START
+            start = ingestor.client.FEMALE_START if config.gender == GENDER_FEMALE else ingestor.client.MALE_START
             years = range(config.start_year if config.start_year else start, datetime.now().year + 1)
         else:
             years = [config.year] if config.year else []
 
         # fetch races depending on the configuration
         if config.club and config.year:
-            races = chain(*[ingestor.fetch_by_club(config.club, year=year) for year in years])
+            races = chain(*[ingestor.fetch_by_club(club=config.club, year=year) for year in years])
         elif config.flag:
-            races = ingestor.fetch_by_flag(config.flag, is_female=config.is_female)
+            races = ingestor.fetch_by_flag(flag=config.flag)
         elif config.race_ids:
-            races = ingestor.fetch_by_ids(config.race_ids, table=config.table)
+            races = ingestor.fetch_by_ids(race_ids=config.race_ids, table=config.table)
         elif config.year:
-            races = chain(*[ingestor.fetch(year=year, is_female=config.is_female) for year in years])
+            races = chain(*[ingestor.fetch(year=year) for year in years])
         else:
             raise ValueError("invalid state")
 
@@ -166,7 +174,7 @@ class ScrapeConfig:
     flag: str | None = None
 
     category: str | None = None
-    is_female: bool = False
+    gender: str = GENDER_MALE
     table: int | None = None
     start_year: int | None = None
 
@@ -187,9 +195,9 @@ class ScrapeConfig:
             sheet_name=options["sheet_name"],
             file_path=options["file_path"],
         )
-        category, is_female, table, start_year, ignored_races, output_path = (
+        category, gender, table, start_year, ignored_races, output_path = (
             options["category"],
-            options["female"],
+            options["gender"],
             options["table"],
             options["start_year"],
             options["ignore"],
@@ -202,6 +210,9 @@ class ScrapeConfig:
             if not input_source or not Datasource.has_value(input_source):
                 raise ValueError(f"Invalid datasource: {input_source}")
             datasource, path = Datasource(input_source), None
+
+        if not gender or gender.upper() not in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX]:
+            raise ValueError(f"invalid {gender=}")
 
         has_races = True if len(race_ids) > 0 else None
         if not only_one_not_none(year, has_races, flag_id):
@@ -237,7 +248,7 @@ class ScrapeConfig:
             club=club,
             flag=flag_id,
             category=category.upper() if category else None,
-            is_female=is_female,
+            gender=gender.upper(),
             table=table,
             start_year=start_year,
             ignored_races=ignored_races,

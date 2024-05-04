@@ -9,7 +9,6 @@ from apps.actions.management.ingestor import IngestorProtocol, build_ingestor
 from apps.participants.models import Participant
 from apps.races.services import MetadataService
 from rscraping.clients import TabularClientConfig
-from rscraping.data.constants import GENDER_FEMALE
 from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
@@ -59,7 +58,7 @@ class Command(BaseCommand):
                     input("Press Enter to continue...")
                     continue
 
-                ingestor = self._get_ingestor(datasource, url, race.gender == GENDER_FEMALE)
+                ingestor = self._get_ingestor(datasource, url, race.gender)
                 scrapped_race = ingestor.fetch_by_url(url, race_id=ref_id)
 
                 # this block should also never happen
@@ -91,12 +90,12 @@ class Command(BaseCommand):
                             logger.info(f"updating {p=}")
                             ingestor.save_participant(p)
 
-    def _get_ingestor(self, datasource: Datasource, url: str, is_female: bool):
+    def _get_ingestor(self, datasource: Datasource, url: str, gender: str):
         if datasource == Datasource.TABULAR and url in self._cached_ingestor:
             return self._cached_ingestor[url]
 
         config = TabularClientConfig(sheet_url=url)
-        ingestor = build_ingestor(datasource, is_female, config)
+        ingestor = build_ingestor(datasource, gender, config)
         if datasource == Datasource.TABULAR:
             self._cached_ingestor[url] = ingestor
         return ingestor

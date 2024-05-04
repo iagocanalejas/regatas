@@ -41,9 +41,8 @@ class TabularIngestor(Ingestor):
                 continue
             logger.debug(f"found race for {race_id=}:\n\t{race}")
 
-            race.league = (
-                normalize_league_name(race.league, is_female=race.gender == GENDER_FEMALE) if race.league else None
-            )
+            is_female = race.gender == GENDER_FEMALE
+            race.league = normalize_league_name(race.league, is_female=is_female) if race.league else None
             yield race
 
     @override

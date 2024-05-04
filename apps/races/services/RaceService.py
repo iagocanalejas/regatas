@@ -100,7 +100,10 @@ def get_closest_match_by_name_or_none(
     try:
         return get_closest_match_by_name(names=names, league=league, gender=gender, date=date, day=day)
     except Race.DoesNotExist:
-        return None
+        try:
+            return get_closest_match_by_name(names=names, league=league, gender=None, date=date, day=day)
+        except Race.DoesNotExist:
+            return None
 
 
 def get_closest_match_by_name(
@@ -140,6 +143,10 @@ def get_closest_match(
     Returns: Race: The closest matching Race object that meets the specified criteria.
     """
     races = Race.objects.filter(Q(gender=gender) | Q(gender=GENDER_ALL), date=date, day=day)
+
+    if gender is None:
+        races = Race.objects.filter(date=date, day=day)
+
     if trophy:
         races = races.filter(trophy=trophy)
     if flag:

@@ -8,7 +8,7 @@ Retrieve and process race data from a web datasource, JSON file or spreadsheet.
 python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[--year YEAR] \
 	[--start-year YEAR] \
-	[-f, --female] \
+	[-g, --gender] \
 	[-c, --category CATEGORY] \
 	[-d, --day DAY] \
 	[--sheet-id SHEET_ID] \
@@ -36,8 +36,8 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #                         sheet file path used for TABULAR datasource.
 #   -d DAY, --day DAY
 #                         day of the race for multiday races.
-#   -f, --female
-#                         female races.
+#   -g, --gender
+#                         races gender.
 #   -c CATEGORY, --category CATEGORY
 #                         one of (ABSOLUT | VETERAN | SCHOOL).
 #   -i [IGNORE ...], --ignore [IGNORE ...]
@@ -81,7 +81,7 @@ python manage.py plot [club]
 #   club                  club ID to filter participants.
 #
 # options:
-#   -f, --female          female races.
+#   -g, --gender          races gender.
 #   --leagues-only        only races from a league.
 #   --branch-teams        filter only branch teams.
 ```

@@ -13,7 +13,7 @@ from apps.entities.models import Entity
 from apps.entities.services import EntityService
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
-from rscraping.data.constants import GENDER_FEMALE, GENDER_MALE
+from rscraping.data.constants import GENDER_ALL, GENDER_FEMALE, GENDER_MALE, GENDER_MIX
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("club", type=int, help="club ID to filter participants.")
 
-        parser.add_argument("-f", "--female", action="store_true", default=False, help="female races.")
+        parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
         parser.add_argument("--leagues-only", action="store_true", default=False, help="only races from a league.")
         parser.add_argument("--branch-teams", action="store_true", default=False, help="filter only branch teams.")
 
@@ -67,12 +67,15 @@ class PlotConfig:
 
     @classmethod
     def from_args(cls, **options) -> "PlotConfig":
-        club_id, is_female, only_league_races, branch_teams = (
+        club_id, gender, only_league_races, branch_teams = (
             options["club"],
-            options["female"],
-            options["leagues-only"],
-            options["branch-teams"],
+            options["gender"],
+            options["leagues_only"],
+            options["branch_teams"],
         )
+
+        if not gender or gender.upper() not in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX]:
+            raise ValueError(f"invalid {gender=}")
 
         if not club_id:
             raise ValueError("required value for 'club_id'")
@@ -83,7 +86,7 @@ class PlotConfig:
 
         return cls(
             club=club,
-            gender=GENDER_FEMALE if is_female else GENDER_MALE,
+            gender=gender.upper(),
             only_league_races=only_league_races,
             branch_teams=branch_teams,
         )
