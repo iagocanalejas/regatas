@@ -3,7 +3,7 @@ import logging
 from django.db import connection
 from django.db.models import Q, QuerySet
 
-from apps.entities.models import Entity
+from apps.entities.models import Entity, League
 from apps.participants.models import Participant
 from apps.races.models import Race
 from rscraping.data.checks import is_branch_club
@@ -35,14 +35,15 @@ def get_by_race_and_filter_by(
 
 
 def get_year_speeds_by_club(
-    club: Entity,
+    club: Entity | None,
+    league: League | None,
     gender: str,
     branch_teams: bool,
     only_league_races: bool,
 ) -> dict[int, list[float]]:
     gender_filter = (
         f"(p.gender = '{gender}' AND r.gender = '{gender}')"
-        if only_league_races
+        if only_league_races or league is not None
         else f"(p.gender = '{gender}' AND (r.gender = '{gender}' OR r.gender = '{GENDER_ALL}'))"
     )
     filters = (
@@ -50,7 +51,11 @@ def get_year_speeds_by_club(
         gender_filter,
         "p.club_name LIKE '% B'" if branch_teams else "(p.club_name IS NULL OR p.club_name <> '% B')",
         "r.league_id IS NOT NULL" if only_league_races else "",
-        f"p.club_id = {club.pk}",
+        f"r.league_id = {league.pk}" if league else "",
+        f"p.club_id = {club.pk}" if club else "",
+        "NOT r.cancelled",
+        "(extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0",  # Avoid division by zero
+        "NOT EXISTS(SELECT * FROM penalty WHERE participant_id = p.id AND disqualification)",  # Avoid disqualifications
     )
     where_clause = " AND ".join([str(filter) for filter in filters if filter])
     speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
@@ -59,7 +64,7 @@ def get_year_speeds_by_club(
             extract(YEAR from date)::INTEGER as year,
             array_agg(CAST({speed_expression} AS DOUBLE PRECISION)) as speeds
         FROM participant p JOIN race r ON p.race_id = r.id
-        WHERE {where_clause}
+        WHERE {where_clause} AND (extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0
         GROUP BY extract(YEAR from date)
         ORDER BY extract(YEAR from date);
         """

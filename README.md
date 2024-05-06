@@ -81,6 +81,7 @@ python manage.py plot [club]
 #   club                  club ID to filter participants.
 #
 # options:
+#   --league              league ID to filter participants.
 #   -g, --gender          races gender.
 #   --leagues-only        only races from a league.
 #   --branch-teams        filter only branch teams.

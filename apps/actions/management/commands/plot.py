@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from django.core.management import BaseCommand
 from matplotlib.ticker import MultipleLocator
 
-from apps.entities.models import Entity
+from apps.entities.models import Entity, League
 from apps.entities.services import EntityService
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
@@ -30,7 +30,8 @@ class Command(BaseCommand):
 
     @override
     def add_arguments(self, parser):
-        parser.add_argument("club", type=int, help="club ID to filter participants.")
+        parser.add_argument("club", nargs="?", type=int, help="club ID to filter participants.")
+        parser.add_argument("--league", type=int, help="league for which to plot the data.")
 
         parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
         parser.add_argument("--leagues-only", action="store_true", default=False, help="only races from a league.")
@@ -42,13 +43,20 @@ class Command(BaseCommand):
         config = PlotConfig.from_args(**options)
         speeds = ParticipantService.get_year_speeds_by_club(
             config.club,
+            config.league,
             config.gender,
             config.branch_teams,
             config.only_league_races,
         )
 
+        label = "VELOCIDADES (km/h)"
+        if config.club:
+            label = f"{config.club.name} {label}"
+        if config.league:
+            label = f"{config.league.symbol} {label}"
+
         _, ax = plt.subplots()
-        ax.set_title("Speeds by Year")
+        ax.set_title(label)
         ax.boxplot(speeds.values())
         ax.set_xticklabels(speeds.keys())
 
@@ -59,7 +67,8 @@ class Command(BaseCommand):
 
 @dataclass
 class PlotConfig:
-    club: Entity
+    club: Entity | None
+    league: League | None
     gender: str
 
     only_league_races: bool = False
@@ -67,8 +76,9 @@ class PlotConfig:
 
     @classmethod
     def from_args(cls, **options) -> "PlotConfig":
-        club_id, gender, only_league_races, branch_teams = (
+        club_id, league_id, gender, only_league_races, branch_teams = (
             options["club"],
+            options["league"],
             options["gender"],
             options["leagues_only"],
             options["branch_teams"],
@@ -77,15 +87,22 @@ class PlotConfig:
         if not gender or gender.upper() not in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX]:
             raise ValueError(f"invalid {gender=}")
 
-        if not club_id:
-            raise ValueError("required value for 'club_id'")
-        club = EntityService.get_entity_or_none(club_id)
+        club = EntityService.get_entity_or_none(club_id) if club_id else None
         if club_id and not club:
             raise ValueError(f"invalid {club_id=}")
-        assert club
+
+        league = League.objects.get(pk=league_id) if league_id else None
+        if league_id and not league:
+            raise ValueError(f"invalid {league_id=}")
+
+        if gender and league and gender.upper() != league.gender:
+            logger.warning(f"given {gender=} does not match {league.gender}, using league's one")
+            gender = league.gender if league.gender else gender
+            assert gender
 
         return cls(
             club=club,
+            league=league,
             gender=gender.upper(),
             only_league_races=only_league_races,
             branch_teams=branch_teams,
