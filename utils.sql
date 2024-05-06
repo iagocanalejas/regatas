@@ -68,14 +68,37 @@ SELECT id,
 FROM race r
 WHERE not r.cancelled
   AND (SELECT count(*) FROM participant WHERE race_id = r.id)
-          <> (SELECT max(cnt)
-              FROM (SELECT COUNT(*) as cnt, ROW_NUMBER() OVER (PARTITION BY race_id ORDER BY COUNT(*) DESC) as seqnum
-                    FROM participant p JOIN race r1 ON p.race_id = r1.id
-                    WHERE r1.league_id = r.league_id
-                      AND extract(YEAR FROM r1.date) = extract(YEAR FROM r.date)
-                      AND r1.gender = r.gender
-                      AND not r1.cancelled
-                    GROUP BY race_id
-                    ORDER BY cnt DESC) as cs
-              WHERE seqnum = 1)
+    <> (SELECT max(cnt)
+        FROM (SELECT COUNT(*) as cnt, ROW_NUMBER() OVER (PARTITION BY race_id ORDER BY COUNT(*) DESC) as seqnum
+              FROM participant p JOIN race r1 ON p.race_id = r1.id
+              WHERE r1.league_id = r.league_id
+                AND extract(YEAR FROM r1.date) = extract(YEAR FROM r.date)
+                AND r1.gender = r.gender
+                AND not r1.cancelled
+              GROUP BY race_id
+              ORDER BY cnt DESC) as cs
+        WHERE seqnum = 1)
 ORDER BY extract(YEAR FROM r.date), league_id, date;
+
+-- SPEEDS QUERY
+SELECT r.date,
+       r.metadata,
+       p.club_name,
+       p.laps,
+       p.club_id,
+       p.race_id,
+       p.id,
+       CAST((p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6 AS DOUBLE PRECISION) as speed
+--        extract(YEAR from date)::INTEGER as year,
+--        array_agg(CAST((p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6 AS DOUBLE PRECISION)) as speeds
+FROM participant p
+         JOIN race r ON p.race_id = r.id
+WHERE p.laps <> '{}'
+  AND not r.cancelled
+  AND not exists(select * from penalty where participant_id = p.id and disqualification)
+--   AND (p.gender = 'MALE' AND r.gender = 'MALE')
+  AND (p.club_name IS NULL OR p.club_name <> '% B')
+  AND r.league_id = 11
+  AND (extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0
+  AND extract(YEAR FROM r.date) = 2023
+ORDER BY speed desc, extract(YEAR from date);

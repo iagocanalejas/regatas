@@ -46,16 +46,24 @@ def get_year_speeds_by_club(
         if only_league_races or league is not None
         else f"(p.gender = '{gender}' AND (r.gender = '{gender}' OR r.gender = '{GENDER_ALL}'))"
     )
+    branch_filter = (
+        "p.club_name LIKE '% B'"
+        if branch_teams
+        else "(p.club_name IS NULL OR p.club_name <> '% B')"
+        if not league
+        else ""
+    )
+
     filters = (
-        "p.laps <> '{}'",
-        gender_filter,
-        "p.club_name LIKE '% B'" if branch_teams else "(p.club_name IS NULL OR p.club_name <> '% B')",
-        "r.league_id IS NOT NULL" if only_league_races else "",
-        f"r.league_id = {league.pk}" if league else "",
-        f"p.club_id = {club.pk}" if club else "",
         "NOT r.cancelled",
+        "p.laps <> '{}'",
         "(extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0",  # Avoid division by zero
         "NOT EXISTS(SELECT * FROM penalty WHERE participant_id = p.id AND disqualification)",  # Avoid disqualifications
+        gender_filter,
+        branch_filter,
+        f"p.club_id = {club.pk}" if club else "",
+        "r.league_id IS NOT NULL" if only_league_races else "",
+        f"r.league_id = {league.pk}" if league else "",
     )
     where_clause = " AND ".join([str(filter) for filter in filters if filter])
     speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
@@ -68,6 +76,8 @@ def get_year_speeds_by_club(
         GROUP BY extract(YEAR from date)
         ORDER BY extract(YEAR from date);
         """
+
+    logger.debug(raw_query)
 
     with connection.cursor() as cursor:
         cursor.execute(raw_query)

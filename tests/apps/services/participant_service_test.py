@@ -57,6 +57,7 @@ class ParticipantServiceTest(TestCase):
 
         speeds = ParticipantService.get_year_speeds_by_club(
             club,
+            league=None,
             gender=GENDER_MALE,
             branch_teams=False,
             only_league_races=False,

@@ -16,6 +16,7 @@ from apps.participants.services import ParticipantService
 from rscraping.data.constants import GENDER_ALL, GENDER_FEMALE, GENDER_MALE, GENDER_MIX
 
 logger = logging.getLogger(__name__)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
@@ -31,11 +32,13 @@ class Command(BaseCommand):
     @override
     def add_arguments(self, parser):
         parser.add_argument("club", nargs="?", type=int, help="club ID to filter participants.")
-        parser.add_argument("--league", type=int, help="league for which to plot the data.")
+        parser.add_argument("-l", "--league", type=int, help="league ID for which to plot the data.")
 
         parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
         parser.add_argument("--leagues-only", action="store_true", default=False, help="only races from a league.")
         parser.add_argument("--branch-teams", action="store_true", default=False, help="filter only branch teams.")
+
+        parser.add_argument("-o", "--output", type=str, help="saves the output plot.")
 
     @override
     def handle(self, *_, **options):
@@ -61,8 +64,12 @@ class Command(BaseCommand):
         ax.set_xticklabels(speeds.keys())
 
         plt.gca().yaxis.set_major_locator(MultipleLocator(0.5))
+        plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment="center")
 
-        plt.show()
+        if config.output_path:
+            plt.savefig(config.output_path)
+        else:
+            plt.show()
 
 
 @dataclass
@@ -74,14 +81,17 @@ class PlotConfig:
     only_league_races: bool = False
     branch_teams: bool = False
 
+    output_path: str | None = None
+
     @classmethod
     def from_args(cls, **options) -> "PlotConfig":
-        club_id, league_id, gender, only_league_races, branch_teams = (
+        club_id, league_id, gender, only_league_races, branch_teams, output_path = (
             options["club"],
             options["league"],
             options["gender"],
             options["leagues_only"],
             options["branch_teams"],
+            options["output"],
         )
 
         if not gender or gender.upper() not in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX]:
@@ -92,13 +102,13 @@ class PlotConfig:
             raise ValueError(f"invalid {club_id=}")
 
         league = League.objects.get(pk=league_id) if league_id else None
-        if league_id and not league:
-            raise ValueError(f"invalid {league_id=}")
+        if league and branch_teams:
+            logger.warning("branch_teams is not supported with leagues, ignoring it")
+            branch_teams = False
 
         if gender and league and gender.upper() != league.gender:
             logger.warning(f"given {gender=} does not match {league.gender}, using league's one")
             gender = league.gender if league.gender else gender
-            assert gender
 
         return cls(
             club=club,
@@ -106,4 +116,5 @@ class PlotConfig:
             gender=gender.upper(),
             only_league_races=only_league_races,
             branch_teams=branch_teams,
+            output_path=output_path,
         )

@@ -87,6 +87,11 @@ python manage.py plot [club]
 #   --branch-teams        filter only branch teams.
 ```
 
+```sh
+# Plot all leagues
+parallel -j 11 python manage.py plot --league {} -o out/l{}.png ::: $(seq 1 11)
+```
+
 # Development
 
 ## Environment variables
