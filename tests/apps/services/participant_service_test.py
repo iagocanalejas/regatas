@@ -61,6 +61,7 @@ class ParticipantServiceTest(TestCase):
             gender=GENDER_MALE,
             branch_teams=False,
             only_league_races=False,
+            normalize=False,
         )
 
         self.assertEqual(speeds, {2009: [15.502592601204455], 2022: [15.502592601204455]})

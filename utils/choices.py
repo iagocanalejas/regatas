@@ -21,6 +21,7 @@ from rscraping.data.constants import (
     RACE_TIME_TRIAL,
     RACE_TRAINERA,
     RACE_TRAINERILLA,
+    WRONG_LINEUP,
 )
 
 ################
@@ -87,4 +88,5 @@ PENALTY_CHOICES = [
     (BLADE_TOUCH, "Toque de palas"),
     (OFF_THE_FIELD, "Fuera de campo"),
     (COVID_ABSENCE, "Ausencia por COVID-19"),
+    (WRONG_LINEUP, "Alineación incorrecta"),
 ]

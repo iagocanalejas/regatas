@@ -40,6 +40,7 @@ def get_year_speeds_by_club(
     gender: str,
     branch_teams: bool,
     only_league_races: bool,
+    normalize: bool,
 ) -> dict[int, list[float]]:
     gender_filter = (
         f"(p.gender = '{gender}' AND r.gender = '{gender}')"
@@ -67,15 +68,38 @@ def get_year_speeds_by_club(
     )
     where_clause = " AND ".join([str(filter) for filter in filters if filter])
     speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
-    raw_query = f"""
-        SELECT
-            extract(YEAR from date)::INTEGER as year,
-            array_agg(CAST({speed_expression} AS DOUBLE PRECISION)) as speeds
-        FROM participant p JOIN race r ON p.race_id = r.id
-        WHERE {where_clause} AND (extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0
-        GROUP BY extract(YEAR from date)
-        ORDER BY extract(YEAR from date);
-        """
+
+    if normalize:
+        raw_query = f"""
+            WITH speeds_query AS (
+                SELECT
+                    extract(YEAR from date)::INTEGER as year,
+                    CAST({speed_expression} AS DOUBLE PRECISION) as speed
+                FROM participant p JOIN race r ON p.race_id = r.id
+                WHERE {where_clause}
+            )
+            SELECT year, array_agg(speed) AS speeds
+            FROM speeds_query
+            WHERE speed BETWEEN (
+                SELECT AVG(speed) - (2 * STDDEV_POP(speed))
+                FROM speeds_query
+            ) AND (
+                SELECT AVG(speed) + (2 * STDDEV_POP(speed))
+                FROM speeds_query
+            )
+            GROUP BY year
+            ORDER BY year;
+            """
+    else:
+        raw_query = f"""
+            SELECT
+                extract(YEAR from date)::INTEGER as year,
+                array_agg(CAST({speed_expression} AS DOUBLE PRECISION)) as speeds
+            FROM participant p JOIN race r ON p.race_id = r.id
+            WHERE {where_clause}
+            GROUP BY year
+            ORDER BY year;
+            """
 
     logger.debug(raw_query)
 

@@ -73,6 +73,7 @@ python manage.py plot [club]
 #   -g, --gender          races gender.
 #   --leagues-only        only races from a league.
 #   --branch-teams        filter only branch teams.
+#   -n, --normalize       exclude outliers based on the speeds' standard deviation.
 ```
 
 ```sh

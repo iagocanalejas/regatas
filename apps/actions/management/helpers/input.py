@@ -20,6 +20,10 @@ def input_should_merge(db_race: Race) -> bool:
     return inquirer.confirm(f"found matching race {db_race} in the database. Merge both races?")
 
 
+def input_should_reset_league() -> bool:
+    return inquirer.confirm("Should the league be reseted?")
+
+
 def input_should_merge_participant(db_participant: Participant) -> bool:
     return inquirer.confirm(
         f"found matching participant {db_participant} in the database. Merge both participants?", default=False

@@ -16,6 +16,7 @@ from apps.actions.management.helpers.input import (
     input_should_associate_races,
     input_should_merge,
     input_should_merge_participant,
+    input_should_reset_league,
     input_should_save,
     input_should_save_participant,
     input_should_save_second_day,
@@ -170,7 +171,10 @@ class Ingestor(IngestorProtocol):
         status = IngestorProtocol.Status.NEW
         if db_race:
             new_race, status = self.merge(new_race, db_race=db_race, status=status)
-
+        if status == IngestorProtocol.Status.NEW and db_race and not associated:
+            # if we had a match but we didn't merge, it can be an associated race
+            associated = db_race
+            logger.info(f"using {associated=}")
         return new_race, associated, status
 
     @override
@@ -179,6 +183,8 @@ class Ingestor(IngestorProtocol):
         print(f"DATABASE RACE:\n{json.dumps(serialized_race, indent=4, skipkeys=True, ensure_ascii=False)}")
         if not input_should_merge(db_race):
             logger.debug(f"races will not be merged, using {race=}")
+            if input_should_reset_league():
+                race.league = None
             return race, status
 
         logger.info(f"merging {race=} and {db_race=}")

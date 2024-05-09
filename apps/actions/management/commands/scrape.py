@@ -64,7 +64,13 @@ class Command(BaseCommand):
         # options
         parser.add_argument("-t", "--table", type=int, help="rable of the race for multipage races.")
         parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
-        parser.add_argument("-c", "--category", type=str, help="one of (ABSOLUT | VETERAN | SCHOOL).")
+        parser.add_argument(
+            "-c",
+            "--category",
+            type=str,
+            default=CATEGORY_ABSOLUT,
+            help="one of (ABSOLUT | VETERAN | SCHOOL).",
+        )
         parser.add_argument(
             "-i",
             "--ignore",
@@ -176,7 +182,7 @@ class ScrapeConfig:
     club: Entity | None = None
     flag: str | None = None
 
-    category: str | None = None
+    category: str = CATEGORY_ABSOLUT
     gender: str = GENDER_MALE
     table: int | None = None
     start_year: int | None = None
@@ -250,7 +256,7 @@ class ScrapeConfig:
             year=year,
             club=club,
             flag=flag_id,
-            category=category.upper() if category else None,
+            category=category.upper() if category else CATEGORY_ABSOLUT,
             gender=gender.upper(),
             table=table,
             start_year=start_year,

@@ -37,6 +37,13 @@ class Command(BaseCommand):
         parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
         parser.add_argument("--leagues-only", action="store_true", default=False, help="only races from a league.")
         parser.add_argument("--branch-teams", action="store_true", default=False, help="filter only branch teams.")
+        parser.add_argument(
+            "-n",
+            "--normalize",
+            action="store_true",
+            default=False,
+            help="exclude outliers based on the speeds' standard deviation.",
+        )
 
         parser.add_argument("-o", "--output", type=str, help="saves the output plot.")
 
@@ -50,6 +57,7 @@ class Command(BaseCommand):
             config.gender,
             config.branch_teams,
             config.only_league_races,
+            config.normalize,
         )
 
         label = "VELOCIDADES (km/h)"
@@ -57,6 +65,9 @@ class Command(BaseCommand):
             label = f"{config.club.name} {label}"
         if config.league:
             label = f"{config.league.symbol} {label}"
+
+        if config.normalize:
+            label = f"{label} - normalized"
 
         _, ax = plt.subplots()
         ax.set_title(label)
@@ -80,17 +91,19 @@ class PlotConfig:
 
     only_league_races: bool = False
     branch_teams: bool = False
+    normalize: bool = False
 
     output_path: str | None = None
 
     @classmethod
     def from_args(cls, **options) -> "PlotConfig":
-        club_id, league_id, gender, only_league_races, branch_teams, output_path = (
+        club_id, league_id, gender, only_league_races, branch_teams, normalize, output_path = (
             options["club"],
             options["league"],
             options["gender"],
             options["leagues_only"],
             options["branch_teams"],
+            options["normalize"],
             options["output"],
         )
 
@@ -116,5 +129,6 @@ class PlotConfig:
             gender=gender.upper(),
             only_league_races=only_league_races,
             branch_teams=branch_teams,
+            normalize=normalize,
             output_path=output_path,
         )
