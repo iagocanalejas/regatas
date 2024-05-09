@@ -13,7 +13,6 @@ from apps.actions.management.helpers.input import (
     input_competition,
     input_new_value,
     input_race,
-    input_shoud_create_participant,
     input_should_associate_races,
     input_should_merge,
     input_should_merge_participant,
@@ -30,7 +29,6 @@ from apps.participants.services import ParticipantService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
-from pyutils.shortcuts import all_or_none
 from rscraping.clients import ClientProtocol
 from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Datasource
@@ -212,66 +210,6 @@ class Ingestor(IngestorProtocol):
         return db_race, IngestorProtocol.Status.MERGED
 
     @override
-    def verify(self, race: Race, rs_race: RSRace) -> tuple[Race, bool, bool]:
-        # TODO: refactor this method and use status
-        _, (trophy, trophy_edition), (flag, flag_edition) = self._retrieve_competition(rs_race, db_race=None)
-        if (not trophy and not flag) or (trophy and not trophy_edition) or (flag and not flag_edition):
-            return race, False, False
-        logger.info(f"using {trophy=}:{trophy_edition=}")
-        logger.info(f"using {flag=}:{flag_edition=}")
-
-        logger.debug("searching league")
-        league = retrieve_league(rs_race, db_race=None)
-        logger.info(f"using {league=}")
-
-        if (
-            (trophy is not None and (race.trophy != trophy or race.trophy_edition != trophy_edition))
-            or (flag is not None and (race.flag != flag or race.flag_edition != flag_edition))
-            or (not all_or_none(league, race.league) or race.league != league)
-        ):
-            logger.warning(f"unable to verify {race=} with {rs_race=}")
-            return race, False, False
-
-        needs_update = False
-        datasource = self._get_datasource(race, rs_race.race_ids[0])
-        if datasource:
-            logger.info("updating date inside metadata")
-            datasource["date"] = datetime.now().date().isoformat()
-            needs_update = True
-
-        logger.debug("searching organizer")
-        organizer = rs_race.organizer
-        organizer = retrieve_entity(normalize_club_name(organizer), entity_type=None) if organizer else None
-        logger.info(f"using {organizer=}")
-
-        if input_new_value("laps", rs_race.race_laps, race.laps):
-            logger.debug(f"updating {race.laps} with {rs_race.race_laps}")
-            race.laps = rs_race.race_laps
-            needs_update = True
-
-        if input_new_value("lanes", rs_race.race_lanes, race.lanes):
-            logger.debug(f"updating {race.lanes} with {rs_race.race_lanes}")
-            race.lanes = rs_race.race_lanes
-            needs_update = True
-
-        if input_new_value("organizer", organizer, race.organizer):
-            logger.debug(f"updating {race.organizer} with {organizer}")
-            race.organizer = organizer  # pyright: ignore
-            needs_update = True
-
-        if input_new_value("town", rs_race.town, race.town):
-            logger.debug(f"updating {race.town} with {rs_race.town}")
-            race.town = rs_race.town
-            needs_update = True
-
-        if input_new_value("sponsor", rs_race.sponsor, race.sponsor):
-            logger.debug(f"updating {race.sponsor} with {rs_race.sponsor}")
-            race.sponsor = rs_race.sponsor
-            needs_update = True
-
-        return race, True, needs_update
-
-    @override
     def save(
         self,
         race: Race,
@@ -408,63 +346,6 @@ class Ingestor(IngestorProtocol):
             db_participant.club_name = participant.club_name
 
         return db_participant, IngestorProtocol.Status.MERGED
-
-    @override
-    def verify_participants(
-        self,
-        race: Race,
-        participants: list[Participant],
-        rs_participants: list[RSParticipant],
-    ) -> list[tuple[Participant, bool, bool]]:
-        # TODO: refactor this method and use status
-        verified_participants: list[tuple[Participant, bool, bool]] = []
-
-        for rsp in rs_participants:
-            logger.debug("searching entity in the database")
-            club = retrieve_entity(normalize_club_name(rsp.participant))
-            if not club:
-                logger.warning(f"unable to verify {rsp=}")
-                continue
-            logger.info(f"using {club=}")
-
-            p = next(
-                (p for p in participants if ParticipantService.is_same_participant(p, rsp, club=club)),
-                None,
-            )
-
-            if not p:
-                if input_shoud_create_participant(rsp):
-                    logger.info(f"creating new participation for {rsp}")
-                    p, _ = self.ingest_participant(race, rsp)
-                    p, status = self.save_participant(p, IngestorProtocol.Status.NEW)
-                    verified_participants.append((p, status.is_saved(), True))
-                continue
-
-            needs_update = False
-            laps = [lap.strftime("%M:%S.%f") for lap in p.laps]
-            if len(rsp.laps) >= len(p.laps) and input_new_value("laps", rsp.laps, laps):
-                logger.debug(f"updating {laps} with {rsp.laps}")
-                p.laps = [datetime.strptime(lap, "%M:%S.%f").time() for lap in rsp.laps]
-                needs_update = True
-
-            if (p.distance is None or rsp.distance != 5556) and input_new_value("distance", rsp.distance, p.distance):
-                logger.debug(f"updating {p.distance=} with {rsp.distance=}")
-                p.distance = rsp.distance
-                needs_update = True
-
-            if input_new_value("lane", rsp.lane, p.lane):
-                logger.debug(f"updating {p.lane=} with {rsp.lane=}")
-                p.lane = rsp.lane
-                needs_update = True
-
-            if p.club_name is None or input_new_value("name", rsp.club_name, p.club_name):
-                logger.debug(f"updating {p.club_name=} with {rsp.club_name=}")
-                p.club_name = rsp.club_name
-                needs_update = True
-
-            verified_participants.append((p, True, needs_update))
-
-        return verified_participants
 
     @override
     def save_participant(

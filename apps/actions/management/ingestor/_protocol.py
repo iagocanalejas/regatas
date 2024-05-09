@@ -116,22 +116,6 @@ class IngestorProtocol(Protocol):
         """
         ...
 
-    def verify(self, race: Race, rs_race: RSRace) -> tuple[Race, bool, bool]:
-        """
-        Verify all the data in an existing database race matches the scrapped race.
-        Will ask to update some fields if needed.
-
-        Args:
-            race: Race: The existing database race.
-            rs_race: RSRace: The new scrapped data.
-
-        Returns: tuple[Race, bool]:
-            Race: The verified race.
-            bool: Whether the race was verified or not.
-            bool: Whether the race needs to be updated or not.
-        """
-        ...
-
     def save(self, race: Race, status: Status, associated: Race | None = None, **kwargs) -> tuple[Race, Status]:
         """
         Save a new race into the database.
@@ -195,27 +179,6 @@ class IngestorProtocol(Protocol):
         Returns: tuple[Participant, bool]:
             Participant: The merged participant result.
             Status: The status of participant after the merge.
-        """
-        ...
-
-    def verify_participants(
-        self,
-        race: Race,
-        participants: list[Participant],
-        rs_participants: list[RSParticipant],
-    ) -> list[tuple[Participant, bool, bool]]:
-        """
-        Verify all the data in an existing database participants matches the scrapped participants.
-
-        Args:
-            race Race: The Race to witch the participant belongs.
-            participants: list[Participant]: The existing database participants.
-            rs_participants: list[RSParticipant]: The new scrapped data.
-
-        Returns: list[tuple[Participant, bool]]:
-            Participant: The verified participant.
-            bool: Whether the participant was verified or not.
-            bool: Whether the participant needs to be updated or not.
         """
         ...
 

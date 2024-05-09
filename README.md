@@ -58,18 +58,6 @@ python manage.py find datasource_or_race [REF_ID]
 #   ref_id                reference ID for the given Datasource.
 ```
 
-## Verify Races
-
-Retrieve races from the database and verifies it's datasources ara correct.
-
-```sh
-python manage.py validate datasource [year]
-
-# positional arguments:
-#   datasource            The name of the Datasource that will be validated
-#   year                  The year for which race data should be verified.
-```
-
 ## Plot Data
 
 Use boxplot graphs to visualize each year speeds.
