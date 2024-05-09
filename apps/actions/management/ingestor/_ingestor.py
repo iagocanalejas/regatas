@@ -100,7 +100,7 @@ class Ingestor(IngestorProtocol):
         return self.client.get_race_by_url(url, **kwargs)
 
     @override
-    def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None]:
+    def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, IngestorProtocol.Status]:
         logger.info(f"ingesting {race=}")
 
         metadata = self._build_metadata(race, self.client.DATASOURCE)
@@ -169,18 +169,19 @@ class Ingestor(IngestorProtocol):
             logger.info(f"using {db_race=}")
 
         print(f"NEW RACE:\n{json.dumps(RaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False)}")
+        status = IngestorProtocol.Status.NEW
         if db_race:
-            new_race, _ = self.merge(new_race, db_race=db_race)
+            new_race, status = self.merge(new_race, db_race=db_race, status=status)
 
-        return new_race, associated
+        return new_race, associated, status
 
     @override
-    def merge(self, race: Race, db_race: Race) -> tuple[Race, bool]:
+    def merge(self, race: Race, db_race: Race, status: IngestorProtocol.Status) -> tuple[Race, IngestorProtocol.Status]:
         serialized_race = RaceSerializer(db_race).data
         print(f"DATABASE RACE:\n{json.dumps(serialized_race, indent=4, skipkeys=True, ensure_ascii=False)}")
         if not input_should_merge(db_race):
             logger.debug(f"races will not be merged, using {race=}")
-            return race, False
+            return race, status
 
         logger.info(f"merging {race=} and {db_race=}")
         datasource = race.metadata["datasource"][0]
@@ -208,10 +209,11 @@ class Ingestor(IngestorProtocol):
             logger.debug(f"updating {db_race.town} with {race.town}")
             db_race.town = race.town
 
-        return db_race, True
+        return db_race, IngestorProtocol.Status.MERGED
 
     @override
     def verify(self, race: Race, rs_race: RSRace) -> tuple[Race, bool, bool]:
+        # TODO: refactor this method and use status
         _, (trophy, trophy_edition), (flag, flag_edition) = self._retrieve_competition(rs_race, db_race=None)
         if (not trophy and not flag) or (trophy and not trophy_edition) or (flag and not flag_edition):
             return race, False, False
@@ -270,29 +272,35 @@ class Ingestor(IngestorProtocol):
         return race, True, needs_update
 
     @override
-    def save(self, race: Race, associated: Race | None = None, **_) -> tuple[Race, bool]:
+    def save(
+        self,
+        race: Race,
+        status: IngestorProtocol.Status,
+        associated: Race | None = None,
+        **_,
+    ) -> tuple[Race, IngestorProtocol.Status]:
         if not input_should_save(race):
             logger.warning(f"race {race} was not saved")
-            return race, False
+            return race, status
 
         if associated and not race.associated and input_should_associate_races(race, associated):
             logger.info(f"associating races {race} and {associated}")
             race.associated = associated  # pyright: ignore
             race.save()
             Race.objects.filter(pk=associated.pk).update(associated=race)
-            return race, True
+            return race, status.next()
 
         try:
             logger.info(f"saving {race=}")
             race.save()
-            return race, True
+            return race, status.next()
         except ValidationError as e:
             logger.error(e)
             if race.day == 1 and input_should_save_second_day(race):
                 logger.debug(f"change day for {race} and trying again")
                 race.day = 2
-                return self.save(race, associated)
-            return race, False
+                return self.save(race, status, associated)
+            return race, status
 
     @override
     def ingest_participant(
@@ -300,7 +308,7 @@ class Ingestor(IngestorProtocol):
         race: Race,
         participant: RSParticipant,
         **_,
-    ) -> tuple[Participant, bool]:
+    ) -> tuple[Participant, IngestorProtocol.Status]:
         logger.info(f"ingesting {participant=}")
 
         logger.debug("searching entity in the database")
@@ -334,20 +342,30 @@ class Ingestor(IngestorProtocol):
             category=participant.category,
         )
 
+        status = IngestorProtocol.Status.NEW
         if db_participant:
             if not self.should_merge_participants(new_participant, db_participant):
                 serialized = ParticipantSerializer(db_participant).data
                 print(f"EXISTING PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
-                return db_participant, False
+                return db_participant, IngestorProtocol.Status.EXISTING
             else:
                 serialized = ParticipantSerializer(new_participant).data
                 print(f"NEW PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
-                new_participant, _ = self.merge_participants(new_participant, db_participant)
+                new_participant, status = self.merge_participants(new_participant, db_participant, status)
 
-        return new_participant, True
+        return new_participant, status
 
     @override
     def should_merge_participants(self, participant: Participant, db_participant: Participant) -> bool:
+        """
+        Determines whether two participants should be merged based on certain conditions.
+
+        Conditions for merging:
+        1. If the number of laps for the first participant is greater than the number of laps for the second.
+        2. If the lane of the first participant is not None and is different from the lane assigned to the second.
+        3. If the second participant does not have a club name, but the first one has it
+            and is different from the second participant's club name.
+        """
         return (
             len(participant.laps) > len(db_participant.laps)
             or (participant.lane is not None and participant.lane != db_participant.lane)
@@ -359,13 +377,18 @@ class Ingestor(IngestorProtocol):
         )
 
     @override
-    def merge_participants(self, participant: Participant, db_participant: Participant) -> tuple[Participant, bool]:
+    def merge_participants(
+        self,
+        participant: Participant,
+        db_participant: Participant,
+        status: IngestorProtocol.Status,
+    ) -> tuple[Participant, IngestorProtocol.Status]:
         serialized_participant = ParticipantSerializer(db_participant).data
         json_participant = json.dumps(serialized_participant, indent=4, skipkeys=True, ensure_ascii=False)
         print(f"DATABASE PARTICIPANT:\n{json_participant}")
         if not input_should_merge_participant(db_participant):
             logger.warning(f"participants will not be merged, using {participant=}")
-            return participant, False
+            return participant, status
 
         logger.info(f"merging {participant=} and {db_participant=}")
         if len(participant.laps) > len(db_participant.laps) and input_new_value(
@@ -384,7 +407,7 @@ class Ingestor(IngestorProtocol):
             logger.debug(f"updating {db_participant.club_name=} with {participant.club_name=}")
             db_participant.club_name = participant.club_name
 
-        return db_participant, True
+        return db_participant, IngestorProtocol.Status.MERGED
 
     @override
     def verify_participants(
@@ -393,6 +416,7 @@ class Ingestor(IngestorProtocol):
         participants: list[Participant],
         rs_participants: list[RSParticipant],
     ) -> list[tuple[Participant, bool, bool]]:
+        # TODO: refactor this method and use status
         verified_participants: list[tuple[Participant, bool, bool]] = []
 
         for rsp in rs_participants:
@@ -412,8 +436,8 @@ class Ingestor(IngestorProtocol):
                 if input_shoud_create_participant(rsp):
                     logger.info(f"creating new participation for {rsp}")
                     p, _ = self.ingest_participant(race, rsp)
-                    p, created = self.save_participant(p)
-                    verified_participants.append((p, created, True))
+                    p, status = self.save_participant(p, IngestorProtocol.Status.NEW)
+                    verified_participants.append((p, status.is_saved(), True))
                 continue
 
             needs_update = False
@@ -446,19 +470,20 @@ class Ingestor(IngestorProtocol):
     def save_participant(
         self,
         participant: Participant,
+        status: IngestorProtocol.Status,
         is_disqualified: bool = False,
         **_,
-    ) -> tuple[Participant, bool]:
+    ) -> tuple[Participant, IngestorProtocol.Status]:
         if not input_should_save_participant(participant):
             logger.warning(f"participant {participant} was not saved")
-            return participant, False
+            return participant, status
 
         logger.info(f"saving {participant=}")
         participant.save()
         if is_disqualified:
             logger.info(f"creating disqualification penalty for {participant}")
             Penalty(disqualification=True, participant=participant).save()
-        return participant, True
+        return participant, status.next()
 
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:

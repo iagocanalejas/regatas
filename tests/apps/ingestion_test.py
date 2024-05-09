@@ -55,10 +55,11 @@ class IngestionTest(TestCase):
             cancelled=False,
         )
 
-        race, _ = self.ingestor.ingest(rs_race)
+        race, _, status = self.ingestor.ingest(rs_race)
 
         self.assertEqual(original_race.lanes, 3)
         self.assertEqual(race.lanes, 4)
+        self.assertEqual(status, Ingestor.Status.MERGED)
 
         [d.pop("date", None) for d in race.metadata["datasource"]]  # can't compare dates
         self.assertIn(
@@ -88,9 +89,10 @@ class IngestionTest(TestCase):
             cancelled=False,
         )
 
-        race, _ = self.ingestor.ingest(rs_race)
+        race, _, status = self.ingestor.ingest(rs_race)
         self.assertEqual(race.town, "A POBRA DO CARAMIÑAL")
         self.assertEqual(race.organizer, Entity.objects.get(pk=25))
+        self.assertEqual(status, Ingestor.Status.NEW)
 
     @patch("inquirer.confirm")
     def test_ingestion(self, mock_confirm):
@@ -108,17 +110,19 @@ class IngestionTest(TestCase):
             with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", file)) as f:
                 rs_race = RSRace.from_json(f.read())
 
-            new_race, _ = self.ingestor.ingest(rs_race)
+            new_race, _, status = self.ingestor.ingest(rs_race)
             self.assertEqual(race, new_race)
+            self.assertEqual(status, Ingestor.Status.MERGED)
 
     @patch("inquirer.confirm")
     def x_test_given_race(self, mock_confirm):
         mock_confirm.return_value = True
 
-        race_id = 776
+        race_id = 776  # change this
         with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", f"{race_id}.json")) as f:
             rs_race = RSRace.from_json(f.read())
             race = Race.objects.get(pk=race_id)
 
-        new_race, _ = self.ingestor.ingest(rs_race)
+        new_race, _, status = self.ingestor.ingest(rs_race)
         self.assertEqual(race, new_race)
+        self.assertEqual(status, Ingestor.Status.MERGED)

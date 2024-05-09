@@ -46,10 +46,10 @@ class TabularIngestor(Ingestor):
             yield race
 
     @override
-    def merge(self, race: Race, db_race: Race) -> tuple[Race, bool]:
-        db_race, should_merge = super().merge(race, db_race)
-        if not should_merge:
-            return race, False
+    def merge(self, race: Race, db_race: Race, status: Ingestor.Status) -> tuple[Race, Ingestor.Status]:
+        db_race, status = super().merge(race, db_race, status)
+        if status != Ingestor.Status.MERGED:
+            return race, status
 
         if input_new_value("trophy_edition", race.trophy_edition, db_race.trophy_edition):
             logger.debug(f"updating {db_race.trophy_edition=} with {race.trophy_edition=}")
@@ -63,29 +63,34 @@ class TabularIngestor(Ingestor):
             logger.debug(f"updating {db_race.organizer} with {race.organizer}")
             db_race.organizer = race.organizer
 
-        return db_race, True
+        return db_race, Ingestor.Status.MERGED
 
     @override
     def should_merge_participants(self, *_, **__) -> bool:
         return True
 
     @override
-    def merge_participants(self, participant: Participant, db_participant: Participant) -> tuple[Participant, bool]:
-        db_participant, should_merge = super().merge_participants(participant, db_participant)
-        if not should_merge:
+    def merge_participants(
+        self,
+        participant: Participant,
+        db_participant: Participant,
+        status: Ingestor.Status,
+    ) -> tuple[Participant, Ingestor.Status]:
+        db_participant, status = super().merge_participants(participant, db_participant, status)
+        if status != Ingestor.Status.MERGED:
             if input_shoud_create_B_participant(participant):
                 logger.debug(f"creating B team participation for {participant=}")
                 participant.club_name = (
                     f"{participant.club_name} B" if participant.club_name else f"{participant.club.name} B"
                 ).upper()
-                return participant, True
-            return participant, False
+                return participant, status
+            return participant, status
 
         if input_new_value("distance", participant.distance, db_participant.distance):
             logger.debug(f"updating {db_participant.distance=} with {participant.distance=}")
             db_participant.distance = participant.distance
 
-        return db_participant, True
+        return db_participant, Ingestor.Status.MERGED
 
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:

@@ -125,35 +125,37 @@ class Command(BaseCommand):
             participants = race.participants
             race.participants = []
 
-            new_race = self.ingest_race(ingestor, race)
+            new_race, race_status = self.ingest_race(ingestor, race)
             if not new_race:
                 logger.warning(f"{race=} was not saved")
                 continue
 
             for participant in participants:
-                new_participant, new_or_updated = ingestor.ingest_participant(new_race, participant)
-                if new_or_updated:
+                new_participant, status = ingestor.ingest_participant(new_race, participant)
+                if status == IngestorProtocol.Status.NEW or status == IngestorProtocol.Status.MERGED:
                     new_participant, _ = ingestor.save_participant(
-                        new_participant, is_disqualified=participant.disqualified
+                        new_participant,
+                        status,
+                        is_disqualified=participant.disqualified,
                     )
 
-    def ingest_race(self, ingestor: IngestorProtocol, race: RSRace) -> Race | None:
+    def ingest_race(self, ingestor: IngestorProtocol, race: RSRace) -> tuple[Race | None, IngestorProtocol.Status]:
         try:
-            new_race, associated = ingestor.ingest(race)
-            new_race, saved = ingestor.save(new_race, associated=associated)
-            if not saved:
+            new_race, associated, status = ingestor.ingest(race)
+            new_race, status = ingestor.save(new_race, status, associated=associated)
+            if not status.is_saved():
                 db_race = input_race(race)
                 if not db_race:
-                    return None
+                    return None, IngestorProtocol.Status.IGNORE
 
-                new_race, _ = ingestor.merge(new_race, db_race)
-                new_race, saved = ingestor.save(new_race, associated=associated)
-                if not saved:
-                    return None
-            return new_race
+                new_race, status = ingestor.merge(new_race, db_race, status)
+                new_race, status = ingestor.save(new_race, status, associated=associated)
+                if not status.is_saved():
+                    return None, IngestorProtocol.Status.IGNORE
+            return new_race, status
         except StopProcessing as e:
             logger.error(e)
-            return None
+            return None, IngestorProtocol.Status.IGNORE
         except KeyboardInterrupt as e:
             with open(f"{race.race_ids[0]}.json", "w") as f:
                 json.dump(race.to_dict(), f, ensure_ascii=False)

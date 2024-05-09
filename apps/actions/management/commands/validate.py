@@ -74,7 +74,7 @@ class Command(BaseCommand):
                 if verified:
                     if needs_update:
                         logger.info(f"updating {race=}")
-                        ingestor.save(race)
+                        ingestor.save(race, IngestorProtocol.Status.MERGED)
 
                     if datasource == Datasource.LGT:
                         logger.error(
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                     for p, verified, needs_update in participants:
                         if verified and needs_update:
                             logger.info(f"updating {p=}")
-                            ingestor.save_participant(p)
+                            ingestor.save_participant(p, IngestorProtocol.Status.MERGED)
 
     def _get_ingestor(self, datasource: Datasource, url: str, gender: str):
         if datasource == Datasource.TABULAR and url in self._cached_ingestor:
