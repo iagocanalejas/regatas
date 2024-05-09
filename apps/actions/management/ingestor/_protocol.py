@@ -24,7 +24,7 @@ class IngestorProtocol(Protocol):
         CREATED = auto()
         UPDATED = auto()
 
-        def next(self) -> 'IngestorProtocol.Status':
+        def next(self) -> "IngestorProtocol.Status":
             if self == self.NEW:
                 return self.CREATED
             if self == self.MERGED:
@@ -185,7 +185,8 @@ class IngestorProtocol(Protocol):
     def save_participant(
         self,
         participant: Participant,
-        status: Status,
+        race_status: Status,
+        participant_status: Status,
         is_disqualified: bool = False,
         **kwargs,
     ) -> tuple[Participant, Status]:
@@ -194,7 +195,8 @@ class IngestorProtocol(Protocol):
 
         Args:
             participant Participant: The participant we want to save.
-            status Status: The status of the participant.
+            race_status Status: The status of the participant race.
+            participant_status Status: The status of the participant.
             is_disqualified bool: Whether the participant was disqualified or not.
 
         Returns: tuple[Participant, bool]:

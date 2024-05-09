@@ -12,7 +12,7 @@ from django.core.management import BaseCommand
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.input import input_race
-from apps.actions.management.ingestor import IngestorProtocol, build_ingestor
+from apps.actions.management.ingestor import Ingestor, IngestorProtocol, build_ingestor
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
 from apps.races.models import Race
@@ -132,30 +132,31 @@ class Command(BaseCommand):
 
             for participant in participants:
                 new_participant, status = ingestor.ingest_participant(new_race, participant)
-                if status == IngestorProtocol.Status.NEW or status == IngestorProtocol.Status.MERGED:
+                if status == Ingestor.Status.NEW or status == Ingestor.Status.MERGED:
                     new_participant, _ = ingestor.save_participant(
                         new_participant,
-                        status,
+                        race_status=race_status,
+                        participant_status=status,
                         is_disqualified=participant.disqualified,
                     )
 
-    def ingest_race(self, ingestor: IngestorProtocol, race: RSRace) -> tuple[Race | None, IngestorProtocol.Status]:
+    def ingest_race(self, ingestor: IngestorProtocol, race: RSRace) -> tuple[Race | None, Ingestor.Status]:
         try:
             new_race, associated, status = ingestor.ingest(race)
             new_race, status = ingestor.save(new_race, status, associated=associated)
             if not status.is_saved():
                 db_race = input_race(race)
                 if not db_race:
-                    return None, IngestorProtocol.Status.IGNORE
+                    return None, Ingestor.Status.IGNORE
 
                 new_race, status = ingestor.merge(new_race, db_race, status)
                 new_race, status = ingestor.save(new_race, status, associated=associated)
                 if not status.is_saved():
-                    return None, IngestorProtocol.Status.IGNORE
+                    return None, Ingestor.Status.IGNORE
             return new_race, status
         except StopProcessing as e:
             logger.error(e)
-            return None, IngestorProtocol.Status.IGNORE
+            return None, Ingestor.Status.IGNORE
         except KeyboardInterrupt as e:
             with open(f"{race.race_ids[0]}.json", "w") as f:
                 json.dump(race.to_dict(), f, ensure_ascii=False)

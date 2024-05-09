@@ -351,20 +351,21 @@ class Ingestor(IngestorProtocol):
     def save_participant(
         self,
         participant: Participant,
-        status: IngestorProtocol.Status,
+        race_status: IngestorProtocol.Status,
+        participant_status: IngestorProtocol.Status,
         is_disqualified: bool = False,
         **_,
     ) -> tuple[Participant, IngestorProtocol.Status]:
-        if not input_should_save_participant(participant):
+        if race_status != IngestorProtocol.Status.CREATED and not input_should_save_participant(participant):
             logger.warning(f"participant {participant} was not saved")
-            return participant, status
+            return participant, participant_status
 
         logger.info(f"saving {participant=}")
         participant.save()
         if is_disqualified:
             logger.info(f"creating disqualification penalty for {participant}")
             Penalty(disqualification=True, participant=participant).save()
-        return participant, status.next()
+        return participant, participant_status.next()
 
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
