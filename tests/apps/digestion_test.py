@@ -10,7 +10,7 @@ from apps.actions.management.digester import Digester
 from apps.entities.models import Entity
 from apps.races.models import Race
 from rscraping.clients import Client
-from rscraping.data.constants import GENDER_FEMALE, GENDER_MALE, RACE_CONVENTIONAL, RACE_TRAINERA
+from rscraping.data.constants import GENDER_ALL, GENDER_FEMALE, GENDER_MALE, RACE_CONVENTIONAL, RACE_TRAINERA
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
@@ -59,6 +59,7 @@ class DigestionTest(TestCase):
 
         self.assertEqual(original_race.lanes, 3)
         self.assertEqual(race.lanes, 4)
+        self.assertEqual(race.gender, GENDER_ALL)
         self.assertEqual(status, Digester.Status.MERGED)
 
         [d.pop("date", None) for d in race.metadata["datasource"]]  # can't compare dates
@@ -93,6 +94,39 @@ class DigestionTest(TestCase):
         self.assertEqual(race.town, "A POBRA DO CARAMIÑAL")
         self.assertEqual(race.organizer, Entity.objects.get(pk=25))
         self.assertEqual(status, Digester.Status.NEW)
+
+    @patch("inquirer.confirm")
+    def test_force_gender(self, mock_confirm):
+        mock_confirm.return_value = True
+
+        rs_race = RSRace(
+            name="BANDERA CONCELLO DE REDONDELA",
+            date="16/07/2017",
+            day=1,
+            modality=RACE_TRAINERA,
+            type=RACE_CONVENTIONAL,
+            league=None,
+            town="REDONDELA",
+            organizer=None,
+            sponsor=None,
+            normalized_names=[("BANDERA CONCELLO DE REDONDELA", 3)],
+            race_ids=["3636"],
+            url="test",
+            datasource=Datasource.TRAINERAS,
+            gender=GENDER_FEMALE,
+            participants=[],
+            race_laps=2,
+            race_lanes=3,
+            cancelled=False,
+        )
+
+        race, _, status = self.digester.ingest(rs_race)
+        self.assertEqual(status, Digester.Status.MERGED)
+
+        self.digester._force_gender = True
+        race, _, status = self.digester.ingest(rs_race)
+        self.assertEqual(status, Digester.Status.NEW)
+        self.assertEqual(race.pk, None)
 
     @patch("inquirer.confirm")
     def test_digestion(self, mock_confirm):

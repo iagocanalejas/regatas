@@ -12,6 +12,7 @@ from .tabular import TabularDigester as TabularDigester
 def build_digester(
     client: Client | None = None,
     path: str | None = None,
+    force_gender: bool = False,
 ) -> DigesterProtocol:
     if path and (os.path.isdir(path) or os.path.isfile(path)):
         return FolderDigester(path)
@@ -19,5 +20,5 @@ def build_digester(
     assert client
     if client.DATASOURCE == Datasource.TABULAR:
         assert isinstance(client, TabularDataClient)
-        return TabularDigester(client)
-    return Digester(client)
+        return TabularDigester(client, force_gender=force_gender)
+    return Digester(client, force_gender=force_gender)

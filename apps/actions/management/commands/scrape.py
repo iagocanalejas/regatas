@@ -81,6 +81,7 @@ class Command(BaseCommand):
             default=[],
             help="race IDs to ignore during ingestion.",
         )
+        parser.add_argument("--force-gender", action="store_true", default=False, help="forces the gender to match.")
         parser.add_argument(
             "-o",
             "--output",
@@ -98,7 +99,7 @@ class Command(BaseCommand):
 
         client = build_client(config.datasource, config.gender, config.tabular_config, config.category)
         ingester = build_ingester(client=client, path=config.path, ignored_races=config.ignored_races)
-        digester = build_digester(client=client, path=config.path)
+        digester = build_digester(client=client, path=config.path, force_gender=config.force_gender)
 
         # compute years to scrape
         if config.year == ScrapeConfig.ALL_YEARS:
@@ -186,6 +187,7 @@ class ScrapeConfig:
     table: int | None = None
     start_year: int | None = None
 
+    force_gender: bool = False
     ignored_races: list[str] = field(default_factory=list)
     output_path: str | None = None
 
@@ -203,11 +205,12 @@ class ScrapeConfig:
             sheet_name=options["sheet_name"],
             file_path=options["file_path"],
         )
-        category, gender, table, start_year, ignored_races, output_path = (
+        category, gender, table, start_year, force_gender, ignored_races, output_path = (
             options["category"],
             options["gender"],
             options["table"],
             options["start_year"],
+            options["force_gender"],
             options["ignore"],
             options["output"],
         )
@@ -259,6 +262,7 @@ class ScrapeConfig:
             gender=gender.upper(),
             table=table,
             start_year=start_year,
+            force_gender=force_gender,
             ignored_races=ignored_races,
             output_path=output_path,
         )

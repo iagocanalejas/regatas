@@ -96,10 +96,13 @@ def get_closest_match_by_name_or_none(
     gender: str | None,
     date: date,
     day: int = 1,
+    force_gender: bool = False,
 ) -> Race | None:
     try:
         return get_closest_match_by_name(names=names, league=league, gender=gender, date=date, day=day)
     except Race.DoesNotExist:
+        if force_gender:
+            return None
         try:
             return get_closest_match_by_name(names=names, league=league, gender=None, date=date, day=day)
         except Race.DoesNotExist:

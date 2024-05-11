@@ -36,10 +36,12 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #                         sheet file path used for TABULAR datasource.
 #   -d DAY, --day DAY
 #                         day of the race for multiday races.
-#   -g, --gender
+#   -g GENDER, --gender GENDER
 #                         races gender.
 #   -c CATEGORY, --category CATEGORY
 #                         one of (ABSOLUT | VETERAN | SCHOOL).
+#   --force-gender
+#                         forces the gender to match.
 #   -i [IGNORE ...], --ignore [IGNORE ...]
 #                         race IDs to ignore during ingestion.
 #   -o OUTPUT, --output OUTPUT

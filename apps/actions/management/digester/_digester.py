@@ -40,8 +40,9 @@ logger = logging.getLogger(__name__)
 
 
 class Digester(DigesterProtocol):
-    def __init__(self, client: ClientProtocol):
+    def __init__(self, client: ClientProtocol, force_gender: bool = False):
         self.client = client
+        self._force_gender = force_gender
 
     @override
     def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, DigesterProtocol.Status]:
@@ -57,6 +58,7 @@ class Digester(DigesterProtocol):
                 gender=race.gender,
                 date=datetime.strptime(race.date, "%d/%m/%Y").date(),
                 day=race.day,
+                force_gender=self._force_gender,
             )
         except Race.MultipleObjectsReturned:
             logger.error(f"multiple races found for {race.date}:{race.name}")
