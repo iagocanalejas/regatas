@@ -1,9 +1,7 @@
 import json
 import logging
-import time
-from collections.abc import Generator
-from datetime import date, datetime
-from typing import Any, override
+from datetime import datetime
+from typing import override
 
 from django.core.exceptions import ValidationError
 from utils.exceptions import StopProcessing
@@ -36,70 +34,17 @@ from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 
-from ._protocol import IngestorProtocol
+from ._protocol import DigesterProtocol
 
 logger = logging.getLogger(__name__)
 
 
-class Ingestor(IngestorProtocol):
-    def __init__(self, client: ClientProtocol, ignored_races: list[str]):
+class Digester(DigesterProtocol):
+    def __init__(self, client: ClientProtocol):
         self.client = client
-        self._ignored_races = ignored_races
-
-    @staticmethod
-    def _is_race_after_today(race: RSRace) -> bool:
-        return datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
 
     @override
-    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
-        for race_id in self.client.get_race_ids_by_year(year=year):
-            for race in self._retrieve_race(race_id):
-                if race and self._is_race_after_today(race):
-                    break
-                if race:
-                    logger.debug(f"found race for {race_id=}:\n\t{race}")
-                    yield race
-
-    @override
-    def fetch_by_ids(self, race_ids: list[str], table: int | None = None, **_) -> Generator[RSRace, Any, Any]:
-        for race_id in race_ids:
-            race = self.client.get_race_by_id(race_id, table=table)
-            if race:
-                logger.debug(f"found race for {race_id=}:\n\t{race}")
-                yield race
-            time.sleep(1)
-
-    @override
-    def fetch_by_club(self, club: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
-        sources = [
-            datasource
-            for datasource in club.metadata.get("datasource", [])
-            if datasource["datasource_name"] == self.client.DATASOURCE.value.lower()
-        ]
-        ref_id = sources[0]["ref_id"] if sources else None
-
-        if not ref_id:
-            logger.warning(f"no ref_id found for {club=} in {self.client.DATASOURCE}")
-            return
-
-        for race_id in self.client.get_race_ids_by_club(club_id=ref_id, year=year):
-            for race in self._retrieve_race(race_id):
-                if race and self._is_race_after_today(race):
-                    break
-                if race:
-                    logger.debug(f"found race for {race_id=}:\n\t{race}")
-                    yield race
-
-    @override
-    def fetch_by_flag(self, *args, **kwargs) -> Generator[RSRace, Any, Any]:
-        raise NotImplementedError
-
-    @override
-    def fetch_by_url(self, url: str, **kwargs) -> RSRace | None:
-        return self.client.get_race_by_url(url, **kwargs)
-
-    @override
-    def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, IngestorProtocol.Status]:
+    def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, DigesterProtocol.Status]:
         logger.info(f"ingesting {race=}")
 
         metadata = self._build_metadata(race, self.client.DATASOURCE)
@@ -168,17 +113,17 @@ class Ingestor(IngestorProtocol):
             logger.info(f"using {db_race=}")
 
         print(f"NEW RACE:\n{json.dumps(RaceSerializer(new_race).data, indent=4, skipkeys=True, ensure_ascii=False)}")
-        status = IngestorProtocol.Status.NEW
+        status = DigesterProtocol.Status.NEW
         if db_race:
             new_race, status = self.merge(new_race, db_race=db_race, status=status)
-        if status == IngestorProtocol.Status.NEW and db_race and not associated:
+        if status == DigesterProtocol.Status.NEW and db_race and not associated:
             # if we had a match but we didn't merge, it can be an associated race
             associated = db_race
             logger.info(f"using {associated=}")
         return new_race, associated, status
 
     @override
-    def merge(self, race: Race, db_race: Race, status: IngestorProtocol.Status) -> tuple[Race, IngestorProtocol.Status]:
+    def merge(self, race: Race, db_race: Race, status: DigesterProtocol.Status) -> tuple[Race, DigesterProtocol.Status]:
         serialized_race = RaceSerializer(db_race).data
         print(f"DATABASE RACE:\n{json.dumps(serialized_race, indent=4, skipkeys=True, ensure_ascii=False)}")
         if not input_should_merge(db_race):
@@ -213,16 +158,16 @@ class Ingestor(IngestorProtocol):
             logger.debug(f"updating {db_race.town} with {race.town}")
             db_race.town = race.town
 
-        return db_race, IngestorProtocol.Status.MERGED
+        return db_race, DigesterProtocol.Status.MERGED
 
     @override
     def save(
         self,
         race: Race,
-        status: IngestorProtocol.Status,
+        status: DigesterProtocol.Status,
         associated: Race | None = None,
         **_,
-    ) -> tuple[Race, IngestorProtocol.Status]:
+    ) -> tuple[Race, DigesterProtocol.Status]:
         if not input_should_save(race):
             logger.warning(f"race {race} was not saved")
             return race, status
@@ -252,7 +197,7 @@ class Ingestor(IngestorProtocol):
         race: Race,
         participant: RSParticipant,
         **_,
-    ) -> tuple[Participant, IngestorProtocol.Status]:
+    ) -> tuple[Participant, DigesterProtocol.Status]:
         logger.info(f"ingesting {participant=}")
 
         logger.debug("searching entity in the database")
@@ -286,12 +231,12 @@ class Ingestor(IngestorProtocol):
             category=participant.category,
         )
 
-        status = IngestorProtocol.Status.NEW
+        status = DigesterProtocol.Status.NEW
         if db_participant:
             if not self.should_merge_participants(new_participant, db_participant):
                 serialized = ParticipantSerializer(db_participant).data
                 print(f"EXISTING PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
-                return db_participant, IngestorProtocol.Status.EXISTING
+                return db_participant, DigesterProtocol.Status.EXISTING
             else:
                 serialized = ParticipantSerializer(new_participant).data
                 print(f"NEW PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
@@ -325,8 +270,8 @@ class Ingestor(IngestorProtocol):
         self,
         participant: Participant,
         db_participant: Participant,
-        status: IngestorProtocol.Status,
-    ) -> tuple[Participant, IngestorProtocol.Status]:
+        status: DigesterProtocol.Status,
+    ) -> tuple[Participant, DigesterProtocol.Status]:
         serialized_participant = ParticipantSerializer(db_participant).data
         json_participant = json.dumps(serialized_participant, indent=4, skipkeys=True, ensure_ascii=False)
         print(f"DATABASE PARTICIPANT:\n{json_participant}")
@@ -351,18 +296,18 @@ class Ingestor(IngestorProtocol):
             logger.debug(f"updating {db_participant.club_name=} with {participant.club_name=}")
             db_participant.club_name = participant.club_name
 
-        return db_participant, IngestorProtocol.Status.MERGED
+        return db_participant, DigesterProtocol.Status.MERGED
 
     @override
     def save_participant(
         self,
         participant: Participant,
-        race_status: IngestorProtocol.Status,
-        participant_status: IngestorProtocol.Status,
+        race_status: DigesterProtocol.Status,
+        participant_status: DigesterProtocol.Status,
         is_disqualified: bool = False,
         **_,
-    ) -> tuple[Participant, IngestorProtocol.Status]:
-        if race_status != IngestorProtocol.Status.CREATED and not input_should_save_participant(participant):
+    ) -> tuple[Participant, DigesterProtocol.Status]:
+        if race_status != DigesterProtocol.Status.CREATED and not input_should_save_participant(participant):
             logger.warning(f"participant {participant} was not saved")
             return participant, participant_status
 
@@ -440,18 +385,3 @@ class Ingestor(IngestorProtocol):
             FlagService.infer_flag_edition,
         )
         return (db_race, (trophy, trophy_edition), (flag, flag_edition)) if trophy or flag else input_competition(race)
-
-    @override
-    def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]:
-        if race_id in self._ignored_races or MetadataService.exists(self.client.DATASOURCE, race_id):
-            logger.debug(f"ignoring {race_id=}")
-            return
-
-        try:
-            time.sleep(1)
-            race = self.client.get_race_by_id(race_id)
-            if race:
-                yield race
-        except ValueError as e:
-            logger.error(e)
-            return

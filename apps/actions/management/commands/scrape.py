@@ -9,10 +9,12 @@ from itertools import chain
 from typing import override
 
 from django.core.management import BaseCommand
+from utils import build_client
 from utils.exceptions import StopProcessing
 
+from apps.actions.management.digester import Digester, DigesterProtocol, build_digester
 from apps.actions.management.helpers.input import input_race
-from apps.actions.management.ingestor import Ingestor, IngestorProtocol, build_ingestor
+from apps.actions.management.ingester import build_ingester
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
 from apps.races.models import Race
@@ -93,30 +95,27 @@ class Command(BaseCommand):
 
         source = config.datasource or config.path
         assert isinstance(source, (Datasource, str))
-        ingestor = build_ingestor(
-            source=source,
-            gender=config.gender,
-            tabular_config=config.tabular_config,
-            category=config.category,
-            ignored_races=config.ignored_races,
-        )
+
+        client = build_client(config.datasource, config.gender, config.tabular_config, config.category)
+        ingester = build_ingester(client=client, path=config.path, ignored_races=config.ignored_races)
+        digester = build_digester(client=client, path=config.path)
 
         # compute years to scrape
         if config.year == ScrapeConfig.ALL_YEARS:
-            start = ingestor.client.FEMALE_START if config.gender == GENDER_FEMALE else ingestor.client.MALE_START
+            start = ingester.client.FEMALE_START if config.gender == GENDER_FEMALE else ingester.client.MALE_START
             years = range(config.start_year if config.start_year else start, datetime.now().year + 1)
         else:
             years = [config.year] if config.year else []
 
         # fetch races depending on the configuration
         if config.club and config.year:
-            races = chain(*[ingestor.fetch_by_club(club=config.club, year=year) for year in years])
+            races = chain(*[ingester.fetch_by_club(club=config.club, year=year) for year in years])
         elif config.flag:
-            races = ingestor.fetch_by_flag(flag=config.flag)
+            races = ingester.fetch_by_flag(flag=config.flag)
         elif config.race_ids:
-            races = ingestor.fetch_by_ids(race_ids=config.race_ids, table=config.table)
+            races = ingester.fetch_by_ids(race_ids=config.race_ids, table=config.table)
         elif config.year:
-            races = chain(*[ingestor.fetch(year=year) for year in years])
+            races = chain(*[ingester.fetch(year=year) for year in years])
         else:
             raise ValueError("invalid state")
 
@@ -131,38 +130,38 @@ class Command(BaseCommand):
             participants = race.participants
             race.participants = []
 
-            new_race, race_status = self.ingest_race(ingestor, race)
+            new_race, race_status = self.ingest_race(digester, race)
             if not new_race:
                 logger.warning(f"{race=} was not saved")
                 continue
 
             for participant in participants:
-                new_participant, status = ingestor.ingest_participant(new_race, participant)
-                if status == Ingestor.Status.NEW or status == Ingestor.Status.MERGED:
-                    new_participant, _ = ingestor.save_participant(
+                new_participant, status = digester.ingest_participant(new_race, participant)
+                if status == Digester.Status.NEW or status == Digester.Status.MERGED:
+                    new_participant, _ = digester.save_participant(
                         new_participant,
                         race_status=race_status,
                         participant_status=status,
                         is_disqualified=participant.disqualified,
                     )
 
-    def ingest_race(self, ingestor: IngestorProtocol, race: RSRace) -> tuple[Race | None, Ingestor.Status]:
+    def ingest_race(self, digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
         try:
-            new_race, associated, status = ingestor.ingest(race)
-            new_race, status = ingestor.save(new_race, status, associated=associated)
+            new_race, associated, status = digester.ingest(race)
+            new_race, status = digester.save(new_race, status, associated=associated)
             if not status.is_saved():
                 db_race = input_race(race)
                 if not db_race:
-                    return None, Ingestor.Status.IGNORE
+                    return None, Digester.Status.IGNORE
 
-                new_race, status = ingestor.merge(new_race, db_race, status)
-                new_race, status = ingestor.save(new_race, status, associated=associated)
+                new_race, status = digester.merge(new_race, db_race, status)
+                new_race, status = digester.save(new_race, status, associated=associated)
                 if not status.is_saved():
-                    return None, Ingestor.Status.IGNORE
+                    return None, Digester.Status.IGNORE
             return new_race, status
         except StopProcessing as e:
             logger.error(e)
-            return None, Ingestor.Status.IGNORE
+            return None, Digester.Status.IGNORE
         except KeyboardInterrupt as e:
             with open(f"{race.race_ids[0]}.json", "w") as f:
                 json.dump(race.to_dict(), f, ensure_ascii=False)

@@ -6,7 +6,7 @@ from unittest.mock import patch
 from django.conf import settings
 from django.test import TestCase
 
-from apps.actions.management.ingestor import Ingestor
+from apps.actions.management.digester import Digester
 from apps.entities.models import Entity
 from apps.races.models import Race
 from rscraping.clients import Client
@@ -15,9 +15,9 @@ from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
 
-class IngestionTest(TestCase):
+class DigestionTest(TestCase):
     """
-    This test case is used to test the ingestion of races that gave trouble when ingesting the first time.
+    This test case is used to test the digestion of races that gave trouble when ingesting the first time.
     """
 
     fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "frozen-db.json")]
@@ -25,13 +25,13 @@ class IngestionTest(TestCase):
     @patch("rscraping.clients.Client")
     def setUp(self, client: Client):
         client.DATASOURCE = Datasource.ABE
-        self.ingestor = Ingestor(client, ignored_races=[])
+        self.digester = Digester(client)
 
         # Redirect stdout to suppress print statements
         sys.stdout = io.StringIO()
 
     @patch("inquirer.confirm")
-    def test_ingest_will_merge_fields(self, mock_confirm):
+    def test_digest_will_merge_fields(self, mock_confirm):
         mock_confirm.return_value = True
         original_race = Race.objects.get(pk=15)
         rs_race = RSRace(
@@ -55,11 +55,11 @@ class IngestionTest(TestCase):
             cancelled=False,
         )
 
-        race, _, status = self.ingestor.ingest(rs_race)
+        race, _, status = self.digester.ingest(rs_race)
 
         self.assertEqual(original_race.lanes, 3)
         self.assertEqual(race.lanes, 4)
-        self.assertEqual(status, Ingestor.Status.MERGED)
+        self.assertEqual(status, Digester.Status.MERGED)
 
         [d.pop("date", None) for d in race.metadata["datasource"]]  # can't compare dates
         self.assertIn(
@@ -67,7 +67,7 @@ class IngestionTest(TestCase):
             race.metadata["datasource"],
         )
 
-    def test_ingest_will_fill_missing_fields(self):
+    def test_digest_will_fill_missing_fields(self):
         rs_race = RSRace(
             name="XV BANDEIRA CONCELLO DE A POBRA",
             date="22/08/1890",
@@ -89,13 +89,13 @@ class IngestionTest(TestCase):
             cancelled=False,
         )
 
-        race, _, status = self.ingestor.ingest(rs_race)
+        race, _, status = self.digester.ingest(rs_race)
         self.assertEqual(race.town, "A POBRA DO CARAMIÑAL")
         self.assertEqual(race.organizer, Entity.objects.get(pk=25))
-        self.assertEqual(status, Ingestor.Status.NEW)
+        self.assertEqual(status, Digester.Status.NEW)
 
     @patch("inquirer.confirm")
-    def test_ingestion(self, mock_confirm):
+    def test_digestion(self, mock_confirm):
         """
         This test will ingest all the races inside fixtures/ingestion that match *.json
         """
@@ -110,9 +110,9 @@ class IngestionTest(TestCase):
             with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", file)) as f:
                 rs_race = RSRace.from_json(f.read())
 
-            new_race, _, status = self.ingestor.ingest(rs_race)
+            new_race, _, status = self.digester.ingest(rs_race)
             self.assertEqual(race, new_race)
-            self.assertEqual(status, Ingestor.Status.MERGED)
+            self.assertEqual(status, Digester.Status.MERGED)
 
     @patch("inquirer.confirm")
     def x_test_given_race(self, mock_confirm):
@@ -123,6 +123,6 @@ class IngestionTest(TestCase):
             rs_race = RSRace.from_json(f.read())
             race = Race.objects.get(pk=race_id)
 
-        new_race, _, status = self.ingestor.ingest(rs_race)
+        new_race, _, status = self.digester.ingest(rs_race)
         self.assertEqual(race, new_race)
-        self.assertEqual(status, Ingestor.Status.MERGED)
+        self.assertEqual(status, Digester.Status.MERGED)

@@ -4,15 +4,14 @@ from collections.abc import Generator
 from os.path import isfile
 from typing import Any, override
 
-from apps.schemas import default_metadata
 from rscraping.data.models import Race as RSRace
 
-from ._ingestor import Ingestor
+from ._ingester import Ingester
 
 logger = logging.getLogger(__name__)
 
 
-class FolderIngestor(Ingestor):
+class FolderIngester(Ingester):
     def __init__(self, path: str):
         self.path = path
 
@@ -35,10 +34,6 @@ class FolderIngestor(Ingestor):
     @override
     def fetch_by_ids(self, *_, **__) -> Generator[RSRace, Any, Any]:
         return self.fetch()
-
-    @override
-    def _build_metadata(self, *_, **__) -> dict:
-        return default_metadata()
 
     def _process_file(self, file: str) -> RSRace | None:
         if isfile(file) and file.endswith(".json"):

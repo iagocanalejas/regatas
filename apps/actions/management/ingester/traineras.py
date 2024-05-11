@@ -11,12 +11,12 @@ from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace
 from rscraping.parsers.html import MultiRaceException
 
-from ._ingestor import Ingestor
+from ._ingester import Ingester
 
 logger = logging.getLogger(__name__)
 
 
-class TrainerasIngestor(Ingestor):
+class TrainerasIngester(Ingester):
     @override
     def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         race: RSRace | None = None
