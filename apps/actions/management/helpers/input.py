@@ -61,6 +61,11 @@ def input_race(race: RSRace) -> Race | None:
     return Race.objects.get(id=race_id) if race_id else None
 
 
+def input_associated(race: Race) -> Race | None:
+    race_id = inquirer.text(f"no associated race found for {race.date}::{race.name}. Race ID", default=None)
+    return Race.objects.get(id=race_id) if race_id else None
+
+
 def input_competition(
     race: RSRace,
 ) -> tuple[Race | None, tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:

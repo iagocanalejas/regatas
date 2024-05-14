@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.input import (
+    input_associated,
     input_club,
     input_competition,
     input_new_value,
@@ -173,6 +174,10 @@ class Digester(DigesterProtocol):
         if not input_should_save(race):
             logger.warning(f"race {race} was not saved")
             return race, status
+
+        if race.day == 2 and not associated and not race.associated:
+            logger.debug("associated race not found")
+            associated = input_associated(race)
 
         if associated and not race.associated and input_should_associate_races(race, associated):
             logger.info(f"associating races {race} and {associated}")
