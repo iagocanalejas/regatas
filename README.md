@@ -6,11 +6,14 @@ Retrieve and process race data from a web datasource, JSON file or spreadsheet.
 
 ```sh
 python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
+	[--club CLUB] \
+	[--entity ENTITY] \
+	[--flag FLAG] \
 	[--year YEAR] \
 	[--start-year YEAR] \
-	[-g, --gender] \
 	[-c, --category CATEGORY] \
 	[-d, --day DAY] \
+	[-g, --gender] \
 	[--sheet-id SHEET_ID] \
 	[--sheet-name SHEET_NAME] \
 	[--file-path FILE_PATH] \
@@ -23,23 +26,27 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #
 # options:
 #   --club CLUB
-#                         club for which races should be imported.
+#                         datasource club ID for which races should be imported.
+#   --entity ENTITY
+#                         database entity ID for which races should be imported.
+#   --flag FLAG
+#                         datasource flag ID for which races should be imported.
 #   --year YEAR
 #                         year for which races should be imported, 'all' to import from the source beginnig.
 #   --start-year START_YEAR
 #                         year for which we should start processing years. Only used with year='all'.
+#   -c CATEGORY, --category CATEGORY
+#                         one of (ABSOLUT | VETERAN | SCHOOL).
+#   -d DAY, --day DAY
+#                         day of the race for multiday races.
+#   -g GENDER, --gender GENDER
+#                         races gender.
 #   --sheet-id SHEET_ID
 #                         google-sheet ID used for TABULAR datasource.
 #   --sheet-name SHEET_NAME
 #                         google-sheet name used for TABULAR datasource.
 #   --file-path FILE_PATH
 #                         sheet file path used for TABULAR datasource.
-#   -d DAY, --day DAY
-#                         day of the race for multiday races.
-#   -g GENDER, --gender GENDER
-#                         races gender.
-#   -c CATEGORY, --category CATEGORY
-#                         one of (ABSOLUT | VETERAN | SCHOOL).
 #   --force-gender
 #                         forces the gender to match.
 #   -i [IGNORE ...], --ignore [IGNORE ...]

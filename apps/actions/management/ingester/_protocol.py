@@ -28,24 +28,36 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def fetch_by_club(self, club: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_entity(self, entity: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         """
-        Fetch races that should be ingested from one of many clients using the club and year to filter.
+        Fetch races that should be ingested from one of many clients using the entity and year to filter.
 
         Args:
-            club: Entity: The club to search for.
+            entity: Entity: The club to search for.
             year: int: The year to search for.
 
         Yields: RSRace: The races found.
         """
         ...
 
-    def fetch_by_flag(self, flag: str, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_club(self, club_id: str, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+        """
+        Fetch races that should be ingested from one of many clients using the club and year to filter.
+
+        Args:
+            club_id: str: The club ID to search for.
+            year: int: The year to search for.
+
+        Yields: RSRace: The found races.
+        """
+        ...
+
+    def fetch_by_flag(self, flag_id: str, **kwargs) -> Generator[RSRace, Any, Any]:
         """
         Fetch races that should be ingested from one of many clients using the flag to filter.
 
         Args:
-            flag: str: The flag to search for.
+            flag_id: str: The flag to search for.
 
         Yields: RSRace: The races found.
         """

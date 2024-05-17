@@ -44,7 +44,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("input_source", type=str, help="name of the Datasource or path to import data from.")
         parser.add_argument("race_ids", nargs="*", help="race IDs to find in the source and ingest.")
-        parser.add_argument("--club", type=int, help="club for which races should be imported.")
+        parser.add_argument("--club", type=int, help="datasource club for which races should be imported.")
+        parser.add_argument("--entity", type=int, help="database entity for which races should be imported.")
         parser.add_argument("--flag", type=int, help="flag for which races should be imported.")
 
         parser.add_argument(
@@ -109,10 +110,12 @@ class Command(BaseCommand):
             years = [config.year] if config.year else []
 
         # fetch races depending on the configuration
-        if config.club and config.year:
-            races = chain(*[ingester.fetch_by_club(club=config.club, year=year) for year in years])
-        elif config.flag:
-            races = ingester.fetch_by_flag(flag=config.flag)
+        if config.entity and config.year:
+            races = chain(*[ingester.fetch_by_entity(entity=config.entity, year=year) for year in years])
+        elif config.club_id and config.year:
+            races = chain(*[ingester.fetch_by_club(club_id=config.club_id, year=year) for year in years])
+        elif config.flag_id:
+            races = ingester.fetch_by_flag(flag_id=config.flag_id)
         elif config.race_ids:
             races = ingester.fetch_by_ids(race_ids=config.race_ids, table=config.table)
         elif config.year:
@@ -179,8 +182,9 @@ class ScrapeConfig:
     path: str | None = None
     race_ids: list[str] = field(default_factory=list)
     year: int | None = None
-    club: Entity | None = None
-    flag: str | None = None
+    entity: Entity | None = None
+    club_id: str | None = None
+    flag_id: str | None = None
 
     category: str = CATEGORY_ABSOLUT
     gender: str = GENDER_MALE
@@ -193,11 +197,12 @@ class ScrapeConfig:
 
     @classmethod
     def from_args(cls, **options) -> "ScrapeConfig":
-        input_source, race_ids, year, club_id, flag_id = (
+        input_source, race_ids, year, club_id, entity_id, flag_id = (
             options["input_source"],
             options["race_ids"],
             options["year"],
             options["club"],
+            options["entity"],
             options["flag"],
         )
         tabular_config = TabularClientConfig(
@@ -228,11 +233,11 @@ class ScrapeConfig:
         has_races = True if len(race_ids) > 0 else None
         if not only_one_not_none(year, has_races, flag_id):
             raise ValueError("only one of 'year', 'race_ids', 'flag' can be provided")
-        if not year and not club_id and not flag_id and len(race_ids) == 0:
-            raise ValueError("required value for 'race_ids' or 'club' or 'flag' or 'year'")
-        if club_id and not year:
+        if not year and not club_id and not entity_id and not flag_id and len(race_ids) == 0:
+            raise ValueError("required value for 'race_ids' or 'club' or 'entity' or 'flag' or 'year'")
+        if (club_id or entity_id) and not year:
             raise ValueError("'year' is required when 'club' is provided")
-        if club_id and datasource != Datasource.TRAINERAS:
+        if (club_id or entity_id) and datasource != Datasource.TRAINERAS:
             raise ValueError("'club' is only supported in TRAINERAS datasource")
         if flag_id and datasource != Datasource.TRAINERAS:
             raise ValueError("'flag' is only supported in TRAINERAS datasource")
@@ -246,9 +251,9 @@ class ScrapeConfig:
         if table and len(race_ids) != 1:
             raise ValueError("day filtering is only supported for one race_id")
 
-        club = EntityService.get_entity_or_none(club_id) if club_id else None
-        if club_id and not club:
-            raise ValueError(f"invalid {club_id=}")
+        entity = EntityService.get_entity_or_none(entity_id) if entity_id else None
+        if entity_id and not entity:
+            raise ValueError(f"invalid {entity_id=}")
 
         return cls(
             tabular_config=tabular_config,
@@ -256,8 +261,9 @@ class ScrapeConfig:
             path=path,
             race_ids=race_ids,
             year=year,
-            club=club,
-            flag=flag_id,
+            entity=entity,
+            club_id=club_id,
+            flag_id=flag_id,
             category=category.upper() if category else CATEGORY_ABSOLUT,
             gender=gender.upper(),
             table=table,

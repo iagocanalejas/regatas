@@ -1,5 +1,4 @@
 from rscraping.data.constants import (
-    BLADE_TOUCH,
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
     CATEGORY_VETERAN,
@@ -21,6 +20,9 @@ from rscraping.data.constants import (
     RACE_TIME_TRIAL,
     RACE_TRAINERA,
     RACE_TRAINERILLA,
+    SINKING,
+    STARBOARD_TACK,
+    WEIGHT_LIMIT,
     WRONG_LINEUP,
 )
 
@@ -82,11 +84,13 @@ RACE_GENDER_CHOICES = [
 #  PENALTIES   #
 ################
 PENALTY_CHOICES = [
+    (COLISION, "Colisión"),
+    (COVID_ABSENCE, "Ausencia por COVID-19"),
     (NO_LINE_START, "Salida sin estacha"),
     (NULL_START, "Salida nula"),
-    (COLISION, "Colisión"),
-    (BLADE_TOUCH, "Toque de palas"),
     (OFF_THE_FIELD, "Fuera de campo"),
-    (COVID_ABSENCE, "Ausencia por COVID-19"),
+    (SINKING, "Hundimiento"),
+    (STARBOARD_TACK, "Virada por estribor"),
+    (WEIGHT_LIMIT, "Fuera de peso"),
     (WRONG_LINEUP, "Alineación incorrecta"),
 ]

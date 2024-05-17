@@ -54,10 +54,10 @@ class TrainerasIngester(Ingester):
             yield race
 
     @override
-    def fetch_by_flag(self, *_, flag: str, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_flag(self, *_, flag_id: str, **kwargs) -> Generator[RSRace, Any, Any]:
         assert isinstance(self.client, TrainerasClient)
 
-        for race_id in self.client.get_race_ids_by_flag(flag):
+        for race_id in self.client.get_race_ids_by_flag(flag_id):
             for race in self._retrieve_race(race_id):
                 if race:
                     logger.debug(f"found race for {race_id=}:\n\t{race}")

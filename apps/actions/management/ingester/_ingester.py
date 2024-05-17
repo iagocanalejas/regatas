@@ -49,19 +49,23 @@ class Ingester(IngesterProtocol):
             time.sleep(1)
 
     @override
-    def fetch_by_club(self, club: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_entity(self, entity: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
         sources = [
             datasource
-            for datasource in club.metadata.get("datasource", [])
+            for datasource in entity.metadata.get("datasource", [])
             if datasource["datasource_name"] == self.client.DATASOURCE.value.lower()
         ]
         ref_id = sources[0]["ref_id"] if sources else None
 
         if not ref_id:
-            logger.warning(f"no ref_id found for {club=} in {self.client.DATASOURCE}")
+            logger.warning(f"no ref_id found for {entity=} in {self.client.DATASOURCE}")
             return
 
-        for race_id in self.client.get_race_ids_by_club(club_id=ref_id, year=year):
+        yield from self.fetch_by_club(ref_id, year, **kwargs)
+
+    @override
+    def fetch_by_club(self, club_id: str, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+        for race_id in self.client.get_race_ids_by_club(club_id=club_id, year=year):
             for race in self._retrieve_race(race_id):
                 if race and self._is_race_after_today(race):
                     break
