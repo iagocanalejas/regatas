@@ -1,9 +1,11 @@
 from rscraping.data.constants import (
+    BOAT_WEIGHT_LIMIT,
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
     CATEGORY_VETERAN,
-    COLISION,
+    COLLISION,
     COVID_ABSENCE,
+    COXWAIN_WEIGHT_LIMIT,
     ENTITY_CLUB,
     ENTITY_FEDERATION,
     ENTITY_LEAGUE,
@@ -22,8 +24,8 @@ from rscraping.data.constants import (
     RACE_TRAINERILLA,
     SINKING,
     STARBOARD_TACK,
-    WEIGHT_LIMIT,
     WRONG_LINEUP,
+    WRONG_ROUTE,
 )
 
 ################
@@ -84,13 +86,15 @@ RACE_GENDER_CHOICES = [
 #  PENALTIES   #
 ################
 PENALTY_CHOICES = [
-    (COLISION, "Colisión"),
+    (BOAT_WEIGHT_LIMIT, "Fuera de peso"),
+    (COLLISION, "Colisión"),
     (COVID_ABSENCE, "Ausencia por COVID-19"),
+    (COXWAIN_WEIGHT_LIMIT, "Timonel fuera de peso"),
     (NO_LINE_START, "Salida sin estacha"),
     (NULL_START, "Salida nula"),
     (OFF_THE_FIELD, "Fuera de campo"),
     (SINKING, "Hundimiento"),
     (STARBOARD_TACK, "Virada por estribor"),
-    (WEIGHT_LIMIT, "Fuera de peso"),
     (WRONG_LINEUP, "Alineación incorrecta"),
+    (WRONG_ROUTE, "Ruta/Llegada incorrecta"),
 ]

@@ -149,6 +149,9 @@ class Command(BaseCommand):
                         is_disqualified=participant.disqualified,
                     )
 
+            if race.race_notes:
+                logger.warning(race.race_notes)
+
     def ingest_race(self, digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
         try:
             new_race, associated, status = digester.ingest(race)
