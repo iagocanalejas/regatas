@@ -1,11 +1,12 @@
 from enum import Enum, auto
 from typing import Protocol
 
-from apps.participants.models import Participant
+from apps.participants.models import Participant, Penalty
 from apps.races.models import Race
 from rscraping.clients import ClientProtocol
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
+from rscraping.data.models import Penalty as RSPenalty
 from rscraping.data.models import Race as RSRace
 
 
@@ -132,7 +133,6 @@ class DigesterProtocol(Protocol):
         participant: Participant,
         race_status: Status,
         participant_status: Status,
-        is_disqualified: bool = False,
         **kwargs,
     ) -> tuple[Participant, Status]:
         """
@@ -147,6 +147,18 @@ class DigesterProtocol(Protocol):
         Returns: tuple[Participant, bool]:
             Participant: The saved (or not) participant.
             Status: The status of the participant after saving.
+        """
+        ...
+
+    def save_penalty(self, participant: Participant, penalty: RSPenalty, **kwargs) -> Penalty:
+        """
+        Save a new penalty into the database.
+
+        Args:
+            participant Participant: The participant to save the penalty.
+            penalty RSPenalty: The penalty to save.
+
+        Returns: Penalty: The saved penalty.
         """
         ...
 

@@ -13,9 +13,9 @@ from pyutils.strings import (
     unaccent,
     whitespaces_clean,
 )
-from rscraping import lemmatize
 from rscraping.data.checks import is_memorial
 from rscraping.data.constants import SYNONYMS
+from rscraping.data.normalization import lemmatize
 
 logger = logging.getLogger(__name__)
 

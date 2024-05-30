@@ -146,8 +146,9 @@ class Command(BaseCommand):
                         new_participant,
                         race_status=race_status,
                         participant_status=status,
-                        is_disqualified=participant.disqualified,
                     )
+                if participant.penalty:
+                    _ = digester.save_penalty(new_participant, participant.penalty)
 
             if race.race_notes:
                 logger.warning(race.race_notes)

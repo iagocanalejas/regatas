@@ -33,6 +33,7 @@ from rscraping.clients import ClientProtocol
 from rscraping.data.constants import GENDER_ALL
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
+from rscraping.data.models import Penalty as RSPenalty
 from rscraping.data.models import Race as RSRace
 
 from ._protocol import DigesterProtocol
@@ -311,7 +312,6 @@ class Digester(DigesterProtocol):
         participant: Participant,
         race_status: DigesterProtocol.Status,
         participant_status: DigesterProtocol.Status,
-        is_disqualified: bool = False,
         **_,
     ) -> tuple[Participant, DigesterProtocol.Status]:
         if race_status != DigesterProtocol.Status.CREATED and not input_should_save_participant(participant):
@@ -320,10 +320,14 @@ class Digester(DigesterProtocol):
 
         logger.info(f"saving {participant=}")
         participant.save()
-        if is_disqualified:
-            logger.info(f"creating disqualification penalty for {participant}")
-            Penalty(disqualification=True, participant=participant).save()
         return participant, participant_status.next()
+
+    @override
+    def save_penalty(self, participant: Participant, penalty: RSPenalty, **_) -> Penalty:
+        logger.info(f"creating penalty={penalty} for {participant}")
+        new_penalty = Penalty(reason=penalty.reason, disqualification=penalty.disqualification, participant=participant)
+        new_penalty.save()
+        return new_penalty
 
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:

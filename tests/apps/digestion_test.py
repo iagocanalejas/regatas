@@ -24,7 +24,7 @@ class DigestionTest(TestCase):
 
     @patch("rscraping.clients.Client")
     def setUp(self, client: Client):
-        client.DATASOURCE = Datasource.ABE
+        client.DATASOURCE = Datasource.TRAINERAS
         self.digester = Digester(client)
 
         # Redirect stdout to suppress print statements
@@ -64,7 +64,7 @@ class DigestionTest(TestCase):
 
         [d.pop("date", None) for d in race.metadata["datasource"]]  # can't compare dates
         self.assertIn(
-            {"values": {"details_page": "test"}, "ref_id": "1", "datasource_name": "abe"},
+            {"values": {"details_page": "test"}, "ref_id": "1", "datasource_name": "traineras"},
             race.metadata["datasource"],
         )
 

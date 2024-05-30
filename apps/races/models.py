@@ -16,7 +16,7 @@ from djutils.models import CreationStampModel
 from djutils.validators import JSONSchemaValidator
 from pyutils.shortcuts import all_or_none
 from pyutils.strings import int_to_roman, whitespaces_clean
-from rscraping import lemmatize
+from rscraping.data.normalization import lemmatize
 
 logger = logging.getLogger(__name__)
 
