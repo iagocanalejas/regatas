@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
-from utils.choices import (
+
+from apps.utils.choices import (
     CATEGORY_ABSOLUT,
     ENTITY_CLUB,
     GENDER_CHOICES,

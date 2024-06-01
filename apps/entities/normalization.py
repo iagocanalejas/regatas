@@ -1,7 +1,7 @@
 from django.db.models import Q
-from utils.choices import ENTITY_CLUB
 
 from apps.entities.models import Entity
+from apps.utils.choices import ENTITY_CLUB
 from pyutils.shortcuts import all_none
 from pyutils.strings import whitespaces_clean
 from rscraping.data.normalization.clubs import _KNOWN_SPONSORS

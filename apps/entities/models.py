@@ -1,9 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import F, Func, JSONField, QuerySet, Value
-from utils.choices import ENTITY_TYPE_CHOICES, GENDER_CHOICES, GENDER_FEMALE, GENDER_MALE
 
 from apps.schemas import ENTITY_METADATA_SCHEMA, default_metadata
+from apps.utils.choices import ENTITY_TYPE_CHOICES, GENDER_CHOICES, GENDER_FEMALE, GENDER_MALE
 from djutils.models import TraceableModel
 from djutils.validators import JSONSchemaValidator
 

@@ -2,9 +2,9 @@ import operator
 from functools import reduce
 
 from django.db.models import Q
-from utils.choices import ENTITY_CLUB, ENTITY_TYPES
 
 from apps.entities.models import Entity
+from apps.utils.choices import ENTITY_CLUB, ENTITY_TYPES
 from pyutils.lists import flatten
 from pyutils.strings import closest_result, levenshtein_distance, remove_conjunctions, remove_symbols
 

@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import override
 
 from django.core.exceptions import ValidationError
-from utils.exceptions import StopProcessing
 
 from apps.actions.management.helpers.input import (
     input_associated,
@@ -72,8 +71,7 @@ class Digester(DigesterProtocol):
         logger.info(f"using {league=}")
 
         db_race, (trophy, trophy_edition), (flag, flag_edition) = self._retrieve_competition(race, db_race=db_race)
-        if (not trophy and not flag) or (trophy and not trophy_edition) or (flag and not flag_edition):
-            raise StopProcessing("missing competition data")
+        assert (trophy and trophy_edition) or (flag and flag_edition), "missing competition data"
         logger.info(f"using {trophy=}:{trophy_edition=}")
         logger.info(f"using {flag=}:{flag_edition=}")
 
@@ -212,8 +210,7 @@ class Digester(DigesterProtocol):
         club = retrieve_entity(normalize_club_name(participant.participant))
         if not club:
             club = input_club(participant.participant)
-        if not club:
-            raise StopProcessing("missing club data")
+        assert club, "missing club data"
         logger.info(f"using {club=}")
 
         logger.debug("searching participant in the database")

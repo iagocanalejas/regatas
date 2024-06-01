@@ -2,8 +2,8 @@
 
 from django.db import migrations
 from django.db.models import Q
-from utils.choices import GENDER_FEMALE, GENDER_MALE
 
+from apps.utils.choices import GENDER_FEMALE, GENDER_MALE
 from rscraping.data.models import Datasource
 
 

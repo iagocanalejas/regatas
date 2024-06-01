@@ -9,8 +9,6 @@ from itertools import chain
 from typing import override
 
 from django.core.management import BaseCommand
-from utils import build_client
-from utils.exceptions import StopProcessing
 
 from apps.actions.management.digester import Digester, DigesterProtocol, build_digester
 from apps.actions.management.helpers.input import input_race
@@ -18,6 +16,7 @@ from apps.actions.management.ingester import build_ingester
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
 from apps.races.models import Race
+from apps.utils import build_client
 from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
 from rscraping.data.constants import (
@@ -167,7 +166,7 @@ class Command(BaseCommand):
                 if not status.is_saved():
                     return None, Digester.Status.IGNORE
             return new_race, status
-        except StopProcessing as e:
+        except AssertionError as e:
             logger.error(e)
             return None, Digester.Status.IGNORE
         except KeyboardInterrupt as e:

@@ -3,15 +3,15 @@ import logging
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
 from django.db.models import JSONField
-from utils.choices import (
+
+from apps.schemas import RACE_METADATA_SCHEMA, default_metadata
+from apps.utils.choices import (
     RACE_CONVENTIONAL,
     RACE_GENDER_CHOICES,
     RACE_MODALITY_CHOICES,
     RACE_TRAINERA,
     RACE_TYPE_CHOICES,
 )
-
-from apps.schemas import RACE_METADATA_SCHEMA, default_metadata
 from djutils.models import CreationStampModel
 from djutils.validators import JSONSchemaValidator
 from pyutils.shortcuts import all_or_none

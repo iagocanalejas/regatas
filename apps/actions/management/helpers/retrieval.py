@@ -2,8 +2,6 @@ import logging
 from collections.abc import Callable
 from datetime import datetime
 
-from utils.exceptions import StopProcessing
-
 from apps.actions.management.helpers.input import input_club, input_edition
 from apps.entities.models import Entity, League
 from apps.entities.services import EntityService, LeagueService
@@ -73,7 +71,7 @@ def retrieve_entity(
     try:
         return EntityService.get_closest_by_name_type(name, entity_type=entity_type, include_deleted=True)
     except Entity.MultipleObjectsReturned:
-        raise StopProcessing(f"multiple organizers found for {name=}")
+        raise AssertionError(f"multiple entities found for {name=}")
     except Entity.DoesNotExist:
         pass
 
