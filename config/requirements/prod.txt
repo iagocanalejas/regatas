@@ -27,4 +27,4 @@ PyYAML==6.0.1
 requests==2.31.0
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
 setuptools==69.2.0
-simplemma==0.9.1
+simplemma==1.0.0
