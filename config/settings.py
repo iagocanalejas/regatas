@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 from corsheaders.defaults import default_methods
@@ -89,7 +90,7 @@ INSTALLED_APPS = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ["debug_toolbar", "django_extensions"]
+    INSTALLED_APPS += ["debug_toolbar", "django_extensions"] if "test" not in sys.argv else ["django_extensions"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -41,6 +41,9 @@ class Participant(models.Model):
         choices=PARTICIPANT_CATEGORIES_CHOICES,
     )
 
+    guest = models.BooleanField(default=False)
+    absent = models.BooleanField(default=False)
+
     def __str__(self):
         club = self.club_name if self.club_name else self.club
         return f"{self.race.date} :: {club} ({self.gender}) ({self.category}) -> {self.race.name}"

@@ -1,3 +1,2 @@
 -r ci.txt
 django-types==0.19.1
-PySnooper==1.2.0

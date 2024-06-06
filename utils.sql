@@ -71,19 +71,22 @@ SELECT id,
        gender,
        metadata
 FROM race r
-WHERE not r.cancelled
-  AND (SELECT count(*) FROM participant WHERE race_id = r.id)
-    <> (SELECT max(cnt)
-        FROM (SELECT COUNT(*) as cnt, ROW_NUMBER() OVER (PARTITION BY race_id ORDER BY COUNT(*) DESC) as seqnum
-              FROM participant p JOIN race r1 ON p.race_id = r1.id
-              WHERE r1.league_id = r.league_id
-                AND extract(YEAR FROM r1.date) = extract(YEAR FROM r.date)
-                AND r1.gender = r.gender
-                AND not r1.cancelled
-              GROUP BY race_id
-              ORDER BY cnt DESC) as cs
-        WHERE seqnum = 1)
-ORDER BY extract(YEAR FROM r.date), league_id, date;
+WHERE NOT r.cancelled
+    AND league_id NOT IN (14, 15) -- ignore veteran leagues as they are a mess
+    AND date NOT IN (SELECT date FROM race WHERE race.trophy_id IN (SELECT id FROM trophy WHERE name ilike '%PLAY%')) -- ignore races in play-off days
+    AND (SELECT count(*) FROM participant WHERE race_id = r.id and not guest)
+        <> (SELECT max(cnt)
+            FROM (SELECT COUNT(*) as cnt, ROW_NUMBER() OVER (PARTITION BY race_id ORDER BY COUNT(*) DESC) as seqnum
+                FROM participant p JOIN race r1 ON p.race_id = r1.id
+                WHERE not p.guest
+                    AND r1.league_id = r.league_id
+                    AND extract(YEAR FROM r1.date) = extract(YEAR FROM r.date)
+                    AND r1.gender = r.gender
+                    AND not r1.cancelled
+                GROUP BY race_id
+                ORDER BY cnt DESC) as cs
+            WHERE seqnum = 1)
+ORDER BY extract(YEAR FROM r.date) desc, league_id, date;
 
 -- SPEEDS QUERY
 SELECT r.date,
