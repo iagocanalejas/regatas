@@ -19,6 +19,7 @@ class JSONValidatorsTest(TestCase):
             flag=self.flag,
             flag_edition=1,
             gender="ALL",
+            category="ALL",
             metadata={"datasource": [metadata.build()]},
         )
         race.save()
@@ -29,6 +30,7 @@ class JSONValidatorsTest(TestCase):
             flag=self.flag,
             flag_edition=1,
             gender="ALL",
+            category="ALL",
             metadata={"datasource": [{"ref_id": "1", "datasource_name": "arc", "key": "details_page"}]},
         )
         with self.assertRaises(ValidationError):

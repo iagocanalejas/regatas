@@ -81,7 +81,18 @@ class Command(BaseCommand):
             default=[],
             help="race IDs to ignore during ingestion.",
         )
-        parser.add_argument("--force-gender", action="store_true", default=False, help="forces the gender to match.")
+        parser.add_argument(
+            "--force-gender",
+            action="store_true",
+            default=False,
+            help="forces the gender to match.",
+        )
+        parser.add_argument(
+            "--force-category",
+            action="store_true",
+            default=False,
+            help="forces the category to match.",
+        )
         parser.add_argument(
             "-o",
             "--output",
@@ -99,7 +110,12 @@ class Command(BaseCommand):
 
         client = build_client(config.datasource, config.gender, config.tabular_config, config.category)
         ingester = build_ingester(client=client, path=config.path, ignored_races=config.ignored_races)
-        digester = build_digester(client=client, path=config.path, force_gender=config.force_gender)
+        digester = build_digester(
+            client=client,
+            path=config.path,
+            force_gender=config.force_gender,
+            force_category=config.force_category,
+        )
 
         # compute years to scrape
         if config.year == ScrapeConfig.ALL_YEARS:
@@ -150,7 +166,7 @@ class Command(BaseCommand):
                     _ = digester.save_penalty(new_participant, participant.penalty)
 
             if race.race_notes:
-                logger.warning(race.race_notes)
+                logger.warning(f"{race.date} :: {race.race_notes}")
 
     def ingest_race(self, digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
         try:
@@ -195,6 +211,7 @@ class ScrapeConfig:
     start_year: int | None = None
 
     force_gender: bool = False
+    force_category: bool = False
     ignored_races: list[str] = field(default_factory=list)
     output_path: str | None = None
 
@@ -213,12 +230,13 @@ class ScrapeConfig:
             sheet_name=options["sheet_name"],
             file_path=options["file_path"],
         )
-        category, gender, table, start_year, force_gender, ignored_races, output_path = (
+        category, gender, table, start_year, force_gender, force_category, ignored_races, output_path = (
             options["category"],
             options["gender"],
             options["table"],
             options["start_year"],
             options["force_gender"],
+            options["force_category"],
             options["ignore"],
             options["output"],
         )
@@ -272,6 +290,7 @@ class ScrapeConfig:
             table=table,
             start_year=start_year,
             force_gender=force_gender,
+            force_category=force_category,
             ignored_races=ignored_races,
             output_path=output_path,
         )

@@ -19,7 +19,7 @@ def retrieve_competition[T: (Trophy, Flag)](
     race: RSRace,
     db_race: Race | None,
     closest_by_name: Callable[[str], T | None],
-    infer_edition: Callable[[T, str, int], int | None],
+    infer_edition: Callable[[T, str, str, int], int | None],
 ) -> tuple[T | None, int | None]:
     value, edition = None, None
     model_name = _model.__name__.lower()
@@ -41,7 +41,12 @@ def retrieve_competition[T: (Trophy, Flag)](
     if value and not edition:
         logger.debug(f"found closest {_model.__name__.lower()}={value} by name")
         logger.debug(f"infering edition for {value=}")
-        edition = infer_edition(value, str(race.gender), datetime.strptime(race.date, "%d/%m/%Y").date().year)
+        edition = infer_edition(
+            value,
+            str(race.gender),
+            str(race.category),
+            datetime.strptime(race.date, "%d/%m/%Y").date().year,
+        )
         edition = input_edition(model=value, league=race.league) if not edition else edition
 
     # 2.2. return value and edition
@@ -49,7 +54,7 @@ def retrieve_competition[T: (Trophy, Flag)](
         logger.info(f"inferred edition for {_model.__name__.lower()}")
         return value, int(edition)
 
-    logger.warning("unable to infer edition")
+    logger.info("unable to infer edition")
     return None, None
 
 

@@ -23,8 +23,8 @@ def get_closest_by_name_or_create(name: str) -> Flag:
     return CompetitionService.get_closest_by_name_or_create(Flag, name)
 
 
-def infer_flag_edition(flag: Flag, gender: str, year: int) -> int | None:
+def infer_flag_edition(flag: Flag, gender: str, category: str, year: int) -> int | None:
     """
     Returns: inferred edition for the given flag.
     """
-    return CompetitionService.infer_edition(flag, gender, year)
+    return CompetitionService.infer_edition(flag, gender, category, year)

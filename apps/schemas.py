@@ -79,7 +79,7 @@ class MetadataBuilder:
 
     def build(self) -> dict:
         if "values" not in self._metadata:
-            raise ValidationError({"values", 'required object "values" in metadata'})
+            raise ValidationError({"values": 'required object "values" in metadata'})
         if "datasource_name" not in self._metadata:
-            raise ValidationError({"datasource_name", 'required object "datasource_name" in metadata'})
+            raise ValidationError({"datasource_name": 'required object "datasource_name" in metadata'})
         return self._metadata

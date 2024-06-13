@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import F, Func, JSONField, QuerySet, Value
 
 from apps.schemas import ENTITY_METADATA_SCHEMA, default_metadata
-from apps.utils.choices import ENTITY_TYPE_CHOICES, GENDER_CHOICES, GENDER_FEMALE, GENDER_MALE
+from apps.utils.choices import CATEGORY_CHOICES, ENTITY_TYPE_CHOICES, GENDER_CHOICES, GENDER_FEMALE, GENDER_MALE
 from djutils.models import TraceableModel
 from djutils.validators import JSONSchemaValidator
 
@@ -13,6 +13,7 @@ class League(TraceableModel):
     symbol = models.CharField(max_length=10)
     parent = models.ForeignKey("self", null=True, default=None, on_delete=models.PROTECT)
     gender = models.CharField(max_length=10, null=True, default=None, choices=GENDER_CHOICES)
+    category = models.CharField(max_length=10, null=True, default=None, choices=CATEGORY_CHOICES)
 
     def __str__(self):
         return self.name

@@ -23,8 +23,8 @@ def get_closest_by_name_or_create(name: str) -> Trophy:
     return CompetitionService.get_closest_by_name_or_create(Trophy, name)
 
 
-def infer_trophy_edition(trophy: Trophy, gender: str, year: int) -> int | None:
+def infer_trophy_edition(trophy: Trophy, gender: str, category: str, year: int) -> int | None:
     """
     Returns: inferred edition for the given trophy.
     """
-    return CompetitionService.infer_edition(trophy, gender, year)
+    return CompetitionService.infer_edition(trophy, gender, category, year)

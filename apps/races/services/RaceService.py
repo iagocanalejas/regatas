@@ -9,7 +9,7 @@ from apps.races.filters import RaceFilters
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import CompetitionService
 from rscraping.data.checks import is_play_off
-from rscraping.data.constants import GENDER_ALL
+from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def get_race_matching_race(race: Race) -> Race | None:
     :returns: a Race object that matches the provided one.
     """
     q = get_races_by_competition(race.trophy, race.flag, race.league)
-    q = q.filter(date=race.date, day=race.day, gender=race.gender)
+    q = q.filter(date=race.date, day=race.day, gender=race.gender, category=race.category)
 
     try:
         return q.get()
@@ -94,17 +94,35 @@ def get_closest_match_by_name_or_none(
     names: list[str],
     league: League | str | None,
     gender: str | None,
+    category: str | None,
     date: date,
     day: int = 1,
     force_gender: bool = False,
+    force_category: bool = False,
 ) -> Race | None:
     try:
-        return get_closest_match_by_name(names=names, league=league, gender=gender, date=date, day=day)
+        return get_closest_match_by_name(
+            names=names,
+            league=league,
+            gender=gender,
+            category=category,
+            date=date,
+            day=day,
+        )
     except Race.DoesNotExist:
-        if force_gender:
+        if force_gender and force_category:
             return None
+        gender = gender if force_gender else None
+        category = category if force_category else None
         try:
-            return get_closest_match_by_name(names=names, league=league, gender=None, date=date, day=day)
+            return get_closest_match_by_name(
+                names=names,
+                league=league,
+                gender=gender,
+                category=category,
+                date=date,
+                day=day,
+            )
         except Race.DoesNotExist:
             return None
 
@@ -113,6 +131,7 @@ def get_closest_match_by_name(
     names: list[str],
     league: League | str | None,
     gender: str | None,
+    category: str | None,
     date: date,
     day: int = 1,
 ) -> Race:
@@ -122,7 +141,15 @@ def get_closest_match_by_name(
     if league and isinstance(league, str):
         league = LeagueService.get_by_name(league)
     assert league is None or isinstance(league, League)
-    return get_closest_match(trophy=trophy, flag=flag, league=league, gender=gender, date=date, day=day)
+    return get_closest_match(
+        trophy=trophy,
+        flag=flag,
+        league=league,
+        gender=gender,
+        category=category,
+        date=date,
+        day=day,
+    )
 
 
 def get_closest_match(
@@ -130,6 +157,7 @@ def get_closest_match(
     flag: Flag | None,
     league: League | None,
     gender: str | None,
+    category: str | None,
     date: date,
     day: int = 1,
 ) -> Race:
@@ -141,11 +169,17 @@ def get_closest_match(
         flag (Flag | None): The Flag object or None.
         league (League | None): The League object or None.
         gender (str | None): The gender associated with the race or None.
+        category (str | None): The category associated with the race or None.
         date (date): The date of the race.
 
     Returns: Race: The closest matching Race object that meets the specified criteria.
     """
-    races = Race.objects.filter(Q(gender=gender) | Q(gender=GENDER_ALL), date=date, day=day)
+    races = Race.objects.filter(
+        Q(gender=gender) | Q(gender=GENDER_ALL),
+        Q(category=category) | Q(category=CATEGORY_ALL),
+        date=date,
+        day=day,
+    )
 
     if gender is None:
         races = Race.objects.filter(date=date, day=day)
@@ -156,4 +190,5 @@ def get_closest_match(
         races = races.filter(flag=flag)
     if league:
         races = races.filter(league=league)
+
     return races.get()

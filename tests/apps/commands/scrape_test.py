@@ -28,6 +28,7 @@ class ScrapeConfigTests(TestCase):
             "table": None,
             "start_year": None,
             "force_gender": False,
+            "force_category": False,
             "ignore": [],
             "output": None,
         }

@@ -18,9 +18,10 @@ logger = logging.getLogger(__name__)
 class TabularDigester(Digester):
     client: TabularDataClient
 
-    def __init__(self, client: TabularDataClient, force_gender: bool = False):
+    def __init__(self, client: TabularDataClient, force_gender: bool = False, force_category: bool = False):
         self.client = client
         self._force_gender = force_gender
+        self._force_category = force_category
 
     @override
     def merge(self, race: Race, db_race: Race, status: Digester.Status) -> tuple[Race, Digester.Status]:

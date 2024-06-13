@@ -15,7 +15,7 @@ def get_races(datasource: Datasource, ref_id: str | None = None) -> QuerySet[Rac
         metadata["ref_id"] = ref_id
 
     filters: dict = {"metadata": [metadata]}
-    queryset = RaceFilters(Race.objects).set_filters(filters).build_query()
+    queryset = RaceFilters(Race.objects.all()).set_filters(filters).build_query()
 
     return queryset.all()
 
@@ -28,7 +28,7 @@ def get_race_or_none(datasource: Datasource, ref_id: str, day: int | None = None
         filters["day"] = day
 
     queryset = (
-        RaceFilters(Race.objects)
+        RaceFilters(Race.objects.all())
         .set_filters(filters)
         .set_keywords(filters.get("keywords", None))
         .set_sorting(filters.get("ordering", None))
@@ -61,7 +61,7 @@ def exists(
         filters["day"] = day
 
     queryset = (
-        RaceFilters(Race.objects)
+        RaceFilters(Race.objects.all())
         .set_filters(filters)
         .set_keywords(filters.get("keywords", None))
         .set_sorting(filters.get("ordering", None))

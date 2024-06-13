@@ -10,7 +10,14 @@ from apps.actions.management.digester import Digester
 from apps.entities.models import Entity
 from apps.races.models import Race
 from rscraping.clients import Client
-from rscraping.data.constants import GENDER_ALL, GENDER_FEMALE, GENDER_MALE, RACE_CONVENTIONAL, RACE_TRAINERA
+from rscraping.data.constants import (
+    CATEGORY_ABSOLUT,
+    GENDER_ALL,
+    GENDER_FEMALE,
+    GENDER_MALE,
+    RACE_CONVENTIONAL,
+    RACE_TRAINERA,
+)
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
 
@@ -49,6 +56,7 @@ class DigestionTest(TestCase):
             url="test",
             datasource="test",
             gender=GENDER_FEMALE,
+            category=CATEGORY_ABSOLUT,
             participants=[],
             race_laps=6,
             race_lanes=4,
@@ -84,6 +92,7 @@ class DigestionTest(TestCase):
             url="test",
             datasource="test",
             gender=GENDER_MALE,
+            category=CATEGORY_ABSOLUT,
             participants=[],
             race_laps=6,
             race_lanes=4,
@@ -114,6 +123,7 @@ class DigestionTest(TestCase):
             url="test",
             datasource=Datasource.TRAINERAS,
             gender=GENDER_FEMALE,
+            category=CATEGORY_ABSOLUT,
             participants=[],
             race_laps=2,
             race_lanes=3,

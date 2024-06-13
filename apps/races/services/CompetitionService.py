@@ -84,16 +84,16 @@ def get_competition_or_none(names: list[str]) -> tuple[Trophy | None, Flag | Non
     return trophy, flag
 
 
-def infer_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) -> int | None:
+def infer_edition[T: (Trophy, Flag)](item: T, gender: str, category: str, year: int) -> int | None:
     """
     Returns: inferred edition for the Flag|Trophy given.
     """
-    edition = _get_matching_edition(item, gender, year)
+    edition = _get_matching_edition(item, gender, category, year)
     if not edition:
-        edition = _get_matching_edition(item, gender, year - 1)
+        edition = _get_matching_edition(item, gender, category, year - 1)
         edition = edition + 1 if edition else None
     if not edition:
-        edition = _get_matching_edition(item, gender, year + 1)
+        edition = _get_matching_edition(item, gender, category, year + 1)
         edition = edition - 1 if edition else None
     return edition
 
@@ -175,7 +175,7 @@ def _get_closest_by_name_with_threshold[T: (Trophy, Flag)](_model: type[T], name
     return _model.objects.get(name=closest)
 
 
-def _get_matching_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) -> int | None:
+def _get_matching_edition[T: (Trophy, Flag)](item: T, gender: str, category: str, year: int) -> int | None:
     """
     Tries to retrieve the edition for a Trophy or Flag model instance.
 
@@ -192,6 +192,7 @@ def _get_matching_edition[T: (Trophy, Flag)](item: T, gender: str, year: int) ->
     matches = Race.objects.filter(
         Q(**{f"{model_name}__isnull": True}) | Q(**{f"{model_name}": item}),
         gender=gender,
+        category=category,
         date__year=year,
         day=1,
     )

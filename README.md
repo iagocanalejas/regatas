@@ -17,6 +17,8 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[--sheet-id SHEET_ID] \
 	[--sheet-name SHEET_NAME] \
 	[--file-path FILE_PATH] \
+	[--force-gender] \
+	[--force-category] \
 	[-i, --ignore ID [ID ...]] \
 	[-o, --output OUTPUT]
 
@@ -49,6 +51,8 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #                         sheet file path used for TABULAR datasource.
 #   --force-gender
 #                         forces the gender to match.
+#   --force-category
+#                         forces the category to match.
 #   -i [IGNORE ...], --ignore [IGNORE ...]
 #                         race IDs to ignore during ingestion.
 #   -o OUTPUT, --output OUTPUT

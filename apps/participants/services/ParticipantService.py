@@ -20,8 +20,8 @@ def get_by_race(race: Race) -> QuerySet[Participant]:
 def get_by_race_and_filter_by(
     race: Race,
     club: Entity,
-    category: str,
     gender: str,
+    category: str,
     raw_club_name: str | None = None,
 ) -> Participant | None:
     q = get_by_race(race).filter(club=club, category=category, gender=gender)

@@ -29,7 +29,7 @@ from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from rscraping.clients import ClientProtocol
-from rscraping.data.constants import GENDER_ALL
+from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Penalty as RSPenalty
@@ -41,9 +41,10 @@ logger = logging.getLogger(__name__)
 
 
 class Digester(DigesterProtocol):
-    def __init__(self, client: ClientProtocol, force_gender: bool = False):
+    def __init__(self, client: ClientProtocol, force_gender: bool = False, force_category: bool = False) -> None:
         self.client = client
         self._force_gender = force_gender
+        self._force_category = force_category
 
     @override
     def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, DigesterProtocol.Status]:
@@ -57,9 +58,11 @@ class Digester(DigesterProtocol):
                 names=[n for n, _ in race.normalized_names],
                 league=race.league,
                 gender=race.gender,
+                category=race.category,
                 date=datetime.strptime(race.date, "%d/%m/%Y").date(),
                 day=race.day,
                 force_gender=self._force_gender,
+                force_category=self._force_category,
             )
         except Race.MultipleObjectsReturned:
             logger.error(f"multiple races found for {race.date}:{race.name}")
@@ -96,6 +99,7 @@ class Digester(DigesterProtocol):
             league=league,
             modality=race.modality,
             gender=race.gender,
+            category=race.category,
             organizer=organizer,
             sponsor=race.sponsor,
             metadata=metadata,
@@ -143,6 +147,10 @@ class Digester(DigesterProtocol):
         if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
             logger.debug("setting gender=ALL")
             db_race.gender = GENDER_ALL
+
+        if db_race.category != CATEGORY_ALL and db_race.category != race.category:
+            logger.debug("setting category=ALL")
+            db_race.category = CATEGORY_ALL
 
         if input_new_value("laps", race.laps, db_race.laps):
             logger.debug(f"updating {db_race.laps} with {race.laps}")
@@ -217,8 +225,8 @@ class Digester(DigesterProtocol):
         db_participant = ParticipantService.get_by_race_and_filter_by(
             race,
             club=club,
-            category=participant.category,
             gender=participant.gender,
+            category=participant.category,
             raw_club_name=participant.club_name,
         )
         logger.info(f"using {db_participant=}")

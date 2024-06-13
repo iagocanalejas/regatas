@@ -6,7 +6,7 @@ from django.test import TestCase
 from apps.races.models import Race
 from apps.races.services import MetadataService
 from apps.schemas import MetadataBuilder
-from rscraping.data.constants import GENDER_ALL
+from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 from rscraping.data.models import Datasource
 
 
@@ -16,6 +16,7 @@ class MetadataServiceTest(TestCase):
     def test_race_exists_using_sheet(self):
         race = Race.objects.get(pk=1)
         race.gender = GENDER_ALL
+        race.category = CATEGORY_ALL
         race.metadata = {
             "datasource": [
                 (

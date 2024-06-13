@@ -1,11 +1,12 @@
-from django.db.backends.postgresql.base import DatabaseOperations, DatabaseWrapper
+from django.db.backends.postgresql.base import DatabaseWrapper
+from django.db.backends.postgresql.operations import DatabaseOperations
 
 
 def lookup_cast(self, lookup_type, internal_type=None):
     if lookup_type in ["icontains", "iexact"]:
         return "UPPER(UNACCENT(%s::text))"
     else:
-        return super(DatabaseOperations, self).lookup_cast(lookup_type, internal_type)
+        return super(DatabaseOperations, self).lookup_cast(lookup_type, internal_type)  # pyright: ignore
 
 
 def patch_unaccent():

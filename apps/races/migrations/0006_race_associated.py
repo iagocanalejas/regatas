@@ -2,7 +2,7 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
-from django.db.models.query import Q
+from django.db.models.query_utils import Q
 
 
 def update_associated(apps, _):

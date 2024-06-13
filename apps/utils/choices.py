@@ -1,6 +1,7 @@
 from rscraping.data.constants import (
     BOAT_WEIGHT_LIMIT,
     CATEGORY_ABSOLUT,
+    CATEGORY_ALL,
     CATEGORY_SCHOOL,
     CATEGORY_VETERAN,
     COLLISION,
@@ -77,10 +78,21 @@ GENDER_CHOICES = [
     (GENDER_FEMALE, "Female"),
     (GENDER_MIX, "Mixto"),
 ]
+CATEGORY_CHOICES = [
+    (CATEGORY_SCHOOL, "School"),
+    (CATEGORY_ABSOLUT, "Absolut"),
+    (CATEGORY_VETERAN, "Veteran"),
+]
 RACE_GENDER_CHOICES = [
     (GENDER_MALE, "Male"),
     (GENDER_FEMALE, "Female"),
     (GENDER_ALL, "All"),
+]
+RACE_CATEGORY_CHOICES = [
+    (CATEGORY_ALL, "All"),
+    (CATEGORY_SCHOOL, "School"),
+    (CATEGORY_ABSOLUT, "Absolut"),
+    (CATEGORY_VETERAN, "Veteran"),
 ]
 ################
 #  PENALTIES   #

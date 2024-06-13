@@ -6,6 +6,7 @@ from django.db.models import JSONField
 
 from apps.schemas import RACE_METADATA_SCHEMA, default_metadata
 from apps.utils.choices import (
+    RACE_CATEGORY_CHOICES,
     RACE_CONVENTIONAL,
     RACE_GENDER_CHOICES,
     RACE_MODALITY_CHOICES,
@@ -124,6 +125,7 @@ class Race(CreationStampModel):
     )
 
     gender = models.CharField(max_length=15, choices=RACE_GENDER_CHOICES)
+    category = models.CharField(max_length=15, choices=RACE_CATEGORY_CHOICES)
     modality = models.CharField(default=RACE_TRAINERA, max_length=15, choices=RACE_MODALITY_CHOICES)
     organizer = models.ForeignKey(
         null=True,
