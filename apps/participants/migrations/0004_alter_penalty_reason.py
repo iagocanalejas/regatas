@@ -4,15 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('participants', '0003_alter_penalty_reason'),
+        ("participants", "0003_alter_penalty_reason"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='penalty',
-            name='reason',
-            field=models.CharField(blank=True, choices=[('NO_LINE_START', 'Salida sin estacha'), ('NULL_START', 'Salida nula'), ('COLISION', 'Colisión'), ('BLADE_TOUCH', 'Toque de palas'), ('OFF_THE_FIELD', 'Fuera de campo'), ('COVID_ABSENCE', 'Ausencia por COVID-19'), ('WRONG_LINEUP', 'Alineación incorrecta')], default=None, max_length=500, null=True),
+            model_name="penalty",
+            name="reason",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("NO_LINE_START", "Salida sin estacha"),
+                    ("NULL_START", "Salida nula"),
+                    ("COLISION", "Colisión"),
+                    ("BLADE_TOUCH", "Toque de palas"),
+                    ("OFF_THE_FIELD", "Fuera de campo"),
+                    ("COVID_ABSENCE", "Ausencia por COVID-19"),
+                    ("WRONG_LINEUP", "Alineación incorrecta"),
+                ],
+                default=None,
+                max_length=500,
+                null=True,
+            ),
         ),
     ]

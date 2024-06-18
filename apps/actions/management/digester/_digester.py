@@ -242,6 +242,8 @@ class Digester(DigesterProtocol):
             handicap=datetime.strptime(participant.handicap, "%M:%S.%f").time() if participant.handicap else None,
             gender=participant.gender,
             category=participant.category,
+            absent=participant.absent,
+            retired=participant.retired,
         )
 
         status = DigesterProtocol.Status.NEW

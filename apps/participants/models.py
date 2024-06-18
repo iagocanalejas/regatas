@@ -43,6 +43,7 @@ class Participant(models.Model):
 
     guest = models.BooleanField(default=False)
     absent = models.BooleanField(default=False)
+    retired = models.BooleanField(default=False)
 
     def __str__(self):
         club = self.club_name if self.club_name else self.club
