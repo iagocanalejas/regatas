@@ -243,7 +243,7 @@ class Digester(DigesterProtocol):
             gender=participant.gender,
             category=participant.category,
             absent=participant.absent,
-            retired=participant.retired,
+            retired=participant.retired and (not participant.penalty or not participant.penalty.disqualification),
         )
 
         status = DigesterProtocol.Status.NEW
