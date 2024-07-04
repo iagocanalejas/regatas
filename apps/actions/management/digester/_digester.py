@@ -152,7 +152,7 @@ class Digester(DigesterProtocol):
             logger.debug("setting category=ALL")
             db_race.category = CATEGORY_ALL
 
-        if input_new_value("laps", race.laps, db_race.laps):
+        if not (db_race.laps == 4 and race.laps == 2) and input_new_value("laps", race.laps, db_race.laps):
             logger.debug(f"updating {db_race.laps} with {race.laps}")
             db_race.laps = race.laps
 

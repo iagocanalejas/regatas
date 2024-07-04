@@ -265,8 +265,6 @@ class ScrapeConfig:
 
         year = cls.parse_year(year)
 
-        if category and datasource != Datasource.TRAINERAS:
-            raise ValueError(f"category filtering is not suported in {datasource=}")
         if category and category.upper() not in [CATEGORY_ABSOLUT, CATEGORY_VETERAN, CATEGORY_SCHOOL]:
             raise ValueError(f"invalid {category=}")
         if table and len(race_ids) != 1:
