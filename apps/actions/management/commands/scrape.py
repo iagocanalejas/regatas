@@ -157,12 +157,12 @@ class Command(BaseCommand):
             for participant in participants:
                 new_participant, status = digester.ingest_participant(new_race, participant)
                 if status == Digester.Status.NEW or status == Digester.Status.MERGED:
-                    new_participant, _ = digester.save_participant(
+                    new_participant, status = digester.save_participant(
                         new_participant,
                         race_status=race_status,
                         participant_status=status,
                     )
-                if participant.penalty:
+                if new_participant.pk and participant.penalty:
                     _ = digester.save_penalty(new_participant, participant.penalty)
 
             if race.race_notes:

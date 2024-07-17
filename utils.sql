@@ -8,13 +8,14 @@ SELECT id,
        flag_id,
        flag_edition,
        league_id,
+       organizer_id,
        laps,
        lanes,
        town,
        gender,
        metadata
 FROM race r
-WHERE (SELECT count(DISTINCT lanes) -- change here (laps | lanes | town | organizer)
+WHERE (SELECT count(DISTINCT laps) -- change here (laps | lanes | town | organizer_id)
        FROM race r2
        WHERE r.gender = r2.gender
          AND r.type = r2.type
