@@ -54,6 +54,42 @@ class TrainerasIngester(Ingester):
             yield race
 
     @override
+    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace, Any, Any]:
+        race: RSRace | None = None
+        participants: list[RSParticipant] = []
+
+        for race_id in self.client.get_last_weekend_race_ids():
+            for local_race in self._retrieve_race(race_id):
+                if self._is_race_after_today(local_race):
+                    # if we reach a race after today, we can stop and yield the current race
+                    if race:
+                        race.participants = participants
+                        logger.debug(f"found last weekend race:\n\t{race}")
+                        yield race
+                    break
+
+                # race changed so we yield the current one and start a new one
+                if not race or race.name != local_race.name:
+                    if race:
+                        race.participants = participants
+                        logger.debug(f"found last weekend race:\n\t{race}")
+                        yield race
+                    race = local_race
+                    participants = race.participants
+
+                # update current race data
+                race.race_ids.append(race_id)
+                if race.gender != local_race.gender:
+                    race.gender = GENDER_ALL
+                participants.extend(local_race.participants)
+
+        # yield the last race
+        if race:
+            race.participants = participants
+            logger.debug(f"found last weekend race:\n\t{race}")
+            yield race
+
+    @override
     def fetch_by_flag(self, *_, flag_id: str, **kwargs) -> Generator[RSRace, Any, Any]:
         assert isinstance(self.client, TrainerasClient)
 

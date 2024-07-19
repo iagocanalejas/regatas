@@ -82,6 +82,13 @@ class Command(BaseCommand):
             help="race IDs to ignore during ingestion.",
         )
         parser.add_argument(
+            "-w",
+            "--last-weekend",
+            action="store_true",
+            default=False,
+            help="fetches the races for the last weekend.",
+        )
+        parser.add_argument(
             "--force-gender",
             action="store_true",
             default=False,
@@ -135,6 +142,8 @@ class Command(BaseCommand):
             races = ingester.fetch_by_ids(race_ids=config.race_ids, table=config.table)
         elif config.year:
             races = chain(*[ingester.fetch(year=year) for year in years])
+        elif config.last_weekend:
+            races = ingester.fetch_last_weekend()
         else:
             raise ValueError("invalid state")
 
@@ -210,6 +219,7 @@ class ScrapeConfig:
     table: int | None = None
     start_year: int | None = None
 
+    last_weekend: bool = False
     force_gender: bool = False
     force_category: bool = False
     ignored_races: list[str] = field(default_factory=list)
@@ -230,11 +240,14 @@ class ScrapeConfig:
             sheet_name=options["sheet_name"],
             file_path=options["file_path"],
         )
-        category, gender, table, start_year, force_gender, force_category, ignored_races, output_path = (
+        category, gender, table, start_year, last_weekend = (
             options["category"],
             options["gender"],
             options["table"],
             options["start_year"],
+            options["last_weekend"],
+        )
+        force_gender, force_category, ignored_races, output_path = (
             options["force_gender"],
             options["force_category"],
             options["ignore"],
@@ -252,10 +265,12 @@ class ScrapeConfig:
             raise ValueError(f"invalid {gender=}")
 
         has_races = True if len(race_ids) > 0 else None
-        if not only_one_not_none(year, has_races, flag_id):
+        if not only_one_not_none(year, has_races, flag_id, last_weekend):
             raise ValueError("only one of 'year', 'race_ids', 'flag' can be provided")
-        if not year and not club_id and not entity_id and not flag_id and len(race_ids) == 0:
-            raise ValueError("required value for 'race_ids' or 'club' or 'entity' or 'flag' or 'year'")
+        if not year and not club_id and not entity_id and not flag_id and not last_weekend and len(race_ids) == 0:
+            raise ValueError(
+                "required value for 'race_ids' or 'club' or 'entity' or 'flag' or 'year' or 'last_weekend'"
+            )
         if (club_id or entity_id) and not year:
             raise ValueError("'year' is required when 'club' is provided")
         if (club_id or entity_id) and datasource != Datasource.TRAINERAS:
@@ -287,6 +302,7 @@ class ScrapeConfig:
             gender=gender.upper(),
             table=table,
             start_year=start_year,
+            last_weekend=last_weekend,
             force_gender=force_gender,
             force_category=force_category,
             ignored_races=ignored_races,

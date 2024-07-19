@@ -17,6 +17,14 @@ class IngesterProtocol(Protocol):
         """
         ...
 
+    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace, Any, Any]:
+        """
+        Fetch races that should be ingested from one of many clients from the last weekend.
+
+        Yields: RSRace: The races found.
+        """
+        ...
+
     def fetch_by_ids(self, race_ids: list[str], **kwargs) -> Generator[RSRace, Any, Any]:
         """
         Fetch races that should be ingested from one of many clients using the IDs to filter.

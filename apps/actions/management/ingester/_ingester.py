@@ -40,6 +40,16 @@ class Ingester(IngesterProtocol):
                     yield race
 
     @override
+    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace, Any, Any]:
+        for race_id in self.client.get_last_weekend_race_ids():
+            for race in self._retrieve_race(race_id):
+                if race and self._is_race_after_today(race):
+                    break
+                if race:
+                    logger.debug(f"found race for {race_id=}:\n\t{race}")
+                    yield race
+
+    @override
     def fetch_by_ids(self, race_ids: list[str], table: int | None = None, **_) -> Generator[RSRace, Any, Any]:
         for race_id in race_ids:
             race = self.client.get_race_by_id(race_id, table=table)

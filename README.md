@@ -17,6 +17,7 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[--sheet-id SHEET_ID] \
 	[--sheet-name SHEET_NAME] \
 	[--file-path FILE_PATH] \
+	[-w, --last-weekend] \
 	[--force-gender] \
 	[--force-category] \
 	[-i, --ignore ID [ID ...]] \
@@ -49,6 +50,8 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #                         google-sheet name used for TABULAR datasource.
 #   --file-path FILE_PATH
 #                         sheet file path used for TABULAR datasource.
+#   -w, --last-weekend
+#                         ingest only the last weekend races.
 #   --force-gender
 #                         forces the gender to match.
 #   --force-category

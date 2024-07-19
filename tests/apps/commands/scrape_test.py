@@ -27,6 +27,7 @@ class ScrapeConfigTests(TestCase):
             "gender": "MALE",
             "table": None,
             "start_year": None,
+            "last_weekend": None,
             "force_gender": False,
             "force_category": False,
             "ignore": [],
