@@ -1,6 +1,6 @@
 argon2_cffi==23.1.0
 colorlog==6.8.2
-Django==5.0.7
+Django==5.0.8
 django-cors-headers==4.4.0
 django-debug-toolbar==4.4.6
 django-extensions==3.2.3
@@ -23,8 +23,8 @@ psycopg2-binary==2.9.9
 pytesseract==0.3.10
 python-memcached==1.62
 pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
-PyYAML==6.0.1
+PyYAML==6.0.2
 requests==2.32.3
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
-setuptools==71.0.3
+setuptools==72.1.0
 simplemma==1.0.0
