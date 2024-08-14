@@ -1184,6 +1184,7 @@
       flag: 85
       league: 2
       gender: MALE
+      category: ABSOLUT
       modality: TRAINERA
       organizer: null
       metadata:
@@ -1212,6 +1213,7 @@
       flag: 2
       league: 5
       gender: MALE
+      category: ABSOLUT
       modality: TRAINERA
       organizer: 18
       metadata:
@@ -1240,6 +1242,7 @@
       flag: 198
       league: 10
       gender: MALE
+      category: ABSOLUT
       modality: TRAINERA
       organizer: null
       metadata:
@@ -1268,6 +1271,7 @@
       flag: 133
       league: null
       modality: TRAINERA
+      category: ABSOLUT
       organizer: null
       metadata:
           datasource:

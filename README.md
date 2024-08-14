@@ -82,14 +82,17 @@ Use boxplot graphs to visualize each year speeds.
 python manage.py plot [club]
 
 # positional arguments:
-#   club                  club ID to filter participants.
+#   club                  optional club ID to filter participants.
 #
 # options:
 #   --league              league ID to filter participants.
 #   -g, --gender          races gender.
+#   -c, --category        races category.
+#
+#   -n, --normalize       exclude outliers based on the speeds' standard deviation.
+#
 #   --leagues-only        only races from a league.
 #   --branch-teams        filter only branch teams.
-#   -n, --normalize       exclude outliers based on the speeds' standard deviation.
 ```
 
 ```sh

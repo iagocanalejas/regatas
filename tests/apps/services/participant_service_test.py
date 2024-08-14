@@ -8,7 +8,7 @@ from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
 from apps.races.models import Race
-from rscraping.data.constants import GENDER_MALE
+from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_MALE
 
 
 class ParticipantServiceTest(TestCase):
@@ -26,6 +26,7 @@ class ParticipantServiceTest(TestCase):
                 series=1,
                 handicap=None,
                 gender=GENDER_MALE,
+                category=CATEGORY_ABSOLUT,
             ),
             Participant(
                 club=club,
@@ -36,6 +37,7 @@ class ParticipantServiceTest(TestCase):
                 series=1,
                 handicap=None,
                 gender=GENDER_MALE,
+                category=CATEGORY_ABSOLUT,
             ),
             Participant(
                 club=club,
@@ -49,6 +51,7 @@ class ParticipantServiceTest(TestCase):
                 series=1,
                 handicap=None,
                 gender=GENDER_MALE,
+                category=CATEGORY_ABSOLUT,
             ),
         ]
 
@@ -59,6 +62,7 @@ class ParticipantServiceTest(TestCase):
             club,
             league=None,
             gender=GENDER_MALE,
+            category=CATEGORY_ABSOLUT,
             branch_teams=False,
             only_league_races=False,
             normalize=False,
