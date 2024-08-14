@@ -70,7 +70,16 @@ class Flag(CreationStampModel):
 class Race(CreationStampModel):
     laps = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     lanes = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
-    town = models.CharField(max_length=100, null=True, blank=True, default=None)
+    town = models.CharField(max_length=100, null=True, blank=True, default=None)  # TODO: deprecated
+    place = models.ForeignKey(
+        null=True,
+        blank=True,
+        default=None,
+        to="places.Place",
+        on_delete=models.PROTECT,
+        related_name="races",
+        related_query_name="race",
+    )
 
     type = models.CharField(max_length=50, choices=RACE_TYPE_CHOICES, default=RACE_CONVENTIONAL)
     date = models.DateField()

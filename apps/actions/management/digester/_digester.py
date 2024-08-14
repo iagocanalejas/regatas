@@ -25,6 +25,8 @@ from apps.entities.models import Entity, League
 from apps.entities.normalization import normalize_club_name
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
+from apps.places.models import Place
+from apps.places.services import PlacesService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
@@ -79,13 +81,19 @@ class Digester(DigesterProtocol):
         logger.info(f"using {flag=}:{flag_edition=}")
 
         logger.debug("searching organizer & town")
-        town, organizer = self._update_race_with_competition_info(trophy, flag, league, race.town, race.organizer)
+        town, place, organizer = self._update_race_with_competition_info(
+            trophy,
+            flag,
+            league,
+            race.town,
+            race.organizer,
+        )
         logger.info(f"using {organizer=} {town=}")
 
         new_race = Race(
             laps=race.race_laps,
             lanes=race.race_lanes,
-            town=town,
+            town=town,  # TODO: deprecated
             type=race.type,
             date=datetime.strptime(race.date, "%d/%m/%Y").date(),
             day=race.day,
@@ -103,6 +111,7 @@ class Digester(DigesterProtocol):
             organizer=organizer,
             sponsor=race.sponsor,
             metadata=metadata,
+            place=place,
         )
 
         logger.debug("searching analogous race")
@@ -362,23 +371,37 @@ class Digester(DigesterProtocol):
         league: League | None,
         town: str | None,
         organizer_name: str | None,
-    ) -> tuple[str | None, Entity | None]:
+    ) -> tuple[str | None, Place | None, Entity | None]:
+        place = PlacesService.get_closest_by_name_or_none(town) if town else None
         organizer = retrieve_entity(normalize_club_name(organizer_name), entity_type=None) if organizer_name else None
         competitions = RaceService.get_races_by_competition(trophy, flag, league)
         if competitions.count():
             logger.debug(f"found {competitions.count()} matching races")
-            towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
-            if not town and towns.count() == 1:
-                logger.info(f"updating {town=} with {towns.first()}")
-                town = towns.first()
+            if not town:  # TODO: deprecated
+                towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
+                if towns.count() == 1:
+                    logger.info(f"updating {town=} with {towns.first()}")
+                    town = towns.first()
 
-            organizers = Entity.all_objects.filter(
-                id__in=competitions.filter(organizer__isnull=False).values_list("organizer", flat=True).distinct()
-            )
-            if not organizer and organizers.count() == 1:
-                logger.info(f"updating {organizer=} with {organizers.first()}")
-                organizer = organizers.first()
-        return town, organizer
+            if not place:
+                places = (
+                    competitions.select_related("place")
+                    .filter(place__isnull=False)
+                    .values_list("place", flat=True)
+                    .distinct()
+                )
+                if places.count() == 1:
+                    logger.info(f"updating {places.first()=}")
+                    place = places.first()
+
+            if not organizer:
+                organizers = Entity.all_objects.filter(
+                    id__in=competitions.filter(organizer__isnull=False).values_list("organizer", flat=True).distinct()
+                )
+                if organizers.count() == 1:
+                    logger.info(f"updating {organizer=} with {organizers.first()}")
+                    organizer = organizers.first()
+        return town, place, organizer
 
     @staticmethod
     def _retrieve_competition(

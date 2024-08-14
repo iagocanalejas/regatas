@@ -7,11 +7,10 @@ from typing import Any, override
 from apps.actions.management.helpers.input import (
     input_competition,
 )
-from apps.actions.management.helpers.retrieval import retrieve_competition, retrieve_entity
-from apps.entities.models import Entity, League
-from apps.entities.normalization import normalize_club_name
+from apps.actions.management.helpers.retrieval import retrieve_competition
+from apps.entities.models import Entity
 from apps.races.models import Flag, Race, Trophy
-from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
+from apps.races.services import FlagService, MetadataService, TrophyService
 from rscraping.clients import ClientProtocol
 from rscraping.data.models import Race as RSRace
 
@@ -90,31 +89,6 @@ class Ingester(IngesterProtocol):
     @override
     def fetch_by_url(self, url: str, **kwargs) -> RSRace | None:
         return self.client.get_race_by_url(url, **kwargs)
-
-    def _update_race_with_competition_info(
-        self,
-        trophy: Trophy | None,
-        flag: Flag | None,
-        league: League | None,
-        town: str | None,
-        organizer_name: str | None,
-    ) -> tuple[str | None, Entity | None]:
-        organizer = retrieve_entity(normalize_club_name(organizer_name), entity_type=None) if organizer_name else None
-        competitions = RaceService.get_races_by_competition(trophy, flag, league)
-        if competitions.count():
-            logger.debug(f"found {competitions.count()} matching races")
-            towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
-            if not town and towns.count() == 1:
-                logger.info(f"updating {town=} with {towns.first()}")
-                town = towns.first()
-
-            organizers = Entity.all_objects.filter(
-                id__in=competitions.filter(organizer__isnull=False).values_list("organizer", flat=True).distinct()
-            )
-            if not organizer and organizers.count() == 1:
-                logger.info(f"updating {organizer=} with {organizers.first()}")
-                organizer = organizers.first()
-        return town, organizer
 
     @staticmethod
     def _retrieve_competition(

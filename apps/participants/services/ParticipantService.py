@@ -7,7 +7,7 @@ from apps.entities.models import Entity, League
 from apps.participants.models import Participant
 from apps.races.models import Race
 from rscraping.data.checks import is_branch_club
-from rscraping.data.constants import GENDER_ALL
+from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 from rscraping.data.models import Participant as RSParticipant
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,7 @@ def get_year_speeds_by_club(
     club: Entity | None,
     league: League | None,
     gender: str,
+    category: str,
     branch_teams: bool,
     only_league_races: bool,
     normalize: bool,
@@ -46,6 +47,11 @@ def get_year_speeds_by_club(
         f"(p.gender = '{gender}' AND r.gender = '{gender}')"
         if only_league_races or league is not None
         else f"(p.gender = '{gender}' AND (r.gender = '{gender}' OR r.gender = '{GENDER_ALL}'))"
+    )
+    category_filter = (
+        f"(p.category = '{category}' AND r.category = '{category}')"
+        if only_league_races or league is not None
+        else f"(p.category = '{category}' AND (r.category = '{category}' OR r.category = '{CATEGORY_ALL}'))"
     )
     branch_filter = (
         "p.club_name LIKE '% B'"
@@ -61,6 +67,7 @@ def get_year_speeds_by_club(
         "(extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0",  # Avoid division by zero
         "NOT EXISTS(SELECT * FROM penalty WHERE participant_id = p.id AND disqualification)",  # Avoid disqualifications
         gender_filter,
+        category_filter,
         branch_filter,
         f"p.club_id = {club.pk}" if club else "",
         "r.league_id IS NOT NULL" if only_league_races else "",

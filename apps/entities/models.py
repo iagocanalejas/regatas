@@ -49,6 +49,16 @@ class Entity(TraceableModel):
 
     is_partnership = models.BooleanField(null=False, blank=True, default=False, db_index=True)
 
+    town = models.ForeignKey(
+        null=True,
+        blank=True,
+        default=None,
+        to="places.Town",
+        on_delete=models.PROTECT,
+        related_name="entities",
+        related_query_name="entity",
+    )
+
     parent = models.ForeignKey(
         null=True,
         blank=True,
@@ -74,7 +84,12 @@ class Entity(TraceableModel):
         """
         objects = Entity.all_objects if include_deleted else Entity.objects
         return objects.annotate(
-            joined_names=Func(F("known_names"), Value(" "), function="array_to_string", output_field=models.CharField())
+            joined_names=Func(
+                F("known_names"),
+                Value(" "),
+                function="array_to_string",
+                output_field=models.CharField(),
+            )
         )
 
     def save(self, *args, **kwargs):

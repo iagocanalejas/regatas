@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     # Self
     "djutils",
+    "apps.places",
     "apps.entities",
     "apps.races",
     "apps.participants",
