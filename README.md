@@ -86,11 +86,11 @@ python manage.py plot [club]
 #
 # options:
 #   --league              league ID to filter participants.
+#   -t, --type            plot type ([boxplot], line)
 #   -g, --gender          races gender.
 #   -c, --category        races category.
-#
 #   -n, --normalize       exclude outliers based on the speeds' standard deviation.
-#
+#   -y, --year            years to include in the plot.
 #   --leagues-only        only races from a league.
 #   --branch-teams        filter only branch teams.
 ```

@@ -106,6 +106,7 @@ WHERE p.laps <> '{}'
   AND not r.cancelled
   AND not exists(select * from penalty where participant_id = p.id and disqualification)
 --   AND (p.gender = 'MALE' AND r.gender = 'MALE')
+--   AND (p.category = 'ABSOLUT' AND r.category = 'ABSOLUT')
   AND (p.club_name IS NULL OR p.club_name <> '% B')
   AND r.league_id = 11
   AND (extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0
