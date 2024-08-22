@@ -34,89 +34,6 @@ def get_by_race_and_filter_by(
         return None
 
 
-def get_year_speeds_by_club(
-    club: Entity | None,
-    league: League | None,
-    gender: str,
-    category: str,
-    branch_teams: bool,
-    only_league_races: bool,
-    normalize: bool,
-) -> dict[int, list[float]]:
-    gender_filter = (
-        f"(p.gender = '{gender}' AND r.gender = '{gender}')"
-        if only_league_races or league is not None
-        else f"(p.gender = '{gender}' AND (r.gender = '{gender}' OR r.gender = '{GENDER_ALL}'))"
-    )
-    category_filter = (
-        f"(p.category = '{category}' AND r.category = '{category}')"
-        if only_league_races or league is not None
-        else f"(p.category = '{category}' AND (r.category = '{category}' OR r.category = '{CATEGORY_ALL}'))"
-    )
-    branch_filter = (
-        "p.club_name LIKE '% B'"
-        if branch_teams
-        else "(p.club_name IS NULL OR p.club_name <> '% B')"
-        if not league
-        else ""
-    )
-
-    filters = (
-        "NOT r.cancelled",
-        "p.laps <> '{}'",
-        "(extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0",  # Avoid division by zero
-        "NOT EXISTS(SELECT * FROM penalty WHERE participant_id = p.id AND disqualification)",  # Avoid disqualifications
-        gender_filter,
-        category_filter,
-        branch_filter,
-        f"p.club_id = {club.pk}" if club else "",
-        "r.league_id IS NOT NULL" if only_league_races else "",
-        f"r.league_id = {league.pk}" if league else "",
-    )
-    where_clause = " AND ".join([str(filter) for filter in filters if filter])
-    speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
-
-    if normalize:
-        raw_query = f"""
-            WITH speeds_query AS (
-                SELECT
-                    extract(YEAR from date)::INTEGER as year,
-                    CAST({speed_expression} AS DOUBLE PRECISION) as speed
-                FROM participant p JOIN race r ON p.race_id = r.id
-                WHERE {where_clause}
-            )
-            SELECT year, array_agg(speed) AS speeds
-            FROM speeds_query
-            WHERE speed BETWEEN (
-                SELECT AVG(speed) - (2 * STDDEV_POP(speed))
-                FROM speeds_query
-            ) AND (
-                SELECT AVG(speed) + (2 * STDDEV_POP(speed))
-                FROM speeds_query
-            )
-            GROUP BY year
-            ORDER BY year;
-            """
-    else:
-        raw_query = f"""
-            SELECT
-                extract(YEAR from date)::INTEGER as year,
-                array_agg(CAST({speed_expression} AS DOUBLE PRECISION)) as speeds
-            FROM participant p JOIN race r ON p.race_id = r.id
-            WHERE {where_clause}
-            GROUP BY year
-            ORDER BY year;
-            """
-
-    logger.debug(raw_query)
-
-    with connection.cursor() as cursor:
-        cursor.execute(raw_query)
-        speeds = cursor.fetchall()
-
-    return {year: speed for year, speed in speeds}
-
-
 def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: Entity | None = None) -> bool:
     if isinstance(p2, RSParticipant):
         return club is not None and (
@@ -135,6 +52,151 @@ def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: 
             and is_branch_club(p1.club_name) == is_branch_club(p2.club_name)
         )
     )
+
+
+def get_year_speeds_filtered_by(
+    club: Entity | None,
+    league: League | None,
+    gender: str,
+    category: str,
+    branch_teams: bool,
+    only_league_races: bool,
+    normalize: bool,
+) -> dict[int, list[float]]:
+    subquery_where_clause = _get_speed_filters(club, league, gender, category, branch_teams, only_league_races)
+    speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
+    where_clause = ""
+
+    if normalize:
+        where_clause = """
+            WHERE speed BETWEEN (
+                SELECT AVG(speed) - (2 * STDDEV_POP(speed))
+                FROM speeds_query
+            ) AND (
+                SELECT AVG(speed) + (2 * STDDEV_POP(speed))
+                FROM speeds_query
+            )
+        """
+
+    raw_query = f"""
+        WITH speeds_query AS (
+            SELECT
+                extract(YEAR from date)::INTEGER as year,
+                CAST({speed_expression} AS DOUBLE PRECISION) as speed
+            FROM participant p JOIN race r ON p.race_id = r.id
+            WHERE {subquery_where_clause}
+            ORDER BY r.date
+        )
+        SELECT year, array_agg(speed) AS speeds
+        FROM speeds_query
+        {where_clause}
+        GROUP BY year
+        ORDER BY year;
+    """
+
+    logger.debug(raw_query)
+
+    with connection.cursor() as cursor:
+        cursor.execute(raw_query)
+        speeds = cursor.fetchall()
+
+    return {year: speed for year, speed in speeds}
+
+
+def get_nth_speed_filtered_by(
+    index: int,  # the index is one-based as postgresql does not support zero-based arrays
+    club: Entity | None,
+    league: League | None,
+    gender: str,
+    category: str,
+    year: int,
+    branch_teams: bool,
+    only_league_races: bool,
+    normalize: bool,
+) -> list[float]:
+    subquery_where_clause = _get_speed_filters(club, league, gender, category, branch_teams, only_league_races)
+    subquery_where_clause += f" AND extract(YEAR from r.date) = {year}"
+    speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
+    where_clause = ""
+
+    if normalize:
+        where_clause = """
+            WHERE speed BETWEEN (
+                SELECT AVG(speed) - (2 * STDDEV_POP(speed))
+                FROM speeds_query
+            ) AND (
+                SELECT AVG(speed) + (2 * STDDEV_POP(speed))
+                FROM speeds_query
+            )
+        """
+
+    raw_query = f"""
+        WITH speeds_query AS (
+            SELECT
+                p.race_id,
+                CAST({speed_expression} AS DOUBLE PRECISION) as speed
+            FROM participant p JOIN race r ON p.race_id = r.id
+            WHERE {subquery_where_clause}
+            ORDER BY r.date
+        )
+        SELECT race_id, (array_agg(speed ORDER BY speed DESC))[{index}] AS speed
+        FROM speeds_query
+        {where_clause}
+        GROUP BY race_id
+        HAVING array_length(array_agg(speed), 1) >= {index};
+    """
+
+    logger.debug(raw_query)
+
+    with connection.cursor() as cursor:
+        cursor.execute(raw_query)
+        speeds = cursor.fetchall()
+
+    return [speed for _, speed in speeds]
+
+
+def _get_speed_filters(
+    club: Entity | None,
+    league: League | None,
+    gender: str,
+    category: str,
+    branch_teams: bool,
+    only_league_races: bool,
+) -> str:
+    gender_filter = (
+        f"(p.gender = '{gender}' AND r.gender = '{gender}')"
+        if only_league_races or league is not None
+        else f"(p.gender = '{gender}' AND (r.gender = '{gender}' OR r.gender = '{GENDER_ALL}'))"
+    )
+    category_filter = (
+        f"(p.category = '{category}' AND r.category = '{category}')"
+        if only_league_races or league is not None
+        else f"(p.category = '{category}' AND (r.category = '{category}' OR r.category = '{CATEGORY_ALL}'))"
+    )
+    branch_filter = (
+        "p.club_name LIKE '% B'"
+        if branch_teams
+        else "(p.club_name IS NULL OR p.club_name NOT LIKE '% B')"
+        if not league
+        else ""
+    )
+
+    filters = (
+        "NOT r.cancelled",
+        "p.laps <> '{}'",
+        "NOT p.retired",
+        "NOT p.guest",
+        "NOT p.absent",
+        "(extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0",  # Avoid division by zero
+        "NOT EXISTS(SELECT * FROM penalty WHERE participant_id = p.id AND disqualification)",  # Avoid disqualifications
+        gender_filter,
+        category_filter,
+        branch_filter,
+        f"p.club_id = {club.pk}" if club else "",
+        "r.league_id IS NOT NULL" if only_league_races else "",
+        f"r.league_id = {league.pk}" if league else "",
+    )
+    return " AND ".join([str(filter) for filter in filters if filter])
 
 
 def _add_branch_filters(q: QuerySet, club_name: str | None) -> QuerySet:

@@ -58,7 +58,7 @@ class ParticipantServiceTest(TestCase):
         for participant in participants:
             participant.save()
 
-        speeds = ParticipantService.get_year_speeds_by_club(
+        speeds = ParticipantService.get_year_speeds_filtered_by(
             club,
             league=None,
             gender=GENDER_MALE,

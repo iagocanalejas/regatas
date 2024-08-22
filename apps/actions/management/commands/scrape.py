@@ -42,17 +42,19 @@ class Command(BaseCommand):
     @override
     def add_arguments(self, parser):
         parser.add_argument("input_source", type=str, help="name of the Datasource or path to import data from.")
-        parser.add_argument("race_ids", nargs="*", help="race IDs to find in the source and ingest.")
-        parser.add_argument("--club", type=int, help="datasource club for which races should be imported.")
-        parser.add_argument("--entity", type=int, help="database entity for which races should be imported.")
-        parser.add_argument("--flag", type=int, help="flag for which races should be imported.")
+        parser.add_argument("race_ids", nargs="*", help="raceIDs to find in the source and ingest.")
+        parser.add_argument("-c", "--club", type=int, help="clubID for which races should be imported.")
+        parser.add_argument("-e", "--entity", type=int, help="entityID for which races should be imported.")
+        parser.add_argument("-f", "--flag", type=int, help="flagID for which races should be imported.")
 
         parser.add_argument(
+            "-y",
             "--year",
             type=str,
             help="year for which races should be imported, 'all' to import from the source beginnig.",
         )
         parser.add_argument(
+            "-sy",
             "--start-year",
             type=int,
             help="year for which we should start processing years. Only used with year='all'.",
@@ -64,22 +66,16 @@ class Command(BaseCommand):
         parser.add_argument("--file-path", type=str, help="sheet file path used for TABULAR datasource.")
 
         # options
-        parser.add_argument("-t", "--table", type=int, help="rable of the race for multipage races.")
-        parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="races gender.")
-        parser.add_argument(
-            "-c",
-            "--category",
-            type=str,
-            default=CATEGORY_ABSOLUT,
-            help="one of (ABSOLUT | VETERAN | SCHOOL).",
-        )
+        parser.add_argument("-t", "--table", type=int, help="table of the race for multipage races.")
+        parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="gender filter.")
+        parser.add_argument("-ca", "--category", type=str, default=CATEGORY_ABSOLUT, help="category filter.")
         parser.add_argument(
             "-i",
             "--ignore",
             type=str,
             nargs="*",
             default=[],
-            help="race IDs to ignore during ingestion.",
+            help="raceIDs to ignore during ingestion.",
         )
         parser.add_argument(
             "-w",
