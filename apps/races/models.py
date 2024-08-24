@@ -70,7 +70,6 @@ class Flag(CreationStampModel):
 class Race(CreationStampModel):
     laps = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     lanes = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
-    town = models.CharField(max_length=100, null=True, blank=True, default=None)  # TODO: deprecated
     place = models.ForeignKey(
         null=True,
         blank=True,

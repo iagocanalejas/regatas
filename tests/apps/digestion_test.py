@@ -8,6 +8,7 @@ from django.test import TestCase
 
 from apps.actions.management.digester import Digester
 from apps.entities.models import Entity
+from apps.places.models import Place
 from apps.races.models import Race
 from rscraping.clients import Client
 from rscraping.data.constants import (
@@ -100,7 +101,7 @@ class DigestionTest(TestCase):
         )
 
         race, _, status = self.digester.ingest(rs_race)
-        self.assertEqual(race.town, "A POBRA DO CARAMIÑAL")
+        self.assertEqual(race.place, Place.objects.get(pk=3))
         self.assertEqual(race.organizer, Entity.objects.get(pk=25))
         self.assertEqual(status, Digester.Status.NEW)
 

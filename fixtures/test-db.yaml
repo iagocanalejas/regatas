@@ -1170,7 +1170,6 @@
       creation_date: 2022-11-07 15:05:44.319219+00:00
       laps: 4
       lanes: 4
-      town: ZIERBENA
       type: CONVENTIONAL
       date: 2022-07-17
       day: 1
@@ -1199,7 +1198,6 @@
       creation_date: 2022-11-07 15:05:43.956393+00:00
       laps: 4
       lanes: 4
-      town: O GROVE
       type: CONVENTIONAL
       date: 2022-07-25
       day: 1
@@ -1228,7 +1226,6 @@
       creation_date: 2022-11-07 15:05:44.603093+00:00
       laps: 4
       lanes: 1
-      town: COLINDRES
       type: TIME_TRIAL
       date: 2009-08-22
       day: 1
@@ -1257,7 +1254,6 @@
       creation_date: 2023-02-11 13:11:17.831402+00:00
       laps: 2
       lanes: 1
-      town: BOIRO
       type: TIME_TRIAL
       date: 2023-02-05
       day: 1

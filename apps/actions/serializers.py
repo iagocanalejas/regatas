@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.entities.models import Entity, League
 from apps.participants.models import Participant
+from apps.places.models import Place, Town
 from apps.races.models import Flag, Race, Trophy
 
 
@@ -15,30 +16,37 @@ class LeagueSerializer(serializers.ModelSerializer):
 class EntitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Entity
-        fields = (
-            "id",
-            "name",
-        )
+        fields = ("id", "name")
         ordering = ("name",)
 
 
 class TrophySerializer(serializers.ModelSerializer):
     class Meta:
         model = Trophy
-        fields = (
-            "id",
-            "name",
-        )
+        fields = ("id", "name")
         ordering = ("name",)
 
 
 class FlagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flag
-        fields = (
-            "id",
-            "name",
-        )
+        fields = ("id", "name")
+        ordering = ("name",)
+
+
+class TownSerialzier(serializers.ModelSerializer):
+    class Meta:
+        model = Town
+        fields = ("id", "name")
+        ordering = ("name",)
+
+
+class PlaceSerializer(serializers.ModelSerializer):
+    town = TownSerialzier()
+
+    class Meta:
+        model = Place
+        fields = ("id", "name", "town")
         ordering = ("name",)
 
 
@@ -47,6 +55,7 @@ class RaceSerializer(serializers.ModelSerializer):
     flag = FlagSerializer(allow_null=True)
     league = LeagueSerializer(allow_null=True)
     organizer = EntitySerializer(allow_null=True)
+    place = PlaceSerializer(allow_null=True)
 
     class Meta:
         model = Race
@@ -66,7 +75,7 @@ class RaceSerializer(serializers.ModelSerializer):
             "sponsor",
             "laps",
             "lanes",
-            "town",
+            "place",
             "organizer",
             "metadata",
         )

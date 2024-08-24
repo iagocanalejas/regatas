@@ -81,19 +81,18 @@ class Digester(DigesterProtocol):
         logger.info(f"using {flag=}:{flag_edition=}")
 
         logger.debug("searching organizer & town")
-        town, place, organizer = self._update_race_with_competition_info(
+        place, organizer = self._update_race_with_competition_info(
             trophy,
             flag,
             league,
             race.town,
             race.organizer,
         )
-        logger.info(f"using {organizer=} {town=}")
+        logger.info(f"using {organizer=} {place=}")
 
         new_race = Race(
             laps=race.race_laps,
             lanes=race.race_lanes,
-            town=town,  # TODO: deprecated
             type=race.type,
             date=datetime.strptime(race.date, "%d/%m/%Y").date(),
             day=race.day,
@@ -173,9 +172,9 @@ class Digester(DigesterProtocol):
             logger.debug(f"updating {db_race.sponsor} with {race.sponsor}")
             db_race.sponsor = race.sponsor
 
-        if input_new_value("town", race.town, db_race.town):
-            logger.debug(f"updating {db_race.town} with {race.town}")
-            db_race.town = race.town
+        if input_new_value("place", race.place, db_race.place):
+            logger.debug(f"updating {db_race.place} with {race.place}")
+            db_race.place = race.place
 
         return db_race, DigesterProtocol.Status.MERGED
 
@@ -371,21 +370,15 @@ class Digester(DigesterProtocol):
         league: League | None,
         town: str | None,
         organizer_name: str | None,
-    ) -> tuple[str | None, Place | None, Entity | None]:
+    ) -> tuple[Place | None, Entity | None]:
         place = PlacesService.get_closest_by_name_or_none(town) if town else None
         organizer = retrieve_entity(normalize_club_name(organizer_name), entity_type=None) if organizer_name else None
         competitions = RaceService.get_races_by_competition(trophy, flag, league)
         if competitions.count():
             logger.debug(f"found {competitions.count()} matching races")
-            if not town:  # TODO: deprecated
-                towns = competitions.filter(town__isnull=False).values_list("town", flat=True).distinct()
-                if towns.count() == 1:
-                    logger.info(f"updating {town=} with {towns.first()}")
-                    town = towns.first()
-
             if not place:
-                places = (
-                    competitions.select_related("place")
+                places = Place.objects.filter(
+                    id__in=competitions.select_related("place")
                     .filter(place__isnull=False)
                     .values_list("place", flat=True)
                     .distinct()
@@ -401,7 +394,7 @@ class Digester(DigesterProtocol):
                 if organizers.count() == 1:
                     logger.info(f"updating {organizer=} with {organizers.first()}")
                     organizer = organizers.first()
-        return town, place, organizer
+        return place, organizer
 
     @staticmethod
     def _retrieve_competition(
