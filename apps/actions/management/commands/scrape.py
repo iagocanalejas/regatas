@@ -261,10 +261,8 @@ class ScrapeConfig:
             raise ValueError(f"invalid {gender=}")
 
         has_races = True if len(race_ids) > 0 else None
-        if last_weekend and any(e is not None for e in [year, has_races, flag_id]):
-            raise ValueError("'last_weekend' is incompatible with 'year', 'race_ids' and 'flag'")
-        if not only_one_not_none(year, has_races, flag_id):
-            raise ValueError("only one of 'year', 'race_ids' and 'flag' can be provided")
+        if not only_one_not_none(year, has_races, flag_id, last_weekend or None):
+            raise ValueError("only one of 'year', 'race_ids', 'flag' and 'last_weekend' can be provided")
         if not year and not club_id and not entity_id and not flag_id and not last_weekend and len(race_ids) == 0:
             raise ValueError(
                 "required value for 'race_ids' or 'club' or 'entity' or 'flag' or 'year' or 'last_weekend'"

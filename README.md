@@ -85,10 +85,9 @@ python manage.py find datasource_or_race [REF_ID]
 Use boxplot graphs to visualize each year speeds.
 
 ```sh
-python manage.py plot \
+python manage.py plot type \
 	[-c, --club CLUB_ID] \
 	[-l, --league LEAGUE_ID] \
-	[-t, --type PLOT_TYPE] \
 	[-i, --index INDEX] \
 	[-g, --gender GENDER] \
 	[-ca, --category CATEGORY] \
@@ -98,9 +97,10 @@ python manage.py plot \
 	[--branch-teams] \
 	[-o, --output FILE]
 
+# positional arguments:
+#   type                  plot type ['boxplot', 'line', 'nth'].
+#
 # options:
-#   -t TYPE, --type TYPE
-#                         plot type ['boxplot', 'line', 'nth'].
 #   -i INDEX, --index INDEX
 #                         position to plot the speeds in 'nth' charts.
 #   -c CLUB, --club CLUB
@@ -172,4 +172,15 @@ EMAIL_HOST_PASSWORD=,
 
 ```sh
 python manage.py dumpdata > <name>.yaml --format yaml --exclude admin.logentry --exclude auth --exclude sessions --exclude contenttypes
+```
+
+## Create a fixture to use in tests
+
+```sh
+python manage.py dumpdata races.race --pks=<PK> > race.json
+python manage.py dumpdata participants.participant --pks=<PK1,PK2,...> > participants.json
+jq -s '.[0] + .[1]' race.json participants.json > combined.json
+jq -s '.[0] + .[1]' fixtures/frozen-db.json combined.json > copy.json
+mv copy.json fixtures/frozen-db.json
+rm race.json participants.json combined.json
 ```

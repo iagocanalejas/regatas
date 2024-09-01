@@ -26,8 +26,9 @@ logging.getLogger("matplotlib").setLevel(logging.WARNING)
 class Command(BaseCommand):
     @override
     def add_arguments(self, parser):
-        parser.add_argument("-t", "--type", type=str, default=Plotter.BOXPLOT, help=f"plot type {Plotter.types()}.")
+        parser.add_argument("type", type=str, default=Plotter.BOXPLOT, help=f"plot type {Plotter.types()}.")
 
+        # TODO: add race_id filter
         parser.add_argument("-i", "--index", type=int, help="position to plot the speeds in 'nth' charts.")
         parser.add_argument("-c", "--club", type=int, help="club ID for which to load the data.")
         parser.add_argument("-l", "--league", type=int, help="league ID for which to load the data.")

@@ -1,0 +1,220 @@
+{
+	"name": "BANDERA TERESA HERRERA",
+	"date": "25/08/2024",
+	"day": 1,
+	"modality": "TRAINERA",
+	"type": "CONVENTIONAL",
+	"league": null,
+	"town": "A CORU\u00d1A",
+	"organizer": null,
+	"sponsor": null,
+	"normalized_names": [
+		[
+			"TROFEO TERESA HERRERA",
+			38
+		]
+	],
+	"race_ids": [
+		"6099"
+	],
+	"url": "https://traineras.es/clasificaciones/6099",
+	"datasource": "traineras",
+	"gender": "MALE",
+	"category": "ABSOLUT",
+	"participants": [
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. ARES",
+			"lane": 5,
+			"series": 2,
+			"laps": [
+				"05:31.000000",
+				"10:59.000000",
+				"16:55.000000",
+				"22:24.190000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "ARES",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. CHAPELA",
+			"lane": 3,
+			"series": 2,
+			"laps": [
+				"05:32.000000",
+				"11:01.000000",
+				"17:04.000000",
+				"22:27.130000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "CHAPELA",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.M. CASTROPOL",
+			"lane": 1,
+			"series": 1,
+			"laps": [
+				"05:29.000000",
+				"11:07.000000",
+				"16:59.000000",
+				"22:35.990000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "CASTROPOL",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "S.D. TIR\u00c1N",
+			"lane": 2,
+			"series": 2,
+			"laps": [
+				"05:38.000000",
+				"11:07.000000",
+				"17:16.000000",
+				"22:54.820000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "TIR\u00c1N",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "S.D. SAMERTOLAMEU",
+			"lane": 1,
+			"series": 2,
+			"laps": [
+				"05:44.000000",
+				"11:25.000000",
+				"17:40.000000",
+				"23:20.230000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "SAMERTOLAMEU",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. MECOS",
+			"lane": 2,
+			"series": 1,
+			"laps": [
+				"05:31.000000",
+				"11:27.000000",
+				"17:31.000000",
+				"23:26.820000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "MECOS",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. RIANXO",
+			"lane": 4,
+			"series": 2,
+			"laps": [
+				"05:48.000000",
+				"11:35.000000",
+				"17:52.000000",
+				"23:41.530000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "RIANXO",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. A CABANA - C.M. MUGARDOS",
+			"lane": 5,
+			"series": 1,
+			"laps": [
+				"05:49.000000",
+				"11:50.000000",
+				"18:02.000000",
+				"24:07.030000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "CABANA - MUGARDOS",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. PUEBLA",
+			"lane": 4,
+			"series": 1,
+			"laps": [
+				"05:53.000000",
+				"11:54.000000",
+				"18:14.000000",
+				"24:20.990000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "PUEBLA",
+			"penalty": null
+		},
+		{
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"club_name": "C.R. URME",
+			"lane": 3,
+			"series": 1,
+			"laps": [
+				"05:58.000000",
+				"11:31.000000",
+				"18:57.000000",
+				"24:59.770000"
+			],
+			"distance": 5556,
+			"handicap": null,
+			"retired": false,
+			"absent": false,
+			"participant": "URME",
+			"penalty": null
+		}
+	],
+	"race_notes": null,
+	"race_laps": 4,
+	"race_lanes": 5,
+	"cancelled": false
+}
