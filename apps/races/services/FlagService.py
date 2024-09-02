@@ -2,6 +2,13 @@ from apps.races.models import Flag
 from apps.races.services import CompetitionService
 
 
+def get_flag_or_none(flag_id: int) -> Flag | None:
+    """
+    Returns: Flag in the database or None
+    """
+    return CompetitionService.get_or_none(Flag, flag_id)
+
+
 def get_closest_by_name(name: str) -> Flag:
     """
     Returns: closest found flag in the database or raise Flag.DoesNotExist

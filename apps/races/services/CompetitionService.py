@@ -29,6 +29,16 @@ TOKEN_EXPANSIONS = [
 ]
 
 
+def get_or_none[T: (Trophy, Flag)](_model: type[T], id: int) -> T | None:
+    """
+    Returns: Flag|Trophy in the database or None
+    """
+    try:
+        return _model.objects.get(id=id)
+    except _model.DoesNotExist:
+        return None
+
+
 def get_closest_by_name[T: (Trophy, Flag)](_model: type[T], name: str) -> T:
     """
     Returns: closest found Flag|Trophy in the database or raise DoesNotExist

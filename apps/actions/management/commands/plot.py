@@ -9,6 +9,8 @@ from django.core.management import BaseCommand
 from apps.actions.management.helpers.plotter import Plotter
 from apps.entities.models import Entity, League
 from apps.entities.services import EntityService
+from apps.races.models import Flag
+from apps.races.services import FlagService
 from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
@@ -26,12 +28,12 @@ logging.getLogger("matplotlib").setLevel(logging.WARNING)
 class Command(BaseCommand):
     @override
     def add_arguments(self, parser):
-        parser.add_argument("type", type=str, default=Plotter.BOXPLOT, help=f"plot type {Plotter.types()}.")
+        parser.add_argument("type", type=str, nargs="?", default=Plotter.BOXPLOT, help=f"plot type {Plotter.types()}.")
 
-        # TODO: add race_id filter
         parser.add_argument("-i", "--index", type=int, help="position to plot the speeds in 'nth' charts.")
         parser.add_argument("-c", "--club", type=int, help="club ID for which to load the data.")
         parser.add_argument("-l", "--league", type=int, help="league ID for which to load the data.")
+        parser.add_argument("-f", "--flag", type=int, help="flagID for which to load the data.")
         parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="gender filter.")
         parser.add_argument("-ca", "--category", type=str, default=CATEGORY_ABSOLUT, help="category filter.")
         parser.add_argument("-y", "--years", type=int, nargs="*", default=[], help="years to include in the data.")
@@ -65,6 +67,7 @@ class Command(BaseCommand):
             index=config.index,
             club=config.club,
             league=config.league,
+            flag=config.flag,
             years=config.years,
             gender=config.gender,
             category=config.category,
@@ -81,6 +84,7 @@ class PlotConfig:
     index: int | None
     club: Entity | None
     league: League | None
+    flag: Flag | None
 
     plot_type: str
 
@@ -97,10 +101,11 @@ class PlotConfig:
 
     @classmethod
     def from_args(cls, **options) -> "PlotConfig":
-        index, club_id, league_id, plot_type, gender, category = (
+        index, club_id, league_id, flag_id, plot_type, gender, category = (
             options["index"],
             options["club"],
             options["league"],
+            options["flag"],
             options["type"],
             options["gender"].upper(),
             options["category"].upper(),
@@ -127,6 +132,10 @@ class PlotConfig:
         if club_id and not club:
             raise ValueError(f"invalid {club_id=}")
 
+        flag = FlagService.get_flag_or_none(flag_id) if flag_id else None
+        if flag_id and not flag:
+            raise ValueError(f"invalid {flag_id=}")
+
         league = League.objects.get(pk=league_id) if league_id else None
         if league and branch_teams:
             logger.warning("branch_teams is not supported with leagues, ignoring it")
@@ -149,6 +158,7 @@ class PlotConfig:
             index=index,
             club=club,
             league=league,
+            flag=flag,
             plot_type=plot_type,
             gender=gender,
             category=category,

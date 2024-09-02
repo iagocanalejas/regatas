@@ -5,7 +5,7 @@ from django.db.models import Q, QuerySet
 
 from apps.entities.models import Entity, League
 from apps.participants.models import Participant
-from apps.races.models import Race
+from apps.races.models import Flag, Race
 from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 from rscraping.data.models import Participant as RSParticipant
@@ -57,13 +57,22 @@ def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: 
 def get_year_speeds_filtered_by(
     club: Entity | None,
     league: League | None,
+    flag: Flag | None,
     gender: str,
     category: str,
     branch_teams: bool,
     only_league_races: bool,
     normalize: bool,
 ) -> dict[int, list[float]]:
-    subquery_where_clause = _get_speed_filters(club, league, gender, category, branch_teams, only_league_races)
+    subquery_where_clause = _get_speed_filters(
+        club=club,
+        league=league,
+        flag=flag,
+        gender=gender,
+        category=category,
+        branch_teams=branch_teams,
+        only_league_races=only_league_races,
+    )
     speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
     where_clause = ""
 
@@ -85,7 +94,7 @@ def get_year_speeds_filtered_by(
                 CAST({speed_expression} AS DOUBLE PRECISION) as speed
             FROM participant p JOIN race r ON p.race_id = r.id
             WHERE {subquery_where_clause}
-            ORDER BY r.date
+            ORDER BY r.date, speed DESC
         )
         SELECT year, array_agg(speed) AS speeds
         FROM speeds_query
@@ -114,7 +123,15 @@ def get_nth_speed_filtered_by(
     only_league_races: bool,
     normalize: bool,
 ) -> list[float]:
-    subquery_where_clause = _get_speed_filters(club, league, gender, category, branch_teams, only_league_races)
+    subquery_where_clause = _get_speed_filters(
+        club=club,
+        league=league,
+        flag=None,
+        gender=gender,
+        category=category,
+        branch_teams=branch_teams,
+        only_league_races=only_league_races,
+    )
     subquery_where_clause += f" AND extract(YEAR from r.date) = {year}"
     speed_expression = "(p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6"
     where_clause = ""
@@ -158,6 +175,7 @@ def get_nth_speed_filtered_by(
 def _get_speed_filters(
     club: Entity | None,
     league: League | None,
+    flag: Flag | None,
     gender: str,
     category: str,
     branch_teams: bool,
@@ -177,7 +195,7 @@ def _get_speed_filters(
         "p.club_name LIKE '% B'"
         if branch_teams
         else "(p.club_name IS NULL OR p.club_name NOT LIKE '% B')"
-        if not league
+        if not league and not flag
         else ""
     )
 
@@ -195,6 +213,7 @@ def _get_speed_filters(
         f"p.club_id = {club.pk}" if club else "",
         "r.league_id IS NOT NULL" if only_league_races else "",
         f"r.league_id = {league.pk}" if league else "",
+        f"r.flag_id = {flag.pk}" if flag else "",
     )
     return " AND ".join([str(filter) for filter in filters if filter])
 

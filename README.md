@@ -86,9 +86,10 @@ Use boxplot graphs to visualize each year speeds.
 
 ```sh
 python manage.py plot type \
+	[-i, --index INDEX] \
 	[-c, --club CLUB_ID] \
 	[-l, --league LEAGUE_ID] \
-	[-i, --index INDEX] \
+	[-f, --flag FLAG_ID] \
 	[-g, --gender GENDER] \
 	[-ca, --category CATEGORY] \
 	[-y, --years YEARS] \
@@ -107,6 +108,8 @@ python manage.py plot type \
 #                         club ID for which to load the data.
 #   -l LEAGUE, --league LEAGUE
 #                         league ID for which to load the data.
+#   -f FLAG, --flag FLAG
+#                         flag ID for which to load the data.
 #   -g GENDER, --gender GENDER
 #                         gender filter.
 #   -ca CATEGORY, --category CATEGORY
@@ -128,17 +131,22 @@ python manage.py plot type \
 ```sh
 # Plot the winner speed of each race for the league 5 in 2015, 2016, 2017, and 2018.
 # The plot will be saved in the Downloads folder with the name test.png.
-python manage.py plot --league 5 -t nth -i 1 -y 2015 2016 2017 2018 -o ~/Downloads/p.png
+python manage.py plot nth --league 5 -i 1 -y 2015 2016 2017 2018 -o ~/Downloads/p.png
 ```
 
 ```sh
-# Plot the normalized leaghe speeds of the Puebla team for all the years.
-python manage.py plot 25 --leagues-only -n -o ~/Downloads/p.png
+# Plot the normalized league speeds of the Puebla team for all the years.
+python manage.py plot -c 25 --leagues-only -n -o ~/Downloads/p.png
 ```
 
 ```sh
 # Plot the speeds of the Puebla team for the league 5 in 2021, 2022, and 2023.
-python manage.py plot 25 --league 5 -t line -y 2021 2022 2023 -o ~/Downloads/p.png
+python manage.py plot line -c 25 --league 5 -y 2021 2022 2023 -o ~/Downloads/p.png
+```
+
+```sh
+# Plot the speeds of the Puebla team for the flag 12 in 2021, 2022, and 2023.
+python manage.py plot line -f 12 -y 2021 2022 2023 -o ~/Downloads/p.png
 ```
 
 ```sh

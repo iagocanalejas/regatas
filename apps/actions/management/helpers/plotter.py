@@ -4,6 +4,7 @@ from matplotlib.ticker import MultipleLocator
 
 from apps.entities.models import Entity, League
 from apps.participants.services import ParticipantService
+from apps.races.models import Flag
 from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_MALE
 
 
@@ -50,6 +51,7 @@ class Plotter:
         index: int | None = None,
         club: Entity | None = None,
         league: League | None = None,
+        flag: Flag | None = None,
         years: list[int] | None = None,
         gender: str = GENDER_MALE,
         category: str = CATEGORY_ABSOLUT,
@@ -60,6 +62,7 @@ class Plotter:
             self._data = ParticipantService.get_year_speeds_filtered_by(
                 club=club,
                 league=league,
+                flag=flag,
                 gender=gender,
                 category=category,
                 branch_teams=branch_teams,

@@ -2,6 +2,13 @@ from apps.races.models import Trophy
 from apps.races.services import CompetitionService
 
 
+def get_trophy_or_none(trophy_id: int) -> Trophy | None:
+    """
+    Returns: Trophy in the database or None
+    """
+    return CompetitionService.get_or_none(Trophy, trophy_id)
+
+
 def get_closest_by_name(name: str) -> Trophy:
     """
     Returns: closest found trophy in the database or raise Trophy.DoesNotExist
