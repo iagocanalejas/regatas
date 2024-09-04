@@ -26,6 +26,10 @@ logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
+    help = """
+    Plot statistics of the races given a set of filters.
+    """
+
     @override
     def add_arguments(self, parser):
         parser.add_argument("type", type=str, nargs="?", default=Plotter.BOXPLOT, help=f"plot type {Plotter.types()}.")

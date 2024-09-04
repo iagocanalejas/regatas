@@ -151,49 +151,7 @@ class Command(BaseCommand):
                     json.dump(race.to_dict(), file)
                 continue
 
-            participants = race.participants
-            race.participants = []
-
-            new_race, race_status = self.ingest_race(digester, race)
-            if not new_race:
-                logger.warning(f"{race=} was not saved")
-                continue
-
-            for participant in participants:
-                new_participant, status = digester.ingest_participant(new_race, participant)
-                if status == Digester.Status.NEW or status == Digester.Status.MERGED:
-                    new_participant, status = digester.save_participant(
-                        new_participant,
-                        race_status=race_status,
-                        participant_status=status,
-                    )
-                if new_participant.pk and participant.penalty:
-                    _ = digester.save_penalty(new_participant, participant.penalty)
-
-            if race.race_notes:
-                logger.warning(f"{race.date} :: {race.race_notes}")
-
-    def ingest_race(self, digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
-        try:
-            new_race, associated, status = digester.ingest(race)
-            new_race, status = digester.save(new_race, status, associated=associated)
-            if not status.is_saved():
-                db_race = input_race(race)
-                if not db_race:
-                    return None, Digester.Status.IGNORE
-
-                new_race, status = digester.merge(new_race, db_race, status)
-                new_race, status = digester.save(new_race, status, associated=associated)
-                if not status.is_saved():
-                    return None, Digester.Status.IGNORE
-            return new_race, status
-        except AssertionError as e:
-            logger.error(e)
-            return None, Digester.Status.IGNORE
-        except KeyboardInterrupt as e:
-            with open(f"{race.race_ids[0]}.json", "w") as f:
-                json.dump(race.to_dict(), f, ensure_ascii=False)
-            raise e
+            ingest_race(digester, race)
 
 
 @dataclass
@@ -318,3 +276,50 @@ class ScrapeConfig:
             else:
                 raise ValueError(f"invalid {year=}")
         return None
+
+
+def ingest_race(digester: DigesterProtocol, race: RSRace):
+    participants = race.participants
+    race.participants = []
+
+    new_race, race_status = digest_race(digester, race)
+    if not new_race:
+        logger.warning(f"{race=} was not saved")
+        return
+
+    for participant in participants:
+        new_participant, status = digester.ingest_participant(new_race, participant)
+        if status == Digester.Status.NEW or status == Digester.Status.MERGED:
+            new_participant, status = digester.save_participant(
+                new_participant,
+                race_status=race_status,
+                participant_status=status,
+            )
+        if new_participant.pk and participant.penalty:
+            _ = digester.save_penalty(new_participant, participant.penalty)
+
+    if race.race_notes:
+        logger.warning(f"{race.date} :: {race.race_notes}")
+
+
+def digest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
+    try:
+        new_race, associated, status = digester.ingest(race)
+        new_race, status = digester.save(new_race, status, associated=associated)
+        if not status.is_saved():
+            db_race = input_race(race)
+            if not db_race:
+                return None, Digester.Status.IGNORE
+
+            new_race, status = digester.merge(new_race, db_race, status)
+            new_race, status = digester.save(new_race, status, associated=associated)
+            if not status.is_saved():
+                return None, Digester.Status.IGNORE
+        return new_race, status
+    except AssertionError as e:
+        logger.error(e)
+        return None, Digester.Status.IGNORE
+    except KeyboardInterrupt as e:
+        with open(f"{race.race_ids[0]}.json", "w") as f:
+            json.dump(race.to_dict(), f, ensure_ascii=False)
+        raise e

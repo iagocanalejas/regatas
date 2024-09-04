@@ -68,16 +68,32 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 python manage.py scrape lgt -w --force-gender --force-category
 ```
 
-## Find Races
+## Recheck Races
 
-Retrieve races from the database searching by race ID or datasource and ref_id.
+Recheck the already full imported flags to find new races.
 
 ```sh
-python manage.py find datasource_or_race [REF_ID]
+python manage.py scrape datasource \
+	[-f, --flag FLAG] \
+	[-g, --gender] \
+	[-ca, --category CATEGORY] \
+	[--force-gender] \
+	[--force-category]
 
 # positional arguments:
-#   datasource_or_race    name of the Datasource or race ID in the database.
-#   ref_id                reference ID for the given Datasource.
+#   datasource            name of the Datasource.
+#
+# options:
+#   -f FLAG, --flag FLAG
+#                         flagID for which races should be imported.
+#   -g GENDER, --gender GENDER
+#                         gender filter.
+#   -ca CATEGORY, --category CATEGORY
+#                         category filter.
+#   --force-gender
+#                         forces the gender to match.
+#   --force-category
+#                         forces the category to match.
 ```
 
 ## Plot Data

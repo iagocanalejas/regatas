@@ -30,6 +30,27 @@ RACE_METADATA_SCHEMA = {
     "required": ["datasource"],
 }
 
+FLAG_METADATA_SCHEMA = {
+    "$schema": "http://json-schema.org/schema#",
+    "name": "FlagMetadata",
+    "properties": {
+        "datasource": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ref_id": {"type": "string"},
+                    "datasource_name": {"type": "string"},
+                    "values": {"type": "object", "additionalProperties": {"type": "string"}},
+                },
+                "additionalProperties": False,
+                "required": ["ref_id", "datasource_name", "values"],
+            },
+        }
+    },
+    "required": ["datasource"],
+}
+
 
 ENTITY_METADATA_SCHEMA = {
     "$schema": "http://json-schema.org/schema#",

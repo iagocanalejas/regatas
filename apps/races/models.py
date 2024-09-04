@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
 from django.db.models import JSONField
 
-from apps.schemas import RACE_METADATA_SCHEMA, default_metadata
+from apps.schemas import FLAG_METADATA_SCHEMA, RACE_METADATA_SCHEMA, default_metadata
 from apps.utils.choices import (
     RACE_CATEGORY_CHOICES,
     RACE_CONVENTIONAL,
@@ -50,6 +50,11 @@ class Flag(CreationStampModel):
     verified = models.BooleanField(blank=True, default=False)
 
     qualifies_for = models.ForeignKey(to="self", null=True, blank=True, default=None, on_delete=models.PROTECT)
+
+    metadata = JSONField(
+        default=default_metadata,
+        validators=[JSONSchemaValidator(schema=FLAG_METADATA_SCHEMA)],
+    )
 
     def __str__(self):
         return self.name
