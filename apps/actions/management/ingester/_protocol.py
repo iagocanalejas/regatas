@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from typing import Any, Protocol
+from typing import Protocol
 
 from apps.entities.models import Entity
 from rscraping.clients import ClientProtocol
@@ -9,7 +9,7 @@ from rscraping.data.models import Race as RSRace
 class IngesterProtocol(Protocol):
     client: ClientProtocol
 
-    def fetch(self, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch(self, **kwargs) -> Generator[RSRace]:
         """
         Fetch races that should be ingested from one of many clients.
 
@@ -17,7 +17,7 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace]:
         """
         Fetch races that should be ingested from one of many clients from the last weekend.
 
@@ -25,7 +25,7 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def fetch_by_ids(self, race_ids: list[str], **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_ids(self, race_ids: list[str], **kwargs) -> Generator[RSRace]:
         """
         Fetch races that should be ingested from one of many clients using the IDs to filter.
 
@@ -36,7 +36,7 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def fetch_by_entity(self, entity: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_entity(self, entity: Entity, year: int, **kwargs) -> Generator[RSRace]:
         """
         Fetch races that should be ingested from one of many clients using the entity and year to filter.
 
@@ -48,7 +48,7 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def fetch_by_club(self, club_id: str, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_club(self, club_id: str, year: int, **kwargs) -> Generator[RSRace]:
         """
         Fetch races that should be ingested from one of many clients using the club and year to filter.
 
@@ -60,7 +60,7 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def fetch_by_flag(self, flag_id: str, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_flag(self, flag_id: str, **kwargs) -> Generator[RSRace]:
         """
         Fetch races that should be ingested from one of many clients using the flag to filter.
 
@@ -82,4 +82,4 @@ class IngesterProtocol(Protocol):
         """
         ...
 
-    def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]: ...
+    def _retrieve_race(self, race_id: str) -> Generator[RSRace]: ...

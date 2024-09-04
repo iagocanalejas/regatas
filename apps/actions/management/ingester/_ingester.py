@@ -2,7 +2,7 @@ import logging
 import time
 from collections.abc import Generator
 from datetime import date, datetime
-from typing import Any, override
+from typing import override
 
 from apps.actions.management.helpers.input import (
     input_competition,
@@ -29,7 +29,7 @@ class Ingester(IngesterProtocol):
         return datetime.strptime(race.date, "%d/%m/%Y").date() > date.today()
 
     @override
-    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace]:
         for race_id in self.client.get_race_ids_by_year(year=year):
             for race in self._retrieve_race(race_id):
                 if race and self._is_race_after_today(race):
@@ -39,7 +39,7 @@ class Ingester(IngesterProtocol):
                     yield race
 
     @override
-    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace]:
         for race_id in self.client.get_last_weekend_race_ids():
             for race in self._retrieve_race(race_id):
                 if race and self._is_race_after_today(race):
@@ -49,7 +49,7 @@ class Ingester(IngesterProtocol):
                     yield race
 
     @override
-    def fetch_by_ids(self, race_ids: list[str], table: int | None = None, **_) -> Generator[RSRace, Any, Any]:
+    def fetch_by_ids(self, race_ids: list[str], table: int | None = None, **_) -> Generator[RSRace]:
         for race_id in race_ids:
             race = self.client.get_race_by_id(race_id, table=table)
             if race:
@@ -58,7 +58,7 @@ class Ingester(IngesterProtocol):
             time.sleep(1)
 
     @override
-    def fetch_by_entity(self, entity: Entity, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_entity(self, entity: Entity, year: int, **kwargs) -> Generator[RSRace]:
         sources = [
             datasource
             for datasource in entity.metadata.get("datasource", [])
@@ -73,7 +73,7 @@ class Ingester(IngesterProtocol):
         yield from self.fetch_by_club(ref_id, year, **kwargs)
 
     @override
-    def fetch_by_club(self, club_id: str, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_club(self, club_id: str, year: int, **kwargs) -> Generator[RSRace]:
         for race_id in self.client.get_race_ids_by_club(club_id=club_id, year=year):
             for race in self._retrieve_race(race_id):
                 if race and self._is_race_after_today(race):
@@ -83,7 +83,7 @@ class Ingester(IngesterProtocol):
                     yield race
 
     @override
-    def fetch_by_flag(self, *args, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_flag(self, *args, **kwargs) -> Generator[RSRace]:
         raise NotImplementedError
 
     @override
@@ -115,7 +115,7 @@ class Ingester(IngesterProtocol):
         return (db_race, (trophy, trophy_edition), (flag, flag_edition)) if trophy or flag else input_competition(race)
 
     @override
-    def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]:
+    def _retrieve_race(self, race_id: str) -> Generator[RSRace]:
         if race_id in self._ignored_races or MetadataService.exists(self.client.DATASOURCE, race_id):
             logger.debug(f"ignoring {race_id=}")
             return

@@ -1,7 +1,7 @@
 import logging
 import time
 from collections.abc import Generator
-from typing import Any, override
+from typing import override
 
 from apps.races.services import MetadataService
 from rscraping.clients import TrainerasClient
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class TrainerasIngester(Ingester):
     @override
-    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace]:
         race: RSRace | None = None
         participants: list[RSParticipant] = []
 
@@ -54,7 +54,7 @@ class TrainerasIngester(Ingester):
             yield race
 
     @override
-    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_last_weekend(self, **kwargs) -> Generator[RSRace]:
         race: RSRace | None = None
         participants: list[RSParticipant] = []
 
@@ -90,7 +90,7 @@ class TrainerasIngester(Ingester):
             yield race
 
     @override
-    def fetch_by_flag(self, *_, flag_id: str, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch_by_flag(self, *_, flag_id: str, **kwargs) -> Generator[RSRace]:
         assert isinstance(self.client, TrainerasClient)
 
         for race_id in self.client.get_race_ids_by_flag(flag_id):
@@ -100,7 +100,7 @@ class TrainerasIngester(Ingester):
                     yield race
 
     @override
-    def _retrieve_race(self, race_id: str) -> Generator[RSRace, Any, Any]:
+    def _retrieve_race(self, race_id: str) -> Generator[RSRace]:
         if race_id in self._ignored_races or MetadataService.exists(Datasource.TRAINERAS, race_id):
             logger.debug(f"ignoring {race_id=}")
             return

@@ -2,7 +2,7 @@ import logging
 import os
 from collections.abc import Generator
 from os.path import isfile
-from typing import Any, override
+from typing import override
 
 from rscraping.data.models import Race as RSRace
 
@@ -16,7 +16,7 @@ class FolderIngester(Ingester):
         self.path = path
 
     @override
-    def fetch(self, *_, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch(self, *_, **kwargs) -> Generator[RSRace]:
         if os.path.isfile(self.path):
             race = self._process_file(self.path)
             if race:
@@ -32,7 +32,7 @@ class FolderIngester(Ingester):
             os.remove(file)
 
     @override
-    def fetch_by_ids(self, *_, **__) -> Generator[RSRace, Any, Any]:
+    def fetch_by_ids(self, *_, **__) -> Generator[RSRace]:
         return self.fetch()
 
     def _process_file(self, file: str) -> RSRace | None:

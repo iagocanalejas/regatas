@@ -1,6 +1,6 @@
 import logging
 from collections.abc import Generator
-from typing import Any, override
+from typing import override
 
 from apps.races.services import MetadataService
 from rscraping.clients import TabularDataClient
@@ -22,7 +22,7 @@ class TabularIngester(Ingester):
         self._ignored_races = ignored_races
 
     @override
-    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace, Any, Any]:
+    def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace]:
         for race_id in self.client.get_race_ids_by_year(year=year):
             if race_id in self._ignored_races or MetadataService.exists(
                 Datasource.TABULAR,
