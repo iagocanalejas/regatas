@@ -1,0 +1,22 @@
+{
+    "name": "BANDERA DE ZARAUTZ",
+    "date": "13/08/2011",
+    "day": 1,
+    "modality": "TRAINERA",
+    "type": "CONVENTIONAL",
+    "league": null,
+    "town": "ZARAUTZ",
+    "organizer": null,
+    "sponsor": null,
+    "normalized_names": [["BANDERA DE ZARAUZKO", 3]],
+    "race_ids": ["1854"],
+    "url": "https://traineras.es/clasificaciones/1854",
+    "datasource": "traineras",
+    "gender": "FEMALE",
+    "category": "ABSOLUT",
+    "participants": [],
+    "race_notes": null,
+    "race_laps": 2,
+    "race_lanes": 4,
+    "cancelled": false
+}

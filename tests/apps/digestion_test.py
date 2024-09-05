@@ -180,7 +180,7 @@ class DigestionTest(TestCase):
     def x_test_given_race(self, mock_confirm):
         mock_confirm.return_value = True
 
-        race_id = 776  # change this
+        race_id = 537  # change this
         with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", f"{race_id}.json")) as f:
             rs_race = RSRace.from_json(f.read())
             race = Race.objects.get(pk=race_id)
