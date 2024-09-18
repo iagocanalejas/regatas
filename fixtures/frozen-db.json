@@ -75132,7 +75132,7 @@
 		"model": "participants.participant",
 		"pk": 27838,
 		"fields": {
-			"club_name": "CR RIANXO",
+			"club_name": "CR RIANXO B",
 			"club": 26,
 			"race": 2800,
 			"distance": 5556,
@@ -75157,6 +75157,253 @@
 			"distance": 5556,
 			"laps": "[\"00:05:31\", \"00:10:59\", \"00:16:55\", \"00:22:24.190000\"]",
 			"lane": 5,
+			"series": 2,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 27840,
+		"fields": {
+			"club_name": "C.R. CABO DA CRUZ B",
+			"club": 13,
+			"race": 2800,
+			"distance": 5556,
+			"laps": "[\"00:05:45\", \"00:11:22\", \"00:17:30\", \"00:22:58.930000\"]",
+			"lane": 1,
+			"series": 1,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11881,
+		"fields": {
+			"club_name": "ARKOTE SEGUROS BILBAO",
+			"club": 59,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:30\", \"00:10:32\", \"00:16:21\", \"00:21:22.570000\"]",
+			"lane": 4,
+			"series": 3,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11871,
+		"fields": {
+			"club_name": "BUSTURIALDEA",
+			"club": 79,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:33\", \"00:10:39\", \"00:16:31\", \"00:21:30.870000\"]",
+			"lane": 2,
+			"series": 1,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11870,
+		"fields": {
+			"club_name": "CAMARGO CUEVA EL PENDO",
+			"club": 52,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:33\", \"00:10:37\", \"00:16:33\", \"00:21:35.770000\"]",
+			"lane": 1,
+			"series": 1,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11878,
+		"fields": {
+			"club_name": "ZARAUTZ GESALAGA OKELAN",
+			"club": 49,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:27\", \"00:10:31\", \"00:16:11\", \"00:21:16.440000\"]",
+			"lane": 1,
+			"series": 3,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11873,
+		"fields": {
+			"club_name": "ORIO ORIALKI",
+			"club": 51,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:29\", \"00:10:31\", \"00:16:25\", \"00:21:28.370000\"]",
+			"lane": 4,
+			"series": 1,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11872,
+		"fields": {
+			"club_name": "DEUSTO BILBAO",
+			"club": 58,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:28\", \"00:10:25\", \"00:16:15\", \"00:21:13.100000\"]",
+			"lane": 3,
+			"series": 1,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11875,
+		"fields": {
+			"club_name": "MATRIX HONDARRIBIA",
+			"club": 42,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:25\", \"00:10:27\", \"00:16:34\", \"00:21:36.300000\"]",
+			"lane": 2,
+			"series": 2,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11879,
+		"fields": {
+			"club_name": "SAN JUAN",
+			"club": 46,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:32\", \"00:10:39\", \"00:16:24\", \"00:21:30.530000\"]",
+			"lane": 2,
+			"series": 3,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11880,
+		"fields": {
+			"club_name": "SANPEDROTARRA",
+			"club": 41,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:32\", \"00:10:34\", \"00:16:21\", \"00:21:24.450000\"]",
+			"lane": 3,
+			"series": 3,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11876,
+		"fields": {
+			"club_name": "CASTRO BRUNO SAEZ",
+			"club": 216,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:23\", \"00:10:27\", \"00:16:34\", \"00:21:29.210000\"]",
+			"lane": 3,
+			"series": 2,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11877,
+		"fields": {
+			"club_name": "S.D.R. PEDREÑA",
+			"club": 54,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:19\", \"00:10:16\", \"00:16:11\", \"00:21:05.130000\"]",
+			"lane": 4,
+			"series": 2,
+			"handicap": null,
+			"gender": "MALE",
+			"category": "ABSOLUT",
+			"guest": false,
+			"absent": false,
+			"retired": false
+		}
+	},
+	{
+		"model": "participants.participant",
+		"pk": 11874,
+		"fields": {
+			"club_name": "DELTECO ZUMAIA",
+			"club": 47,
+			"race": 1337,
+			"distance": 5556,
+			"laps": "[\"00:05:24\", \"00:10:27\", \"00:16:31\", \"00:21:34.110000\"]",
+			"lane": 1,
 			"series": 2,
 			"handicap": null,
 			"gender": "MALE",

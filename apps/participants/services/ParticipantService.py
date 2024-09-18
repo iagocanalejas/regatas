@@ -25,7 +25,7 @@ def get_by_race_and_filter_by(
     raw_club_name: str | None = None,
 ) -> Participant | None:
     q = get_by_race(race).filter(club=club, category=category, gender=gender)
-    if raw_club_name and race.league is not None:
+    if q.count() > 1 and raw_club_name and race.league is None:
         q = _add_branch_filters(q, raw_club_name)
 
     try:

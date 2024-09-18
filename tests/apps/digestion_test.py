@@ -157,6 +157,23 @@ class DigestionTest(TestCase):
             self.assertEqual(status, Digester.Status.EXISTING)
 
     @patch("inquirer.confirm")
+    def test_digestion_existing_b_participants(self, mock_confirm):
+        mock_confirm.return_value = True
+
+        with open(os.path.join(settings.BASE_DIR, "fixtures", "ingestion", "_existing_b_participants.json")) as f:
+            rs_race = RSRace.from_json(f.read())
+            race = Race.objects.get(pk=1337)
+
+        new_race, _, status = self.digester.ingest(rs_race)
+        self.assertEqual(race, new_race)
+        self.assertEqual(status, Digester.Status.MERGED)
+
+        for participant in rs_race.participants:
+            new_participant, status = self.digester.ingest_participant(new_race, participant)
+            self.assertIsNotNone(new_participant.pk)
+            self.assertEqual(status, Digester.Status.EXISTING)
+
+    @patch("inquirer.confirm")
     def test_digestion(self, mock_confirm):
         """
         This test will ingest all the races inside fixtures/ingestion that match *.json
