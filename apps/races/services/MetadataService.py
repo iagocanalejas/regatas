@@ -3,7 +3,7 @@ import logging
 from django.db.models import QuerySet
 
 from apps.races.filters import RaceFilters
-from apps.races.models import Race
+from apps.races.models import Flag, Race
 from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
@@ -71,8 +71,8 @@ def exists(
 
 
 def get_datasource_from_race(
-    datasource: Datasource,
     race: Race,
+    datasource: Datasource,
     ref_id: str,
     sheet_id: str | None = None,
     sheet_name: str | None = None,
@@ -85,3 +85,8 @@ def get_datasource_from_race(
         if sheet_name:
             matches = [d for d in matches if d["values"]["sheet_name"] == sheet_name]
     return matches
+
+
+def get_datasource_from_flag(flag: Flag, datasource: Datasource, ref_id: str) -> list[dict]:
+    datasources = flag.metadata["datasource"]
+    return [d for d in datasources if d["datasource_name"] == datasource.value.lower() and d["ref_id"] == ref_id]

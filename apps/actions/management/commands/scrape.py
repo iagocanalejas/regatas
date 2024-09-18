@@ -15,7 +15,9 @@ from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingester import build_ingester
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
-from apps.races.models import Race
+from apps.races.models import Flag, Race
+from apps.races.services import MetadataService
+from apps.schemas import MetadataBuilder
 from apps.utils import build_client
 from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
@@ -143,6 +145,7 @@ class Command(BaseCommand):
         else:
             raise ValueError("invalid state")
 
+        flags: set[Flag] = set()
         for race in races:
             if config.output_path and os.path.isdir(config.output_path):
                 file_name = f"{race.race_ids[0]}.json"
@@ -151,7 +154,24 @@ class Command(BaseCommand):
                     json.dump(race.to_dict(), file)
                 continue
 
-            ingest_race(digester, race)
+            new_race, _ = ingest_race(digester, race)
+            if new_race and new_race.flag:
+                flags.add(new_race.flag)
+
+        if config.flag_id and config.datasource == Datasource.TRAINERAS and len(flags) == 1:
+            flag = flags.pop()
+            logger.info(f"adding metadata to {flag}")
+            datasources = MetadataService.get_datasource_from_flag(flag, config.datasource, config.flag_id)
+            if len(datasources) == 0:
+                flag.metadata["datasource"].append(
+                    MetadataBuilder()
+                    .ref_id(config.flag_id)
+                    .datasource_name(config.datasource)
+                    .values("details_page", f"https://traineras.es/banderas/{config.flag_id}")
+                    .build()
+                )
+                flag.save()
+                logger.info(f"{flag=} metadata has been updated")
 
 
 @dataclass
@@ -278,14 +298,14 @@ class ScrapeConfig:
         return None
 
 
-def ingest_race(digester: DigesterProtocol, race: RSRace):
+def ingest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
     participants = race.participants
     race.participants = []
 
     new_race, race_status = digest_race(digester, race)
     if not new_race:
         logger.warning(f"{race=} was not saved")
-        return
+        return None, Digester.Status.IGNORE
 
     for participant in participants:
         new_participant, status = digester.ingest_participant(new_race, participant)
@@ -300,6 +320,8 @@ def ingest_race(digester: DigesterProtocol, race: RSRace):
 
     if race.race_notes:
         logger.warning(f"{race.date} :: {race.race_notes}")
+
+    return new_race, race_status
 
 
 def digest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:

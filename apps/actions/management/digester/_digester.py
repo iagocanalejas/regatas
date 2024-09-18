@@ -346,7 +346,7 @@ class Digester(DigesterProtocol):
 
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
-        datasources = MetadataService.get_datasource_from_race(self.client.DATASOURCE, race, ref_id)
+        datasources = MetadataService.get_datasource_from_race(race, self.client.DATASOURCE, ref_id)
         if len(datasources) > 1:
             logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
         return datasources[0] if datasources else None
