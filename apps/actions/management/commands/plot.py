@@ -123,22 +123,17 @@ class PlotConfig:
             options["output"],
         )
 
-        if not gender or gender not in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX]:
-            raise ValueError(f"invalid {gender=}")
-
-        if not category or category not in [CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN]:
-            raise ValueError(f"invalid {category=}")
-
-        if not plot_type or plot_type not in [Plotter.BOXPLOT, Plotter.LINE, Plotter.NTH_SPEED]:
-            raise ValueError(f"invalid {plot_type=}")
+        assert not gender or gender in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX], f"invalid {gender=}"
+        assert not category or category in [CATEGORY_ABSOLUT, CATEGORY_SCHOOL, CATEGORY_VETERAN], f"invalid {category=}"
+        assert not plot_type or plot_type in [Plotter.BOXPLOT, Plotter.LINE, Plotter.NTH_SPEED], f"invalid {plot_type=}"
+        assert plot_type != Plotter.NTH_SPEED or years, f"{plot_type=} requires at least one {years=}"
+        assert plot_type != Plotter.NTH_SPEED or index, f"{plot_type=} requires an {index=}"
 
         club = EntityService.get_entity_or_none(club_id) if club_id else None
-        if club_id and not club:
-            raise ValueError(f"invalid {club_id=}")
+        assert not club_id or club, f"invalid {club_id=}"
 
         flag = FlagService.get_flag_or_none(flag_id) if flag_id else None
-        if flag_id and not flag:
-            raise ValueError(f"invalid {flag_id=}")
+        assert not flag_id or flag, f"invalid {flag_id=}"
 
         league = League.objects.get(pk=league_id) if league_id else None
         if league and branch_teams:
@@ -152,11 +147,6 @@ class PlotConfig:
         if league and category != league.category:
             logger.warning(f"given {category=} does not match {league.category}, using league's one")
             category = league.category if league.category else category
-
-        if plot_type == Plotter.NTH_SPEED and not years:
-            raise ValueError(f"{plot_type=} requires at least one {years=}")
-        if plot_type == Plotter.NTH_SPEED and not index:
-            raise ValueError(f"{plot_type=} requires an {index=}")
 
         return cls(
             index=index,

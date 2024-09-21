@@ -1192,6 +1192,10 @@
                     - details_page: https://www.euskolabelliga.com/resultados/ver.php?id=es&r=1647864858
                 ref_id: "1647864858"
                 datasource_name: act
+              - values:
+                    - details_page: https://www.ligalgt.com/principal/regata/11
+                ref_id: "11"
+                datasource_name: traineras
 - model: races.race
   pk: 2
   fields:

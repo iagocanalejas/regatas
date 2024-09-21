@@ -90,19 +90,22 @@ class TrainerasIngester(Ingester):
             yield race
 
     @override
-    def fetch_by_flag(self, *_, flag_id: str, **kwargs) -> Generator[RSRace]:
+    def fetch_by_flag(self, *_, flag_id: str, include_existing: bool = False, **kwargs) -> Generator[RSRace]:
         assert isinstance(self.client, TrainerasClient)
 
         for race_id in self.client.get_race_ids_by_flag(flag_id):
-            for race in self._retrieve_race(race_id):
+            for race in self._retrieve_race(race_id, include_existing):
                 if race:
                     logger.debug(f"found race for {race_id=}:\n\t{race}")
                     yield race
 
     @override
-    def _retrieve_race(self, race_id: str) -> Generator[RSRace]:
-        if race_id in self._ignored_races or MetadataService.exists(Datasource.TRAINERAS, race_id):
+    def _retrieve_race(self, race_id: str, include_existing: bool = False) -> Generator[RSRace]:
+        if race_id in self._ignored_races:
             logger.debug(f"ignoring {race_id=}")
+            return
+        if not include_existing and MetadataService.exists(Datasource.TRAINERAS, race_id):
+            logger.debug(f"{race_id=} already in database")
             return
 
         try:

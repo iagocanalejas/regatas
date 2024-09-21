@@ -20,7 +20,13 @@ def get_races(datasource: Datasource, ref_id: str | None = None) -> QuerySet[Rac
     return queryset.all()
 
 
-def get_race_or_none(datasource: Datasource, ref_id: str, day: int | None = None) -> Race | None:
+def get_race_or_none(
+    datasource: Datasource,
+    ref_id: str,
+    day: int | None = None,
+    related: list[str] | None = None,
+    prefetch: list[str] | None = None,
+) -> Race | None:
     metadata: dict = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
 
     filters: dict = {"metadata": [metadata]}
@@ -34,6 +40,9 @@ def get_race_or_none(datasource: Datasource, ref_id: str, day: int | None = None
         .set_sorting(filters.get("ordering", None))
         .build_query()
     )
+
+    queryset = queryset.select_related(*related) if related else queryset
+    queryset = queryset.prefetch_related(*prefetch) if prefetch else queryset
 
     logger.debug(f"trying to find {ref_id=} in {datasource=}")
     try:

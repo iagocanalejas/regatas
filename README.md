@@ -77,6 +77,7 @@ python manage.py scrape datasource \
 	[-f, --flag FLAG] \
 	[-g, --gender] \
 	[-ca, --category CATEGORY] \
+	[--check-participants] \
 	[--force-gender] \
 	[--force-category]
 
@@ -90,6 +91,8 @@ python manage.py scrape datasource \
 #                         gender filter.
 #   -ca CATEGORY, --category CATEGORY
 #                         category filter.
+#   --check-participants
+#                         checks if the number of participants matches.
 #   --force-gender
 #                         forces the gender to match.
 #   --force-category

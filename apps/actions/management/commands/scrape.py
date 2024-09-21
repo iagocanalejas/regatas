@@ -231,37 +231,26 @@ class ScrapeConfig:
         if os.path.isfile(input_source) or os.path.isdir(input_source):
             datasource, path = None, input_source
         else:
-            if not input_source or not Datasource.has_value(input_source):
-                raise ValueError(f"Invalid datasource: {input_source}")
+            assert input_source and Datasource.has_value(input_source), f"invalid {input_source=}"
             datasource, path = Datasource(input_source), None
 
-        if not gender or gender.upper() not in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX]:
-            raise ValueError(f"invalid {gender=}")
-
+        # fmt: off
         has_races = True if len(race_ids) > 0 else None
-        if not only_one_not_none(year, has_races, flag_id, last_weekend or None):
-            raise ValueError("only one of 'year', 'race_ids', 'flag' and 'last_weekend' can be provided")
-        if not year and not club_id and not entity_id and not flag_id and not last_weekend and len(race_ids) == 0:
-            raise ValueError(
-                "required value for 'race_ids' or 'club' or 'entity' or 'flag' or 'year' or 'last_weekend'"
-            )
-        if (club_id or entity_id) and not year:
-            raise ValueError("'year' is required when 'club' is provided")
-        if (club_id or entity_id) and datasource != Datasource.TRAINERAS:
-            raise ValueError("'club' is only supported in TRAINERAS datasource")
-        if flag_id and datasource != Datasource.TRAINERAS:
-            raise ValueError("'flag' is only supported in TRAINERAS datasource")
+        assert only_one_not_none(year, has_races, flag_id, last_weekend or None), "only one of 'year', 'race_ids', 'flag' and 'last_weekend' can be provided"  # noqa: E501
+        assert year or club_id or entity_id or flag_id or last_weekend or len(race_ids) > 0, "required value for 'race_ids' or 'club' or 'entity' or 'flag' or 'year' or 'last_weekend'"  # noqa: E501
+        assert not club_id and not entity_id or year, "'year' is required when 'club' is provided"
+        assert not club_id and not entity_id or datasource == Datasource.TRAINERAS, "'club' is only supported in TRAINERAS datasource"  # noqa: E501
+        assert not flag_id or datasource == Datasource.TRAINERAS, "'flag' is only supported in TRAINERAS datasource"
+        assert not gender or gender.upper() in [GENDER_MALE, GENDER_FEMALE, GENDER_ALL, GENDER_MIX], f"invalid {gender=}"  # noqa: E501
+        assert not category or category.upper() in [CATEGORY_ABSOLUT, CATEGORY_VETERAN, CATEGORY_SCHOOL], f"invalid {category=}"  # noqa: E501
+        assert not table or len(race_ids) == 1, "table filtering is only supported ingesting one race"
+        assert not entity_id or entity_id.isdigit(), f"invalid {entity_id=}"
+        # fmt: on
 
         year = cls.parse_year(year)
 
-        if category and category.upper() not in [CATEGORY_ABSOLUT, CATEGORY_VETERAN, CATEGORY_SCHOOL]:
-            raise ValueError(f"invalid {category=}")
-        if table and len(race_ids) != 1:
-            raise ValueError("day filtering is only supported for one race_id")
-
         entity = EntityService.get_entity_or_none(entity_id) if entity_id else None
-        if entity_id and not entity:
-            raise ValueError(f"invalid {entity_id=}")
+        assert not entity_id or entity, f"invalid {entity_id=}"
 
         return cls(
             tabular_config=tabular_config,
@@ -285,24 +274,32 @@ class ScrapeConfig:
 
     @classmethod
     def parse_year(cls, year: str | None) -> int | None:
-        if year:
-            if year == "all":
-                return cls.ALL_YEARS
-            elif year.isdigit():
-                y = int(year)
-                if y < 1950 or y > 2100:
-                    raise ValueError(f"invalid {year=}")
-                return y
-            else:
-                raise ValueError(f"invalid {year=}")
-        return None
+        if not year:
+            return None
+        if year == "all":
+            return cls.ALL_YEARS
+
+        assert year.isdigit(), f"invalid {year=}"
+
+        y = int(year)
+        assert y > 1950, f"invalid {year=}"
+        assert y < 2100, f"invalid {year=}"
+
+        return y
 
 
 def ingest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
     participants = race.participants
     race.participants = []
 
-    new_race, race_status = digest_race(digester, race)
+    try:
+        new_race, race_status = digest_race(digester, race)
+    except KeyboardInterrupt as e:
+        race.participants = participants
+        with open(f"{race.race_ids[0]}.json", "w") as f:
+            json.dump(race.to_dict(), f, ensure_ascii=False)
+        raise e
+
     if not new_race:
         logger.warning(f"{race=} was not saved")
         return None, Digester.Status.IGNORE
@@ -341,7 +338,3 @@ def digest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, 
     except AssertionError as e:
         logger.error(e)
         return None, Digester.Status.IGNORE
-    except KeyboardInterrupt as e:
-        with open(f"{race.race_ids[0]}.json", "w") as f:
-            json.dump(race.to_dict(), f, ensure_ascii=False)
-        raise e
