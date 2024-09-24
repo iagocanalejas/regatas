@@ -2,7 +2,7 @@ from enum import Enum, auto
 from typing import Protocol
 
 from apps.participants.models import Participant, Penalty
-from apps.races.models import Race
+from apps.races.models import Flag, Race, Trophy
 from rscraping.clients import ClientProtocol
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
@@ -33,12 +33,18 @@ class DigesterProtocol(Protocol):
         def is_saved(self) -> bool:
             return self in [self.CREATED, self.UPDATED]
 
-    def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, Status]:
+    def ingest(
+        self,
+        race: RSRace,
+        hint: tuple[Flag, Trophy] | None = None,
+        **kwargs,
+    ) -> tuple[Race, Race | None, Status]:
         """
         Converts the fetched RSRace into a database Race trying to retrieve valid data from the database.
 
         Args:
             race: RSRace: The race to ingest.
+            hint: tuple[Flag, Trophy]: The hint to find the race in the database.
 
         Returns: tuple[Race, Race | None]:
             Race: The new ingested race.

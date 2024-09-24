@@ -1,4 +1,5 @@
 import logging
+from typing import TYPE_CHECKING
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
@@ -151,6 +152,11 @@ class Race(CreationStampModel):
         default=default_metadata,
         validators=[JSONSchemaValidator(schema=RACE_METADATA_SCHEMA)],
     )
+
+    if TYPE_CHECKING:
+        # Annotate reverse ForeignKey relationships in TYPE_CHECKING block
+        from apps.participants.models import Participant
+        participants: models.QuerySet["Participant"]
 
     def __str__(self):
         league = f"({self.league.symbol})" if self.league else ""

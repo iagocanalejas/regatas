@@ -22,8 +22,10 @@ WHERE (SELECT count(DISTINCT laps) -- change here (laps | lanes | place_id | org
          AND ((r.place_id IS NULL AND r2.place_id IS NULL) OR r.place_id = r2.place_id)  -- comment this to check
          AND ((r.league_id IS NULL AND r2.league_id IS NULL) OR r.league_id = r2.league_id)
          AND ((r.trophy_id IS NULL AND r2.trophy_id IS NULL) OR r.trophy_id = r2.trophy_id)
-         AND ((r.flag_id IS NULL AND r2.flag_id IS NULL) OR r.flag_id = r2.flag_id)) > 1
+         AND ((r.flag_id IS NULL AND r2.flag_id IS NULL) OR r.flag_id = r2.flag_id)
+         AND r2.type != 'TIME_TRIAL') > 1
         AND id NOT IN (SELECT id FROM race WHERE race.trophy_id IN (SELECT id FROM trophy WHERE name ilike '%PLAY%')) -- ignore play-offs
+        AND type != 'TIME_TRIAL'
 ORDER BY gender, trophy_id, trophy_edition, flag_id, flag_edition;
 
 -- RETRIEVE PARTICIPANTS OF TIME TRIAL RACES WITH MORE THAN 1 LANE

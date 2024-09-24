@@ -10,7 +10,6 @@ from apps.actions.management.helpers.input import (
     input_club,
     input_competition,
     input_new_value,
-    input_race,
     input_should_associate_races,
     input_should_merge,
     input_should_merge_participant,
@@ -19,7 +18,12 @@ from apps.actions.management.helpers.input import (
     input_should_save_participant,
     input_should_save_second_day,
 )
-from apps.actions.management.helpers.retrieval import retrieve_competition, retrieve_entity, retrieve_league
+from apps.actions.management.helpers.retrieval import (
+    retrieve_competition,
+    retrieve_database_race,
+    retrieve_entity,
+    retrieve_league,
+)
 from apps.actions.serializers import ParticipantSerializer, RaceSerializer
 from apps.entities.models import Entity, League
 from apps.entities.normalization import normalize_club_name
@@ -49,26 +53,23 @@ class Digester(DigesterProtocol):
         self._force_category = force_category
 
     @override
-    def ingest(self, race: RSRace, **kwargs) -> tuple[Race, Race | None, DigesterProtocol.Status]:
+    def ingest(
+        self,
+        race: RSRace,
+        hint: tuple[Flag, Trophy] | None = None,
+        **kwargs,
+    ) -> tuple[Race, Race | None, DigesterProtocol.Status]:
         logger.info(f"ingesting {race=}")
 
         metadata = self._build_metadata(race, self.client.DATASOURCE)
 
         logger.debug("searching race in the database")
-        try:
-            db_race = RaceService.get_closest_match_by_name_or_none(
-                names=[n for n, _ in race.normalized_names],
-                league=race.league,
-                gender=race.gender,
-                category=race.category,
-                date=datetime.strptime(race.date, "%d/%m/%Y").date(),
-                day=race.day,
-                force_gender=self._force_gender,
-                force_category=self._force_category,
-            )
-        except Race.MultipleObjectsReturned:
-            logger.error(f"multiple races found for {race.date}:{race.name}")
-            db_race = input_race(race)
+        db_race = retrieve_database_race(
+            race=race,
+            hint=hint,
+            force_gender=self._force_gender,
+            force_category=self._force_category,
+        )
         logger.info(f"using {db_race=}")
 
         logger.debug("searching league")

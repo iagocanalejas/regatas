@@ -1,2 +1,2 @@
 -r ci.txt
-django-types==0.19.1
+django-stubs

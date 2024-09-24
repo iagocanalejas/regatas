@@ -171,6 +171,7 @@ def get_closest_match(
         gender (str | None): The gender associated with the race or None.
         category (str | None): The category associated with the race or None.
         date (date): The date of the race.
+        day (int): If the race is first or second day.
 
     Returns: Race: The closest matching Race object that meets the specified criteria.
     """

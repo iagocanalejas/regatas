@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 (
                     "parent",
                     models.ForeignKey(
-                        default=None, null=True, on_delete=django.db.models.deletion.PROTECT, to="entities.league"
+                        default=None, null=True, on_delete=models.deletion.PROTECT, to="entities.league"
                     ),
                 ),
             ],
@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         default=None,
                         null=True,
-                        on_delete=django.db.models.deletion.PROTECT,
+                        on_delete=models.deletion.PROTECT,
                         related_name="entities",
                         related_query_name="entity",
                         to="entities.entitytitle",

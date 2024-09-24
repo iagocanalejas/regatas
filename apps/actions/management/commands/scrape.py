@@ -15,7 +15,7 @@ from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingester import build_ingester
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
-from apps.races.models import Flag, Race
+from apps.races.models import Flag, Race, Trophy
 from apps.races.services import MetadataService
 from apps.schemas import MetadataBuilder
 from apps.utils import build_client
@@ -146,6 +146,7 @@ class Command(BaseCommand):
             raise ValueError("invalid state")
 
         flags: set[Flag] = set()
+        hints: dict[str, tuple[Flag, Trophy]] = {}
         for race in races:
             if config.output_path and os.path.isdir(config.output_path):
                 file_name = f"{race.race_ids[0]}.json"
@@ -154,9 +155,11 @@ class Command(BaseCommand):
                     json.dump(race.to_dict(), file)
                 continue
 
-            new_race, _ = ingest_race(digester, race)
+            new_race, _ = ingest_race(digester, race, hint=hints.get(race.name, None))
             if new_race and new_race.flag:
                 flags.add(new_race.flag)
+            if new_race and race.name not in hints:
+                hints[race.name] = (new_race.flag, new_race.trophy)
 
         if config.flag_id and config.datasource == Datasource.TRAINERAS and len(flags) == 1:
             flag = flags.pop()
@@ -288,12 +291,16 @@ class ScrapeConfig:
         return y
 
 
-def ingest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
+def ingest_race(
+    digester: DigesterProtocol,
+    race: RSRace,
+    hint: tuple[Flag, Trophy] | None = None,
+) -> tuple[Race | None, Digester.Status]:
     participants = race.participants
     race.participants = []
 
     try:
-        new_race, race_status = digest_race(digester, race)
+        new_race, race_status = digest_race(digester, race, hint=hint)
     except KeyboardInterrupt as e:
         race.participants = participants
         with open(f"{race.race_ids[0]}.json", "w") as f:
@@ -321,9 +328,13 @@ def ingest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, 
     return new_race, race_status
 
 
-def digest_race(digester: DigesterProtocol, race: RSRace) -> tuple[Race | None, Digester.Status]:
+def digest_race(
+    digester: DigesterProtocol,
+    race: RSRace,
+    hint: tuple[Flag, Trophy] | None = None,
+) -> tuple[Race | None, Digester.Status]:
     try:
-        new_race, associated, status = digester.ingest(race)
+        new_race, associated, status = digester.ingest(race, hint=hint)
         new_race, status = digester.save(new_race, status, associated=associated)
         if not status.is_saved():
             db_race = input_race(race)

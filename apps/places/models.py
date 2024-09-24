@@ -10,7 +10,7 @@ class Town(SearchableModel):
     def __str__(self):
         return f"{self.name} ({self.province})"
 
-    class Meta:
+    class Meta(SearchableModel.Meta):
         db_table = "town"
         verbose_name = "Municipio"
         verbose_name_plural = "Municipios"
@@ -25,7 +25,7 @@ class Place(SearchableModel):
     def __str__(self):
         return f"{self.name} - {self.town}" if self.name != self.town.name else f"{self.town}"
 
-    class Meta:
+    class Meta(SearchableModel.Meta):
         db_table = "place"
         verbose_name = "Lugar"
         verbose_name_plural = "Lugares"
