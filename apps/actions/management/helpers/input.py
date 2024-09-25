@@ -82,12 +82,12 @@ def _input_competition[T: Trophy | Flag](_model: type[T], name: str) -> tuple[T 
     value_id = inquirer.text(f"no {_model.__name__.lower()} found for {name}. {_model.__name__} ID", default=None)
     if value_id:
         value = _model.objects.get(id=value_id)
-        value_edition = int(inquirer.text(f"new edition for {_model.__name__}:{value}:", default=None))
+        value_edition = int(inquirer.text(f"new edition for {_model.__name__}:{value}", default=None))
     return value, value_edition
 
 
 def input_club(name: str) -> Entity | None:
-    entity_id = inquirer.text(f"no entity found for {name}. Entity ID: ", default=None)
+    entity_id = inquirer.text(f"no entity found for {name}. Entity ID", default=None)
     if entity_id:
         return Entity.all_objects.get(id=entity_id)
     return None

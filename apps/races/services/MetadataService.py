@@ -98,4 +98,6 @@ def get_datasource_from_race(
 
 def get_datasource_from_flag(flag: Flag, datasource: Datasource, ref_id: str) -> list[dict]:
     datasources = flag.metadata["datasource"]
-    return [d for d in datasources if d["datasource_name"] == datasource.value.lower() and d["ref_id"] == ref_id]
+    return [
+        d for d in datasources if d["datasource_name"] == datasource.value.lower() and str(d["ref_id"]) == str(ref_id)
+    ]

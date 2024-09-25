@@ -4,13 +4,8 @@ from collections.abc import Generator
 from datetime import date, datetime
 from typing import override
 
-from apps.actions.management.helpers.input import (
-    input_competition,
-)
-from apps.actions.management.helpers.retrieval import retrieve_competition
 from apps.entities.models import Entity
-from apps.races.models import Flag, Race, Trophy
-from apps.races.services import FlagService, MetadataService, TrophyService
+from apps.races.services import MetadataService
 from rscraping.clients import ClientProtocol
 from rscraping.data.models import Race as RSRace
 
@@ -89,30 +84,6 @@ class Ingester(IngesterProtocol):
     @override
     def fetch_by_url(self, url: str, **kwargs) -> RSRace | None:
         return self.client.get_race_by_url(url, **kwargs)
-
-    @staticmethod
-    def _retrieve_competition(
-        race: RSRace,
-        db_race: Race | None,
-    ) -> tuple[Race | None, tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
-        logger.debug("searching trophy")
-        trophy, trophy_edition = retrieve_competition(
-            Trophy,
-            race,
-            db_race,
-            TrophyService.get_closest_by_name_or_none,
-            TrophyService.infer_trophy_edition,
-        )
-
-        logger.debug("searching flag")
-        flag, flag_edition = retrieve_competition(
-            Flag,
-            race,
-            db_race,
-            FlagService.get_closest_by_name_or_none,
-            FlagService.infer_flag_edition,
-        )
-        return (db_race, (trophy, trophy_edition), (flag, flag_edition)) if trophy or flag else input_competition(race)
 
     @override
     def _retrieve_race(self, race_id: str) -> Generator[RSRace]:

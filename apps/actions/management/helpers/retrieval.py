@@ -36,6 +36,8 @@ def retrieve_database_race(
             )
         except Race.DoesNotExist:
             logger.info(f"no race found using {hint=}")
+        except Race.MultipleObjectsReturned:
+            logger.info(f"multiple races found for {race.date}:{race.name} using {hint=}")
 
     try:
         return RaceService.get_closest_match_by_name_or_none(
@@ -59,8 +61,9 @@ def retrieve_competition[T: (Trophy, Flag)](
     db_race: Race | None,
     closest_by_name: Callable[[str], T | None],
     infer_edition: Callable[[T, str, str, int], int | None],
+    hint: T | None,
 ) -> tuple[T | None, int | None]:
-    value, edition = None, None
+    value, edition = hint, None
     model_name = _model.__name__.lower()
 
     # 1. try to load from local race
@@ -75,6 +78,8 @@ def retrieve_competition[T: (Trophy, Flag)](
 
         if not value:
             value, edition = closest_by_name(name), ed
+        if not edition:
+            edition = ed
 
     # 2.1. try to infer edition
     if value and not edition:

@@ -76,7 +76,7 @@ class Digester(DigesterProtocol):
         league = retrieve_league(race, db_race)
         logger.info(f"using {league=}")
 
-        db_race, (trophy, trophy_edition), (flag, flag_edition) = self._retrieve_competition(race, db_race=db_race)
+        db_race, (trophy, trophy_edition), (flag, flag_edition) = self._retrieve_competition(race, db_race, hint)
         assert (trophy and trophy_edition) or (flag and flag_edition), "missing competition data"
         logger.info(f"using {trophy=}:{trophy_edition=}")
         logger.info(f"using {flag=}:{flag_edition=}")
@@ -401,6 +401,7 @@ class Digester(DigesterProtocol):
     def _retrieve_competition(
         race: RSRace,
         db_race: Race | None,
+        hint: tuple[Flag, Trophy] | None,
     ) -> tuple[Race | None, tuple[Trophy | None, int | None], tuple[Flag | None, int | None]]:
         logger.debug("searching trophy")
         trophy, trophy_edition = retrieve_competition(
@@ -409,6 +410,7 @@ class Digester(DigesterProtocol):
             db_race,
             TrophyService.get_closest_by_name_or_none,
             TrophyService.infer_trophy_edition,
+            hint[1] if hint else None,
         )
 
         logger.debug("searching flag")
@@ -418,5 +420,6 @@ class Digester(DigesterProtocol):
             db_race,
             FlagService.get_closest_by_name_or_none,
             FlagService.infer_flag_edition,
+            hint[0] if hint else None,
         )
         return (db_race, (trophy, trophy_edition), (flag, flag_edition)) if trophy or flag else input_competition(race)
