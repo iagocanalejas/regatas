@@ -89,8 +89,8 @@ class ParticipantSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_club_name(participant: Participant) -> str | None:
         extra = None
-        if participant.club_name:
-            extra = [e for e in ["B", "C", "D"] if e in participant.club_name.split()]
+        if len(participant.club_names) > 0:
+            extra = [e for e in ["B", "C", "D"] if any(e in w.split() for w in participant.club_names)]
             extra = "".join(e for e in extra) if extra else None
         return f'{participant.club} "{extra}"' if extra else None
 

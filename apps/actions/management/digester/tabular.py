@@ -58,8 +58,10 @@ class TabularDigester(Digester):
         if status != Digester.Status.MERGED:
             if input_shoud_create_B_participant(participant):
                 logger.debug(f"creating B team participation for {participant=}")
-                participant.club_name = (
-                    f"{participant.club_name} B" if participant.club_name else f"{participant.club.name} B"
+                participant.club_names = (
+                    f"{participant.club_names[0]} B"
+                    if len(participant.club_names) > 0
+                    else f"{participant.club.name} B"
                 ).upper()
                 return participant, status
             return participant, status

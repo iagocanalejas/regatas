@@ -241,7 +241,7 @@ class Digester(DigesterProtocol):
         logger.info(f"using {db_participant=}")
 
         new_participant = Participant(
-            club_name=participant.club_name.upper() if participant.club_name else None,
+            club_names=[participant.club_name.upper()] if participant.club_name else [],
             club=club,
             race=race,
             distance=participant.distance,
@@ -257,14 +257,15 @@ class Digester(DigesterProtocol):
 
         status = DigesterProtocol.Status.NEW
         if db_participant:
-            if not self.should_merge_participants(new_participant, db_participant):
-                serialized = ParticipantSerializer(db_participant).data
-                print(f"EXISTING PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
-                return db_participant, DigesterProtocol.Status.EXISTING
-            else:
+            new_participant.club_names = list(set(new_participant.club_names + db_participant.club_names))
+            if self.should_merge_participants(new_participant, db_participant):
                 serialized = ParticipantSerializer(new_participant).data
                 print(f"NEW PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
                 new_participant, status = self.merge_participants(new_participant, db_participant, status)
+            else:
+                serialized = ParticipantSerializer(db_participant).data
+                print(f"EXISTING PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
+                return db_participant, DigesterProtocol.Status.EXISTING
 
         return new_participant, status
 
@@ -276,17 +277,10 @@ class Digester(DigesterProtocol):
         Conditions for merging:
         1. If the number of laps for the first participant is greater than the number of laps for the second.
         2. If the lane of the first participant is not None and is different from the lane assigned to the second.
-        3. If the second participant does not have a club name, but the first one has it
-            and is different from the second participant's club name.
+        3. If both participants have club names, and there is any overlap between their club names.
         """
-        return (
-            len(participant.laps) > len(db_participant.laps)
-            or (participant.lane is not None and participant.lane != db_participant.lane)
-            or (
-                db_participant.club_name is None
-                and participant.club_name is not None
-                and participant.club_name != db_participant.club_name
-            )
+        return len(participant.laps) > len(db_participant.laps) or (
+            participant.lane is not None and participant.lane != db_participant.lane
         )
 
     @override
@@ -313,12 +307,6 @@ class Digester(DigesterProtocol):
         if input_new_value("lane", participant.lane, db_participant.lane):
             logger.debug(f"updating {db_participant.lane=} with {participant.lane=}")
             db_participant.lane = participant.lane
-
-        if db_participant.club_name is None and input_new_value(
-            "name", participant.club_name, db_participant.club_name
-        ):
-            logger.debug(f"updating {db_participant.club_name=} with {participant.club_name=}")
-            db_participant.club_name = participant.club_name
 
         return db_participant, DigesterProtocol.Status.MERGED
 

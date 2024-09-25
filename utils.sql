@@ -91,17 +91,46 @@ WHERE NOT r.cancelled
             WHERE seqnum = 1)
 ORDER BY extract(YEAR FROM r.date) desc, league_id, date;
 
+-- RETRIEVE RACES WHERE ALL PARTICIPANTS MATCHES AND HAVE THE SAME TIME
+WITH race_data AS (
+    -- Step 1: Gather race ID, count of participants, participant club IDs, and their times
+    -- sorted by club ID to ensure consistent ordering for comparison.
+    SELECT
+        r.id AS race_id,
+        COUNT(p.id) AS num_participants,
+        ARRAY_AGG(p.club_id ORDER BY p.club_id) AS participant_club_ids,
+        ARRAY_AGG(extract(EPOCH FROM p.laps[array_length(p.laps, 1)]) ORDER BY p.club_id) AS participant_times
+    FROM race r
+    JOIN participant p ON r.id = p.race_id
+    GROUP BY r.id
+),
+matching_races AS (
+    -- Step 2: Find matching races by comparing participant and time arrays
+    -- We compare races to find those with the same number of participants, same participant club IDs,
+    -- and identical finish times. Races with the same set of participants and times are considered "matching."
+    SELECT
+        r1.race_id AS original_race_id,
+        r2.race_id AS matching_race_id
+    FROM race_data r1
+    JOIN race_data r2 ON
+        r1.num_participants = r2.num_participants  -- Ensure the races have the same number of participants
+        AND r1.participant_club_ids = r2.participant_club_ids  -- Ensure the races have the same participant club IDs
+        AND r1.participant_times = r2.participant_times  -- Ensure the participants have the same times
+        AND r1.race_id != r2.race_id  -- Exclude the current race itself from the matching process
+)
+-- Step 3: Select races and any matching race IDs
+SELECT
+    r1.*,
+    COALESCE(ARRAY_AGG(r2.id), '{}') AS matching_race_ids
+FROM race r1
+LEFT JOIN matching_races mr ON r1.id = mr.original_race_id
+LEFT JOIN race r2 ON mr.matching_race_id = r2.id
+WHERE r2.id IS NOT NULL  -- Filter out cases where there are no matches
+GROUP BY r1.id;
+
 -- SPEEDS QUERY
-SELECT r.date,
-       r.metadata,
-       p.club_name,
-       p.laps,
-       p.club_id,
-       p.race_id,
-       p.id,
+SELECT extract(YEAR from date)::INTEGER as year,
        CAST((p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6 AS DOUBLE PRECISION) as speed
---        extract(YEAR from date)::INTEGER as year,
---        array_agg(CAST((p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6 AS DOUBLE PRECISION)) as speeds
 FROM participant p
          JOIN race r ON p.race_id = r.id
 WHERE p.laps <> '{}'
@@ -109,7 +138,7 @@ WHERE p.laps <> '{}'
   AND not exists(select * from penalty where participant_id = p.id and disqualification)
 --   AND (p.gender = 'MALE' AND r.gender = 'MALE')
 --   AND (p.category = 'ABSOLUT' AND r.category = 'ABSOLUT')
-  AND (p.club_name IS NULL OR p.club_name <> '% B')
+  AND (p.club_names = '{}' OR NOT EXISTS(SELECT 1 FROM unnest(p.club_names) AS club_name WHERE club_name LIKE '% B'))
   AND r.league_id = 11
   AND (extract(EPOCH FROM p.laps[cardinality(p.laps)])) > 0
   AND extract(YEAR FROM r.date) = 2023

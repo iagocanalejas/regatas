@@ -1280,7 +1280,8 @@
 - model: participants.participant
   pk: 1
   fields:
-      club_name: CR RIANXO
+      club_names:
+          - CR RIANXO
       club: 26
       race: 1
       distance: 5556

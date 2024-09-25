@@ -12,7 +12,7 @@ from apps.utils.choices import (
 
 
 class Participant(models.Model):
-    club_name = models.CharField(null=True, blank=True, default=None, max_length=150)
+    club_names = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=150))
     club = models.ForeignKey(
         null=False,
         to="entities.Entity",
@@ -46,8 +46,7 @@ class Participant(models.Model):
     retired = models.BooleanField(default=False)
 
     def __str__(self):
-        club = self.club_name if self.club_name else self.club
-        return f"{self.race.date} :: {club} ({self.gender}) ({self.category}) -> {self.race.name}"
+        return f"{self.race.date} :: {self.club} ({self.gender}) ({self.category}) -> {self.race.name}"
 
     def validate_unique(self, *args, **kwargs):
         """

@@ -40,16 +40,17 @@ def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: 
             p1.club == club
             and p1.gender == p2.gender
             and p1.category == p2.category
-            and (p1.club_name is not None and is_branch_club(p1.club_name) == is_branch_club(p2.club_name))
+            and (p1.club_names and any(is_branch_club(e) for e in p1.club_names) and is_branch_club(p2.club_name))
         )
     return (
         p1.club == p2.club
         and p1.gender == p2.gender
         and p1.category == p2.category
         and (
-            p1.club_name is not None
-            and p2.club_name is not None
-            and is_branch_club(p1.club_name) == is_branch_club(p2.club_name)
+            p1.club_names
+            and p2.club_names
+            and any(is_branch_club(e) for e in p1.club_names)
+            and any(is_branch_club(e) for e in p2.club_names)
         )
     )
 
@@ -192,9 +193,9 @@ def _get_speed_filters(
         else f"(p.category = '{category}' AND (r.category = '{category}' OR r.category = '{CATEGORY_ALL}'))"
     )
     branch_filter = (
-        "p.club_name LIKE '% B'"
+        "EXISTS(SELECT 1 FROM unnest(p.club_names) AS club_name WHERE club_name LIKE '% B')"
         if branch_teams
-        else "(p.club_name IS NULL OR p.club_name NOT LIKE '% B')"
+        else "(p.club_names = '{}' OR NOT EXISTS(SELECT 1 FROM unnest(p.club_names) AS club_name WHERE club_name LIKE '% B'))"  # noqa: E501
         if not league and not flag
         else ""
     )
