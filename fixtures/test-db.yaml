@@ -1175,7 +1175,8 @@
       day: 1
       cancelled: false
       cancellation_reasons: "[]"
-      race_name: XXXIX BANDERA PETRONOR
+      race_names:
+          - XXXIX BANDERA PETRONOR
       sponsor: null
       trophy_edition: null
       trophy: null
@@ -1207,7 +1208,8 @@
       day: 1
       cancelled: false
       cancellation_reasons: "[]"
-      race_name: IX BANDEIRA VIRXE DO CARME
+      race_names:
+          - IX BANDEIRA VIRXE DO CARME
       sponsor: null
       trophy_edition: null
       trophy: null
@@ -1235,7 +1237,8 @@
       day: 1
       cancelled: false
       cancellation_reasons: "[]"
-      race_name: XIV BANDERA RIA DEL ASON
+      race_names:
+          - XIV BANDERA RIA DEL ASON
       sponsor: null
       trophy_edition: null
       trophy: null
@@ -1263,7 +1266,8 @@
       day: 1
       cancelled: false
       cancellation_reasons: "[]"
-      race_name: CONTRARRELOXO DE TRAIÑEIRAS CABO DA CRUZ
+      race_names:
+          - CONTRARRELOXO DE TRAIÑEIRAS CABO DA CRUZ
       sponsor: null
       trophy_edition: null
       trophy: null

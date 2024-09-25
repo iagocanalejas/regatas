@@ -99,7 +99,7 @@ class Digester(DigesterProtocol):
             day=race.day,
             cancelled=race.cancelled,
             cancellation_reasons=[],
-            race_name=race.name,
+            race_names=[race.name],
             trophy=trophy,
             trophy_edition=trophy_edition,
             flag=flag,
@@ -156,6 +156,10 @@ class Digester(DigesterProtocol):
         if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
             logger.debug("setting gender=ALL")
             db_race.gender = GENDER_ALL
+
+        if race.race_names:
+            logger.debug("adding race_name")
+            db_race.race_names = list(set(race.race_names + db_race.race_names))
 
         if db_race.category != CATEGORY_ALL and db_race.category != race.category:
             logger.debug("setting category=ALL")

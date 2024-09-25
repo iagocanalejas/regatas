@@ -93,7 +93,7 @@ class Race(CreationStampModel):
     cancelled = models.BooleanField(default=False)
     cancellation_reasons = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=200))
 
-    race_name = models.CharField(null=True, blank=True, default=None, max_length=200)
+    race_names = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=200))
     sponsor = models.CharField(null=True, blank=True, default=None, max_length=200)
 
     # 'trophy_edition' and 'trophy' should both be NULL or NOT_NULL
