@@ -201,7 +201,7 @@ class Digester(DigesterProtocol):
 
         if associated and not race.associated and input_should_associate_races(race, associated):
             logger.info(f"associating races {race} and {associated}")
-            race.associated = associated  # pyright: ignore
+            race.associated = associated
             race.save()
             Race.objects.filter(pk=associated.pk).update(associated=race)
             return race, status.next()

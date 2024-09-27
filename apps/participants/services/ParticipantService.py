@@ -61,6 +61,7 @@ def get_year_speeds_filtered_by(
     flag: Flag | None,
     gender: str,
     category: str,
+    day: int,
     branch_teams: bool,
     only_league_races: bool,
     normalize: bool,
@@ -71,6 +72,7 @@ def get_year_speeds_filtered_by(
         flag=flag,
         gender=gender,
         category=category,
+        day=day,
         branch_teams=branch_teams,
         only_league_races=only_league_races,
     )
@@ -120,6 +122,7 @@ def get_nth_speed_filtered_by(
     gender: str,
     category: str,
     year: int,
+    day: int,
     branch_teams: bool,
     only_league_races: bool,
     normalize: bool,
@@ -130,6 +133,7 @@ def get_nth_speed_filtered_by(
         flag=None,
         gender=gender,
         category=category,
+        day=day,
         branch_teams=branch_teams,
         only_league_races=only_league_races,
     )
@@ -179,6 +183,7 @@ def _get_speed_filters(
     flag: Flag | None,
     gender: str,
     category: str,
+    day: int,
     branch_teams: bool,
     only_league_races: bool,
 ) -> str:
@@ -202,6 +207,7 @@ def _get_speed_filters(
 
     filters = (
         "NOT r.cancelled",
+        f"r.day = {day}",
         "p.laps <> '{}'",
         "NOT p.retired",
         "NOT p.guest",

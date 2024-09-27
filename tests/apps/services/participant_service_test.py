@@ -64,6 +64,7 @@ class ParticipantServiceTest(TestCase):
             flag=None,
             gender=GENDER_MALE,
             category=CATEGORY_ABSOLUT,
+            day=1,
             branch_teams=False,
             only_league_races=False,
             normalize=False,
@@ -115,12 +116,14 @@ class ParticipantServiceTest(TestCase):
         for participant in participants:
             participant.save()
 
+        assert race is not None
         speeds = ParticipantService.get_year_speeds_filtered_by(
             club=None,
             league=None,
-            flag=race.flag,  # pyright: ignore
+            flag=race.flag,
             gender=GENDER_MALE,
             category=CATEGORY_ABSOLUT,
+            day=1,
             branch_teams=False,
             only_league_races=False,
             normalize=False,
@@ -179,6 +182,7 @@ class ParticipantServiceTest(TestCase):
             gender=GENDER_MALE,
             category=CATEGORY_ABSOLUT,
             year=2022,
+            day=1,
             branch_teams=False,
             only_league_races=False,
             normalize=False,

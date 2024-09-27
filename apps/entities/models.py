@@ -115,7 +115,7 @@ class EntityPartnership(models.Model):
         on_delete=models.PROTECT,
         related_name="part_of",
         related_query_name="part_of",
-        limit_choices_to={"is_partnership": False},  # pyright: ignore
+        limit_choices_to={"is_partnership": False},
     )
     is_active = models.BooleanField(null=False, blank=True, default=True, db_index=True)
 

@@ -112,6 +112,7 @@ python manage.py plot type \
 	[-g, --gender GENDER] \
 	[-ca, --category CATEGORY] \
 	[-y, --years YEARS] \
+	[-d, --day DAY] \
 	[-n, --normalize] \
 	[--leagues-only] \
 	[--branch-teams] \
@@ -135,6 +136,8 @@ python manage.py plot type \
 #                         category filter.
 #   -y [YEARS ...], --years [YEARS ...]
 #                         years to include in the data.
+#   -d DAY, --day DAY
+#                         day of the race for multiday races.
 #   --leagues-only
 #                         only races from a league.
 #   --branch-teams

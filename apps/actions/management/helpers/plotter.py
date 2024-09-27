@@ -55,6 +55,7 @@ class Plotter:
         years: list[int] | None = None,
         gender: str = GENDER_MALE,
         category: str = CATEGORY_ABSOLUT,
+        day: int = 1,
         branch_teams: bool = False,
         only_league_races: bool = False,
     ):
@@ -65,6 +66,7 @@ class Plotter:
                 flag=flag,
                 gender=gender,
                 category=category,
+                day=day,
                 branch_teams=branch_teams,
                 only_league_races=only_league_races,
                 normalize=self._normalized,
@@ -83,6 +85,7 @@ class Plotter:
                     gender=gender,
                     category=category,
                     year=int(year),
+                    day=day,
                     branch_teams=branch_teams,
                     only_league_races=only_league_races,
                     normalize=self._normalized,

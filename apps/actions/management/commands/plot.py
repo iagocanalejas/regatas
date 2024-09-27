@@ -41,6 +41,7 @@ class Command(BaseCommand):
         parser.add_argument("-g", "--gender", type=str, default=GENDER_MALE, help="gender filter.")
         parser.add_argument("-ca", "--category", type=str, default=CATEGORY_ABSOLUT, help="category filter.")
         parser.add_argument("-y", "--years", type=int, nargs="*", default=[], help="years to include in the data.")
+        parser.add_argument("-d", "--day", type=int, default=1, help="day of the race for multiday races.")
 
         parser.add_argument("--leagues-only", action="store_true", default=False, help="only races from a league.")
         parser.add_argument("--branch-teams", action="store_true", default=False, help="filter only branch teams.")
@@ -100,6 +101,7 @@ class PlotConfig:
     branch_teams: bool = False
 
     years: list[int] = field(default_factory=list)
+    day: int = 1
 
     output_path: str | None = None
 
@@ -115,11 +117,12 @@ class PlotConfig:
             options["category"].upper(),
         )
 
-        only_league_races, branch_teams, normalize, years, output_path = (
+        only_league_races, branch_teams, normalize, years, day, output_path = (
             options["leagues_only"],
             options["branch_teams"],
             options["normalize"],
             options["years"],
+            options["day"],
             options["output"],
         )
 
@@ -160,5 +163,6 @@ class PlotConfig:
             branch_teams=branch_teams,
             normalize=normalize,
             years=years,
+            day=day,
             output_path=output_path,
         )

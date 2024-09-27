@@ -128,6 +128,7 @@ class RecheckConfig:
             force_category=force_category,
         )
 
+
 def check_race(digester: DigesterProtocol, rs_race: RSRace, check_participants: bool):
     if check_participants:
         assert Datasource.has_value(rs_race.datasource), f"invalid {rs_race.datasource=}"
@@ -141,7 +142,8 @@ def check_race(digester: DigesterProtocol, rs_race: RSRace, check_participants: 
         )
 
         if race:
-            assert race.participants.count() == len(rs_race.participants), f"invalid number of participants for {race=}"  # pyright: ignore # noqa: E501
+            same_participants = race.participants.count() == len(rs_race.participants)
+            assert same_participants, f"invalid number of participants for {race=}"
             return
 
     ingest_race(digester, rs_race)
