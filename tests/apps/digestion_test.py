@@ -38,6 +38,9 @@ class DigestionTest(TestCase):
         # Redirect stdout to suppress print statements
         sys.stdout = io.StringIO()
 
+    def tearDown(self):
+        sys.stdout = sys.__stdout__
+
     @patch("inquirer.confirm")
     def test_digest_will_merge_fields(self, mock_confirm):
         mock_confirm.return_value = True

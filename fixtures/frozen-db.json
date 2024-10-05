@@ -6608,33 +6608,6 @@
 	},
 	{
 		"model": "entities.entity",
-		"pk": 220,
-		"fields": {
-			"from_date": "2023-06-15T10:31:58.049Z",
-			"to_date": "2023-06-05T20:24:28.142Z",
-			"is_active": false,
-			"name": "ORIO ZERGATIK EZ",
-			"normalized_name": "ORIO",
-			"known_names": "[\"ORIO ZE\"]",
-			"type": "CLUB",
-			"symbol": null,
-			"is_partnership": false,
-			"parent": null,
-			"metadata": {
-				"datasource": [
-					{
-						"ref_id": "238",
-						"values": {
-							"details_page": "https://traineras.es/clubes/238"
-						},
-						"datasource_name": "traineras.es"
-					}
-				]
-			}
-		}
-	},
-	{
-		"model": "entities.entity",
 		"pk": 221,
 		"fields": {
 			"from_date": "2023-06-15T10:31:57.709Z",

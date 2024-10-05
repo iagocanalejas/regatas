@@ -1,4 +1,28 @@
+------------------------------------------------------------------------------------------------------------------------
+-- RETRIEVE PARTICIPANTS OF TIME TRIAL RACES WITH MORE THAN 1 LANE
+------------------------------------------------------------------------------------------------------------------------
+SELECT *
+FROM participant p1
+WHERE (SELECT type FROM race WHERE race.id = p1.race_id) = 'TIME_TRIAL'
+  AND (SELECT count(DISTINCT lane) FROM participant p2 WHERE p2.race_id = p1.race_id) > 1
+  AND race_id NOT IN (SELECT id FROM race WHERE race.trophy_id IN (SELECT id FROM trophy WHERE name ilike '%PLAY%')) -- ignore play-offs
+ORDER BY race_id;
+
+------------------------------------------------------------------------------------------------------------------------
+-- RETRIEVE PARTICIPANTS WITH NO LAPS
+------------------------------------------------------------------------------------------------------------------------
+SELECT p.*, r.metadata
+FROM participant p JOIN race r on p.race_id = r.id
+WHERE p.laps = '{}'
+  -- AND r.id not in (2189)
+  AND NOT absent
+  AND NOT retired
+  AND NOT cancelled
+  AND NOT exists(select 1 from penalty where participant_id = p.id);
+
+------------------------------------------------------------------------------------------------------------------------
 -- RETRIEVE TROPHIES/FLAGS WITH DIFFERENT LAPS/LANES/TOWNS/ORGANIZERS
+------------------------------------------------------------------------------------------------------------------------
 SELECT id,
        date,
        type,
@@ -28,15 +52,9 @@ WHERE (SELECT count(DISTINCT laps) -- change here (laps | lanes | place_id | org
         AND type != 'TIME_TRIAL'
 ORDER BY gender, trophy_id, trophy_edition, flag_id, flag_edition;
 
--- RETRIEVE PARTICIPANTS OF TIME TRIAL RACES WITH MORE THAN 1 LANE
-SELECT *
-FROM participant p1
-WHERE (SELECT type FROM race WHERE race.id = p1.race_id) = 'TIME_TRIAL'
-  AND (SELECT count(DISTINCT lane) FROM participant p2 WHERE p2.race_id = p1.race_id) > 1
-  AND race_id NOT IN (SELECT id FROM race WHERE race.trophy_id IN (SELECT id FROM trophy WHERE name ilike '%PLAY%')) -- ignore play-offs
-ORDER BY race_id;
-
--- RETRIEVE RACES WHERE THE NUMBER OF LANES IS DIFFERENT FROM THE EXPECTED NUMBER OF LANES (BASED ON THE NUMBER OF PARTICIPANTS)
+------------------------------------------------------------------------------------------------------------------------
+-- RETRIEVE RACES WHERE THE NUMBER OF LANES IS DIFFERENT FROM THE EXPECTED NUMBER OF LANES (NUMBER OF PARTICIPANTS)
+------------------------------------------------------------------------------------------------------------------------
 SELECT id,
        date,
        type,
@@ -58,7 +76,9 @@ WHERE (SELECT count(distinct lane) FROM participant WHERE race_id = race.id) <> 
   AND (select count(p1.lane) FROM participant p1 WHERE race_id = race.id and lane is not null) > 1
 ORDER BY date;
 
+------------------------------------------------------------------------------------------------------------------------
 -- RETRIEVE RACES OF THE SAME LEAGUE/YEAR WITH DIFFERENT NUMBER OF PARTICIPANTS
+------------------------------------------------------------------------------------------------------------------------
 SELECT id,
        date,
        type,
@@ -91,7 +111,9 @@ WHERE NOT r.cancelled
             WHERE seqnum = 1)
 ORDER BY extract(YEAR FROM r.date) desc, league_id, date;
 
--- RETRIEVE RACES WHERE ALL PARTICIPANTS MATCHES AND HAVE THE SAME TIME
+------------------------------------------------------------------------------------------------------------------------
+-- RETRIEVE RACES WHERE ALL PARTICIPANTS MATCHES AND HAVE THE SAME TIMES
+------------------------------------------------------------------------------------------------------------------------
 WITH race_data AS (
     -- Step 1: Gather race ID, count of participants, participant club IDs, and their times
     -- sorted by club ID to ensure consistent ordering for comparison.
@@ -128,7 +150,9 @@ LEFT JOIN race r2 ON mr.matching_race_id = r2.id
 WHERE r2.id IS NOT NULL  -- Filter out cases where there are no matches
 GROUP BY r1.id;
 
+------------------------------------------------------------------------------------------------------------------------
 -- SPEEDS QUERY
+------------------------------------------------------------------------------------------------------------------------
 SELECT extract(YEAR from date)::INTEGER as year,
        CAST((p.distance / (extract(EPOCH FROM p.laps[cardinality(p.laps)]))) * 3.6 AS DOUBLE PRECISION) as speed
 FROM participant p

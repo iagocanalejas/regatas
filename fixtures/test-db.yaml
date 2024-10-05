@@ -1,3 +1,801 @@
+- model: places.town
+  pk: 1
+  fields:
+      known_names: '["A CORU\u00d1A", "LA CORU\u00d1A"]'
+      name: A CORUÑA
+      province: A CORUÑA
+- model: places.town
+  pk: 2
+  fields:
+      known_names: '["A GUARDA"]'
+      name: A GUARDA
+      province: PONTEVEDRA
+- model: places.town
+  pk: 3
+  fields:
+      known_names: '["A POBRA DO CARAMI\u00d1AL", "PUEBLA DEL CARAMI\u00d1AL"]'
+      name: A POBRA DO CARAMIÑAL
+      province: A CORUÑA
+- model: places.town
+  pk: 4
+  fields:
+      known_names: '["ALGORTA"]'
+      name: ALGORTA
+      province: VIZCAYA
+- model: places.town
+  pk: 5
+  fields:
+      known_names: '["ARES"]'
+      name: ARES
+      province: A CORUÑA
+- model: places.town
+  pk: 6
+  fields:
+      known_names: '["AS PONTES"]'
+      name: AS PONTES
+      province: A CORUÑA
+- model: places.town
+  pk: 7
+  fields:
+      known_names: '["EL ASTILLERO", "ASTILLERO"]'
+      name: EL ASTILLERO
+      province: CANTABRIA
+- model: places.town
+  pk: 8
+  fields:
+      known_names: '["AVILES"]'
+      name: AVILÉS
+      province: ASTURIAS
+- model: places.town
+  pk: 9
+  fields:
+      known_names: '["BAIONA"]'
+      name: BAIONA
+      province: PONTEVEDRA
+- model: places.town
+  pk: 10
+  fields:
+      known_names: '["BARCELONA"]'
+      name: BARCELONA
+      province: BARCELONA
+- model: places.town
+  pk: 11
+  fields:
+      known_names: '["BAYONNE"]'
+      name: BAYONNE
+      province: FRANCIA
+- model: places.town
+  pk: 12
+  fields:
+      known_names: '["BERMEO"]'
+      name: BERMEO
+      province: VIZCAYA
+- model: places.town
+  pk: 13
+  fields:
+      known_names: '["BILBAO", "BILBO"]'
+      name: BILBAO
+      province: VIZCAYA
+- model: places.town
+  pk: 14
+  fields:
+      known_names: '["BOIRO", "CABO", "CABO DE CRUZ", "CABO DA CRUZ"]'
+      name: BOIRO
+      province: A CORUÑA
+- model: places.town
+  pk: 15
+  fields:
+      known_names: '["BUEU"]'
+      name: BUEU
+      province: PONTEVEDRA
+- model: places.town
+  pk: 16
+  fields:
+      known_names: '["BURELA"]'
+      name: BURELA
+      province: LUGO
+- model: places.town
+  pk: 17
+  fields:
+      known_names: '["CAMARGO"]'
+      name: CAMARGO
+      province: CANTABRIA
+- model: places.town
+  pk: 18
+  fields:
+      known_names: '["CAMPELO"]'
+      name: CAMPELO
+      province: ALICANTE
+- model: places.town
+  pk: 19
+  fields:
+      known_names: '["CANGAS DE MORRAZO", "CANGAS"]'
+      name: CANGAS DE MORRAZO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 20
+  fields:
+      known_names: '["CASTRO-URDIALES", "CASTRO URDIALES"]'
+      name: CASTRO-URDIALES
+      province: CANTABRIA
+- model: places.town
+  pk: 21
+  fields:
+      known_names: '["CASTROPOL"]'
+      name: CASTROPOL
+      province: ASTURIAS
+- model: places.town
+  pk: 22
+  fields:
+      known_names: '["CEDEIRA"]'
+      name: CEDEIRA
+      province: A CORUÑA
+- model: places.town
+  pk: 23
+  fields:
+      known_names: '["COLINDRES"]'
+      name: COLINDRES
+      province: CANTABRIA
+- model: places.town
+  pk: 24
+  fields:
+      known_names: '["CORCUBION"]'
+      name: CORCUBIÓN
+      province: A CORUÑA
+- model: places.town
+  pk: 25
+  fields:
+      known_names: '["CORUXO"]'
+      name: CORUXO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 26
+  fields:
+      known_names: '["SAN SEBASTIAN", "DONOSTI"]'
+      name: SAN SEBASTIÁN
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 27
+  fields:
+      known_names: '["EL RASILLO DE CAMEROS"]'
+      name: EL RASILLO DE CAMEROS
+      province: LA RIOJA
+- model: places.town
+  pk: 28
+  fields:
+      known_names: '["ELANTXOBE"]'
+      name: ELANTXOBE
+      province: VIZCAYA
+- model: places.town
+  pk: 29
+  fields:
+      known_names: '["ERANDIO"]'
+      name: ERANDIO
+      province: VIZCAYA
+- model: places.town
+  pk: 30
+  fields:
+      known_names: '["ERRENTERIA"]'
+      name: ERRENTERIA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 31
+  fields:
+      known_names: '["FERROL"]'
+      name: FERROL
+      province: A CORUÑA
+- model: places.town
+  pk: 32
+  fields:
+      known_names: '["GETARIA"]'
+      name: GETARIA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 33
+  fields:
+      known_names: '["GETXO"]'
+      name: GETXO
+      province: VIZCAYA
+- model: places.town
+  pk: 34
+  fields:
+      known_names: '["GIJON"]'
+      name: GIJÓN
+      province: ASTURIAS
+- model: places.town
+  pk: 35
+  fields:
+      known_names: '["GORLIZ"]'
+      name: GORLIZ
+      province: VIZCAYA
+- model: places.town
+  pk: 36
+  fields:
+      known_names: '["HONDARRIBIA", "FUENTERRABIA"]'
+      name: HONDARRIBIA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 37
+  fields:
+      known_names: '["LAREDO"]'
+      name: LAREDO
+      province: CANTABRIA
+- model: places.town
+  pk: 38
+  fields:
+      known_names: '["LEKEITIO"]'
+      name: LEKEITIO
+      province: VIZCAYA
+- model: places.town
+  pk: 39
+  fields:
+      known_names: '["LERATE"]'
+      name: LERATE
+      province: NAVARRA
+- model: places.town
+  pk: 40
+  fields:
+      known_names: '["LUANCO"]'
+      name: LUANCO
+      province: ASTURIAS
+- model: places.town
+  pk: 41
+  fields:
+      known_names: '["MOA\u00d1A"]'
+      name: MOAÑA
+      province: PONTEVEDRA
+- model: places.town
+  pk: 42
+  fields:
+      known_names: '["MUGARDOS"]'
+      name: MUGARDOS
+      province: A CORUÑA
+- model: places.town
+  pk: 43
+  fields:
+      known_names: '["MUNDAKA"]'
+      name: MUNDAKA
+      province: VIZCAYA
+- model: places.town
+  pk: 44
+  fields:
+      known_names: '["MUROS"]'
+      name: MUROS
+      province: A CORUÑA
+- model: places.town
+  pk: 45
+  fields:
+      known_names: '["MUTRIKU"]'
+      name: MUTRIKU
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 46
+  fields:
+      known_names: '["MALAGA"]'
+      name: MÁLAGA
+      province: MÁLAGA
+- model: places.town
+  pk: 47
+  fields:
+      known_names: '["NARON"]'
+      name: NARÓN
+      province: A CORUÑA
+- model: places.town
+  pk: 48
+  fields:
+      known_names: '["NOJA"]'
+      name: NOJA
+      province: CANTABRIA
+- model: places.town
+  pk: 49
+  fields:
+      known_names: '["O GROVE"]'
+      name: O GROVE
+      province: PONTEVEDRA
+- model: places.town
+  pk: 50
+  fields:
+      known_names: '["OLEIROS"]'
+      name: OLEIROS
+      province: A CORUÑA
+- model: places.town
+  pk: 51
+  fields:
+      known_names: '["ONDARROA"]'
+      name: ONDARROA
+      province: VIZCAYA
+- model: places.town
+  pk: 52
+  fields:
+      known_names: '["ORIO"]'
+      name: ORIO
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 53
+  fields:
+      known_names: '["PASAIA", "PASAJES"]'
+      name: PASAIA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 54
+  fields:
+      known_names: '["PEDRE\u00d1A"]'
+      name: PEDREÑA
+      province: CANTABRIA
+- model: places.town
+  pk: 55
+  fields:
+      known_names: '["PLENTZIA"]'
+      name: PLENTZIA
+      province: VIZCAYA
+- model: places.town
+  pk: 56
+  fields:
+      known_names: '["POIO"]'
+      name: POIO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 57
+  fields:
+      known_names: '["PONTEVEDRA"]'
+      name: PONTEVEDRA
+      province: PONTEVEDRA
+- model: places.town
+  pk: 58
+  fields:
+      known_names: '["PORTUGALETE"]'
+      name: PORTUGALETE
+      province: VIZCAYA
+- model: places.town
+  pk: 59
+  fields:
+      known_names: '["REDONDELA"]'
+      name: REDONDELA
+      province: PONTEVEDRA
+- model: places.town
+  pk: 60
+  fields:
+      known_names: '["RIANXO"]'
+      name: RIANXO
+      province: A CORUÑA
+- model: places.town
+  pk: 61
+  fields:
+      known_names: '["RIBADEO"]'
+      name: RIBADEO
+      province: LUGO
+- model: places.town
+  pk: 62
+  fields:
+      known_names: '["RIBAMONTAN AL MAR"]'
+      name: RIBAMONTAN AL MAR
+      province: CANTABRIA
+- model: places.town
+  pk: 63
+  fields:
+      known_names: '["RIVEIRA", "RIBEIRA"]'
+      name: RIVEIRA
+      province: A CORUÑA
+- model: places.town
+  pk: 64
+  fields:
+      known_names: '["SADA"]'
+      name: SADA
+      province: A CORUÑA
+- model: places.town
+  pk: 65
+  fields:
+      known_names: '["SAN JUAN DE LUZ", "SAINT JEAN DE LUZ", "DONIBANE LOHIZUNE"]'
+      name: SAN JUAN DE LUZ
+      province: FRANCIA
+- model: places.town
+  pk: 66
+  fields:
+      known_names: '["SAN VICENTE DE LA BARQUERA"]'
+      name: SAN VICENTE DE LA BARQUERA
+      province: CANTABRIA
+- model: places.town
+  pk: 67
+  fields:
+      known_names: '["SANTANDER"]'
+      name: SANTANDER
+      province: CANTABRIA
+- model: places.town
+  pk: 68
+  fields:
+      known_names: '["SANTO\u00d1A"]'
+      name: SANTOÑA
+      province: CANTABRIA
+- model: places.town
+  pk: 69
+  fields:
+      known_names: '["SANTURTZI"]'
+      name: SANTURTZI
+      province: VIZCAYA
+- model: places.town
+  pk: 70
+  fields:
+      known_names: '["SANXENXO"]'
+      name: SANXENXO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 71
+  fields:
+      known_names: '["SESTAO"]'
+      name: SESTAO
+      province: VIZCAYA
+- model: places.town
+  pk: 72
+  fields:
+      known_names: '["SEVILLA"]'
+      name: SEVILLA
+      province: SEVILLA
+- model: places.town
+  pk: 73
+  fields:
+      known_names: '["VIGO"]'
+      name: VIGO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 74
+  fields:
+      known_names: '["VILAGARCIA DE AROUSA", "VILAXOAN"]'
+      name: VILAGARCÍA DE AROUSA
+      province: PONTEVEDRA
+- model: places.town
+  pk: 75
+  fields:
+      known_names: '["VIVEIRO"]'
+      name: VIVEIRO
+      province: LUGO
+- model: places.town
+  pk: 76
+  fields:
+      known_names: '["ZARAGOZA"]'
+      name: ZARAGOZA
+      province: ZARAGOZA
+- model: places.town
+  pk: 77
+  fields:
+      known_names: '["ZARAUTZ"]'
+      name: ZARAUTZ
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 78
+  fields:
+      known_names: '["ZIERBENA"]'
+      name: ZIERBENA
+      province: VIZCAYA
+- model: places.town
+  pk: 79
+  fields:
+      known_names: '["ZUMAYA", "ZUMAIA"]'
+      name: ZUMAYA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 80
+  fields:
+      known_names: '["PORTONOVO"]'
+      name: PORTONOVO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 81
+  fields:
+      known_names: '["PLENCIA", "PLENTZIA"]'
+      name: PLENCIA
+      province: VIZCAYA
+- model: places.town
+  pk: 82
+  fields:
+      known_names: '["TOLOSALDEA", "TOLOSA"]'
+      name: TOLOSALDEA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 83
+  fields:
+      known_names: '["RENTERIA", "ERRENTERIA"]'
+      name: RENTERÍA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 84
+  fields:
+      known_names: '["HERNANI"]'
+      name: HERNANI
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 85
+  fields:
+      known_names: '["LEA-ARTIBAI", "LEA ARTIBAI"]'
+      name: LEA-ARTIBAI
+      province: VIZCAYA
+- model: places.town
+  pk: 86
+  fields:
+      known_names: '["PONTEJOS"]'
+      name: PONTEJOS
+      province: CANTABRIA
+- model: places.town
+  pk: 87
+  fields:
+      known_names: '["NOIA"]'
+      name: NOIA
+      province: A CORUÑA
+- model: places.town
+  pk: 88
+  fields:
+      known_names: '["NAVIA"]'
+      name: NAVIA
+      province: ASTURIAS
+- model: places.town
+  pk: 89
+  fields:
+      known_names: '["SUANCES"]'
+      name: SUANCES
+      province: CANTABRIA
+- model: places.town
+  pk: 90
+  fields:
+      known_names: '["IRUN"]'
+      name: IRÚN
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 91
+  fields:
+      known_names: '["MARIN"]'
+      name: MARÍN
+      province: PONTEVEDRA
+- model: places.town
+  pk: 92
+  fields:
+      known_names: '["LA LINEA"]'
+      name: LA LÍNEA
+      province: CÁDIZ
+- model: places.town
+  pk: 93
+  fields:
+      known_names: '["HENDAYE"]'
+      name: HENDAYE
+      province: FRANCIA
+- model: places.town
+  pk: 94
+  fields:
+      known_names: '["SOTO DEL BARCO"]'
+      name: SOTO DEL BARCO
+      province: ASTURIAS
+- model: places.town
+  pk: 95
+  fields:
+      known_names: '["ANGLET"]'
+      name: ANGLET
+      province: FRANCIA
+- model: places.town
+  pk: 97
+  fields:
+      known_names: '["ALTEA"]'
+      name: ALTEA
+      province: ALICANTE
+- model: places.town
+  pk: 98
+  fields:
+      known_names: '["FUERTEVENTURA"]'
+      name: FUERTEVENTURA
+      province: CANARIAS
+- model: places.town
+  pk: 99
+  fields:
+      known_names: '["REDES"]'
+      name: REDES
+      province: A CORUÑA
+- model: places.town
+  pk: 100
+  fields:
+      known_names: '["ALICANTE", "ALACANT"]'
+      name: ALICANTE
+      province: ALICANTE
+- model: places.town
+  pk: 101
+  fields:
+      known_names: '["UROLA COSTA", "UROLA KOSTA"]'
+      name: UROLA COSTA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 102
+  fields:
+      known_names: '["LASARTE", "LASARTE-ORIA"]'
+      name: LASARTE-ORIA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 103
+  fields:
+      known_names: '["OIARTZUN"]'
+      name: OIARTZUN
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 104
+  fields:
+      known_names: '["BENIDORN"]'
+      name: BENIDORM
+      province: ALICANTE
+- model: places.town
+  pk: 105
+  fields:
+      known_names: '["VALENCIA"]'
+      name: VALENCIA
+      province: VALENCIA
+- model: places.town
+  pk: 106
+  fields:
+      known_names: '["CASTELLO D EMPURIES"]'
+      name: CASTELLÓ D'EMPÚRIES
+      province: XIRONA
+- model: places.town
+  pk: 107
+  fields:
+      known_names: '["TORREVIEJA", "TORREVELLA"]'
+      name: TORREVIEJA
+      province: ALICANTE
+- model: places.town
+  pk: 108
+  fields:
+      known_names: '["VEGADEO"]'
+      name: VEGADEO
+      province: ASTURIAS
+- model: places.town
+  pk: 109
+  fields:
+      known_names: '["NAVARRA", "NAFARROA"]'
+      name: NAVARRA
+      province: NAVARRA
+- model: places.town
+  pk: 110
+  fields:
+      known_names: '["PUERTO DEL ROSARIO"]'
+      name: PUERTO DEL ROSARIO
+      province: LAS PALMAS
+- model: places.town
+  pk: 111
+  fields:
+      known_names: '["GANDIA"]'
+      name: GANDÍA
+      province: VALENCIA
+- model: places.town
+  pk: 112
+  fields:
+      known_names: '["CAMBRILS"]'
+      name: CAMBRILS
+      province: TARRAGONA
+- model: places.town
+  pk: 113
+  fields:
+      known_names: '["DENIA"]'
+      name: DÉNIA
+      province: ALICANTE
+- model: places.town
+  pk: 114
+  fields:
+      known_names: '["BADALONA"]'
+      name: BADALONA
+      province: BARCELONA
+- model: places.town
+  pk: 115
+  fields:
+      known_names: '["COLERA"]'
+      name: COLERA
+      province: XIRONA
+- model: places.town
+  pk: 116
+  fields:
+      known_names: '["VILLAFRANCA"]'
+      name: VILLAFRANCA
+      province: NAVARRA
+- model: places.town
+  pk: 117
+  fields:
+      known_names: '["MATARO"]'
+      name: MATARÓ
+      province: BARCELONA
+- model: places.town
+  pk: 118
+  fields:
+      known_names: '["EL CAMPELLO"]'
+      name: EL CAMPELLO
+      province: ALICANTE
+- model: places.town
+  pk: 119
+  fields:
+      known_names: '["AMPOSTA"]'
+      name: AMPOSTA
+      province: TARRAGONA
+- model: places.town
+  pk: 120
+  fields:
+      known_names: '["TORREDEMBARRA"]'
+      name: TORREDEMBARRA
+      province: TARRAGONA
+- model: places.town
+  pk: 121
+  fields:
+      known_names: '["CALAFELL"]'
+      name: CALAFELL
+      province: TARRAGONA
+- model: places.town
+  pk: 122
+  fields:
+      known_names: '["TARRAGONA"]'
+      name: TARRAGONA
+      province: TARRAGONA
+- model: places.town
+  pk: 124
+  fields:
+      known_names: '["CARASA"]'
+      name: CARASA
+      province: CANTABRIA
+- model: places.town
+  pk: 125
+  fields:
+      known_names: '["FLIX"]'
+      name: FLIX
+      province: TARRAGONA
+- model: places.town
+  pk: 126
+  fields:
+      known_names: '["IBARRA"]'
+      name: IBARRA
+      province: GUIPÚZCOA
+- model: places.town
+  pk: 127
+  fields:
+      known_names: '["LUARCA"]'
+      name: LUARCA
+      province: ASTURIAS
+- model: places.town
+  pk: 128
+  fields:
+      known_names: '["PAISES BAJOS"]'
+      name: PAÍSES BAJOS
+      province: PAÍSES BAJOS
+- model: places.town
+  pk: 129
+  fields:
+      known_names: '["RODEIRO"]'
+      name: RODEIRO
+      province: PONTEVEDRA
+- model: places.town
+  pk: 130
+  fields:
+      known_names: '["SOULE", "ZUBEROA"]'
+      name: SOULE
+      province: FRANCIA
+- model: places.town
+  pk: 131
+  fields:
+      known_names: '["CESURES"]'
+      name: CESURES
+      province: A CORUÑA
+- model: places.town
+  pk: 132
+  fields:
+      known_names: '["ARENYS DE MAR"]'
+      name: ARENYS DE MAR
+      province: BARCELONA
+- model: places.town
+  pk: 133
+  fields:
+      known_names: '["CARTAGENA"]'
+      name: CARTAGENA
+      province: MURCIA
+- model: places.town
+  pk: 134
+  fields:
+      known_names: '["SANTIAGO"]'
+      name: SANTIAGO
+      province: A CORUÑA
+- model: places.town
+  pk: 135
+  fields:
+      known_names: '["RIBADESELLA"]'
+      name: RIBADESELLA
+      province: ASTURIAS
 - model: entities.league
   pk: 1
   fields:
@@ -111,7 +909,7 @@
 - model: entities.entity
   pk: 1
   fields:
-      from_date: 2022-11-07 15:05:28.952561+00:00
+      from_date: 2003-07-02 00:00:00+00:00
       to_date: null
       is_active: true
       name: ASOCIACIÓN DE CLUBES DE TRAINERAS
@@ -119,10 +917,15 @@
       known_names: "[]"
       type: LEAGUE
       symbol: ACT
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 2
   fields:
-      from_date: 2022-11-07 15:05:28.953333+00:00
+      from_date: 2003-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: LIGA GALEGA DE TRAIÑAS
@@ -130,10 +933,15 @@
       known_names: "[]"
       type: LEAGUE
       symbol: LGT
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 3
   fields:
-      from_date: 2022-11-07 15:05:28.953779+00:00
+      from_date: 2006-03-29 00:00:00+00:00
       to_date: null
       is_active: true
       name: ASOCIACIÓN DE REMO DEL CANTÁBRICO
@@ -141,10 +949,15 @@
       known_names: "[]"
       type: LEAGUE
       symbol: ARC
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 4
   fields:
-      from_date: 2022-11-07 15:05:28.954224+00:00
+      from_date: 2018-04-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: EMAKUMEZKO TRAINERUEN ELKARTEA
@@ -152,10 +965,15 @@
       known_names: "[]"
       type: LEAGUE
       symbol: ETE
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 5
   fields:
-      from_date: 2022-11-07 15:05:28.954653+00:00
+      from_date: 1918-05-18 00:00:00+00:00
       to_date: null
       is_active: true
       name: FEDERACIÓN ESPAÑOLA DE REMO
@@ -163,10 +981,15 @@
       known_names: "[]"
       type: FEDERATION
       symbol: FER
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 6
   fields:
-      from_date: 2022-11-07 15:05:28.955089+00:00
+      from_date: 1992-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: FEDERACIÓN GALEGA DE REMO
@@ -174,10 +997,15 @@
       known_names: "[]"
       type: FEDERATION
       symbol: FEGAR
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 7
   fields:
-      from_date: 2022-11-07 15:05:28.955520+00:00
+      from_date: 1943-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: FEDERACIÓN CANTABRA DE REMO
@@ -185,10 +1013,15 @@
       known_names: "[]"
       type: FEDERATION
       symbol: FECAN
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 8
   fields:
-      from_date: 2022-11-07 15:05:28.955945+00:00
+      from_date: 1923-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: FEDERACIÓN DE REMO DEL PRINCIPADO DE ASTURIAS
@@ -196,10 +1029,15 @@
       known_names: "[]"
       type: FEDERATION
       symbol: REMOASTUR
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 9
   fields:
-      from_date: 2022-11-07 15:05:28.956366+00:00
+      from_date: 1985-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: EUSKAL ARRAU FEDERAKUNTZA
@@ -207,10 +1045,15 @@
       known_names: "[]"
       type: FEDERATION
       symbol: ARRAUNA
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 10
   fields:
-      from_date: 2022-11-07 15:05:28.956814+00:00
+      from_date: 2022-11-07 00:00:00+00:00
       to_date: null
       is_active: true
       name: DONOSTIA KULTURA
@@ -218,571 +1061,1350 @@
       known_names: "[]"
       type: PRIVATE
       symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource: []
 - model: entities.entity
   pk: 11
   fields:
-      from_date: 2022-11-07 15:05:28.962668+00:00
+      from_date: 1980-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: AMEGROVE
+      name: CLUB DE REMO AMEGROVE
       normalized_name: AMEGROVE
-      known_names: "[]"
+      known_names: '["CR AMEGROVE"]'
       type: CLUB
-      symbol: null
+      symbol: CRA
+      is_partnership: false
+      town: 49
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "11"
+                values:
+                    details_page: https://traineras.es/clubes/11
+                datasource_name: traineras
 - model: entities.entity
   pk: 12
   fields:
-      from_date: 2022-11-07 15:05:28.963129+00:00
+      from_date: 1982-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: BUEU
+      name: CLUB DO MAR BUEU
       normalized_name: BUEU
-      known_names: "[]"
+      known_names: '["CM BUEU"]'
       type: CLUB
-      symbol: null
+      symbol: CMB
+      is_partnership: false
+      town: 15
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "24"
+                values:
+                    details_page: https://traineras.es/clubes/24
+                datasource_name: traineras
 - model: entities.entity
   pk: 13
   fields:
-      from_date: 2022-11-07 15:05:28.963578+00:00
+      from_date: 1979-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CABO DA CRUZ
+      name: CLUB DE REMO CABO DA CRUZ
       normalized_name: CABO DA CRUZ
-      known_names: "[]"
+      known_names: '["CR CABO DA CRUZ", "BOIRO"]'
       type: CLUB
       symbol: CRCC
+      is_partnership: false
+      town: 14
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "2"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=2
+                datasource_name: act
+              - ref_id: "1527584226"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=1527584226
+                datasource_name: act
+              - ref_id: "42"
+                values:
+                    details_page: https://traineras.es/clubes/42
+                datasource_name: traineras
 - model: entities.entity
   pk: 14
   fields:
-      from_date: 2022-11-07 15:05:28.964013+00:00
+      from_date: 1949-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CASTROPOL
+      name: CLUB DE MAR CASTROPOL
       normalized_name: CASTROPOL
-      known_names: "[]"
+      known_names: '["CM CASTROPOL"]'
       type: CLUB
-      symbol: null
+      symbol: CMC
+      is_partnership: false
+      town: 21
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "25"
+                values:
+                    details_page: https://traineras.es/clubes/25
+                datasource_name: traineras
 - model: entities.entity
   pk: 15
   fields:
-      from_date: 2022-11-07 15:05:28.964447+00:00
+      from_date: 1960-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CEDEIRA
+      name: CLUB DE REMO CEDEIRA
       normalized_name: CEDEIRA
-      known_names: "[]"
+      known_names: '["CR CEDEIRA"]'
       type: CLUB
-      symbol: null
+      symbol: CRC
+      is_partnership: false
+      town: 22
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "46"
+                values:
+                    details_page: https://traineras.es/clubes/46
+                datasource_name: traineras
 - model: entities.entity
   pk: 16
   fields:
-      from_date: 2022-11-07 15:05:28.964867+00:00
+      from_date: 1983-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CESANTES
+      name: CIRCULO CULTURAL DEPORTIVO CESANTES
       normalized_name: CESANTES
-      known_names: "[]"
+      known_names: '["CCD CESANTES", "CESANTES - RODAVIGO"]'
       type: CLUB
-      symbol: null
+      symbol: CCDC
+      is_partnership: false
+      town: 59
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "47"
+                values:
+                    details_page: https://traineras.es/clubes/47
+                datasource_name: traineras
 - model: entities.entity
   pk: 17
   fields:
-      from_date: 2022-11-07 15:05:28.965288+00:00
+      from_date: 1984-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CHAPELA
+      name: CLUB DE REMO CHAPELA
       normalized_name: CHAPELA
-      known_names: "[]"
+      known_names: '["CR CHAPELA"]'
       type: CLUB
-      symbol: null
+      symbol: CRC
+      is_partnership: false
+      town: 59
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "48"
+                values:
+                    details_page: https://traineras.es/clubes/48
+                datasource_name: traineras
 - model: entities.entity
   pk: 18
   fields:
-      from_date: 2022-11-07 15:05:28.965712+00:00
+      from_date: 1980-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: MECOS
+      name: CLUB DE REMO MECOS
       normalized_name: MECOS
-      known_names: "[]"
+      known_names: '["CR MECOS"]'
       type: CLUB
-      symbol: null
+      symbol: CRM
+      is_partnership: false
+      town: 49
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "3"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=3
+                datasource_name: act
+              - ref_id: "65"
+                values:
+                    details_page: https://traineras.es/clubes/65
+                datasource_name: traineras
 - model: entities.entity
   pk: 19
   fields:
-      from_date: 2022-11-07 15:05:28.966136+00:00
+      from_date: 1978-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: MERA
+      name: CENTRO DEPORTIVO MARIÑEIRO MERA
       normalized_name: MERA
-      known_names: "[]"
+      known_names: '["CDM MERA"]'
       type: CLUB
-      symbol: null
+      symbol: CDMM
+      is_partnership: false
+      town: 50
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "67"
+                values:
+                    details_page: https://traineras.es/clubes/67
+                datasource_name: traineras
 - model: entities.entity
   pk: 20
   fields:
-      from_date: 2022-11-07 15:05:28.966564+00:00
+      from_date: 1962-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: MUGARDOS
+      name: CLUB DO MAR MUGARDOS
       normalized_name: MUGARDOS
-      known_names: "[]"
+      known_names: '["CM MUGARDOS"]'
       type: CLUB
-      symbol: null
+      symbol: CMM
+      is_partnership: false
+      town: 42
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "26"
+                values:
+                    details_page: https://traineras.es/clubes/26
+                datasource_name: traineras
 - model: entities.entity
   pk: 21
   fields:
-      from_date: 2022-11-07 15:05:28.966997+00:00
+      from_date: 1982-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: A CABANA
+      name: CLUB DE REMO A CABANA
       normalized_name: A CABANA
-      known_names: "[]"
+      known_names: '["CR CABANA"]'
       type: CLUB
-      symbol: null
+      symbol: CRC
+      is_partnership: false
+      town: 31
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "35"
+                values:
+                    details_page: https://traineras.es/clubes/35
+                datasource_name: traineras
 - model: entities.entity
   pk: 22
   fields:
-      from_date: 2022-11-07 15:05:28.967421+00:00
+      from_date: 1958-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ARES
+      name: CLUB REMO ARES
       normalized_name: ARES
-      known_names: "[]"
+      known_names: '["CR ARES"]'
       type: CLUB
-      symbol: null
+      symbol: CRA
+      is_partnership: false
+      town: 5
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "130"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=130
+                datasource_name: act
+              - ref_id: "37"
+                values:
+                    details_page: https://traineras.es/clubes/37
+                datasource_name: traineras
 - model: entities.entity
   pk: 23
   fields:
-      from_date: 2022-11-07 15:05:28.967847+00:00
+      from_date: 1984-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: MUROS
+      name: CLUB DE REMO MUROS
       normalized_name: MUROS
-      known_names: "[]"
+      known_names: '["CR MUROS"]'
       type: CLUB
-      symbol: null
+      symbol: CRM
+      is_partnership: false
+      town: 44
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "44"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=44
+                datasource_name: act
+              - ref_id: "68"
+                values:
+                    details_page: https://traineras.es/clubes/68
+                datasource_name: traineras
 - model: entities.entity
   pk: 24
   fields:
-      from_date: 2022-11-07 15:05:28.968270+00:00
+      from_date: 1997-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: NARÓN
+      name: CLUB REMO NARÓN
       normalized_name: NARÓN
-      known_names: "[]"
+      known_names: '["CR NAR\u00d3N"]'
       type: CLUB
-      symbol: null
+      symbol: CRN
+      is_partnership: false
+      town: 47
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "69"
+                values:
+                    details_page: https://traineras.es/clubes/69
+                datasource_name: traineras
 - model: entities.entity
   pk: 25
   fields:
-      from_date: 2022-11-07 15:05:28.968688+00:00
+      from_date: 1979-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: PUEBLA
+      name: CLUB REMO PUEBLA
       normalized_name: PUEBLA
-      known_names: "[]"
+      known_names: '["CR PUEBLA"]'
       type: CLUB
       symbol: CRP
+      is_partnership: false
+      town: 3
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "72"
+                values:
+                    details_page: https://traineras.es/clubes/72
+                datasource_name: traineras
 - model: entities.entity
   pk: 26
   fields:
-      from_date: 2022-11-07 15:05:28.969110+00:00
+      from_date: 1982-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: RIANXO
+      name: CLUB REMO RIANXO
       normalized_name: RIANXO
-      known_names: "[]"
+      known_names: '["CR RIANXO"]'
       type: CLUB
       symbol: CRR
+      is_partnership: false
+      town: 60
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "74"
+                values:
+                    details_page: https://traineras.es/clubes/74
+                datasource_name: traineras
+              - ref_id: "135"
+                values:
+                    details_page: https://traineras.es/clubes/135
+                datasource_name: traineras
 - model: entities.entity
   pk: 27
   fields:
-      from_date: 2022-11-07 15:05:28.969530+00:00
+      from_date: 2013-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: RIVEIRA
+      name: CLUB DE REMO NAUTICO RIVEIRA
       normalized_name: RIVEIRA
-      known_names: "[]"
+      known_names: '["CRN RIVEIRA", "CRN RIBEIRA", "RIBEIRA"]'
       type: CLUB
-      symbol: null
+      symbol: CRNR
+      is_partnership: false
+      town: 63
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "164"
+                values:
+                    details_page: https://traineras.es/clubes/164
+                datasource_name: traineras
 - model: entities.entity
   pk: 28
   fields:
-      from_date: 2022-11-07 15:05:28.969945+00:00
+      from_date: 1970-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: PERILLO
+      name: CLUB DE REGATAS PERILLO
       normalized_name: PERILLO
-      known_names: "[]"
+      known_names: '["CR PERILLO", "SALGADO - PERILLO"]'
       type: CLUB
-      symbol: null
+      symbol: CRP
+      is_partnership: false
+      town: 50
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "70"
+                values:
+                    details_page: https://traineras.es/clubes/70
+                datasource_name: traineras
 - model: entities.entity
   pk: 29
   fields:
-      from_date: 2022-11-07 15:05:28.970361+00:00
+      from_date: 1979-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: SAMERTOLAMEU
+      name: SOCIEDAD DEPORTIVA SAMERTOLAMEU
       normalized_name: SAMERTOLAMEU
-      known_names: '["MEIRA"]'
+      known_names: '["SD SAMERTOLAMEU", "MEIRA"]'
       type: CLUB
-      symbol: null
+      symbol: SDS
+      is_partnership: false
+      town: 41
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "56"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=56
+                datasource_name: act
+              - ref_id: "166"
+                values:
+                    details_page: https://traineras.es/clubes/166
+                datasource_name: traineras
 - model: entities.entity
   pk: 30
   fields:
-      from_date: 2022-11-07 15:05:28.970798+00:00
+      from_date: 1993-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: TIRÁN
+      name: SOCIEDAD DEPORTIVA TIRÁN
       normalized_name: TIRÁN
-      known_names: "[]"
+      known_names: '["SD TIR\u00c1N"]'
       type: CLUB
-      symbol: null
+      symbol: SDT
+      is_partnership: true
+      town: 41
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "4"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=4
+                datasource_name: act
+              - ref_id: "1527583951"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=1527583951
+                datasource_name: act
+              - ref_id: "170"
+                values:
+                    details_page: https://traineras.es/clubes/170
+                datasource_name: traineras
 - model: entities.entity
   pk: 31
   fields:
-      from_date: 2022-11-07 15:05:28.971224+00:00
+      from_date: 1986-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: VILA DE CANGAS
+      name: CLUB DE REMO VILA DE CANGAS
       normalized_name: VILA DE CANGAS
-      known_names: "[]"
+      known_names: '["CR VILA DE CANGAS"]'
       type: CLUB
-      symbol: null
+      symbol: CRVC
+      is_partnership: false
+      town: 19
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "82"
+                values:
+                    details_page: https://traineras.es/clubes/82
+                datasource_name: traineras
 - model: entities.entity
   pk: 32
   fields:
-      from_date: 2022-11-07 15:05:28.971654+00:00
+      from_date: 1988-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ESTEIRANA
+      name: ASOCIACIÓN DEPORTIVA ESTEIRANA
       normalized_name: ESTEIRANA
-      known_names: "[]"
+      known_names: '["AD ESTEIRANA", "ESTEIRO"]'
       type: CLUB
-      symbol: null
+      symbol: ADE
+      is_partnership: false
+      town: 44
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "2"
+                values:
+                    details_page: https://traineras.es/clubes/2
+                datasource_name: traineras
 - model: entities.entity
   pk: 33
   fields:
-      from_date: 2022-11-07 15:05:28.972071+00:00
+      from_date: 1987-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: VIRXE DA GUÍA
+      name: CLUB DE REMO VIRXE DA GUÍA
       normalized_name: VIRXE DA GUÍA
-      known_names: "[]"
+      known_names: '["CR VIRXE DA GU\u00cdA"]'
       type: CLUB
-      symbol: null
+      symbol: CRVG
+      is_partnership: false
+      town: 73
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "215"
+                values:
+                    details_page: https://traineras.es/clubes/215
+                datasource_name: traineras
 - model: entities.entity
   pk: 34
   fields:
-      from_date: 2022-11-07 15:05:28.972495+00:00
+      from_date: 1982-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: VILAXOÁN
+      name: CLUB DE REMO VILAXOÁN
       normalized_name: VILAXOÁN
-      known_names: "[]"
+      known_names: '["CR VILAXO\u00c1N"]'
       type: CLUB
-      symbol: null
+      symbol: CRV
+      is_partnership: false
+      town: 74
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "213"
+                values:
+                    details_page: https://traineras.es/clubes/213
+                datasource_name: traineras
 - model: entities.entity
   pk: 35
   fields:
-      from_date: 2022-11-07 15:05:28.972924+00:00
+      from_date: 1989-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CORUXO
+      name: CLUB DE REMO CORUXO
       normalized_name: CORUXO
-      known_names: "[]"
+      known_names: '["CR CORUXO"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 73
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "54"
+                values:
+                    details_page: https://traineras.es/clubes/54
+                datasource_name: traineras
 - model: entities.entity
   pk: 36
   fields:
-      from_date: 2022-11-07 15:05:28.973340+00:00
+      from_date: 1989-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ROBALEIRA
+      name: CLUB DE REMO ROBALEIRA
       normalized_name: ROBALEIRA
-      known_names: "[]"
+      known_names: '["CR ROBALEIRA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 2
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "1"
+                values:
+                    details_page: https://traineras.es/clubes/1
+                datasource_name: traineras
 - model: entities.entity
   pk: 37
   fields:
-      from_date: 2022-11-07 15:05:28.973760+00:00
+      from_date: 1976-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: GETARIA
-      normalized_name: GETARIAKO
-      known_names: '["GETARIA"]'
+      name: GETARIA ARRAUN ELKARTEA
+      normalized_name: GETARIA
+      known_names: '["GETARIA AE", "GETARIAKO", "GETARIA"]'
       type: CLUB
-      symbol: null
+      symbol: GAE
+      is_partnership: false
+      town: 32
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "32"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=32
+                datasource_name: act
+              - ref_id: "19"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2010/19/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "108"
+                values:
+                    details_page: https://traineras.es/clubes/108
+                datasource_name: traineras
 - model: entities.entity
   pk: 38
   fields:
-      from_date: 2022-11-07 15:05:28.974189+00:00
-      to_date: null
-      is_active: true
-      name: CASTRO URDIALES
+      from_date: 1966-01-01 00:00:00+00:00
+      to_date: 2013-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SOCIEDAD DEPORTIVA DE REMO CASTRO URDIALES
       normalized_name: CASTRO URDIALES
-      known_names: '["CASTRE\u00d1A", "CASTRO"]'
+      known_names: '["SDR CASTRO URDIALES", "SDR CASTRO", "CASTRO"]'
       type: CLUB
-      symbol: null
+      symbol: SDRCU
+      is_partnership: false
+      town: 20
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "6"
+                values:
+                    gender: MALE
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=6
+                datasource_name: act
+              - ref_id: "27"
+                values:
+                    gender: MALE
+                    details_page: https://www.liga-arc.com/es/clubes/2010/27/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "28"
+                values:
+                    gender: MALE
+                    details_page: https://www.liga-arc.com/es/clubes/2014/28/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "240"
+                values:
+                    gender: MALE
+                    details_page: https://www.liga-arc.com/es/clubes/2019/240/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "28"
+                values:
+                    gender: FEMALE
+                    details_page: https://www.ligaete.com/es/clubes/2021/28/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "173"
+                values:
+                    details_page: https://traineras.es/clubes/173
+                datasource_name: traineras
 - model: entities.entity
   pk: 39
   fields:
-      from_date: 2022-11-07 15:05:28.974628+00:00
+      from_date: 1992-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: URDAIBAI
+      name: URDAIBAI ARRAUN ELKARTEA
       normalized_name: URDAIBAI
-      known_names: '["BERMEO"]'
+      known_names: '["URDAIBAI AE"]'
       type: CLUB
-      symbol: null
+      symbol: UAE
+      is_partnership: true
+      town: 12
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "13"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=13
+                datasource_name: act
+              - ref_id: "92"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2014/92/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "207"
+                values:
+                    details_page: https://traineras.es/clubes/207
+                datasource_name: traineras
 - model: entities.entity
   pk: 40
   fields:
-      from_date: 2022-11-07 15:05:28.975057+00:00
+      from_date: 1923-12-22 00:00:00+00:00
       to_date: null
       is_active: true
-      name: KAIKU
+      name: CLUB DEPORTIVO DE REMO KAIKU
       normalized_name: KAIKU
-      known_names: "[]"
+      known_names: '["CDR KAIKU"]'
       type: CLUB
-      symbol: null
+      symbol: CDRK
+      is_partnership: false
+      town: 71
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "38"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=38
+                datasource_name: act
+              - ref_id: "100"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2016/100/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "100"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/100/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "124"
+                values:
+                    details_page: https://traineras.es/clubes/124
+                datasource_name: traineras
 - model: entities.entity
   pk: 41
   fields:
-      from_date: 2022-11-07 15:05:28.975475+00:00
+      from_date: 1958-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: SANPEDROTARRA
+      name: SANPEDROTARRA ARRAUN ELKARTEA
       normalized_name: SANPEDROTARRA
-      known_names: '["SAN PEDRO"]'
+      known_names: '["SANPEDROTARRA AE", "SAN PEDRO AE", "SAN PEDRO"]'
       type: CLUB
-      symbol: null
+      symbol: SAE
+      is_partnership: false
+      town: 53
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "18"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=18
+                datasource_name: act
+              - ref_id: "4"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2010/4/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "180"
+                values:
+                    details_page: https://traineras.es/clubes/180
+                datasource_name: traineras
 - model: entities.entity
   pk: 42
   fields:
-      from_date: 2022-11-07 15:05:28.975898+00:00
+      from_date: 1969-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: HONDARRIBIA
+      name: HONDARRIBIA ARRAUN ELKARTEA
       normalized_name: HONDARRIBIA
-      known_names: "[]"
+      known_names: '["HONDARRIBIA AE"]'
       type: CLUB
-      symbol: null
+      symbol: HAE
+      is_partnership: false
+      town: 36
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "8"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=8
+                datasource_name: act
+              - ref_id: "10"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=10
+                datasource_name: act
+              - ref_id: "1"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/1/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "1"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/1/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "112"
+                values:
+                    details_page: https://traineras.es/clubes/112
+                datasource_name: traineras
+              - ref_id: "225"
+                values:
+                    details_page: https://traineras.es/clubes/225
+                datasource_name: traineras
 - model: entities.entity
   pk: 43
   fields:
-      from_date: 2022-11-07 15:05:28.976331+00:00
+      from_date: 1945-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: LAREDO
+      name: LAREDO REMO CLUB
       normalized_name: LAREDO
-      known_names: "[]"
+      known_names: '["LAREDO RC"]'
       type: CLUB
-      symbol: null
+      symbol: LRC
+      is_partnership: false
+      town: 37
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "17"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=17
+                datasource_name: act
+              - ref_id: "39"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2017/39/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "131"
+                values:
+                    details_page: https://traineras.es/clubes/131
+                datasource_name: traineras
 - model: entities.entity
   pk: 44
   fields:
-      from_date: 2022-11-07 15:05:28.976752+00:00
+      from_date: 1917-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: PORTUGALETE
-      normalized_name: SAN NICOLÁS DE PORTUGALETE
-      known_names: '["PORTUGALETE"]'
+      name: PORTUGALETE ARRAUN TALDEA
+      normalized_name: PORTUGALETE
+      known_names: '["PORTUGALETE AT", "SAN NICOL\u00c1S AT", "SAN NICOLAS AT"]'
       type: CLUB
-      symbol: null
+      symbol: PAT
+      is_partnership: false
+      town: 58
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "50"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=50
+                datasource_name: act
+              - ref_id: "102"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/102/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "102"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2022/102/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "154"
+                values:
+                    details_page: https://traineras.es/clubes/154
+                datasource_name: traineras
 - model: entities.entity
   pk: 45
   fields:
-      from_date: 2022-11-07 15:05:28.977174+00:00
+      from_date: 1976-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ZIERBENA
+      name: ZIERBENA ARRAUN ELKARTEA
       normalized_name: ZIERBENA
-      known_names: "[]"
+      known_names: '["ZIERBENA AE", "ZIERBENAKO AKE"]'
       type: CLUB
-      symbol: null
+      symbol: ZAE
+      is_partnership: false
+      town: 78
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "68"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=68
+                datasource_name: act
+              - ref_id: "104"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/104/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "219"
+                values:
+                    details_page: https://traineras.es/clubes/219
+                datasource_name: traineras
 - model: entities.entity
   pk: 46
   fields:
-      from_date: 2022-11-07 15:05:28.977604+00:00
+      from_date: 1965-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: SAN JUAN
+      name: PASAIA DONIBANE KOXTAPE ARRAUN ELKARTEA
       normalized_name: PASAIA DONIBANE KOXTAPE
-      known_names: '["SAN JUAN KOXTAPE", "SAN JUAN"]'
+      known_names: '["PASAIA DONIBANE KOXTAPE AE", "PASAIA DONIBANE KOXTAPE", "SAN JUAN
+          KOXTAPE AE", "SAN JUAN AE", "PASAIA DONIBANE", "SAN JUAN KOXTAPE", "SAN JUAN"]'
       type: CLUB
-      symbol: null
+      symbol: PDKAE
+      is_partnership: false
+      town: 53
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "11"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=11
+                datasource_name: act
+              - ref_id: "9"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=9
+                datasource_name: act
+              - ref_id: "3"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/3/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "3"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/3/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "150"
+                values:
+                    details_page: https://traineras.es/clubes/150
+                datasource_name: traineras
 - model: entities.entity
   pk: 47
   fields:
-      from_date: 2022-11-07 15:05:28.978043+00:00
+      from_date: 1975-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ZUMAIA
-      normalized_name: AITA MARI
-      known_names: '["ZUMAIA", "ZUMAIAKO", "UROLA KOSTA"]'
+      name: ZUMAIA ARRAUN ELKARTEA
+      normalized_name: ZUMAIA
+      known_names: '["ZUMAIA AE", "ZUMAIA", "ZUMAIAKO", "ZUMAIAKO TELMO DEUN", "ZUMAIAKO
+          TELMO DEUN AKE"]'
       type: CLUB
-      symbol: null
+      symbol: ZAE
+      is_partnership: false
+      town: 79
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "16"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=16
+                datasource_name: act
+              - ref_id: "17"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/17/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "17"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2019/17/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "222"
+                values:
+                    details_page: https://traineras.es/clubes/222
+                datasource_name: traineras
+              - ref_id: "268"
+                values:
+                    details_page: https://traineras.es/clubes/268
+                datasource_name: traineras
 - model: entities.entity
   pk: 48
   fields:
-      from_date: 2022-11-07 15:05:28.978480+00:00
+      from_date: 1977-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: LEKITTARRA
-      normalized_name: ISUNTZA
-      known_names: '["LEKITTARRA"]'
+      name: CLUB DE REMO LEKITTARRA
+      normalized_name: LEKITTARRA
+      known_names: '["CR LEKITTARRA", "LEKEITIO", "ISUNTZA"]'
       type: CLUB
-      symbol: null
+      symbol: CRL
+      is_partnership: false
+      town: 38
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "10"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=10
+                datasource_name: act
+              - ref_id: "89"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/89/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "119"
+                values:
+                    details_page: https://traineras.es/clubes/119
+                datasource_name: traineras
 - model: entities.entity
   pk: 49
   fields:
-      from_date: 2022-11-07 15:05:28.978911+00:00
+      from_date: 1983-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ZARAUTZ
+      name: CLUB DE REMO ZARAUTZ
       normalized_name: ZARAUTZ
-      known_names: "[]"
+      known_names: '["CR ZARAUTZ"]'
       type: CLUB
-      symbol: null
+      symbol: CRZ
+      is_partnership: false
+      town: 77
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "15"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=15
+                datasource_name: act
+              - ref_id: "16"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2010/16/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "16"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2021/16/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "218"
+                values:
+                    details_page: https://traineras.es/clubes/218
+                datasource_name: traineras
 - model: entities.entity
   pk: 50
   fields:
-      from_date: 2022-11-07 15:05:28.979331+00:00
+      from_date: 1967-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: SANTURTZI
-      normalized_name: ITSASOKO AMA
-      known_names: '["SANTURTZI"]'
+      name: CLUB DE REMO SANTURTZI
+      normalized_name: SANTURTZI
+      known_names: '["CR SANTURTZI", "ITXASOKO AMA", "ITSASO AE"]'
       type: CLUB
-      symbol: null
+      symbol: CRS
+      is_partnership: false
+      town: 69
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "37"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=37
+                datasource_name: act
+              - ref_id: "103"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/103/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "184"
+                values:
+                    details_page: https://traineras.es/clubes/184
+                datasource_name: traineras
 - model: entities.entity
   pk: 51
   fields:
-      from_date: 2022-11-07 15:05:28.979774+00:00
+      from_date: 1965-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ORIO
+      name: CLUB REMO OLÍMPICO ORIO ARRAUN ELKARTEA
       normalized_name: ORIO
-      known_names: "[]"
+      known_names: '["CRO ORIO AE", "ORIO AE"]'
       type: CLUB
-      symbol: null
+      symbol: OAE
+      is_partnership: false
+      town: 52
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "9"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=9
+                datasource_name: act
+              - ref_id: "7"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=7
+                datasource_name: act
+              - ref_id: "14"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/14/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "14"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/14/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "84"
+                values:
+                    details_page: https://traineras.es/clubes/84
+                datasource_name: traineras
 - model: entities.entity
   pk: 52
   fields:
-      from_date: 2022-11-07 15:05:28.980205+00:00
+      from_date: 1979-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: VALLE DE CAMARGO
+      name: CLUB DE REMO VALLE DE CAMARGO
       normalized_name: VALLE DE CAMARGO
-      known_names: "[]"
+      known_names: '["CR VALLE DE CAMARGO", "CAMARGO"]'
       type: CLUB
-      symbol: null
+      symbol: CRVC
+      is_partnership: false
+      town: 17
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "23"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=23
+                datasource_name: act
+              - ref_id: "31"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/31/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "43"
+                values:
+                    details_page: https://traineras.es/clubes/43
+                datasource_name: traineras
 - model: entities.entity
   pk: 53
   fields:
-      from_date: 2022-11-07 15:05:28.980644+00:00
+      from_date: 1987-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ILLUMBE
-      normalized_name: ILLUMBE
-      known_names: '["TRINTXERPE"]'
+      name: TRINTXERPE ILLUMBE ARRAUN ELKARTEA
+      normalized_name: TRINTXERPE ILLUMBE
+      known_names: '["CA ILLUMBE", "TRINTXERPE AE"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 53
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "12"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=12
+                datasource_name: act
+              - ref_id: "7"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/7/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "201"
+                values:
+                    details_page: https://traineras.es/clubes/201
+                datasource_name: traineras
 - model: entities.entity
   pk: 54
   fields:
-      from_date: 2022-11-07 15:05:28.981081+00:00
+      from_date: 1895-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: PEDREÑA
+      name: SOCIEDAD DEPORTIVA DE REMO PEDREÑA
       normalized_name: PEDREÑA
-      known_names: "[]"
+      known_names: '["SDR PEDRE\u00d1A"]'
       type: CLUB
-      symbol: null
+      symbol: SDRP
+      is_partnership: false
+      town: 54
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "7"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=7
+                datasource_name: act
+              - ref_id: "40"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2015/40/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "175"
+                values:
+                    details_page: https://traineras.es/clubes/175
+                datasource_name: traineras
 - model: entities.entity
   pk: 55
   fields:
-      from_date: 2022-11-07 15:05:28.981503+00:00
+      from_date: 2007-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: KAIARRIBIA DONOSTIARRA
-      normalized_name: KAIARRIBIA DONOSTIARRA
-      known_names: "[]"
+      name: KAIARRIBIA ARRAUN LAGUNAK
+      normalized_name: KAIARRIBIA
+      known_names: '["KAIARRIBA AE", "DONOSTIARRA", "DONOSTIARRA UR KIROLAK"]'
       type: CLUB
       symbol: null
+      is_partnership: true
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "94"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=94
+                datasource_name: act
+              - ref_id: "1493109478"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=1493109478
+                datasource_name: act
+              - ref_id: "12"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/12/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "12"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/12/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "94"
+                values:
+                    details_page: https://traineras.es/clubes/94
+                datasource_name: traineras
 - model: entities.entity
   pk: 56
   fields:
-      from_date: 2022-11-07 15:05:28.981932+00:00
+      from_date: 1966-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ASTILLERO
+      name: SOCIEDAD DEPORTIVA DE REMO ASTILLERO
       normalized_name: ASTILLERO
-      known_names: "[]"
+      known_names: '["SDR ASTILLERO"]'
       type: CLUB
-      symbol: null
+      symbol: SDRA
+      is_partnership: false
+      town: 7
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "5"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=5
+                datasource_name: act
+              - ref_id: "32"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/32/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "171"
+                values:
+                    details_page: https://traineras.es/clubes/171
+                datasource_name: traineras
 - model: entities.entity
   pk: 57
   fields:
-      from_date: 2022-11-07 15:05:28.982382+00:00
+      from_date: 1973-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ONDARROA
+      name: ONDARROA ARRAUN ELKARTEA
       normalized_name: ONDARROA
-      known_names: "[]"
+      known_names: '["ONDARROA AE"]'
       type: CLUB
-      symbol: null
+      symbol: OAE
+      is_partnership: false
+      town: 51
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "46"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=46
+                datasource_name: act
+              - ref_id: "88"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/88/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "88"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2019/88/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "149"
+                values:
+                    details_page: https://traineras.es/clubes/149
+                datasource_name: traineras
 - model: entities.entity
   pk: 58
   fields:
-      from_date: 2022-11-07 15:05:28.982807+00:00
+      from_date: 1981-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: DEUSTO
+      name: DEUSTO ARRAUN TALDEA
       normalized_name: DEUSTO
-      known_names: "[]"
+      known_names: '["DEUSTO AT"]'
       type: CLUB
-      symbol: null
+      symbol: DAT
+      is_partnership: false
+      town: 13
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "99"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/99/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "99"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/99/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "89"
+                values:
+                    details_page: https://traineras.es/clubes/89
+                datasource_name: traineras
 - model: entities.entity
   pk: 59
   fields:
-      from_date: 2022-11-07 15:05:28.983229+00:00
+      from_date: 1957-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ARKOTE
+      name: ARKOTE ARRAUN TALDEA
       normalized_name: ARKOTE
-      known_names: "[]"
+      known_names: '["ARKOTE AT"]'
       type: CLUB
-      symbol: null
+      symbol: AAT
+      is_partnership: false
+      town: 81
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "14"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=14
+                datasource_name: act
+              - ref_id: "95"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2010/95/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "13"
+                values:
+                    details_page: https://traineras.es/clubes/13
+                datasource_name: traineras
 - model: entities.entity
   pk: 60
   fields:
-      from_date: 2022-11-07 15:05:28.983645+00:00
+      from_date: 1996-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: CLUB DE REMO OLÍMPICO DONOSTIA ARRAUN LAGUNAK
       normalized_name: DONOSTIA ARRAUN LAGUNAK
-      known_names: '["CRO DONOSTIA ARRAUN LAGUNAK","GU ARRAUN"]'
+      known_names: '["CRO DONOSTIA ARRAUN LAGUNAK", "GU ARRAUN"]'
       type: CLUB
-      symbol: null
+      symbol: DAL
+      is_partnership: true
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "1432575135"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=1432575135
+                datasource_name: act
+              - ref_id: "11"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/11/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "93"
+                values:
+                    details_page: https://traineras.es/clubes/93
+                datasource_name: traineras
 - model: entities.entity
   pk: 61
   fields:
-      from_date: 2022-11-07 15:05:28.984072+00:00
+      from_date: 2005-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: TOLOSA
-      normalized_name: TOLOSA
-      known_names: '["TOLOSALDEA"]'
+      name: TOLOSALDEKO ARRAUN KLUBA
+      normalized_name: TOLOSALDEKO
+      known_names: '["TOLOSALDEKO AK", "TOLOSALDEA", "TOLOSALDEA KLUBA", "TOLOSA"]'
       type: CLUB
-      symbol: null
+      symbol: TAK
+      is_partnership: false
+      town: 82
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "1527584751"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=1527584751
+                datasource_name: act
+              - ref_id: "22"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/22/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "195"
+                values:
+                    details_page: https://traineras.es/clubes/195
+                datasource_name: traineras
 - model: entities.entity
   pk: 62
   fields:
-      from_date: 2022-11-07 15:05:28.984512+00:00
+      from_date: 2022-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: GU
@@ -790,303 +2412,3777 @@
       known_names: "[]"
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "11"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/11/1/_/plantilla
+                datasource_name: arc
 - model: entities.entity
   pk: 63
   fields:
-      from_date: 2022-11-07 15:05:28.984937+00:00
+      from_date: 1988-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CIUDAD DE SANTANDER
+      name: CLUB DE REMO CIUDAD DE SANTANDER
       normalized_name: CIUDAD DE SANTANDER
-      known_names: "[]"
+      known_names: '["CR CIUDAD DE SANTANDER"]'
       type: CLUB
-      symbol: null
+      symbol: CRCS
+      is_partnership: false
+      town: 67
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "58"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=58
+                datasource_name: act
+              - ref_id: "36"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/36/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "228"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2012/228/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "49"
+                values:
+                    details_page: https://traineras.es/clubes/49
+                datasource_name: traineras
 - model: entities.entity
   pk: 64
   fields:
-      from_date: 2022-11-07 15:05:28.985358+00:00
+      from_date: 1987-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: HIBAIKA
+      name: HIBAIKA ARRAUN ELKARTEA
       normalized_name: HIBAIKA
-      known_names: "[]"
+      known_names: '["HIBAIKA AE"]'
       type: CLUB
-      symbol: null
+      symbol: HAE
+      is_partnership: false
+      town: 83
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "2"
+                values:
+                    details_page: https://www.euskolabelliga.com/femenina/clubes/index.php?c=2
+                datasource_name: act
+              - ref_id: "6"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/6/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "6"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/6/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "111"
+                values:
+                    details_page: https://traineras.es/clubes/111
+                datasource_name: traineras
 - model: entities.entity
   pk: 65
   fields:
-      from_date: 2022-11-07 15:05:28.985774+00:00
-      to_date: null
-      is_active: true
-      name: CANTABRIA
-      normalized_name: CANTABRIA
-      known_names: "[]"
+      from_date: 2010-01-01 00:00:00+00:00
+      to_date: 2010-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SELECCIÓN CÁNTABRA
+      normalized_name: SELECCIÓN CÁNTABRA
+      known_names: '["CANTABRIA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "188"
+                values:
+                    details_page: https://traineras.es/clubes/188
+                datasource_name: traineras
 - model: entities.entity
   pk: 66
   fields:
-      from_date: 2022-11-07 15:05:28.986191+00:00
-      to_date: null
-      is_active: true
-      name: GIPUZKOA
-      normalized_name: GIPUZKOA
-      known_names: "[]"
+      from_date: 2008-01-01 00:00:00+00:00
+      to_date: 2010-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SELECCIÓN GUIPÚZCOA
+      normalized_name: SELECCIÓN GUIPÚZCOA
+      known_names: '["SELECCI\u00d3N GUIPUZCOANA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "191"
+                values:
+                    details_page: https://traineras.es/clubes/191
+                datasource_name: traineras
 - model: entities.entity
   pk: 67
   fields:
-      from_date: 2022-11-07 15:05:28.986610+00:00
-      to_date: null
-      is_active: true
-      name: CATALUNYA
-      normalized_name: CATALUNYA
-      known_names: "[]"
+      from_date: 2009-01-01 00:00:00+00:00
+      to_date: 2009-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SELECCIÓN CATALUÑA
+      normalized_name: SELECCIÓN CATALUÑA
+      known_names: '["CATALUNYA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "189"
+                values:
+                    details_page: https://traineras.es/clubes/189
+                datasource_name: traineras
 - model: entities.entity
   pk: 68
   fields:
-      from_date: 2022-11-07 15:05:28.987021+00:00
-      to_date: null
-      is_active: true
-      name: BIZKAIA
-      normalized_name: BIZKAIA
-      known_names: "[]"
+      from_date: 2008-01-01 00:00:00+00:00
+      to_date: 2010-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SELECCIÓN VIZCAYA
+      normalized_name: SELECCIÓN VIZCAYA
+      known_names: '["BIZCAIA", "SELECCI\u00d3N VIZCAINA", "BILBO HANDIKO ERRAMULARIAK
+          ARRAUN ELKARTEA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "193"
+                values:
+                    details_page: https://traineras.es/clubes/193
+                datasource_name: traineras
 - model: entities.entity
   pk: 69
   fields:
-      from_date: 2022-11-07 15:05:28.987436+00:00
-      to_date: null
-      is_active: true
-      name: GALICIA
-      normalized_name: GALICIA
-      known_names: '["RIANXEIRA MECALIA"]'
+      from_date: 2003-01-01 00:00:00+00:00
+      to_date: 2003-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SELECCIÓN GALICIA
+      normalized_name: SELECCIÓN GALICIA
+      known_names: "[]"
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "190"
+                values:
+                    details_page: https://traineras.es/clubes/190
+                datasource_name: traineras
 - model: entities.entity
   pk: 70
   fields:
-      from_date: 2022-11-07 15:05:28.987858+00:00
+      from_date: 1971-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: SANTOÑA
+      name: SOCIEDAD DEPORTIVA SANTOÑA
       normalized_name: SANTOÑA
-      known_names: "[]"
+      known_names: '["SD SANTO\u00d1A"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 68
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "37"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/37/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "168"
+                values:
+                    details_page: https://traineras.es/clubes/168
+                datasource_name: traineras
+              - ref_id: "243"
+                values:
+                    details_page: https://traineras.es/clubes/243
+                datasource_name: traineras
 - model: entities.entity
   pk: 71
   fields:
-      from_date: 2022-11-07 15:05:28.988283+00:00
+      from_date: 1965-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: HERNANI
+      name: HERNANI ARRAUN ELKARTEA
       normalized_name: HERNANI
-      known_names: "[]"
+      known_names: '["HERNANI AE", "HERNANIKO"]'
       type: CLUB
-      symbol: null
+      symbol: HAE
+      is_partnership: false
+      town: 84
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "250"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/250/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "110"
+                values:
+                    details_page: https://traineras.es/clubes/110
+                datasource_name: traineras
 - model: entities.entity
   pk: 72
   fields:
-      from_date: 2022-11-07 15:05:28.988698+00:00
-      to_date: null
-      is_active: true
-      name: LEA ARTIBAI
+      from_date: 2017-01-01 00:00:00+00:00
+      to_date: 2018-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: LEA ARTIBAI ARRAUN TALDEA
       normalized_name: LEA ARTIBAI
-      known_names: "[]"
+      known_names: '["LEA ARTIBAI AT"]'
       type: CLUB
       symbol: null
+      is_partnership: true
+      town: 85
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "89"
+                values:
+                    gender: FEMALE
+                    details_page: https://www.ligaete.com/es/clubes/2018/89/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "134"
+                values:
+                    details_page: https://traineras.es/clubes/134
+                datasource_name: traineras
 - model: entities.entity
   pk: 73
   fields:
-      from_date: 2022-11-07 15:05:28.989113+00:00
+      from_date: 1975-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: MUNDAKA
+      name: MUNDAKA ARRAUN TALDEA
       normalized_name: MUNDAKA
-      known_names: "[]"
+      known_names: '["MUNDAKA AT"]'
       type: CLUB
-      symbol: null
+      symbol: MAT
+      is_partnership: false
+      town: 43
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "94"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/94/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "233"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2015/233/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "142"
+                values:
+                    details_page: https://traineras.es/clubes/142
+                datasource_name: traineras
 - model: entities.entity
   pk: 74
   fields:
-      from_date: 2022-11-07 15:05:28.989535+00:00
+      from_date: 2007-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: GETXO
-      normalized_name: GETXO
-      known_names: "[]"
+      name: GETXO ARRAUN
+      normalized_name: GETXO ARRAUN
+      known_names: '["GETXO"]'
       type: CLUB
-      symbol: null
+      symbol: GA
+      is_partnership: false
+      town: 33
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "96"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/96/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "60"
+                values:
+                    details_page: https://traineras.es/clubes/60
+                datasource_name: traineras
 - model: entities.entity
   pk: 75
   fields:
-      from_date: 2022-11-07 15:05:28.989955+00:00
+      from_date: 1953-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: LUANCO
+      name: CLUB NAUTICO LUANCO
       normalized_name: LUANCO
-      known_names: "[]"
+      known_names: '["CN LUANCO"]'
       type: CLUB
-      symbol: null
+      symbol: CNL
+      is_partnership: false
+      town: 40
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "111"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/111/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "33"
+                values:
+                    details_page: https://traineras.es/clubes/33
+                datasource_name: traineras
 - model: entities.entity
   pk: 76
   fields:
-      from_date: 2022-11-07 15:05:28.990376+00:00
+      from_date: 1930-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: LUTXANA
+      name: LUTXANA ARRAUN ELKARTEA
       normalized_name: LUTXANA
-      known_names: "[]"
+      known_names: '["LUTXANA AE"]'
       type: CLUB
-      symbol: null
+      symbol: LAE
+      is_partnership: false
+      town: 29
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "98"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/98/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "98"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2020/98/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "139"
+                values:
+                    details_page: https://traineras.es/clubes/139
+                datasource_name: traineras
 - model: entities.entity
   pk: 77
   fields:
-      from_date: 2022-11-07 15:05:28.990804+00:00
+      from_date: 1987-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: COLINDRES
+      name: CLUB DE REMO COLINDRES
       normalized_name: COLINDRES
-      known_names: "[]"
+      known_names: '["CR COLINDRES"]'
       type: CLUB
-      symbol: null
+      symbol: CRC
+      is_partnership: false
+      town: 23
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "29"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/29/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "29"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/29/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "52"
+                values:
+                    details_page: https://traineras.es/clubes/52
+                datasource_name: traineras
 - model: entities.entity
   pk: 78
   fields:
-      from_date: 2022-11-07 15:05:28.991282+00:00
+      from_date: 1980-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: MUTRIKU
+      name: MUTRIKU ARRAUN TALDEA
       normalized_name: MUTRIKU
-      known_names: "[]"
+      known_names: '["MUTRIKU AT"]'
       type: CLUB
-      symbol: null
+      symbol: MAT
+      is_partnership: false
+      town: 45
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "18"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2017/18/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "143"
+                values:
+                    details_page: https://traineras.es/clubes/143
+                datasource_name: traineras
 - model: entities.entity
   pk: 79
   fields:
-      from_date: 2022-11-07 15:05:28.991704+00:00
+      from_date: 2007-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: BUSTURIALDEA
+      name: BUSTURIALDEA ARRAUN ELKARTEA
       normalized_name: BUSTURIALDEA
-      known_names: "[]"
+      known_names: '["BUSTURIALDEA AE"]'
       type: CLUB
-      symbol: null
+      symbol: BAE
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "91"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/91/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "22"
+                values:
+                    details_page: https://traineras.es/clubes/22
+                datasource_name: traineras
 - model: entities.entity
   pk: 80
   fields:
-      from_date: 2022-11-07 15:05:28.992117+00:00
+      from_date: 2016-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: LAPURDI
-      normalized_name: LAPURDI
-      known_names: "[]"
+      name: LAPURDIKO ARRAUN TALDEA
+      normalized_name: LAPURDIKO
+      known_names: '["LAPIRDICO AT", "LAPURDI"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 65
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "235"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2017/235/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "235"
+                values:
+                    details_page: https://www.ligaete.com/es/clubes/2018/235/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "223"
+                values:
+                    details_page: https://traineras.es/clubes/223
+                datasource_name: traineras
 - model: entities.entity
   pk: 81
   fields:
-      from_date: 2022-11-07 15:05:28.992520+00:00
+      from_date: 1944-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: IBERIA
+      name: CLUB DEPORTIVO DE REMO IBERIA
       normalized_name: IBERIA
-      known_names: "[]"
+      known_names: '["CD IBEIRA", "CR IBERIA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 71
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "101"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2015/101/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "62"
+                values:
+                    details_page: https://traineras.es/clubes/62
+                datasource_name: traineras
 - model: entities.entity
   pk: 82
   fields:
-      from_date: 2022-11-07 15:05:28.992917+00:00
+      from_date: 1969-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: RASPAS
+      name: RASPAS ARRAUN ELKARTEA
       normalized_name: RASPAS
-      known_names: "[]"
+      known_names: '["RASPAS AE"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 33
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "97"
+                values:
+                    details_page: https://www.liga-arc.com/es/clubes/2009/97/1/_/plantilla
+                datasource_name: arc
+              - ref_id: "159"
+                values:
+                    details_page: https://traineras.es/clubes/159
+                datasource_name: traineras
 - model: entities.entity
   pk: 84
   fields:
-      from_date: 2022-11-07 15:05:28.993913+00:00
+      from_date: 1988-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: ELANTXOBE
+      name: ELANTXOBE ARRAUN ELKARTEA
       normalized_name: ELANTXOBE
-      known_names: "[]"
+      known_names: '["ELANTXOBE AE"]'
       type: CLUB
-      symbol: null
+      symbol: EAE
+      is_partnership: false
+      town: 28
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "31"
+                values:
+                    details_page: https://www.euskolabelliga.com/clubes/index.php?c=31
+                datasource_name: act
+              - ref_id: "100"
+                values:
+                    details_page: https://traineras.es/clubes/100
+                datasource_name: traineras
 - model: entities.entity
   pk: 85
   fields:
-      from_date: 2022-11-07 15:05:28.994321+00:00
+      from_date: 2015-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: OIARTZUN
-      normalized_name: OIARTZUN
-      known_names: "[]"
+      name: OIARTZUNGO ITSASLAPURRAK ARRAUN ELKARTEA
+      normalized_name: OIARTZUNGO ITSASLAPURRAK
+      known_names: '["OIARTZUNGO ITSASLAPURRAK AE"]'
       type: CLUB
-      symbol: null
+      symbol: OIAE
+      is_partnership: false
+      town: 103
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "148"
+                values:
+                    details_page: https://traineras.es/clubes/148
+                datasource_name: traineras
 - model: entities.entity
   pk: 86
   fields:
-      from_date: 2022-11-07 15:05:28.994719+00:00
+      from_date: 1964-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: PONTEJOS
+      name: CLUB DE REMO PONTEJOS
       normalized_name: PONTEJOS
-      known_names: "[]"
+      known_names: '["CR PONTEJOS"]'
       type: CLUB
-      symbol: null
+      symbol: CRP
+      is_partnership: false
+      town: 86
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "71"
+                values:
+                    details_page: https://traineras.es/clubes/71
+                datasource_name: traineras
 - model: entities.entity
   pk: 87
   fields:
-      from_date: 2022-11-07 15:05:28.995113+00:00
+      from_date: 1975-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: AMIGOS DE LA MARUCA
-      normalized_name: AMIGOS DE LA MARUCA
-      known_names: "[]"
+      name: SOCIEDAD CULTURAL Y RECREATIVA AMIGOS DE LA MARUCA
+      normalized_name: LA MARUCA
+      known_names: '["SCR AMIGOS DE LA MARUCA"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 67
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "130"
+                values:
+                    details_page: https://traineras.es/clubes/130
+                datasource_name: traineras
 - model: entities.entity
   pk: 88
   fields:
-      from_date: 2022-11-07 15:05:28.995511+00:00
-      to_date: null
-      is_active: true
-      name: ALGORTA
+      from_date: 1966-11-26 00:00:00+00:00
+      to_date: 2008-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ALGORTA ARRAUN TALDEA
       normalized_name: ALGORTA
-      known_names: "[]"
+      known_names: '["ALGORTA AT"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 4
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "8"
+                values:
+                    details_page: https://traineras.es/clubes/8
+                datasource_name: traineras
 - model: entities.entity
   pk: 89
   fields:
-      from_date: 2022-11-07 15:05:28.995511+00:00
+      from_date: 2022-01-01 00:00:00+00:00
       to_date: null
       is_active: true
-      name: CELEIRO
+      name: CLUB DE REMO CELEIRO
       normalized_name: CELEIRO
-      known_names: "[]"
+      known_names: '["CR CELEIRO"]'
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 75
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "258"
+                values:
+                    details_page: https://traineras.es/clubes/258
+                datasource_name: traineras
 - model: entities.entity
   pk: 90
   fields:
-      from_date: 2022-11-07 15:05:28.966564+00:00
+      from_date: 1963-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO BENIDORM
+      normalized_name: BENIDORM
+      known_names: '["CN BENIDORM"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 104
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "235"
+                values:
+                    details_page: https://traineras.es/clubes/235
+                datasource_name: traineras
+- model: entities.entity
+  pk: 91
+  fields:
+      from_date: 1997-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CENTRO DEPORTIVO UNIVERSITARIO POLIDEPORTIVO VALENCIA
+      normalized_name: VALENCIA
+      known_names: '["CDU VALENCIA", "CDU POLIDEPORTIVO VALENCIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 105
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "232"
+                values:
+                    details_page: https://traineras.es/clubes/232
+                datasource_name: traineras
+- model: entities.entity
+  pk: 92
+  fields:
+      from_date: 1998-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO SUANCES
+      normalized_name: SUANCES
+      known_names: '["CR SUANCES"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 89
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "80"
+                values:
+                    details_page: https://traineras.es/clubes/80
+                datasource_name: traineras
+- model: entities.entity
+  pk: 93
+  fields:
+      from_date: 1971-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SANTANDER
+      normalized_name: SANTANDER
+      known_names: '["CD SANTANDER"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 67
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "78"
+                values:
+                    details_page: https://traineras.es/clubes/78
+                datasource_name: traineras
+- model: entities.entity
+  pk: 94
+  fields:
+      from_date: 1911-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: FORTUNA ARRAUN ELKARTEA
+      normalized_name: FORTUNA
+      known_names: '["FORTUNA AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "104"
+                values:
+                    details_page: https://traineras.es/clubes/104
+                datasource_name: traineras
+- model: entities.entity
+  pk: 95
+  fields:
+      from_date: 1889-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: ENDAIKA ARRAUN ELKARTEA
+      normalized_name: ENDAIKA
+      known_names: '["ENDAIKA AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 93
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "102"
+                values:
+                    details_page: https://traineras.es/clubes/102
+                datasource_name: traineras
+- model: entities.entity
+  pk: 96
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: XONS REM EMPURIABRAVA
+      normalized_name: EMPURIABRAVA
+      known_names: '["XR EMPURIABRAVA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 106
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "216"
+                values:
+                    details_page: https://traineras.es/clubes/216
+                datasource_name: traineras
+- model: entities.entity
+  pk: 97
+  fields:
+      from_date: 1906-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REAL CLUB NÁUTICO VIGO
+      normalized_name: NÁUTICO VIGO
+      known_names: '["RC N\u00c1UTICO VIGO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 73
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "157"
+                values:
+                    details_page: https://traineras.es/clubes/157
+                datasource_name: traineras
+- model: entities.entity
+  pk: 98
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO UNIVERSIDAD DE ALICANTE
+      normalized_name: UNIVERSIDAD DE ALICANTE
+      known_names: '["CR UNIVERSIDAD DE ALICANTE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 100
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "203"
+                values:
+                    details_page: https://traineras.es/clubes/203
+                datasource_name: traineras
+- model: entities.entity
+  pk: 99
+  fields:
+      from_date: 2007-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO TORREVIEJA
+      normalized_name: TORREVIEJA
+      known_names: '["CR TORREVIEJA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 107
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "81"
+                values:
+                    details_page: https://traineras.es/clubes/81
+                datasource_name: traineras
+- model: entities.entity
+  pk: 100
+  fields:
+      from_date: 2008-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: SESTAOKO ARRAUNLARIAK
+      normalized_name: SESTAOKO
+      known_names: '["SESTAO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 71
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "194"
+                values:
+                    details_page: https://traineras.es/clubes/194
+                datasource_name: traineras
+- model: entities.entity
+  pk: 101
+  fields:
+      from_date: 1967-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: SOCIEDAD DEPORTIVA SANTIAGOTARRAK
+      normalized_name: SANTIAGOTARRAK
+      known_names: '["SD SANTIAGOTARRAK"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 90
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "167"
+                values:
+                    details_page: https://traineras.es/clubes/167
+                datasource_name: traineras
+- model: entities.entity
+  pk: 102
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMEROS DEL EO
+      normalized_name: CLUB REMEROS DEL EO
+      known_names: '["CR EO", "VEGADEO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 108
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "209"
+                values:
+                    details_page: https://traineras.es/clubes/209
+                datasource_name: traineras
+- model: entities.entity
+  pk: 104
+  fields:
+      from_date: 1984-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DO MAR NOIA
+      normalized_name: NOIA
+      known_names: '["CM NOIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 87
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "146"
+                values:
+                    details_page: https://traineras.es/clubes/146
+                datasource_name: traineras
+- model: entities.entity
+  pk: 105
+  fields:
+      from_date: 1951-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO REMEROS DEL NAVIA
+      normalized_name: NAVIA
+      known_names: '["CRM NAVIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 88
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "145"
+                values:
+                    details_page: https://traineras.es/clubes/145
+                datasource_name: traineras
+- model: entities.entity
+  pk: 106
+  fields:
+      from_date: 1968-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NÁUTICO REMO NAVARRA
+      normalized_name: NAVARRA
+      known_names: '["CNR NAVARRA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 109
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "144"
+                values:
+                    details_page: https://traineras.es/clubes/144
+                datasource_name: traineras
+- model: entities.entity
+  pk: 107
+  fields:
+      from_date: 1949-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMEROS DEL NALON
+      normalized_name: NALON
+      known_names: '["CR NALON"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 94
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "55"
+                values:
+                    details_page: https://traineras.es/clubes/55
+                datasource_name: traineras
+- model: entities.entity
+  pk: 108
+  fields:
+      from_date: 1873-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REAL CLUB MEDITERRANEO
+      normalized_name: MEDITERRANEO
+      known_names: '["RC MEDITERRANEO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 46
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "156"
+                values:
+                    details_page: https://traineras.es/clubes/156
+                datasource_name: traineras
+- model: entities.entity
+  pk: 109
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO RÍA DE MARIN
+      normalized_name: RÍA DE MARIN
+      known_names: '["CR R\u00cdA DE MARIN"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 91
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "162"
+                values:
+                    details_page: https://traineras.es/clubes/162
+                datasource_name: traineras
+- model: entities.entity
+  pk: 110
+  fields:
+      from_date: 1997-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: KIRIKO ARRAUN KIROL ELKARTEA
+      normalized_name: KIRIKO
+      known_names: '["KIRIKO AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "126"
+                values:
+                    details_page: https://traineras.es/clubes/126
+                datasource_name: traineras
+- model: entities.entity
+  pk: 111
+  fields:
+      from_date: 1980-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: IBAIALDE ARRAUN ELKARTEA
+      normalized_name: IBAIALDE
+      known_names: '["IBAIALDE AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 95
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "113"
+                values:
+                    details_page: https://traineras.es/clubes/113
+                datasource_name: traineras
+- model: entities.entity
+  pk: 112
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO HERBANIA
+      normalized_name: HERBANIA
+      known_names: '["CR HERBANIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 110
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "61"
+                values:
+                    details_page: https://traineras.es/clubes/61
+                datasource_name: traineras
+- model: entities.entity
+  pk: 113
+  fields:
+      from_date: 1957-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REAL CLUB NAUTICO GANDIA
+      normalized_name: GANDIA
+      known_names: '["RCN GANDIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 111
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "230"
+                values:
+                    details_page: https://traineras.es/clubes/230
+                datasource_name: traineras
+- model: entities.entity
+  pk: 114
+  fields:
+      from_date: 1992-01-01 00:00:00+00:00
+      to_date: 2001-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: DONIBANEKO ARRAUNLARIAK
+      normalized_name: DONIBANEKO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 53
+      parent: 46
+      metadata:
+          datasource:
+              - ref_id: "91"
+                values:
+                    details_page: https://traineras.es/clubes/91
+                datasource_name: traineras
+- model: entities.entity
+  pk: 115
+  fields:
+      from_date: 2004-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REM VENT D'STROP CAMBRILS
+      normalized_name: CAMBRILS
+      known_names: '["CR CAMBRILS"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 112
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "85"
+                values:
+                    details_page: https://traineras.es/clubes/85
+                datasource_name: traineras
+- model: entities.entity
+  pk: 116
+  fields:
+      from_date: 1968-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REAL CLUB NAUTICO DENIA
+      normalized_name: DENIA
+      known_names: '["RCN DENIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 113
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "32"
+                values:
+                    details_page: https://traineras.es/clubes/32
+                datasource_name: traineras
+- model: entities.entity
+  pk: 117
+  fields:
+      from_date: 2004-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO BADALONA
+      normalized_name: BADALONA
+      known_names: '["CR BADALONA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 114
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "39"
+                values:
+                    details_page: https://traineras.es/clubes/39
+                datasource_name: traineras
+              - ref_id: "28"
+                values:
+                    details_page: https://traineras.es/clubes/28
+                datasource_name: traineras
+- model: entities.entity
+  pk: 118
+  fields:
+      from_date: 1987-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REM COLERA
+      normalized_name: COLERA
+      known_names: '["CR COLERA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 115
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "51"
+                values:
+                    details_page: https://traineras.es/clubes/51
+                datasource_name: traineras
+- model: entities.entity
+  pk: 119
+  fields:
+      from_date: 1972-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO BÉTULO
+      normalized_name: BÉTULO
+      known_names: '["CN B\u00c9TULO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 114
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "29"
+                values:
+                    details_page: https://traineras.es/clubes/29
+                datasource_name: traineras
+- model: entities.entity
+  pk: 120
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CASTELLERS DE VILLAFRANCA
+      normalized_name: CASTELLERS DE VILLAFRANCA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 116
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "88"
+                values:
+                    details_page: https://traineras.es/clubes/88
+                datasource_name: traineras
+- model: entities.entity
+  pk: 121
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CAPGROSSOS DE MATARÓ
+      normalized_name: CAPGROSSOS DE MATARÓ
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 117
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "86"
+                values:
+                    details_page: https://traineras.es/clubes/86
+                datasource_name: traineras
+- model: entities.entity
+  pk: 122
+  fields:
+      from_date: 1977-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO CAMPELLO
+      normalized_name: CAMPELLO
+      known_names: '["CN CAMPELLO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 118
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "31"
+                values:
+                    details_page: https://traineras.es/clubes/31
+                datasource_name: traineras
+- model: entities.entity
+  pk: 123
+  fields:
+      from_date: 1907-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: LICEO MARÍTIMO DE BOUZAS
+      normalized_name: BOUZAS
+      known_names: '["LM BOUZAS"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 73
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "21"
+                values:
+                    details_page: https://traineras.es/clubes/21
+                datasource_name: traineras
+- model: entities.entity
+  pk: 124
+  fields:
+      from_date: 1969-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REMO BARQUEREÑO
+      normalized_name: BARQUEREÑO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 66
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "17"
+                values:
+                    details_page: https://traineras.es/clubes/17
+                datasource_name: traineras
+- model: entities.entity
+  pk: 125
+  fields:
+      from_date: 1977-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: SOCIEDAD DEPORTIVA AS XUBIAS
+      normalized_name: AS XUBIAS
+      known_names: '["SD AS XUBIAS", "JUBIAS"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 1
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "38"
+                values:
+                    details_page: https://traineras.es/clubes/38
+                datasource_name: traineras
+              - ref_id: "132"
+                values:
+                    details_page: https://traineras.es/clubes/132
+                datasource_name: traineras
+- model: entities.entity
+  pk: 126
+  fields:
+      from_date: 1949-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO AMPOSTA
+      normalized_name: AMPOSTA
+      known_names: '["CN AMPOSTA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 119
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "27"
+                values:
+                    details_page: https://traineras.es/clubes/27
+                datasource_name: traineras
+- model: entities.entity
+  pk: 127
+  fields:
+      from_date: 1977-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO ALTEA
+      normalized_name: ALTEA
+      known_names: '["CN ALTEA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 97
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "9"
+                values:
+                    details_page: https://traineras.es/clubes/9
+                datasource_name: traineras
+- model: entities.entity
+  pk: 128
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO TXAMPA ANTIGUA
+      normalized_name: TXAMPA
+      known_names: '["CR TXAMPA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 98
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "237"
+                values:
+                    details_page: https://traineras.es/clubes/237
+                datasource_name: traineras
+- model: entities.entity
+  pk: 129
+  fields:
+      from_date: 2001-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: ASSOCIACIÓ DE REM VOGADORS DE BAIXAMAR
+      normalized_name: BAIXAMAR
+      known_names: '["ARV BAIXAMAR"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 120
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "236"
+                values:
+                    details_page: https://traineras.es/clubes/236
+                datasource_name: traineras
+- model: entities.entity
+  pk: 130
+  fields:
+      from_date: 2002-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: PLENTZIA TRAINERU BALTZA ARRAUN KLUBA
+      normalized_name: PLENTZIA
+      known_names: '["PLENTZIA TBAK"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 55
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "246"
+                values:
+                    details_page: https://traineras.es/clubes/246
+                datasource_name: traineras
+- model: entities.entity
+  pk: 131
+  fields:
+      from_date: 2018-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REM CAMBRILS
+      normalized_name: CAMBRILS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 112
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "245"
+                values:
+                    details_page: https://traineras.es/clubes/245
+                datasource_name: traineras
+- model: entities.entity
+  pk: 132
+  fields:
+      from_date: 2019-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: BILBAO ARRAUNLARI BETERANOAK
+      normalized_name: BILBAO
+      known_names: '["BILBAO AB", "BILBOKO", "BILBOKO BETERANOAK"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 13
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "248"
+                values:
+                    details_page: https://traineras.es/clubes/248
+                datasource_name: traineras
+- model: entities.entity
+  pk: 133
+  fields:
+      from_date: 1875-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: SOCIÉTÉ NAUTIQUE DE BAYONNE
+      normalized_name: BAIONA
+      known_names: '["SN BAYONNE", "BAYONNE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 11
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "241"
+                values:
+                    details_page: https://traineras.es/clubes/241
+                datasource_name: traineras
+- model: entities.entity
+  pk: 134
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: ANÉMONA MARINA BAIXA
+      normalized_name: ANÉMONA MARINA BAIXA
+      known_names: '["AN\u00c9MONA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 104
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "247"
+                values:
+                    details_page: https://traineras.es/clubes/247
+                datasource_name: traineras
+- model: entities.entity
+  pk: 135
+  fields:
+      from_date: 2000-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO LLAGUTS DE CALAFELL
+      normalized_name: CALAFELL
+      known_names: '["CR LLAGUTS DE CALAFELL"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 121
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "253"
+                values:
+                    details_page: https://traineras.es/clubes/253
+                datasource_name: traineras
+- model: entities.entity
+  pk: 136
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB MARITIMO LINENSE
+      normalized_name: LINENSE
+      known_names: '["CM LINENSE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 92
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "254"
+                values:
+                    details_page: https://traineras.es/clubes/254
+                datasource_name: traineras
+- model: entities.entity
+  pk: 137
+  fields:
+      from_date: 1878-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REAL CLUB NAUTIC DE TARRAGONA
+      normalized_name: TARRAGONA
+      known_names: '["RCN TARRAGONA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 122
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "255"
+                values:
+                    details_page: https://traineras.es/clubes/255
+                datasource_name: traineras
+- model: entities.entity
+  pk: 138
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: AIZBURUA BETERANOEN ARRAUNKETA KLUBA
+      normalized_name: AIZBURUA
+      known_names: '["AIZBURUA BAK"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 29
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "256"
+                values:
+                    details_page: https://traineras.es/clubes/256
+                datasource_name: traineras
+- model: entities.entity
+  pk: 139
+  fields:
+      from_date: 2018-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DEPORTIVO LA ESPAÍLLA
+      normalized_name: LA ESPAÍLLA
+      known_names: '["CD LA ESPA\u00cdLLA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 46
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "257"
+                values:
+                    details_page: https://traineras.es/clubes/257
+                datasource_name: traineras
+- model: entities.entity
+  pk: 140
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: ARRAUNLARI BETERANOEN ELKARTEA
+      normalized_name: ARRAUNLARI BETERANOEN ELKARTEA
+      known_names: "[]"
+      type: LEAGUE
+      symbol: ABE
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 141
+  fields:
+      from_date: 1972-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO LA UNIÓN DE MEDAL
+      normalized_name: LA UNIÓN DE MEDAL
+      known_names: '["CR LA UNI\u00d3N DE MEDAL"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "63"
+                values:
+                    details_page: https://traineras.es/clubes/63
+                datasource_name: traineras
+- model: entities.entity
+  pk: 142
+  fields:
+      from_date: 1978-01-01 00:00:00+00:00
+      to_date: 1979-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: AGUIÑO
+      normalized_name: AGUIÑO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 63
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "249"
+                values:
+                    details_page: https://traineras.es/clubes/249
+                datasource_name: traineras
+- model: entities.entity
+  pk: 143
+  fields:
+      from_date: 1999-01-01 00:00:00+00:00
+      to_date: 2008-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: AREALONGA
+      normalized_name: AREALONGA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 59
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "12"
+                values:
+                    details_page: https://traineras.es/clubes/12
+                datasource_name: traineras
+- model: entities.entity
+  pk: 144
+  fields:
+      from_date: 2009-01-01 00:00:00+00:00
+      to_date: 2008-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO ARTABRIA
+      normalized_name: ARTABRIA
+      known_names: '["CR ARTABRIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 50
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "251"
+                values:
+                    details_page: https://traineras.es/clubes/251
+                datasource_name: traineras
+- model: entities.entity
+  pk: 145
+  fields:
+      from_date: 1972-01-01 00:00:00+00:00
+      to_date: 1974-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO BERAUN
+      normalized_name: BERAUN
+      known_names: '["CR BERAUN"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 83
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "40"
+                values:
+                    details_page: https://traineras.es/clubes/40
+                datasource_name: traineras
+- model: entities.entity
+  pk: 146
+  fields:
+      from_date: 1990-01-01 00:00:00+00:00
+      to_date: 1990-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: BIXINTXO
+      normalized_name: BIXINTXO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "20"
+                values:
+                    details_page: https://traineras.es/clubes/20
+                datasource_name: traineras
+- model: entities.entity
+  pk: 147
+  fields:
+      from_date: 1981-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO CARASA
+      normalized_name: CARASA
+      known_names: '["CR CARASA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 124
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "87"
+                values:
+                    details_page: https://traineras.es/clubes/87
+                datasource_name: traineras
+- model: entities.entity
+  pk: 148
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO CASTROPOLENSE
+      normalized_name: CASTROPOLENSE
+      known_names: '["CR CASTROPOLENSE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 21
+      parent: 14
+      metadata:
+          datasource:
+              - ref_id: "45"
+                values:
+                    details_page: https://traineras.es/clubes/45
+                datasource_name: traineras
+- model: entities.entity
+  pk: 150
+  fields:
+      from_date: 1995-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO FLIX
+      normalized_name: FLIX
+      known_names: '["CN FLIX"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 125
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "59"
+                values:
+                    details_page: https://traineras.es/clubes/59
+                datasource_name: traineras
+- model: entities.entity
+  pk: 151
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO MARIÑEIRO FONTÁN
+      normalized_name: FONTAN
+      known_names: '["CRM FONT\u00c1N", "SADA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "141"
+                values:
+                    details_page: https://traineras.es/clubes/141
+                datasource_name: traineras
+- model: entities.entity
+  pk: 152
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: FUENTARRAGONA
+      normalized_name: FUENTARRAGONA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "231"
+                values:
+                    details_page: https://traineras.es/clubes/231
+                datasource_name: traineras
+- model: entities.entity
+  pk: 153
+  fields:
+      from_date: 2014-01-01 00:00:00+00:00
+      to_date: 2014-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: GURE ESKU DAGO
+      normalized_name: GURE ESKU DAGO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "109"
+                values:
+                    details_page: https://traineras.es/clubes/109
+                datasource_name: traineras
+- model: entities.entity
+  pk: 154
+  fields:
+      from_date: 2003-01-01 00:00:00+00:00
+      to_date: 2003-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: IBAIZABAL
+      normalized_name: IBAIZABAL
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "114"
+                values:
+                    details_page: https://traineras.es/clubes/114
+                datasource_name: traineras
+- model: entities.entity
+  pk: 155
+  fields:
+      from_date: 1965-01-01 00:00:00+00:00
+      to_date: 1965-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: IBARRA
+      normalized_name: IBARRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 126
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "115"
+                values:
+                    details_page: https://traineras.es/clubes/115
+                datasource_name: traineras
+- model: entities.entity
+  pk: 156
+  fields:
+      from_date: 1978-01-01 00:00:00+00:00
+      to_date: 1978-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: IRUNDARRAK
+      normalized_name: IRUNDARRAK
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 90
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "116"
+                values:
+                    details_page: https://traineras.es/clubes/116
+                datasource_name: traineras
+- model: entities.entity
+  pk: 157
+  fields:
+      from_date: 1976-01-01 00:00:00+00:00
+      to_date: 1976-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ITXAROPENA
+      normalized_name: ITXAROPENA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "120"
+                values:
+                    details_page: https://traineras.es/clubes/120
+                datasource_name: traineras
+- model: entities.entity
+  pk: 158
+  fields:
+      from_date: 1992-01-01 00:00:00+00:00
+      to_date: 1992-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ITXASO ARRAUN ELKARTEA
+      normalized_name: ITXASO
+      known_names: '["ITXASO AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: 51
+      metadata:
+          datasource:
+              - ref_id: "121"
+                values:
+                    details_page: https://traineras.es/clubes/121
+                datasource_name: traineras
+- model: entities.entity
+  pk: 159
+  fields:
+      from_date: 1994-01-01 00:00:00+00:00
+      to_date: 1998-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ITXASPE ARRAUN ELKARTEA
+      normalized_name: ITXASPE
+      known_names: '["ITXASPE AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: 46
+      metadata:
+          datasource:
+              - ref_id: "122"
+                values:
+                    details_page: https://traineras.es/clubes/122
+                datasource_name: traineras
+- model: entities.entity
+  pk: 160
+  fields:
+      from_date: 1961-01-01 00:00:00+00:00
+      to_date: 1967-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB ATLÉTICO JAIZKIBEL
+      normalized_name: JAIZKIBEL
+      known_names: '["CA JAIZKIBEL", "JAIZKIBEL"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "123"
+                values:
+                    details_page: https://traineras.es/clubes/123
+                datasource_name: traineras
+- model: entities.entity
+  pk: 161
+  fields:
+      from_date: 1980-01-01 00:00:00+00:00
+      to_date: 1980-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: KARMELE
+      normalized_name: KARMELE
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "125"
+                values:
+                    details_page: https://traineras.es/clubes/125
+                datasource_name: traineras
+- model: entities.entity
+  pk: 162
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: L ESTACA
+      normalized_name: L ESTACA
+      known_names: '["L ESTACA AR"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "127"
+                values:
+                    details_page: https://traineras.es/clubes/127
+                datasource_name: traineras
+- model: entities.entity
+  pk: 163
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: LA ATARAZANA
+      normalized_name: LA ATARAZANA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "128"
+                values:
+                    details_page: https://traineras.es/clubes/128
+                datasource_name: traineras
+- model: entities.entity
+  pk: 164
+  fields:
+      from_date: 1966-01-01 00:00:00+00:00
+      to_date: 1966-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: LA BOMBA
+      normalized_name: LA BOMBA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "129"
+                values:
+                    details_page: https://traineras.es/clubes/129
+                datasource_name: traineras
+- model: entities.entity
+  pk: 165
+  fields:
+      from_date: 1964-01-01 00:00:00+00:00
+      to_date: 1965-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ESCUELA DEPORTIVA LA CORUÑA
+      normalized_name: CORUÑA
+      known_names: '["ED LA CORU\u00d1A"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 1
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "95"
+                values:
+                    details_page: https://traineras.es/clubes/95
+                datasource_name: traineras
+- model: entities.entity
+  pk: 166
+  fields:
+      from_date: 2007-01-01 00:00:00+00:00
+      to_date: 2007-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: LAGUN ZAHARR
+      normalized_name: LAGUN ZAHARR
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "242"
+                values:
+                    details_page: https://traineras.es/clubes/242
+                datasource_name: traineras
+- model: entities.entity
+  pk: 167
+  fields:
+      from_date: 1966-01-01 00:00:00+00:00
+      to_date: 1979-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SOCIEDAD CLUB DEPORTIVA MICHELÍN
+      normalized_name: MICHELÍN
+      known_names: '["SCD MICHELIN", "LASARTE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 102
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "133"
+                values:
+                    details_page: https://traineras.es/clubes/133
+                datasource_name: traineras
+- model: entities.entity
+  pk: 168
+  fields:
+      from_date: 1991-01-01 00:00:00+00:00
+      to_date: 1991-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: LICEO VILAGARCIA
+      normalized_name: LICEO VILAGARCIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 74
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "136"
+                values:
+                    details_page: https://traineras.es/clubes/136
+                datasource_name: traineras
+- model: entities.entity
+  pk: 169
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO LUARCA
+      normalized_name: LUARCA
+      known_names: '["CR LUARCA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 127
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "64"
+                values:
+                    details_page: https://traineras.es/clubes/64
+                datasource_name: traineras
+- model: entities.entity
+  pk: 170
+  fields:
+      from_date: 1961-01-01 00:00:00+00:00
+      to_date: 1975-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ESCUELA DEPORTIVA MOAÑA
+      normalized_name: MOAÑA
+      known_names: '["ED MOA\u00d1A"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 41
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "96"
+                values:
+                    details_page: https://traineras.es/clubes/96
+                datasource_name: traineras
+- model: entities.entity
+  pk: 171
+  fields:
+      from_date: 2012-01-01 00:00:00+00:00
+      to_date: 2013-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SOCIEDAD DEPORTIVA REMO MORRAZO
+      normalized_name: MORRAZO
+      known_names: '["SDR MORRAZO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: 19
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "174"
+                values:
+                    details_page: https://traineras.es/clubes/174
+                datasource_name: traineras
+- model: entities.entity
+  pk: 172
+  fields:
+      from_date: 2019-01-01 00:00:00+00:00
+      to_date: 2019-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: PAÍSES BAJOS
+      normalized_name: PAÍSES BAJOS
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 128
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "244"
+                values:
+                    details_page: https://traineras.es/clubes/244
+                datasource_name: traineras
+- model: entities.entity
+  pk: 173
+  fields:
+      from_date: 1998-01-01 00:00:00+00:00
+      to_date: 1999-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: PEIO ASKATU
+      normalized_name: PEIO ASKATU
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "151"
+                values:
+                    details_page: https://traineras.es/clubes/151
+                datasource_name: traineras
+- model: entities.entity
+  pk: 174
+  fields:
+      from_date: 1964-01-01 00:00:00+00:00
+      to_date: 1978-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: PEÑACASTILLO
+      normalized_name: PEÑACASTILLO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 67
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "152"
+                values:
+                    details_page: https://traineras.es/clubes/152
+                datasource_name: traineras
+- model: entities.entity
+  pk: 175
+  fields:
+      from_date: 2006-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO PLANCHADA
+      normalized_name: PLANCHADA
+      known_names: '["CR PLANCHADA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 7
+      parent: 56
+      metadata:
+          datasource:
+              - ref_id: "234"
+                values:
+                    details_page: https://traineras.es/clubes/234
+                datasource_name: traineras
+- model: entities.entity
+  pk: 176
+  fields:
+      from_date: 1961-01-01 00:00:00+00:00
+      to_date: 1993-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: REMEDIOS DE TIRÁN
+      normalized_name: REMEDIOS DE TIRÁN
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 41
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "160"
+                values:
+                    details_page: https://traineras.es/clubes/160
+                datasource_name: traineras
+- model: entities.entity
+  pk: 177
+  fields:
+      from_date: 1967-01-01 00:00:00+00:00
+      to_date: 1968-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: RENTERIA
+      normalized_name: RENTERIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 83
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "161"
+                values:
+                    details_page: https://traineras.es/clubes/161
+                datasource_name: traineras
+- model: entities.entity
+  pk: 178
+  fields:
+      from_date: 1987-01-01 00:00:00+00:00
+      to_date: 1987-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: RODEIRA
+      normalized_name: RODEIRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 129
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "165"
+                values:
+                    details_page: https://traineras.es/clubes/165
+                datasource_name: traineras
+- model: entities.entity
+  pk: 179
+  fields:
+      from_date: 1961-01-01 00:00:00+00:00
+      to_date: 1975-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SANJUANDARRA
+      normalized_name: SANJUANDARRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 53
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "182"
+                values:
+                    details_page: https://traineras.es/clubes/182
+                datasource_name: traineras
+- model: entities.entity
+  pk: 180
+  fields:
+      from_date: 1983-01-01 00:00:00+00:00
+      to_date: 1983-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO SANTOÑÉS
+      normalized_name: SANTOÑÉS
+      known_names: '["CR SANTO\u00d1\u00c9S"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 68
+      parent: 54
+      metadata:
+          datasource:
+              - ref_id: "79"
+                values:
+                    details_page: https://traineras.es/clubes/79
+                datasource_name: traineras
+- model: entities.entity
+  pk: 181
+  fields:
+      from_date: 1985-01-01 00:00:00+00:00
+      to_date: 1986-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: TAMBO
+      normalized_name: TAMBO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 56
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "196"
+                values:
+                    details_page: https://traineras.es/clubes/196
+                datasource_name: traineras
+- model: entities.entity
+  pk: 182
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: SOCIEDAD DEPORTIVA DE REMO TRASMIERA
+      normalized_name: TRASMIERA
+      known_names: '["SDR TRASMIERA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 7
+      parent: 54
+      metadata:
+          datasource:
+              - ref_id: "227"
+                values:
+                    details_page: https://traineras.es/clubes/227
+                datasource_name: traineras
+- model: entities.entity
+  pk: 183
+  fields:
+      from_date: 2005-01-01 00:00:00+00:00
+      to_date: 2005-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: TXINGUDI
+      normalized_name: TXINGUDI
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "202"
+                values:
+                    details_page: https://traineras.es/clubes/202
+                datasource_name: traineras
+- model: entities.entity
+  pk: 184
+  fields:
+      from_date: 1986-01-01 00:00:00+00:00
+      to_date: 1987-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: VENTO MAREIRO
+      normalized_name: VENTO MAREIRO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "211"
+                values:
+                    details_page: https://traineras.es/clubes/211
+                datasource_name: traineras
+- model: entities.entity
+  pk: 186
+  fields:
+      from_date: 1949-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DEPORTIVO YOLA
+      normalized_name: YOLA
+      known_names: '["CD YOLA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 53
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "217"
+                values:
+                    details_page: https://traineras.es/clubes/217
+                datasource_name: traineras
+- model: entities.entity
+  pk: 187
+  fields:
+      from_date: 1970-01-01 00:00:00+00:00
+      to_date: 1972-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ZUBEROA
+      normalized_name: ZUBEROA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 130
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "220"
+                values:
+                    details_page: https://traineras.es/clubes/220
+                datasource_name: traineras
+- model: entities.entity
+  pk: 188
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: NAVIGATIO SANTANDER
+      normalized_name: NAVIGATIO SANTANDER
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 67
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "260"
+                values:
+                    details_page: https://traineras.es/clubes/260
+                datasource_name: traineras
+- model: entities.entity
+  pk: 189
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: VOGADORS DE CALAFELL
+      normalized_name: CALAFELL
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 121
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "262"
+                values:
+                    details_page: https://traineras.es/clubes/262
+                datasource_name: traineras
+- model: entities.entity
+  pk: 190
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: UNIVERSITARIO DE CESURES
+      normalized_name: CESURES
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 131
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "263"
+                values:
+                    details_page: https://traineras.es/clubes/263
+                datasource_name: traineras
+- model: entities.entity
+  pk: 191
+  fields:
+      from_date: 2012-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: BADOK13 ELKARTEA
+      normalized_name: BADOK13
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "266"
+                values:
+                    details_page: https://traineras.es/clubes/266
+                datasource_name: traineras
+- model: entities.entity
+  pk: 192
+  fields:
+      from_date: 1994-01-01 00:00:00+00:00
+      to_date: 1998-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CIDADE DE FERROL
+      normalized_name: CIDADE DE FERROL
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 31
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "267"
+                values:
+                    details_page: https://traineras.es/clubes/267
+                datasource_name: traineras
+- model: entities.entity
+  pk: 193
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: TEAM ITALIA
+      normalized_name: TEAM ITALIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "269"
+                values:
+                    details_page: https://traineras.es/clubes/269
+                datasource_name: traineras
+- model: entities.entity
+  pk: 196
+  fields:
+      from_date: 1995-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SAN PANTALEÓN
+      normalized_name: SAN PANTALEÓN
+      known_names: '["CR SAN PANTALE\u00d3N"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 86
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "77"
+                values:
+                    details_page: https://traineras.es/clubes/77
+                datasource_name: traineras
+- model: entities.entity
+  pk: 197
+  fields:
+      from_date: 1922-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: UR KIROLAK
+      normalized_name: UR KIROLAK
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "206"
+                values:
+                    details_page: https://traineras.es/clubes/206
+                datasource_name: traineras
+- model: entities.entity
+  pk: 198
+  fields:
+      from_date: 1911-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: UR JOKO ARRAUN ELKARTEA
+      normalized_name: UR JOKO
+      known_names: '["UR JOKO AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 65
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "205"
+                values:
+                    details_page: https://traineras.es/clubes/205
+                datasource_name: traineras
+- model: entities.entity
+  pk: 199
+  fields:
+      from_date: 1996-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SANTA CRISTINA
+      normalized_name: SANTA CRISTINA
+      known_names: '["CR SANTA CRISTINA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 50
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "183"
+                values:
+                    details_page: https://traineras.es/clubes/183
+                datasource_name: traineras
+- model: entities.entity
+  pk: 200
+  fields:
+      from_date: 1983-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SAN FELIPE
+      normalized_name: SAN FELIPE
+      known_names: '["CR SAN FELIPE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 31
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "75"
+                values:
+                    details_page: https://traineras.es/clubes/75
+                datasource_name: traineras
+- model: entities.entity
+  pk: 201
+  fields:
+      from_date: 1935-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SAN AMARO
+      normalized_name: SAN AMARO
+      known_names: '["CR SAN AMARO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 1
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "178"
+                values:
+                    details_page: https://traineras.es/clubes/178
+                datasource_name: traineras
+- model: entities.entity
+  pk: 202
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO ARENYS DE MAR
+      normalized_name: ARENYS DE MAR
+      known_names: '["CR ARENYS DE MAR"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 132
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "224"
+                values:
+                    details_page: https://traineras.es/clubes/224
+                datasource_name: traineras
+- model: entities.entity
+  pk: 203
+  fields:
+      from_date: 1889-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: REAL CLUB DE REGATAS ALICANTE
+      normalized_name: ALICANTE
+      known_names: '["RCR ALICANTE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 100
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "155"
+                values:
+                    details_page: https://traineras.es/clubes/155
+                datasource_name: traineras
+- model: entities.entity
+  pk: 204
+  fields:
+      from_date: 1946-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO SANTA LUCÍA
+      normalized_name: SANTA LUCÍA
+      known_names: '["CN SANTA LUC\u00cdA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 133
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "240"
+                values:
+                    details_page: https://traineras.es/clubes/240
+                datasource_name: traineras
+- model: entities.entity
+  pk: 205
+  fields:
+      from_date: 1966-01-01 00:00:00+00:00
+      to_date: 1967-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: REDES
+      normalized_name: REDES
+      known_names: '["AR REDES"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 99
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "5"
+                values:
+                    details_page: https://traineras.es/clubes/5
+                datasource_name: traineras
+- model: entities.entity
+  pk: 206
+  fields:
+      from_date: 2010-01-01 00:00:00+00:00
+      to_date: 2013-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: BILBO HANDIKO ERRAMULARIAK ARRAUN ELKARTEA
+      normalized_name: BILBO HANDIKO ERRAMULARIAK
+      known_names: '["BILBO HANDIKO ERRAMULARIAK AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 13
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "19"
+                values:
+                    details_page: https://traineras.es/clubes/19
+                datasource_name: traineras
+- model: entities.entity
+  pk: 207
+  fields:
+      from_date: 2010-01-01 00:00:00+00:00
+      to_date: 2010-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO DO GROVE
+      normalized_name: O GROVE
+      known_names: '["CR DO GROVE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: 49
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "57"
+                values:
+                    details_page: https://traineras.es/clubes/57
+                datasource_name: traineras
+- model: entities.entity
+  pk: 208
+  fields:
+      from_date: 1961-01-01 00:00:00+00:00
+      to_date: 1993-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO SAN JUAN TIRÁN
+      normalized_name: SAN JUAN DE TIRÁN
+      known_names: '["CR SAN JUAN TIR\u00c1N"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 41
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "179"
+                values:
+                    details_page: https://traineras.es/clubes/179
+                datasource_name: traineras
+- model: entities.entity
+  pk: 209
+  fields:
+      from_date: 1965-01-01 00:00:00+00:00
+      to_date: 1993-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB POLIDEPORTIVO SADA
+      normalized_name: SADA
+      known_names: '["CP SADA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 64
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "34"
+                values:
+                    details_page: https://traineras.es/clubes/34
+                datasource_name: traineras
+- model: entities.entity
+  pk: 210
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SAN MARTIÑO
+      normalized_name: SAN MARTIÑO
+      known_names: '["CR SAN MARTI\u00d1O"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 41
+      parent: 18
+      metadata:
+          datasource:
+              - ref_id: "76"
+                values:
+                    details_page: https://traineras.es/clubes/76
+                datasource_name: traineras
+- model: entities.entity
+  pk: 211
+  fields:
+      from_date: 1968-01-01 00:00:00+00:00
+      to_date: 1971-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO SAN ROMAN
+      normalized_name: SAN ROMAN
+      known_names: '["CR SAN ROMAN", "SR SAN ROMAN"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 67
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "177"
+                values:
+                    details_page: https://traineras.es/clubes/177
+                datasource_name: traineras
+- model: entities.entity
+  pk: 212
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REMO SAN SIMÓN
+      normalized_name: SAN SIMÓN
+      known_names: '["CR SAN SIM\u00d3N"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 59
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "181"
+                values:
+                    details_page: https://traineras.es/clubes/181
+                datasource_name: traineras
+- model: entities.entity
+  pk: 213
+  fields:
+      from_date: 1988-01-01 00:00:00+00:00
+      to_date: 1989-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: UNIVERSITARIO SANTIAGO
+      normalized_name: UNIVERSITARIO SANTIAGO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 134
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "204"
+                values:
+                    details_page: https://traineras.es/clubes/204
+                datasource_name: traineras
+- model: entities.entity
+  pk: 214
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB DE REM LLOP DE MAR
+      normalized_name: LLOP DE MAR
+      known_names: '["LLOP DE MAR"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "261"
+                values:
+                    details_page: https://traineras.es/clubes/261
+                datasource_name: traineras
+- model: entities.entity
+  pk: 215
+  fields:
+      from_date: 1951-01-01 00:00:00+00:00
+      to_date: 1964-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SOCIEDAD NÁUTICA DEL NAVIA
+      normalized_name: NAVIA
+      known_names: '["SN NAVIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 88
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "265"
+                values:
+                    details_page: https://traineras.es/clubes/265
+                datasource_name: traineras
+- model: entities.entity
+  pk: 216
+  fields:
+      from_date: 1999-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: SOCIEDAD DEPORTIVA DE REMO CASTREÑA
+      normalized_name: CASTREÑA
+      known_names: '["SDR CASTRE\u00d1A"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: 20
+      parent: 38
+      metadata:
+          datasource:
+              - ref_id: "172"
+                values:
+                    details_page: https://traineras.es/clubes/172
+                datasource_name: traineras
+- model: entities.entity
+  pk: 217
+  fields:
+      from_date: 2007-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: ACTIVIDADES NAUTICAS CASTRO
+      normalized_name: CASTRO
+      known_names: '["AN CASTRO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 20
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "3"
+                values:
+                    details_page: https://traineras.es/clubes/3
+                datasource_name: traineras
+- model: entities.entity
+  pk: 218
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: UNIVERSIDAD POLITÉCNICA DE VALENCIA
+      normalized_name: UNIVERSIDAD POLITÉCNICA DE VALENCIA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 105
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "23"
+                values:
+                    details_page: https://traineras.es/clubes/23
+                datasource_name: traineras
+- model: entities.entity
+  pk: 219
+  fields:
+      from_date: 2001-01-01 00:00:00+00:00
+      to_date: 2001-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: OCCIDENTAL ASTUR REMO
+      normalized_name: OCCIDENTAL ASTUR REMO
+      known_names: '["OAR"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "147"
+                values:
+                    details_page: https://traineras.es/clubes/147
+                datasource_name: traineras
+- model: entities.entity
+  pk: 220
+  fields:
+      from_date: 2018-01-01 00:00:00+00:00
+      to_date: 2018-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: ORIO ZERGATIK EZ
+      normalized_name: ORIO
+      known_names: '["ORIO ZE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 52
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "238"
+                values:
+                    details_page: https://traineras.es/clubes/238
+                datasource_name: traineras
+- model: entities.entity
+  pk: 221
+  fields:
+      from_date: 1976-01-01 00:00:00+00:00
+      to_date: 1976-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: EDUCACIÓN DEPORTIVA PERILLO
+      normalized_name: PERILLO
+      known_names: '["ED PERILLO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 50
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "97"
+                values:
+                    details_page: https://traineras.es/clubes/97
+                datasource_name: traineras
+- model: entities.entity
+  pk: 222
+  fields:
+      from_date: 2007-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB NAUTICO BOIRO
+      normalized_name: BOIRO
+      known_names: '["CN BOIRO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 14
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "30"
+                values:
+                    details_page: https://traineras.es/clubes/30
+                datasource_name: traineras
+- model: entities.entity
+  pk: 223
+  fields:
+      from_date: 1975-01-01 00:00:00+00:00
+      to_date: 1992-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: BERMEO ARRAUN ELKARTEA
+      normalized_name: BERMEO
+      known_names: '["BERMEO AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 12
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "18"
+                values:
+                    details_page: https://traineras.es/clubes/18
+                datasource_name: traineras
+- model: entities.entity
+  pk: 224
+  fields:
+      from_date: 1982-01-01 00:00:00+00:00
+      to_date: 1993-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: HOGAR DEL PESCADOR DE VILAXOÁN
+      normalized_name: VILAXOÁN
+      known_names: '["HP VILAXO\u00c1N"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 74
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "250"
+                values:
+                    details_page: https://traineras.es/clubes/250
+                datasource_name: traineras
+- model: entities.entity
+  pk: 225
+  fields:
+      from_date: 1978-01-01 00:00:00+00:00
+      to_date: 1980-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: LICEO MARÍTIMO RIVEIRA
+      normalized_name: LICEO MARÍTIMO RIVEIRA
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 63
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "252"
+                values:
+                    details_page: https://traineras.es/clubes/252
+                datasource_name: traineras
+- model: entities.entity
+  pk: 226
+  fields:
+      from_date: 2008-01-01 00:00:00+00:00
+      to_date: 2012-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: SOCIEDAD DEPORTIVA DE REMO RIAS BAIXAS
+      normalized_name: RIAS BAIXAS
+      known_names: '["SDR RIAS BAIXAS"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "176"
+                values:
+                    details_page: https://traineras.es/clubes/176
+                datasource_name: traineras
+- model: entities.entity
+  pk: 227
+  fields:
+      from_date: 2010-01-01 00:00:00+00:00
+      to_date: 2011-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO MEIRA
+      normalized_name: MEIRA
+      known_names: '["CR MEIRA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 41
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "66"
+                values:
+                    details_page: https://traineras.es/clubes/66
+                datasource_name: traineras
+- model: entities.entity
+  pk: 228
+  fields:
+      from_date: 2005-01-01 00:00:00+00:00
+      to_date: 2006-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: UROLA KOSTA ARRAUN ELKARTEA
+      normalized_name: UROLA KOSTA
+      known_names: '["UROLA KOSTA AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 101
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "208"
+                values:
+                    details_page: https://traineras.es/clubes/208
+                datasource_name: traineras
+- model: entities.entity
+  pk: 229
+  fields:
+      from_date: 1997-01-01 00:00:00+00:00
+      to_date: 1997-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: RIO MERO
+      normalized_name: RIO MERO
+      known_names: "[]"
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "163"
+                values:
+                    details_page: https://traineras.es/clubes/163
+                datasource_name: traineras
+- model: entities.entity
+  pk: 230
+  fields:
+      from_date: 1965-01-01 00:00:00+00:00
+      to_date: 1996-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO OLÍMPICO ARRAUN LAGUNAK
+      normalized_name: ARRAUN LAGUNAK
+      known_names: '["CRO ARRAUN LAGUNAK"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "83"
+                values:
+                    details_page: https://traineras.es/clubes/83
+                datasource_name: traineras
+- model: entities.entity
+  pk: 231
+  fields:
+      from_date: 1968-01-01 00:00:00+00:00
+      to_date: 1996-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO DONOSTIA
+      normalized_name: DONOSTIA
+      known_names: '["CR DONOSTIA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 26
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "58"
+                values:
+                    details_page: https://traineras.es/clubes/58
+                datasource_name: traineras
+- model: entities.entity
+  pk: 232
+  fields:
+      from_date: 2023-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: UNIÓN DE REMEIROS MUROS ESTEIRO
+      normalized_name: MUROS - ESTEIRANA
+      known_names: '["AD ESTEIRANA", "AD ESTEIRANA - CR MUROS", "URME"]'
+      type: CLUB
+      symbol: URME
+      is_partnership: true
+      town: 44
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "283"
+                values:
+                    details_page: https://traineras.es/clubes/283
+                datasource_name: traineras
+- model: entities.entity
+  pk: 233
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
       to_date: null
       is_active: true
       name: CLUB DO MAR MUGARDOS - CLUB DE REMO A CABANA
       normalized_name: MUGARDOS - A CABANA
+      known_names: '["CM MUGARDOS - CR CABANA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: 31
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 234
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: AYUNTAMIENTO DE PASAIA
+      normalized_name: AYUNTAMIENTO DE PASAIA
+      known_names: '["PASAJES"]'
+      type: PRIVATE
+      symbol: null
+      is_partnership: false
+      town: 53
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 235
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CLUB REMO SUANCES - BARQUEREÑO
+      normalized_name: SUANCES - BARQUEREÑO
+      known_names: '["BARQUERE\u00d1O - SUANCES"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 236
+  fields:
+      from_date: 2017-01-01 00:00:00+00:00
+      to_date: 2018-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB REMO PUEBLA - CLUB REMO CABO DE CRUZ
+      normalized_name: PUEBLA - CABO
+      known_names: '["CR PUEBLA - CR CABO DE CRUZ"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 237
+  fields:
+      from_date: 2002-01-01 00:00:00+00:00
+      to_date: 2002-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO AMEGROVE - CLUB REMO RIANXO
+      normalized_name: AMEGROVE - RIANXO
+      known_names: '["CR AMEGROVE - CR RIANXO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 238
+  fields:
+      from_date: 2022-01-01 00:00:00+00:00
+      to_date: 2022-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO CORUXO - CLUB DE REMO CHAPELA
+      normalized_name: CORUXO - CHAPELA
+      known_names: '["CR CORUXO - CR CHAPELA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 239
+  fields:
+      from_date: 2016-01-01 00:00:00+00:00
+      to_date: 2016-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO CHAPELA - CLUB DE REMO VILAXOÁN
+      normalized_name: CHAPELA - VILAXOAN
+      known_names: '["CR CHAPELA - CR VILAXOAN"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 240
+  fields:
+      from_date: 2019-01-01 00:00:00+00:00
+      to_date: 2019-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO CORUXO - CLUB DE REMO MECOS
+      normalized_name: CORUXO - MECOS
+      known_names: '["CR CORUXO - CR MECOS"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 241
+  fields:
+      from_date: 2008-01-01 00:00:00+00:00
+      to_date: 2008-12-31 23:59:59.999000+00:00
+      is_active: false
+      name: GETARIA ARRAUN ELKARTEA - ZUMAIA ARRAUN ELKARTEA
+      normalized_name: GETARIA - ZUMAIA
+      known_names: '["GETARIA AE - ZUMAIA AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 242
+  fields:
+      from_date: 1966-01-01 00:00:00+00:00
+      to_date: 1979-12-31 23:59:59.999000+00:00
+      is_active: false
+      name: LASARTE
+      normalized_name: LASARTE
+      known_names: '["LASARTE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 102
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 245
+  fields:
+      from_date: 2002-01-01 00:00:00+00:00
+      to_date: 2002-12-31 00:00:00+00:00
+      is_active: false
+      name: FORTUNA ARRAUN ELKARTEA - KIRIKO ARRAUN KIROL ELKARTEA
+      normalized_name: FORTUNA-KIRIKO
+      known_names: '["FORTUNA-KIRIKO"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 246
+  fields:
+      from_date: 1990-01-01 13:25:40.311000+00:00
+      to_date: null
+      is_active: true
+      name: DEUSTO ARRAUN TALDEA - SAN NICOLÁS ARRAUN TALDEA
+      normalized_name: DEUSTO-SAN NICOLAS
+      known_names: '["DEUSTO AT-SAN NICOLAS AT"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 247
+  fields:
+      from_date: 2000-01-01 13:34:05.647000+00:00
+      to_date: null
+      is_active: true
+      name: DEUSTO ARRAUN TALDEA - LUTXANA ARRAUN ELKARTEA
+      normalized_name: DEUSTO-LUTXANA
+      known_names: '["DEUSTO AT-LUTXANA AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 248
+  fields:
+      from_date: 2001-01-01 13:38:04.286000+00:00
+      to_date: 2003-12-31 13:38:12.385000+00:00
+      is_active: false
+      name: ARKOTE ARRAUN TALDEA - ELANTXOBE ARRAUN ELKARTEA
+      normalized_name: ARKOTE - ELANTXOBE
+      known_names: '["ARKOTE AT-ELANTXOBE AE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 249
+  fields:
+      from_date: 1961-01-01 13:38:04.286000+00:00
+      to_date: 1963-12-31 13:38:12.385000+00:00
+      is_active: false
+      name: CLUB REMO PARAMEIRAS
+      normalized_name: PARAMEIRAS
+      known_names: '["PARAMEIRAS"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "271"
+                values:
+                    details_page: https://traineras.es/clubes/271
+                datasource_name: traineras
+- model: entities.entity
+  pk: 250
+  fields:
+      from_date: 1961-01-01 13:38:04.286000+00:00
+      to_date: 1961-12-31 13:38:04.286000+00:00
+      is_active: false
+      name: MARINA DE GUERRA
+      normalized_name: MARINA DE GUERRA
+      known_names: '["MARINA DE GUERRA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "278"
+                values:
+                    details_page: https://traineras.es/clubes/278
+                datasource_name: traineras
+- model: entities.entity
+  pk: 251
+  fields:
+      from_date: 1963-01-01 13:38:04.286000+00:00
+      to_date: 1963-12-31 13:38:04.286000+00:00
+      is_active: false
+      name: SOCIEDAD CULTURAL Y DEPORTIVA RIBADESELLA
+      normalized_name: RIBADESELLA
+      known_names: '["CD RIBADESELLA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: 135
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "272"
+                values:
+                    details_page: https://traineras.es/clubes/272
+                datasource_name: traineras
+- model: entities.entity
+  pk: 252
+  fields:
+      from_date: 1975-01-01 13:38:04.286000+00:00
+      to_date: 1983-12-31 13:38:04.286000+00:00
+      is_active: false
+      name: LICEO MARÍTIMO RIANXEIRO
+      normalized_name: MARITIMO RIANXEIRO
       known_names: "[]"
       type: CLUB
       symbol: null
+      is_partnership: false
+      town: 60
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "135"
+                values:
+                    details_page: https://traineras.es/clubes/135
+                datasource_name: traineras
+- model: entities.entity
+  pk: 253
+  fields:
+      from_date: 2024-01-01 00:00:00+00:00
+      to_date: null
+      is_active: true
+      name: CIRCULO CULTURAL DEPORTIVO CESANTES - CLUB DE REMO AMEGROVE
+      normalized_name: CESANTES - AMEGROVE
+      known_names: '["CCD CESANTES-CR AMEGROVE"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 254
+  fields:
+      from_date: 1961-01-01 00:00:00+00:00
+      to_date: 1970-12-31 23:59:59.999000+00:00
+      is_active: false
+      name: IBAETA ARRAUN
+      normalized_name: IBAETA
+      known_names: '["IBAETA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "282"
+                values:
+                    details_page: https://traineras.es/clubes/282
+                datasource_name: traineras
+- model: entities.entity
+  pk: 255
+  fields:
+      from_date: 2002-01-01 00:00:00+00:00
+      to_date: 2002-12-31 23:59:59.999999+00:00
+      is_active: false
+      name: CLUB DE REMO OLÍMPICO DONOSTIA ARRAUN LAGUNAK - SOCIEDAD DEPORTIVA SANTIAGOTARRAK
+      normalized_name: DONOSTIA ARRAUN LAGUNAK - SANTIAGOTARRAK
+      known_names: '["DONOSTIA ARRAUN LAGUNAK - SD SANTIAGOTARRAK"]'
+      type: CLUB
+      symbol: null
+      is_partnership: true
+      town: null
+      parent: null
+      metadata:
+          datasource: []
+- model: entities.entity
+  pk: 256
+  fields:
+      from_date: 1960-01-01 00:00:00+00:00
+      to_date: 1960-12-31 23:59:59.999000+00:00
+      is_active: false
+      name: AGUINAGA
+      normalized_name: AGUINAGA
+      known_names: '["AGUINAGA", "AGINAGA"]'
+      type: CLUB
+      symbol: null
+      is_partnership: false
+      town: null
+      parent: null
+      metadata:
+          datasource:
+              - ref_id: "288"
+                values:
+                    details_page: https://traineras.es/clubes/288
+                datasource_name: traineras
 - model: races.trophy
   pk: 25
   fields:

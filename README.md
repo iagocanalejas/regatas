@@ -162,6 +162,11 @@ python manage.py plot -c 25 --leagues-only -n -o ~/Downloads/p.png
 ```
 
 ```sh
+# Plot all AVG speeds per year for the league 5.
+python manage.py plot --league 5 -o ~/Downloads/p.png
+```
+
+```sh
 # Plot the speeds of the Puebla team for the league 5 in 2021, 2022, and 2023.
 python manage.py plot line -c 25 --league 5 -y 2021 2022 2023 -o ~/Downloads/p.png
 ```

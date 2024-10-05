@@ -16,11 +16,11 @@ def get_entity_or_none(entity_id: int) -> Entity | None:
         return None
 
 
-def get_closest_club_by_name(name: str) -> Entity:
+def get_closest_club_by_name(name: str, include_deleted: bool = False) -> Entity:
     """
     :return: closest found club in the database
     """
-    return get_closest_by_name_type(name, entity_type=ENTITY_CLUB)
+    return get_closest_by_name_type(name, entity_type=ENTITY_CLUB, include_deleted=include_deleted)
 
 
 def get_closest_by_name_type(name: str, entity_type: str | None = None, include_deleted: bool = False) -> Entity:
@@ -54,16 +54,21 @@ def get_closest_by_name_type(name: str, entity_type: str | None = None, include_
         )
     )
 
+    if not clubs.exists():
+        raise Entity.DoesNotExist
+
     matches = list(flatten(list(clubs.values_list("normalized_name", "known_names"))))
     closest, closest_distance = closest_result(name, matches) if matches else (None, 0)
 
     if closest and closest_distance > 0.4:  # bigger is better
         if closest_distance == 1.0:
-            return Entity.objects.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
+            q = Entity.all_objects if include_deleted else Entity.objects
+            return q.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
 
         avg_length = (len(closest) + len(name)) / 2
         normalized_levenshtein = levenshtein_distance(name, closest) / avg_length
         if normalized_levenshtein < 0.4:  # smaller is better
-            return Entity.objects.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
+            q = Entity.all_objects if include_deleted else Entity.objects
+            return q.get(Q(normalized_name=closest) | Q(known_names__contains=[closest]))
 
     raise Entity.DoesNotExist
