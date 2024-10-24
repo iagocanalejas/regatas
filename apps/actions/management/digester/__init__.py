@@ -14,6 +14,7 @@ def build_digester(
     path: str | None = None,
     force_gender: bool = False,
     force_category: bool = False,
+    save_old: bool = False,
 ) -> DigesterProtocol:
     if path and (os.path.isdir(path) or os.path.isfile(path)):
         return FolderDigester(path)
@@ -22,4 +23,4 @@ def build_digester(
     if client.DATASOURCE == Datasource.TABULAR:
         assert isinstance(client, TabularDataClient)
         return TabularDigester(client, force_gender=force_gender, force_category=force_category)
-    return Digester(client, force_gender=force_gender, force_category=force_category)
+    return Digester(client, force_gender=force_gender, force_category=force_category, save_old=save_old)

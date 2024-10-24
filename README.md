@@ -21,6 +21,7 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[-w, --last-weekend] \
 	[--force-gender] \
 	[--force-category] \
+	[--save-old] \
 	[-o, --output OUTPUT]
 
 # positional arguments:
@@ -57,6 +58,8 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #                         forces the gender to match.
 #   --force-category
 #                         forces the category to match.
+#   --save-old
+#                         automatically saves the races before 2003 without asking.
 #   -o OUTPUT, --output OUTPUT
 #                         Outputs the race data to the given folder path in JSON format.
 ```

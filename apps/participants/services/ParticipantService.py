@@ -4,7 +4,7 @@ from django.db import connection
 from django.db.models import Q, QuerySet
 
 from apps.entities.models import Entity, League
-from apps.participants.models import Participant
+from apps.participants.models import Participant, Penalty
 from apps.races.models import Flag, Race
 from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
@@ -32,6 +32,10 @@ def get_by_race_and_filter_by(
         return q.get()
     except Participant.DoesNotExist:
         return None
+
+
+def get_penalties(participant: Participant) -> QuerySet:
+    return Penalty.objects.filter(participant=participant)
 
 
 def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: Entity | None = None) -> bool:

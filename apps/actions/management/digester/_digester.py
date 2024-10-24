@@ -47,10 +47,17 @@ logger = logging.getLogger(__name__)
 
 
 class Digester(DigesterProtocol):
-    def __init__(self, client: ClientProtocol, force_gender: bool = False, force_category: bool = False) -> None:
+    def __init__(
+        self,
+        client: ClientProtocol,
+        force_gender: bool = False,
+        force_category: bool = False,
+        save_old: bool = False,
+    ) -> None:
         self.client = client
         self._force_gender = force_gender
         self._force_category = force_category
+        self._save_old = save_old
 
     @override
     def ingest(
@@ -191,7 +198,9 @@ class Digester(DigesterProtocol):
         associated: Race | None = None,
         **_,
     ) -> tuple[Race, DigesterProtocol.Status]:
-        if not input_should_save(race):
+        save_old_races = self._save_old and race.date.year < 2003
+
+        if not save_old_races and not input_should_save(race):
             logger.warning(f"race {race} was not saved")
             return race, status
 
@@ -199,7 +208,7 @@ class Digester(DigesterProtocol):
             logger.debug("associated race not found")
             associated = input_associated(race)
 
-        if associated and not race.associated and input_should_associate_races(race, associated):
+        if associated and not race.associated and (save_old_races or input_should_associate_races(race, associated)):
             logger.info(f"associating races {race} and {associated}")
             race.associated = associated
             race.save()
@@ -331,9 +340,30 @@ class Digester(DigesterProtocol):
         return participant, participant_status.next()
 
     @override
-    def save_penalty(self, participant: Participant, penalty: RSPenalty, **_) -> Penalty:
+    def save_penalty(self, participant: Participant, penalty: RSPenalty, note: str | None, **_) -> Penalty:
         logger.info(f"creating penalty={penalty} for {participant}")
-        new_penalty = Penalty(reason=penalty.reason, disqualification=penalty.disqualification, participant=participant)
+        penalties = ParticipantService.get_penalties(participant)
+
+        if penalties.count() > 1:
+            logger.warning(f"multiple penalties found for {participant=}")
+            penalties = penalties.filter(reason__isnull=False, reason=penalty.reason)
+
+        if penalties.count() == 1:
+            db_penalty = penalties.first()
+            assert db_penalty, "missing penalty data"
+
+            if not db_penalty.reason or penalty.reason == db_penalty.reason:
+                db_penalty.reason = db_penalty.reason if db_penalty.reason else penalty.reason
+                db_penalty.notes.append(note) if note else None
+                db_penalty.save()
+                return db_penalty
+
+        new_penalty = Penalty(
+            reason=penalty.reason,
+            disqualification=penalty.disqualification,
+            participant=participant,
+            notes=[note] if note else [],
+        )
         new_penalty.save()
         return new_penalty
 

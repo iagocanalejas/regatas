@@ -30,6 +30,7 @@ class ScrapeConfigTests(TestCase):
             "last_weekend": None,
             "force_gender": False,
             "force_category": False,
+            "save_old": False,
             "ignore": [],
             "output": None,
         }

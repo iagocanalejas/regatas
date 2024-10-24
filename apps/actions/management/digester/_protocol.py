@@ -156,13 +156,14 @@ class DigesterProtocol(Protocol):
         """
         ...
 
-    def save_penalty(self, participant: Participant, penalty: RSPenalty, **kwargs) -> Penalty:
+    def save_penalty(self, participant: Participant, penalty: RSPenalty, note: str | None, **kwargs) -> Penalty:
         """
         Save a new penalty into the database.
 
         Args:
             participant Participant: The participant to save the penalty.
             penalty RSPenalty: The penalty to save.
+            note str | None: The note from where the penalty was created.
 
         Returns: Penalty: The saved penalty.
         """

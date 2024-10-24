@@ -35,6 +35,8 @@ from rscraping.data.models import Race as RSRace
 
 logger = logging.getLogger(__name__)
 
+_notes: list[str] = []
+
 
 class Command(BaseCommand):
     help = """
@@ -99,6 +101,12 @@ class Command(BaseCommand):
             help="forces the category to match.",
         )
         parser.add_argument(
+            "--save-old",
+            action="store_true",
+            default=False,
+            help="automatically saves the races before 2003 without asking.",
+        )
+        parser.add_argument(
             "-o",
             "--output",
             type=str,
@@ -120,6 +128,7 @@ class Command(BaseCommand):
             path=config.path,
             force_gender=config.force_gender,
             force_category=config.force_category,
+            save_old=config.save_old,
         )
 
         # compute years to scrape
@@ -176,6 +185,9 @@ class Command(BaseCommand):
                 flag.save()
                 logger.info(f"{flag=} metadata has been updated")
 
+        for note in _notes:
+            logger.warning(note)
+
 
 @dataclass
 class ScrapeConfig:
@@ -199,6 +211,7 @@ class ScrapeConfig:
     last_weekend: bool = False
     force_gender: bool = False
     force_category: bool = False
+    save_old: bool = False
     ignored_races: list[str] = field(default_factory=list)
     output_path: str | None = None
 
@@ -224,9 +237,10 @@ class ScrapeConfig:
             options["start_year"],
             options["last_weekend"],
         )
-        force_gender, force_category, ignored_races, output_path = (
+        force_gender, force_category, save_old, ignored_races, output_path = (
             options["force_gender"],
             options["force_category"],
+            options["save_old"],
             options["ignore"],
             options["output"],
         )
@@ -271,6 +285,7 @@ class ScrapeConfig:
             last_weekend=last_weekend,
             force_gender=force_gender,
             force_category=force_category,
+            save_old=save_old,
             ignored_races=ignored_races,
             output_path=output_path,
         )
@@ -305,6 +320,8 @@ def ingest_race(
         race.participants = participants
         with open(f"{race.race_ids[0]}.json", "w") as f:
             json.dump(race.to_dict(), f, ensure_ascii=False)
+        for note in _notes:
+            logger.warning(note)
         raise e
 
     if not new_race:
@@ -320,10 +337,11 @@ def ingest_race(
                 participant_status=status,
             )
         if new_participant.pk and participant.penalty:
-            _ = digester.save_penalty(new_participant, participant.penalty)
+            _ = digester.save_penalty(new_participant, participant.penalty, race.race_notes)
 
     if race.race_notes:
         logger.warning(f"{race.date} :: {race.race_notes}")
+        _notes.append(f"{race.date} :: {race.race_notes}")
 
     return new_race, race_status
 

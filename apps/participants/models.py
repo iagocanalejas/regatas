@@ -89,6 +89,7 @@ class Penalty(models.Model):
         related_name="penalties",
         related_query_name="penalty",
     )
+    notes = ArrayField(blank=True, default=list, base_field=models.TextField())
 
     def __str__(self):
         if self.disqualification:
