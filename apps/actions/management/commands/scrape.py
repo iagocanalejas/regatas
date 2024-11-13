@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from datetime import datetime
 from itertools import chain
@@ -21,6 +22,7 @@ from apps.schemas import MetadataBuilder
 from apps.utils import build_client
 from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
+from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
@@ -154,6 +156,17 @@ class Command(BaseCommand):
         else:
             raise ValueError("invalid state")
 
+        try:
+            self.run(config, digester, races)
+        except Exception as e:
+            for note in _notes:
+                logger.warning(note)
+            raise e
+        finally:
+            for note in _notes:
+                logger.warning(note)
+
+    def run(self, config: "ScrapeConfig", digester: DigesterProtocol, races: chain[RSRace] | Generator[RSRace]):
         flags: set[Flag] = set()
         hints: dict[str, tuple[Flag, Trophy]] = {}
         for race in races:
@@ -184,9 +197,6 @@ class Command(BaseCommand):
                 )
                 flag.save()
                 logger.info(f"{flag=} metadata has been updated")
-
-        for note in _notes:
-            logger.warning(note)
 
 
 @dataclass
@@ -316,20 +326,26 @@ def ingest_race(
 
     try:
         new_race, race_status = digest_race(digester, race, hint=hint)
-    except KeyboardInterrupt as e:
+    except Exception as e:
         race.participants = participants
         with open(f"{race.race_ids[0]}.json", "w") as f:
             json.dump(race.to_dict(), f, ensure_ascii=False)
-        for note in _notes:
-            logger.warning(note)
         raise e
 
     if not new_race:
         logger.warning(f"{race=} was not saved")
         return None, Digester.Status.IGNORE
 
+    participant_names = [p.participant for p in participants]
+
+    def can_be_branch(participant: str) -> bool:
+        return (is_branch_club(participant) and any(p == participant.rstrip(" B") for p in participant_names)) or (
+            is_branch_club(participant, "C") and any(p == participant.rstrip(" C") for p in participant_names)
+        )
+
     for participant in participants:
-        new_participant, status = digester.ingest_participant(new_race, participant)
+        can_be_branch_team = new_race.league is None and can_be_branch(participant.participant)
+        new_participant, status = digester.ingest_participant(new_race, participant, can_be_branch=can_be_branch_team)
         if status == Digester.Status.NEW or status == Digester.Status.MERGED:
             new_participant, status = digester.save_participant(
                 new_participant,

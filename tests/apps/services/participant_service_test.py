@@ -8,7 +8,9 @@ from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
 from apps.races.models import Race
-from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_MALE
+from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_MALE, RACE_CONVENTIONAL, RACE_TRAINERA
+from rscraping.data.models import Participant as RSParticipant
+from rscraping.data.models import Race as RSRace
 
 
 class ParticipantServiceTest(TestCase):
@@ -189,3 +191,53 @@ class ParticipantServiceTest(TestCase):
         )
 
         self.assertEqual(speeds, [15.502592601204455, 15.407060490983739])
+
+    def test_is_same_participant(self):
+        club = Entity.objects.get(pk=25)
+        race = Race.objects.get(pk=1)
+
+        db_participant = Participant(
+            club=club,
+            race=race,
+            gender=GENDER_MALE,
+            category=CATEGORY_ABSOLUT,
+            club_names=[f"{club.name} B"],
+        )
+
+        participant = RSParticipant(
+            club_name=f"{club.name} B",
+            participant=f"{club.name} B",
+            gender=GENDER_MALE,
+            category=CATEGORY_ABSOLUT,
+            lane=1,
+            series=1,
+            handicap=None,
+            laps=[],
+            distance=5556,
+            retired=False,
+            absent=False,
+            guest=False,
+            race=RSRace(
+                name="XV BANDEIRA CONCELLO DE A POBRA",
+                date="22/08/2020",
+                day=1,
+                modality=RACE_TRAINERA,
+                type=RACE_CONVENTIONAL,
+                league="LIGA GALEGA DE TRAIÑAS B",
+                town="A POBRA DO CARAMIÑAL",
+                organizer="CLUB REMO PUEBLA",
+                sponsor=None,
+                normalized_names=[("BANDEIRA CONCELLO DE A POBRA", 15)],
+                race_ids=["11"],
+                url="test",
+                datasource="traineras",
+                gender=GENDER_MALE,
+                category=CATEGORY_ABSOLUT,
+                participants=[],
+                race_laps=6,
+                race_lanes=4,
+                cancelled=False,
+            ),
+        )
+
+        self.assertTrue(ParticipantService.is_same_participant(db_participant, participant))

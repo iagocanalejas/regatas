@@ -112,19 +112,17 @@ def retrieve_league(race: RSRace, db_race: Race | None) -> League | None:
     return None
 
 
-def retrieve_entity(
-    name: str,
-    clean: Callable[[str], str] | None = None,
-    entity_type: str | None = ENTITY_CLUB,
-) -> Entity | None:
+def retrieve_entity(name: str, entity_type: str | None = ENTITY_CLUB) -> Entity | None:
     try:
-        return EntityService.get_closest_by_name_type(name, entity_type=entity_type, include_deleted=True)
+        return EntityService.get_closest_by_name_type(name, entity_type=entity_type)
     except Entity.MultipleObjectsReturned:
         raise AssertionError(f"multiple entities found for {name=}")
     except Entity.DoesNotExist:
-        pass
-
-    if clean:
-        return retrieve_entity(clean(name))
+        try:
+            return EntityService.get_closest_by_name_type(name, entity_type=entity_type, include_deleted=True)
+        except Entity.MultipleObjectsReturned:
+            raise AssertionError(f"multiple entities found for {name=}")
+        except Entity.DoesNotExist:
+            pass
 
     return input_club(name)

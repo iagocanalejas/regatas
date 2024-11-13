@@ -35,6 +35,7 @@ from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from rscraping.clients import ClientProtocol
+from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
@@ -67,9 +68,6 @@ class Digester(DigesterProtocol):
         **kwargs,
     ) -> tuple[Race, Race | None, DigesterProtocol.Status]:
         logger.info(f"ingesting {race=}")
-
-        metadata = self._build_metadata(race, self.client.DATASOURCE)
-
         logger.debug("searching race in the database")
         db_race = retrieve_database_race(
             race=race,
@@ -117,7 +115,7 @@ class Digester(DigesterProtocol):
             category=race.category,
             organizer=organizer,
             sponsor=race.sponsor,
-            metadata=metadata,
+            metadata=self._build_metadata(race, self.client.DATASOURCE),
             place=place,
         )
 
@@ -232,6 +230,7 @@ class Digester(DigesterProtocol):
         self,
         race: Race,
         participant: RSParticipant,
+        can_be_branch: bool,
         **_,
     ) -> tuple[Participant, DigesterProtocol.Status]:
         logger.info(f"ingesting {participant=}")
@@ -243,19 +242,29 @@ class Digester(DigesterProtocol):
         assert club, "missing club data"
         logger.info(f"using {club=}")
 
+        branch = None
+        if is_branch_club(participant.participant):
+            logger.info("'B' club detected")
+            branch = "B"
+        if is_branch_club(participant.participant, letter="C"):
+            logger.info("'C' club detected")
+            branch = "C"
+
         logger.debug("searching participant in the database")
         db_participant = ParticipantService.get_by_race_and_filter_by(
             race,
             club=club,
             gender=participant.gender,
             category=participant.category,
+            branch=branch,
             raw_club_name=participant.club_name,
         )
         logger.info(f"using {db_participant=}")
 
         new_participant = Participant(
-            club_names=[participant.club_name.upper()] if participant.club_name else [],
+            club_names=[participant.club_name.upper().replace(".", "").strip()] if participant.club_name else [],
             club=club,
+            branch=branch if can_be_branch else None,
             race=race,
             distance=participant.distance,
             laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in participant.laps],
@@ -266,6 +275,7 @@ class Digester(DigesterProtocol):
             category=participant.category,
             absent=participant.absent,
             retired=participant.retired and (not participant.penalty or not participant.penalty.disqualification),
+            metadata=self._build_participant_metadata(participant, self.client.DATASOURCE),
         )
 
         status = DigesterProtocol.Status.NEW
@@ -341,7 +351,7 @@ class Digester(DigesterProtocol):
 
     @override
     def save_penalty(self, participant: Participant, penalty: RSPenalty, note: str | None, **_) -> Penalty:
-        logger.info(f"creating penalty={penalty} for {participant}")
+        logger.info(f"saving {penalty=} for {participant}")
         penalties = ParticipantService.get_penalties(participant)
 
         if penalties.count() > 1:
@@ -354,7 +364,8 @@ class Digester(DigesterProtocol):
 
             if not db_penalty.reason or penalty.reason == db_penalty.reason:
                 db_penalty.reason = db_penalty.reason if db_penalty.reason else penalty.reason
-                db_penalty.notes.append(note) if note else None
+                if note and note not in db_penalty.notes:
+                    db_penalty.notes.append(note)
                 db_penalty.save()
                 return db_penalty
 
@@ -379,12 +390,27 @@ class Digester(DigesterProtocol):
         if not race.url:
             raise ValueError(f"no datasource provided for {race.race_ids[0]}::{race.name}")
 
+        race_d = race.to_dict()
+        race_d.pop("participants", None)
+
         return {
             "datasource": [
-                MetadataBuilder().ref_id(race_id).datasource_name(datasource).values("details_page", race.url).build()
+                MetadataBuilder()
+                .ref_id(race_id)
+                .datasource_name(datasource)
+                .values("details_page", race.url)
+                .data(race_d)
+                .build()
                 for race_id in race.race_ids
             ]
         }
+
+    @override
+    def _build_participant_metadata(self, participant: RSParticipant, datasource: Datasource) -> dict:
+        participant_d = participant.to_dict()
+        participant_d.pop("penalty", None)
+        participant_d.pop("race", None)
+        return {"datasource": [MetadataBuilder().datasource_name(datasource).data(participant_d).build()]}
 
     def _update_race_with_competition_info(
         self,

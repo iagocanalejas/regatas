@@ -26,6 +26,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "ARES",
             "penalty": null
         },
@@ -40,6 +41,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "CHAPELA",
             "penalty": null
         },
@@ -54,6 +56,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "CASTROPOL",
             "penalty": null
         },
@@ -68,6 +71,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "TIR\u00c1N",
             "penalty": null
         },
@@ -82,6 +86,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "SAMERTOLAMEU",
             "penalty": null
         },
@@ -96,6 +101,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "MECOS",
             "penalty": null
         },
@@ -110,6 +116,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "RIANXO",
             "penalty": null
         },
@@ -124,6 +131,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "CABANA - MUGARDOS",
             "penalty": null
         },
@@ -138,6 +146,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "PUEBLA",
             "penalty": null
         },
@@ -152,6 +161,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "URME",
             "penalty": null
         },
@@ -166,6 +176,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "CABO DA CRUZ",
             "penalty": null
         }

@@ -87,6 +87,7 @@ class DigesterProtocol(Protocol):
         self,
         race: Race,
         participant: RSParticipant,
+        can_be_branch: bool,
         **kwargs,
     ) -> tuple[Participant, Status]:
         """
@@ -95,6 +96,7 @@ class DigesterProtocol(Protocol):
         Args:
             race Race: The Race to witch the participant belongs.
             participant: RSParticipant: The participant to ingest.
+            can_be_branch: bool: Whether the participant can be a branch or not.
 
         Returns: tuple[Participant, bool]:
             Participant: The new ingested participant.
@@ -158,7 +160,7 @@ class DigesterProtocol(Protocol):
 
     def save_penalty(self, participant: Participant, penalty: RSPenalty, note: str | None, **kwargs) -> Penalty:
         """
-        Save a new penalty into the database.
+        Save a new penalty into the database, or update existing one if it matches.
 
         Args:
             participant Participant: The participant to save the penalty.
@@ -172,3 +174,5 @@ class DigesterProtocol(Protocol):
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None: ...
 
     def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict: ...
+
+    def _build_participant_metadata(self, participant: RSParticipant, datasource: Datasource) -> dict: ...

@@ -26,6 +26,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "PEDRE\u00d1A",
             "penalty": null
         },
@@ -40,6 +41,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "DEUSTO",
             "penalty": null
         },
@@ -54,6 +56,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "ZARAUTZ",
             "penalty": null
         },
@@ -68,6 +71,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "ARKOTE",
             "penalty": null
         },
@@ -82,6 +86,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "SAN PEDRO",
             "penalty": null
         },
@@ -96,6 +101,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "ORIO",
             "penalty": null
         },
@@ -110,6 +116,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "CASTRE\u00d1A",
             "penalty": null
         },
@@ -124,6 +131,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "PASAI DONIBANE KOXTAPE",
             "penalty": null
         },
@@ -138,6 +146,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "BUSTURIALDEA",
             "penalty": null
         },
@@ -152,6 +161,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "ZUMAIA",
             "penalty": null
         },
@@ -166,6 +176,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "CAMARGO",
             "penalty": null
         },
@@ -180,6 +191,7 @@
             "handicap": null,
             "retired": false,
             "absent": false,
+            "guest": false,
             "participant": "HONDARRIBIA",
             "penalty": null
         }

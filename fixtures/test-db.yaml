@@ -1114,7 +1114,7 @@
       is_active: true
       name: CLUB DE REMO CABO DA CRUZ
       normalized_name: CABO DA CRUZ
-      known_names: '["CR CABO DA CRUZ", "BOIRO"]'
+      known_names: '["CR CABO DA CRUZ"]'
       type: CLUB
       symbol: CRCC
       is_partnership: false
@@ -4575,7 +4575,7 @@
       is_active: false
       name: LICEO VILAGARCIA
       normalized_name: LICEO VILAGARCIA
-      known_names: "[]"
+      known_names: '["VILLAGARCIA"]'
       type: CLUB
       symbol: null
       is_partnership: false
@@ -5832,7 +5832,7 @@
       name: AYUNTAMIENTO DE PASAIA
       normalized_name: AYUNTAMIENTO DE PASAIA
       known_names: '["PASAJES"]'
-      type: PRIVATE
+      type: CLUB
       symbol: null
       is_partnership: false
       town: 53

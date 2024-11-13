@@ -16,11 +16,18 @@ def get_entity_or_none(entity_id: int) -> Entity | None:
         return None
 
 
-def get_closest_club_by_name(name: str, include_deleted: bool = False) -> Entity:
+def get_closest_club_by_name(name: str, include_deleted: bool | None = None) -> Entity | None:
     """
     :return: closest found club in the database
     """
-    return get_closest_by_name_type(name, entity_type=ENTITY_CLUB, include_deleted=include_deleted)
+    try:
+        return get_closest_by_name_type(name, entity_type=ENTITY_CLUB, include_deleted=include_deleted or False)
+    except Entity.MultipleObjectsReturned:
+        raise AssertionError(f"multiple clubs found for {name=}")
+    except Entity.DoesNotExist:
+        if include_deleted is None:
+            return get_closest_club_by_name(name, include_deleted=True)
+    return None
 
 
 def get_closest_by_name_type(name: str, entity_type: str | None = None, include_deleted: bool = False) -> Entity:
@@ -34,13 +41,14 @@ def get_closest_by_name_type(name: str, entity_type: str | None = None, include_
         raise ValueError(f"invalid {name=}")
 
     name = name.upper()
+    name = name.rstrip(" B").rstrip(" C")
     parts = remove_conjunctions(remove_symbols(name)).split()
 
     q = Entity.queryset_for_search(include_deleted=include_deleted)
     q = q.filter(type=entity_type) if entity_type else q
 
     # quick route, just an exact match
-    clubs = q.filter(Q(normalized_name__iexact=name) | Q(name__iexact=name))
+    clubs = q.filter(Q(normalized_name__iexact=name) | Q(name__iexact=name) | Q(known_names__contains=[name]))
     if clubs.count() == 1:
         match = clubs.first()
         assert isinstance(match, Entity)

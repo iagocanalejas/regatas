@@ -89,10 +89,14 @@ class TabularDigester(Digester):
             logger.warning("using default metadata")
             return default_metadata()
 
+        race_d = race.to_dict()
+        race_d.pop("participants")
+
         metadata = [
             MetadataBuilder()
             .ref_id(race_id)
             .datasource_name(datasource)
+            .data(race_d)
             .values("details_page", race.url)
             .values("sheet_id", self.client.config.sheet_id)
             for race_id in race.race_ids

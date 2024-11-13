@@ -1,9 +1,10 @@
 import logging
 
 from django.db import connection
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 
 from apps.entities.models import Entity, League
+from apps.entities.services import EntityService
 from apps.participants.models import Participant, Penalty
 from apps.races.models import Flag, Race
 from rscraping.data.checks import is_branch_club
@@ -22,9 +23,12 @@ def get_by_race_and_filter_by(
     club: Entity,
     gender: str,
     category: str,
+    branch: str | None = None,
     raw_club_name: str | None = None,
 ) -> Participant | None:
     q = get_by_race(race).filter(club=club, category=category, gender=gender)
+    if branch:
+        q = q.filter(branch=branch)
     if q.count() > 1 and raw_club_name and race.league is None:
         q = _add_branch_filters(q, raw_club_name)
 
@@ -38,25 +42,18 @@ def get_penalties(participant: Participant) -> QuerySet:
     return Penalty.objects.filter(participant=participant)
 
 
-def is_same_participant(p1: Participant, p2: Participant | RSParticipant, club: Entity | None = None) -> bool:
-    if isinstance(p2, RSParticipant):
-        return club is not None and (
-            p1.club == club
-            and p1.gender == p2.gender
-            and p1.category == p2.category
-            and (p1.club_names and any(is_branch_club(e) for e in p1.club_names) and is_branch_club(p2.club_name))
-        )
-    return (
-        p1.club == p2.club
-        and p1.gender == p2.gender
-        and p1.category == p2.category
-        and (
-            p1.club_names
-            and p2.club_names
-            and any(is_branch_club(e) for e in p1.club_names)
-            and any(is_branch_club(e) for e in p2.club_names)
-        )
-    )
+def is_same_participant(p1: Participant, p2: RSParticipant, club: Entity | None = None) -> bool:
+    if p1.gender != p2.gender or p1.category != p2.category:
+        return False
+
+    p2_club = club if club else EntityService.get_closest_club_by_name(p2.participant)
+    assert p2_club, f"club {p2.participant} not found"
+
+    if p1.branch == "B":
+        return p1.club == p2_club and is_branch_club(p2.participant, letter="B")
+    if p1.branch == "C":
+        return p1.club == p2_club and is_branch_club(p2.participant, letter="C")
+    return p1.club == p2_club
 
 
 def get_year_speeds_filtered_by(
@@ -234,11 +231,11 @@ def _add_branch_filters(q: QuerySet, club_name: str | None) -> QuerySet:
         return q
 
     if not is_branch_club(club_name) and not is_branch_club(club_name, letter="C"):
-        return q.exclude(Q(club_name__endswith=" B") | Q(club_name__endswith=" C"))
+        return q.filter(branch__isnull=True)
 
     if is_branch_club(club_name):
-        return q.filter(club_name__endswith=" B")
+        return q.filter(branch="B")
     if is_branch_club(club_name, letter="C"):
-        return q.filter(club_name__endswith=" C")
+        return q.filter(branch="C")
 
     return q

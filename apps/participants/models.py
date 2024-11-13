@@ -1,6 +1,10 @@
+from typing import TYPE_CHECKING
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
+from django.db.models import JSONField
 
+from apps.schemas import PARTICIPANT_METADATA_SCHEMA, default_metadata
 from apps.utils.choices import (
     CATEGORY_ABSOLUT,
     ENTITY_CLUB,
@@ -9,10 +13,12 @@ from apps.utils.choices import (
     PARTICIPANT_CATEGORIES_CHOICES,
     PENALTY_CHOICES,
 )
+from djutils.validators import JSONSchemaValidator
 
 
 class Participant(models.Model):
     club_names = ArrayField(blank=True, default=list, base_field=models.CharField(max_length=150))
+    branch = models.CharField(null=True, blank=True, default=None, max_length=1)
     club = models.ForeignKey(
         null=False,
         to="entities.Entity",
@@ -28,6 +34,7 @@ class Participant(models.Model):
         related_name="participants",
         related_query_name="participant",
     )
+
     distance = models.PositiveIntegerField(null=True, blank=True, default=None)
     laps = ArrayField(blank=True, default=list, base_field=models.TimeField(null=False))
     lane = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
@@ -45,8 +52,18 @@ class Participant(models.Model):
     absent = models.BooleanField(default=False)
     retired = models.BooleanField(default=False)
 
+    metadata = JSONField(
+        default=default_metadata,
+        validators=[JSONSchemaValidator(schema=PARTICIPANT_METADATA_SCHEMA)],
+    )
+
+    if TYPE_CHECKING:
+        # Annotate reverse ForeignKey relationships in TYPE_CHECKING block
+        penalties: models.QuerySet["Penalty"]
+
     def __str__(self):
-        return f"{self.race.date} :: {self.club} ({self.gender}) ({self.category}) -> {self.race.name}"
+        branch_info = f" {self.branch}" if self.branch else ""
+        return f"{self.club}{branch_info} ({self.gender}) ({self.category})"
 
     def validate_unique(self, *args, **kwargs):
         """

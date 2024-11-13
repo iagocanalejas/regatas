@@ -1,7 +1,6 @@
 import os.path
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from apps.entities.models import Entity
@@ -13,53 +12,40 @@ class EntityServiceTest(TestCase):
     fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "test-db.yaml")]
 
     def test_search_club(self):
-        query = "SD TIRÁN PEREIRA"
-        query = normalize_club_name(query)
-        entity = Entity.objects.get(pk=30)
-        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
+        queries = [
+            ("SD TIRÁN PEREIRA", 30),
+            ("CM CASTROPOL", 14),
+            ("DONOSTIA ARRAUN LAGUNAK", 60),
+            ("AMEGROVE CLUB DE REMO", 11),
+            ("MUGARDOS - A CABANA FERROL", 233),
+            ("PASAJES", 234),
+            ("SANTURTZI", 50),
+            ("SAN PEDRO", 41),
+            ("PASAI DONIBANE KOXTAPE", 46),
+            ("VILLAGARCIA", 168),
+            ("ORIO B", 51),
+            ("BOIRO", 222),
+        ]
 
-        query = "CM CASTROPOL"
-        query = normalize_club_name(query)
-        entity = Entity.objects.get(pk=14)
-        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
-
-        query = "DONOSTIA ARRAUN LAGUNAK"
-        query = normalize_club_name(query)
-        entity = Entity.objects.get(pk=60)
-        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
-
-        query = "AMEGROVE CLUB DE REMO"
-        query = normalize_club_name(query)
-        entity = Entity.objects.get(pk=11)
-        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
-
-        query = "MUGARDOS - A CABANA FERROL"
-        query = normalize_club_name(query)
-        entity = Entity.objects.get(pk=233)
-        self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
+        for query, entity_id in queries:
+            query = normalize_club_name(query)
+            entity = Entity.all_objects.get(pk=entity_id)
+            self.assertEqual(entity, EntityService.get_closest_club_by_name(query))
 
         query = "SELECCIÓN GUIPUZCOANA"
         query = normalize_club_name(query)
         entity = Entity.all_objects.get(pk=66)
         self.assertEqual(entity, EntityService.get_closest_club_by_name(query, include_deleted=True))
 
-        query = "SAN JUAN DE TIRAN"
-        with self.assertRaises(ObjectDoesNotExist):
-            EntityService.get_closest_club_by_name(query)
-
-    def test_search_should_raise(self):
+    def test_search_no_result(self):
         query = "C.N. SANTA LUCÍA - DOES NOT EXIST"
-        with self.assertRaises(ObjectDoesNotExist):
-            EntityService.get_closest_club_by_name(query)
+        self.assertIsNone(EntityService.get_closest_club_by_name(query))
 
         query = "UR-KIROLAK - DOES NOT EXIST"
-        with self.assertRaises(ObjectDoesNotExist):
-            EntityService.get_closest_club_by_name(query)
+        self.assertIsNone(EntityService.get_closest_club_by_name(query))
 
         query = "RIO MERO - DOES NOT EXIST"
-        with self.assertRaises(ObjectDoesNotExist):
-            EntityService.get_closest_club_by_name(query)
+        self.assertIsNone(EntityService.get_closest_club_by_name(query))
 
         query = "SAN MARTIÑO - DOES NOT EXIST"
-        with self.assertRaises(ObjectDoesNotExist):
-            EntityService.get_closest_club_by_name(query)
+        self.assertIsNone(EntityService.get_closest_club_by_name(query))

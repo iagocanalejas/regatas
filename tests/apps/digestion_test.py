@@ -75,6 +75,7 @@ class DigestionTest(TestCase):
         self.assertEqual(status, Digester.Status.MERGED)
 
         [d.pop("date", None) for d in race.metadata["datasource"]]  # can't compare dates
+        [d.pop("data", None) for d in race.metadata["datasource"]]  # don't want to compare data
         self.assertIn(
             {"values": {"details_page": "test"}, "ref_id": "1", "datasource_name": "traineras"},
             race.metadata["datasource"],
@@ -155,7 +156,7 @@ class DigestionTest(TestCase):
         self.assertEqual(status, Digester.Status.MERGED)
 
         for participant in rs_race.participants:
-            new_participant, status = self.digester.ingest_participant(new_race, participant)
+            new_participant, status = self.digester.ingest_participant(new_race, participant, False)
             self.assertIsNotNone(new_participant.pk)
             self.assertEqual(status, Digester.Status.EXISTING)
 
@@ -172,7 +173,7 @@ class DigestionTest(TestCase):
         self.assertEqual(status, Digester.Status.MERGED)
 
         for participant in rs_race.participants:
-            new_participant, status = self.digester.ingest_participant(new_race, participant)
+            new_participant, status = self.digester.ingest_participant(new_race, participant, False)
             self.assertIsNotNone(new_participant.pk)
             self.assertEqual(status, Digester.Status.EXISTING)
 
