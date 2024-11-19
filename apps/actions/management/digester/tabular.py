@@ -6,6 +6,7 @@ from apps.participants.models import Participant
 from apps.races.models import Race
 from apps.races.services import MetadataService
 from apps.schemas import MetadataBuilder, default_metadata
+from pyutils.shortcuts import clean_dict
 from rscraping.clients import TabularDataClient
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
@@ -91,6 +92,7 @@ class TabularDigester(Digester):
 
         race_d = race.to_dict()
         race_d.pop("participants")
+        race_d = clean_dict(race_d)
 
         metadata = [
             MetadataBuilder()

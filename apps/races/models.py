@@ -137,6 +137,14 @@ class Race(CreationStampModel):
         on_delete=models.PROTECT,
         related_name="+",
     )
+    same_as = models.ForeignKey(
+        null=True,
+        blank=True,
+        default=None,
+        to="self",
+        on_delete=models.PROTECT,
+        related_name="+",
+    )
 
     gender = models.CharField(max_length=15, choices=RACE_GENDER_CHOICES)
     category = models.CharField(max_length=15, choices=RACE_CATEGORY_CHOICES)
@@ -156,6 +164,7 @@ class Race(CreationStampModel):
     if TYPE_CHECKING:
         # Annotate reverse ForeignKey relationships in TYPE_CHECKING block
         from apps.participants.models import Participant
+
         participants: models.QuerySet["Participant"]
 
     def __str__(self):

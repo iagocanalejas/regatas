@@ -15,6 +15,7 @@ from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
 from apps.races.models import Race
 from apps.schemas import MetadataBuilder
+from pyutils.shortcuts import clean_dict
 from rscraping.clients import Client, TrainerasClient
 from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_VETERAN, GENDER_FEMALE, GENDER_MALE
@@ -148,6 +149,7 @@ class Command(BaseCommand):
                 participant_d = participant.to_dict()
                 participant_d.pop("penalty", None)
                 participant_d.pop("race", None)
+                participant_d = clean_dict(participant_d)
                 db_participant.metadata["datasource"] = [
                     MetadataBuilder().datasource_name(Datasource.TRAINERAS).data(participant_d).build()
                 ]

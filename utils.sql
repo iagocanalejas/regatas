@@ -112,41 +112,43 @@ WHERE NOT r.cancelled
 ORDER BY extract(YEAR FROM r.date) desc, league_id, date;
 
 ------------------------------------------------------------------------------------------------------------------------
--- RETRIEVE RACES WHERE ALL PARTICIPANTS MATCHES AND HAVE THE SAME TIMES
+-- RETRIEVE RACES WHERE ALL PARTICIPANTS MATCH AND HAVE THE SAME TIMES
 ------------------------------------------------------------------------------------------------------------------------
 WITH race_data AS (
     -- Step 1: Gather race ID, count of participants, participant club IDs, and their times
     -- sorted by club ID to ensure consistent ordering for comparison.
     SELECT
         r.id AS race_id,
+        r.same_as_id as same_as_id,
         COUNT(p.id) AS num_participants,
         ARRAY_AGG(p.club_id ORDER BY p.club_id) AS participant_club_ids,
         ARRAY_AGG(extract(EPOCH FROM p.laps[array_length(p.laps, 1)]) ORDER BY p.club_id) AS participant_times
     FROM race r
-    JOIN participant p ON r.id = p.race_id
+             JOIN participant p ON r.id = p.race_id
     GROUP BY r.id
 ),
-matching_races AS (
-    -- Step 2: Find matching races by comparing participant and time arrays
-    -- We compare races to find those with the same number of participants, same participant club IDs,
-    -- and identical finish times. Races with the same set of participants and times are considered "matching."
-    SELECT
-        r1.race_id AS original_race_id,
-        r2.race_id AS matching_race_id
-    FROM race_data r1
-    JOIN race_data r2 ON
-        r1.num_participants = r2.num_participants  -- Ensure the races have the same number of participants
-        AND r1.participant_club_ids = r2.participant_club_ids  -- Ensure the races have the same participant club IDs
-        AND r1.participant_times = r2.participant_times  -- Ensure the participants have the same times
-        AND r1.race_id != r2.race_id  -- Exclude the current race itself from the matching process
-)
+     matching_races AS (
+         -- Step 2: Find matching races by comparing participant and time arrays
+         -- We compare races to find those with the same number of participants, same participant club IDs,
+         -- and identical finish times. Races with the same set of participants and times are considered "matching."
+         SELECT
+             r1.race_id AS original_race_id,
+             r2.race_id AS matching_race_id
+         FROM race_data r1
+                  JOIN race_data r2 ON
+             r1.num_participants = r2.num_participants  -- Ensure the races have the same number of participants
+                 AND r1.participant_club_ids = r2.participant_club_ids  -- Ensure the races have the same participant club IDs
+                 AND r1.participant_times = r2.participant_times  -- Ensure the participants have the same times
+                 AND r1.race_id != r2.race_id  -- Exclude the current race itself from the matching process
+                 AND (r2.same_as_id is null or  r1.race_id != r2.same_as_id)  -- Exclude the races that are marked as the same
+     )
 -- Step 3: Select races and any matching race IDs
 SELECT
-    r1.*,
-    COALESCE(ARRAY_AGG(r2.id), '{}') AS matching_race_ids
+    COALESCE(ARRAY_AGG(r2.id), '{}') AS matching_race_ids,
+    r1.*
 FROM race r1
-LEFT JOIN matching_races mr ON r1.id = mr.original_race_id
-LEFT JOIN race r2 ON mr.matching_race_id = r2.id
+         LEFT JOIN matching_races mr ON r1.id = mr.original_race_id
+         LEFT JOIN race r2 ON mr.matching_race_id = r2.id
 WHERE r2.id IS NOT NULL  -- Filter out cases where there are no matches
 GROUP BY r1.id;
 

@@ -34,6 +34,7 @@ from apps.places.services import PlacesService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
+from pyutils.shortcuts import clean_dict
 from rscraping.clients import ClientProtocol
 from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
@@ -392,6 +393,7 @@ class Digester(DigesterProtocol):
 
         race_d = race.to_dict()
         race_d.pop("participants", None)
+        race_d = clean_dict(race_d)
 
         return {
             "datasource": [
@@ -410,6 +412,8 @@ class Digester(DigesterProtocol):
         participant_d = participant.to_dict()
         participant_d.pop("penalty", None)
         participant_d.pop("race", None)
+        participant_d = clean_dict(participant_d)
+
         return {"datasource": [MetadataBuilder().datasource_name(datasource).data(participant_d).build()]}
 
     def _update_race_with_competition_info(
