@@ -4,6 +4,7 @@ from datetime import datetime
 
 from apps.actions.management.helpers.input import input_club, input_edition, input_race
 from apps.entities.models import Entity, League
+from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService, LeagueService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import RaceService
@@ -113,6 +114,7 @@ def retrieve_league(race: RSRace, db_race: Race | None) -> League | None:
 
 
 def retrieve_entity(name: str, entity_type: str | None = ENTITY_CLUB) -> Entity | None:
+    name = normalize_club_name(name)
     try:
         return EntityService.get_closest_by_name_type(name, entity_type=entity_type)
     except Entity.MultipleObjectsReturned:

@@ -54,8 +54,10 @@ class Command(BaseCommand):
 
     def filter_races(self, races: QuerySet[Race], datasource: Datasource) -> Generator[tuple[Race, str]]:
         for race in races:
+            if all(len(p.metadata["datasource"]) > 0 or p.absent or p.retired for p in race.participants.all()):
+                continue
             for ds in race.metadata["datasource"]:
-                if ds["datasource_name"] == datasource.value and ds.get("data", None) is None:
+                if ds["datasource_name"] == datasource.value:
                     yield (race, ds["ref_id"])
 
     def handle(self, *_, **options):
@@ -64,7 +66,7 @@ class Command(BaseCommand):
         datasource = Datasource.TRAINERAS.value
         races = Race.objects.prefetch_related("participants", "participants__penalties").filter(
             Q(metadata__datasource__contains=[{"datasource_name": datasource}])
-            & ~Q(metadata__datasource__has_key="data"),
+            # & ~Q(metadata__datasource__has_key="data"),
         )
 
         races = list(self.filter_races(races, Datasource.TRAINERAS))
@@ -111,6 +113,7 @@ class Command(BaseCommand):
             ds = [d for d in metadata if d["datasource_name"] == datasource and d["ref_id"] == ref_id][0]
             race_d = race.to_dict()
             race_d.pop("participants")
+            race_d = clean_dict(race_d)
             ds["data"] = race_d
             ds["date"] = datetime.now().date().isoformat()
 
@@ -120,6 +123,8 @@ class Command(BaseCommand):
 
             db_participants = list(db_race.participants.filter(gender=race.gender, category=race.category))
             for db_participant in db_participants:
+                if len(db_participant.metadata["datasource"]) > 0:
+                    continue
                 # 3. MATCH PARTICIPANTS
                 logger.info(f"processing {db_participant=}")
                 participant = next(
@@ -128,7 +133,7 @@ class Command(BaseCommand):
                 )
 
                 # 3.1. ASK FOR PARTICIPANT IF UNABLE TO MATCH
-                if not participant and not db_participant.absent:
+                if not participant and not (db_participant.absent or db_participant.retired or db_race.cancelled):
                     participant_names = [p.participant for p in participants] + ["SKIP"]
                     participant = inquirer.list_input(f"participant={db_participant}", choices=participant_names)
                     if participant == "SKIP":
@@ -136,7 +141,10 @@ class Command(BaseCommand):
                     participant = next((p for p in participants if p.participant == participant), None)
 
                 if not participant and (
-                    db_participant.retired or db_participant.absent or len(db_participant.laps) == 0
+                    db_participant.retired
+                    or db_participant.absent
+                    or len(db_participant.laps) == 0
+                    or db_race.cancelled
                 ):
                     logger.warning(f"skipping {db_participant=}")
                     continue
@@ -205,8 +213,8 @@ class Command(BaseCommand):
 
             logger.info("bulk updating participants")
             Participant.objects.bulk_update(db_participants, ["metadata", "branch"])
-            logger.info(f"saving race={db_race.pk}")
-            db_race.save()
+            # logger.info(f"saving race={db_race.pk}")
+            # db_race.save()
 
             if race.race_notes:
                 logger.warning(f"NOTES: {race.race_notes}")

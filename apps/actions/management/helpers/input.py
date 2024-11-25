@@ -30,6 +30,10 @@ def input_should_merge_participant(db_participant: Participant) -> bool:
     )
 
 
+def input_should_add_datasource(db_participant: Participant) -> bool:
+    return inquirer.confirm(f"Add new datasource for {db_participant}?", default=False)
+
+
 def input_shoud_create_participant(participant: RSParticipant) -> bool:
     return inquirer.confirm(f"create new participation for {participant=}?", default=False)
 

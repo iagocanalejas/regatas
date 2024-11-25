@@ -104,15 +104,15 @@ class DigesterProtocol(Protocol):
         """
         ...
 
-    def should_merge_participants(self, participant: Participant, db_participant: Participant) -> bool:
+    def get_participant_fields_to_update(self, participant: Participant, db_participant: Participant) -> list[str]:
         """
-        Check if two participants should be merged.
+        Check if two participants should be merged and what fields to merge.
 
         Args:
             participant Participant: The newly ingested Participant.
             db_participant Participant: An existing database participant.
 
-        Returns: bool: Whether the participants should be merged or not.
+        Returns: list[str]: The fields to update.
         """
         ...
 
@@ -172,6 +172,8 @@ class DigesterProtocol(Protocol):
         ...
 
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None: ...
+
+    def _get_participant_datasource(self, participant: Participant) -> dict | None: ...
 
     def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict: ...
 

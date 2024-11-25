@@ -5475,7 +5475,7 @@
       is_active: true
       name: SOCIEDAD DEPORTIVA DE REMO CASTREÑA
       normalized_name: CASTREÑA
-      known_names: '["SDR CASTRE\u00d1A"]'
+      known_names: '["SDR CASTRE\u00d1A", "CASTRO"]'
       type: CLUB
       symbol: null
       is_partnership: true

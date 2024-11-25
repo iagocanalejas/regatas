@@ -10,6 +10,7 @@ from apps.actions.management.helpers.input import (
     input_club,
     input_competition,
     input_new_value,
+    input_should_add_datasource,
     input_should_associate_races,
     input_should_merge,
     input_should_merge_participant,
@@ -26,7 +27,6 @@ from apps.actions.management.helpers.retrieval import (
 )
 from apps.actions.serializers import ParticipantSerializer, RaceSerializer
 from apps.entities.models import Entity, League
-from apps.entities.normalization import normalize_club_name
 from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
 from apps.places.models import Place
@@ -37,7 +37,7 @@ from apps.schemas import MetadataBuilder
 from pyutils.shortcuts import clean_dict
 from rscraping.clients import ClientProtocol
 from rscraping.data.checks import is_branch_club
-from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
+from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL, RACE_TIME_TRIAL
 from rscraping.data.models import Datasource
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Penalty as RSPenalty
@@ -237,7 +237,7 @@ class Digester(DigesterProtocol):
         logger.info(f"ingesting {participant=}")
 
         logger.debug("searching entity in the database")
-        club = retrieve_entity(normalize_club_name(participant.participant))
+        club = retrieve_entity(participant.participant)
         if not club:
             club = input_club(participant.participant)
         assert club, "missing club data"
@@ -269,7 +269,7 @@ class Digester(DigesterProtocol):
             race=race,
             distance=participant.distance,
             laps=[datetime.strptime(lap, "%M:%S.%f").time() for lap in participant.laps],
-            lane=participant.lane,
+            lane=participant.lane if race.type != RACE_TIME_TRIAL else 1,
             series=participant.series,
             handicap=datetime.strptime(participant.handicap, "%M:%S.%f").time() if participant.handicap else None,
             gender=participant.gender,
@@ -282,11 +282,18 @@ class Digester(DigesterProtocol):
         status = DigesterProtocol.Status.NEW
         if db_participant:
             new_participant.club_names = list(set(new_participant.club_names + db_participant.club_names))
-            if self.should_merge_participants(new_participant, db_participant):
+            fields = self.get_participant_fields_to_update(new_participant, db_participant)
+            if len(fields) > 0 and fields != ["metadata"]:
                 serialized = ParticipantSerializer(new_participant).data
                 print(f"NEW PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
                 new_participant, status = self.merge_participants(new_participant, db_participant, status)
             else:
+                # do metadata update transparently
+                if fields == ["metadata"]:
+                    logger.debug("updating metadata")
+                    db_participant.metadata["datasource"].append(new_participant.metadata["datasource"][0])
+                    db_participant.club_names = list(set(new_participant.club_names + db_participant.club_names))
+                    db_participant.save()
                 serialized = ParticipantSerializer(db_participant).data
                 print(f"EXISTING PARTICIPANT:\n{json.dumps(serialized, indent=4, skipkeys=True, ensure_ascii=False)}")
                 return db_participant, DigesterProtocol.Status.EXISTING
@@ -294,18 +301,17 @@ class Digester(DigesterProtocol):
         return new_participant, status
 
     @override
-    def should_merge_participants(self, participant: Participant, db_participant: Participant) -> bool:
-        """
-        Determines whether two participants should be merged based on certain conditions.
+    def get_participant_fields_to_update(self, participant: Participant, db_participant: Participant) -> list[str]:
+        fields = []
 
-        Conditions for merging:
-        1. If the number of laps for the first participant is greater than the number of laps for the second.
-        2. If the lane of the first participant is not None and is different from the lane assigned to the second.
-        3. If both participants have club names, and there is any overlap between their club names.
-        """
-        return len(participant.laps) > len(db_participant.laps) or (
-            participant.lane is not None and participant.lane != db_participant.lane
-        )
+        if len(participant.laps) > len(db_participant.laps):
+            fields.append("laps")
+        if participant.lane is not None and participant.lane != db_participant.lane:
+            fields.append("lane")
+        if participant.metadata["datasource"][0] not in db_participant.metadata["datasource"]:
+            fields.append("metadata")
+
+        return fields
 
     @override
     def merge_participants(
@@ -319,16 +325,27 @@ class Digester(DigesterProtocol):
         print(f"DATABASE PARTICIPANT:\n{json_participant}")
         if not input_should_merge_participant(db_participant):
             logger.warning(f"participants will not be merged, using {participant=}")
+            if input_should_add_datasource(db_participant):
+                logger.debug("adding new datasource")
+                db_participant.metadata["datasource"].append(participant.metadata["datasource"][0])
+                db_participant.club_names = list(set(participant.club_names + db_participant.club_names))
+                return db_participant, DigesterProtocol.Status.MERGED
             return participant, status
 
+        fields = self.get_participant_fields_to_update(participant, db_participant)
         logger.info(f"merging {participant=} and {db_participant=}")
-        if len(participant.laps) > len(db_participant.laps) and input_new_value(
-            "laps", participant.laps, db_participant.laps
-        ):
+
+        datasource = participant.metadata["datasource"][0]
+        if "metadata" in fields:
+            logger.debug("updating datasource")
+            db_participant.metadata["datasource"].append(datasource)
+            db_participant.club_names = list(set(participant.club_names + db_participant.club_names))
+
+        if "laps" in fields and input_new_value("laps", participant.laps, db_participant.laps):
             logger.debug(f"updating {db_participant.laps} with {participant.laps}")
             db_participant.laps = participant.laps
 
-        if input_new_value("lane", participant.lane, db_participant.lane):
+        if "lane" in fields and input_new_value("lane", participant.lane, db_participant.lane):
             logger.debug(f"updating {db_participant.lane=} with {participant.lane=}")
             db_participant.lane = participant.lane
 
@@ -382,8 +399,13 @@ class Digester(DigesterProtocol):
     @override
     def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
         datasources = MetadataService.get_datasource_from_race(race, self.client.DATASOURCE, ref_id)
-        if len(datasources) > 1:
-            logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
+        assert len(datasources) < 2, "multiple datasources found"
+        return datasources[0] if datasources else None
+
+    @override
+    def _get_participant_datasource(self, participant: Participant) -> dict | None:
+        datasources = MetadataService.get_datasource_from_participant(participant, self.client.DATASOURCE)
+        assert len(datasources) < 2, "multiple datasources found"
         return datasources[0] if datasources else None
 
     @override
@@ -425,7 +447,7 @@ class Digester(DigesterProtocol):
         organizer_name: str | None,
     ) -> tuple[Place | None, Entity | None]:
         place = PlacesService.get_closest_by_name_or_none(town) if town else None
-        organizer = retrieve_entity(normalize_club_name(organizer_name), entity_type=None) if organizer_name else None
+        organizer = retrieve_entity(organizer_name, entity_type=None) if organizer_name else None
         competitions = RaceService.get_races_by_competition(trophy, flag, league)
         if competitions.count():
             logger.debug(f"found {competitions.count()} matching races")

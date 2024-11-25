@@ -1,7 +1,9 @@
 import logging
+from typing import Any
 
 from django.db.models import QuerySet
 
+from apps.participants.models import Participant
 from apps.races.filters import RaceFilters
 from apps.races.models import Flag, Race
 from rscraping.data.models import Datasource
@@ -79,24 +81,19 @@ def exists(
     return queryset.exists()
 
 
-def get_datasource_from_race(
-    race: Race,
-    datasource: Datasource,
-    ref_id: str,
-    sheet_id: str | None = None,
-    sheet_name: str | None = None,
-) -> list[dict]:
+def get_datasource_from_race(race: Race, datasource: Datasource, ref_id: str) -> list[dict[str, Any]]:
     datasources = race.metadata["datasource"]
     matches = [d for d in datasources if d["datasource_name"] == datasource.value.lower() and d["ref_id"] == ref_id]
-    if datasource == Datasource.TABULAR:
-        assert sheet_id is not None
-        matches = [d for d in matches if d["values"]["sheet_id"] == sheet_id]
-        if sheet_name:
-            matches = [d for d in matches if d["values"]["sheet_name"] == sheet_name]
     return matches
 
 
-def get_datasource_from_flag(flag: Flag, datasource: Datasource, ref_id: str) -> list[dict]:
+def get_datasource_from_participant(participant: Participant, datasource: Datasource) -> list[dict[str, Any]]:
+    datasources = participant.metadata["datasource"]
+    matches = [d for d in datasources if d["datasource_name"] == datasource.value.lower()]
+    return matches
+
+
+def get_datasource_from_flag(flag: Flag, datasource: Datasource, ref_id: str) -> list[dict[str, Any]]:
     datasources = flag.metadata["datasource"]
     return [
         d for d in datasources if d["datasource_name"] == datasource.value.lower() and str(d["ref_id"]) == str(ref_id)
