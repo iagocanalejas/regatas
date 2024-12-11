@@ -24,12 +24,7 @@ class TabularIngester(Ingester):
     @override
     def fetch(self, *_, year: int, **kwargs) -> Generator[RSRace]:
         for race_id in self.client.get_race_ids_by_year(year=year):
-            if race_id in self._ignored_races or MetadataService.exists(
-                Datasource.TABULAR,
-                race_id,
-                sheet_id=self.client.config.sheet_id,
-                sheet_name=self.client.config.sheet_name,
-            ):
+            if race_id in self._ignored_races or MetadataService.exists(Datasource.TABULAR, race_id):
                 continue
 
             race = self.client.get_race_by_id(race_id)

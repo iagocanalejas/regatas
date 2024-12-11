@@ -32,7 +32,7 @@ from apps.participants.services import ParticipantService
 from apps.places.models import Place
 from apps.places.services import PlacesService
 from apps.races.models import Flag, Race, Trophy
-from apps.races.services import FlagService, MetadataService, RaceService, TrophyService
+from apps.races.services import FlagService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
 from pyutils.shortcuts import clean_dict
 from rscraping.clients import ClientProtocol
@@ -155,9 +155,9 @@ class Digester(DigesterProtocol):
 
         logger.info(f"merging {race=} and {db_race=}")
         datasource = race.metadata["datasource"][0]
-        if not self._get_datasource(db_race, datasource["ref_id"]):
+        if len(db_race.get_datasources(self.client.DATASOURCE, datasource["ref_id"])) == 0:
             logger.debug("updating datasource")
-            db_race.metadata["datasource"].append(datasource)
+            db_race.add_metadata(datasource)
 
         if db_race.gender != GENDER_ALL and db_race.gender != race.gender:
             logger.debug("setting gender=ALL")
@@ -291,7 +291,7 @@ class Digester(DigesterProtocol):
                 # do metadata update transparently
                 if fields == ["metadata"]:
                     logger.debug("updating metadata")
-                    db_participant.metadata["datasource"].append(new_participant.metadata["datasource"][0])
+                    db_participant.add_metadata(new_participant.metadata["datasource"][0])
                     db_participant.club_names = list(set(new_participant.club_names + db_participant.club_names))
                     db_participant.save()
                 serialized = ParticipantSerializer(db_participant).data
@@ -325,9 +325,10 @@ class Digester(DigesterProtocol):
         print(f"DATABASE PARTICIPANT:\n{json_participant}")
         if not input_should_merge_participant(db_participant):
             logger.warning(f"participants will not be merged, using {participant=}")
-            if input_should_add_datasource(db_participant):
+            has_datasource = len(db_participant.get_datasources(self.client.DATASOURCE)) > 0
+            if not has_datasource and input_should_add_datasource(db_participant):
                 logger.debug("adding new datasource")
-                db_participant.metadata["datasource"].append(participant.metadata["datasource"][0])
+                db_participant.add_metadata(participant.metadata["datasource"][0])
                 db_participant.club_names = list(set(participant.club_names + db_participant.club_names))
                 return db_participant, DigesterProtocol.Status.MERGED
             return participant, status
@@ -335,10 +336,9 @@ class Digester(DigesterProtocol):
         fields = self.get_participant_fields_to_update(participant, db_participant)
         logger.info(f"merging {participant=} and {db_participant=}")
 
-        datasource = participant.metadata["datasource"][0]
         if "metadata" in fields:
             logger.debug("updating datasource")
-            db_participant.metadata["datasource"].append(datasource)
+            db_participant.add_metadata(participant.metadata["datasource"][0])
             db_participant.club_names = list(set(participant.club_names + db_participant.club_names))
 
         if "laps" in fields and input_new_value("laps", participant.laps, db_participant.laps):
@@ -395,18 +395,6 @@ class Digester(DigesterProtocol):
         )
         new_penalty.save()
         return new_penalty
-
-    @override
-    def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
-        datasources = MetadataService.get_datasource_from_race(race, self.client.DATASOURCE, ref_id)
-        assert len(datasources) < 2, "multiple datasources found"
-        return datasources[0] if datasources else None
-
-    @override
-    def _get_participant_datasource(self, participant: Participant) -> dict | None:
-        datasources = MetadataService.get_datasource_from_participant(participant, self.client.DATASOURCE)
-        assert len(datasources) < 2, "multiple datasources found"
-        return datasources[0] if datasources else None
 
     @override
     def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict:

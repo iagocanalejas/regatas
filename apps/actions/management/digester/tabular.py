@@ -4,7 +4,6 @@ from typing import override
 from apps.actions.management.helpers.input import input_new_value, input_shoud_create_B_participant
 from apps.participants.models import Participant
 from apps.races.models import Race
-from apps.races.services import MetadataService
 from apps.schemas import MetadataBuilder, default_metadata
 from pyutils.shortcuts import clean_dict
 from rscraping.clients import TabularDataClient
@@ -16,6 +15,7 @@ from ._digester import Digester
 logger = logging.getLogger(__name__)
 
 
+# TODO: what to do with this
 class TabularDigester(Digester):
     client: TabularDataClient
 
@@ -45,10 +45,6 @@ class TabularDigester(Digester):
         return db_race, Digester.Status.MERGED
 
     @override
-    def should_merge_participants(self, *_, **__) -> bool:
-        return True
-
-    @override
     def merge_participants(
         self,
         participant: Participant,
@@ -72,14 +68,6 @@ class TabularDigester(Digester):
             db_participant.distance = participant.distance
 
         return db_participant, Digester.Status.MERGED
-
-    @override
-    def _get_datasource(self, race: Race, ref_id: str) -> dict | None:
-        kwargs = {"sheet_id": self.client.config.sheet_id, "sheet_name": self.client.config.sheet_name}
-        datasources = MetadataService.get_datasource_from_race(race, self.client.DATASOURCE, ref_id, **kwargs)
-        if len(datasources) > 1:
-            logger.warning(f"multiple datasources found for race {race=} and datasource {ref_id=}")
-        return datasources[0] if datasources else None
 
     @override
     def _build_metadata(self, race: RSRace, datasource: Datasource) -> dict:

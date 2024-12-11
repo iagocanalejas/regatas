@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
@@ -14,6 +14,7 @@ from apps.utils.choices import (
     PENALTY_CHOICES,
 )
 from djutils.validators import JSONSchemaValidator
+from rscraping.data.models import Datasource
 
 
 class Participant(models.Model):
@@ -87,6 +88,18 @@ class Participant(models.Model):
             self.validate_unique()
 
         super().save(*args, **kwargs)
+
+    def get_datasources(self, datasource: Datasource) -> list[dict[str, Any]]:
+        datasource_str = datasource.value.lower()
+        datasources = self.metadata["datasource"]
+        return [d for d in datasources if d["datasource_name"] == datasource_str]
+
+    def add_metadata(self, new: dict[str, Any]) -> "Participant":
+        datasource = Datasource(new["datasource_name"])
+        assert self.get_datasources(datasource) == [], "datasource already exists"
+
+        self.metadata["datasource"].append(new)
+        return self
 
     class Meta:
         db_table = "participant"

@@ -17,7 +17,6 @@ from apps.actions.management.ingester import build_ingester
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
 from apps.races.models import Flag, Race, Trophy
-from apps.races.services import MetadataService
 from apps.schemas import MetadataBuilder
 from apps.utils import build_client
 from pyutils.shortcuts import only_one_not_none
@@ -186,9 +185,8 @@ class Command(BaseCommand):
         if config.flag_id and config.datasource == Datasource.TRAINERAS and len(flags) == 1:
             flag = flags.pop()
             logger.info(f"adding metadata to {flag}")
-            datasources = MetadataService.get_datasource_from_flag(flag, config.datasource, config.flag_id)
-            if len(datasources) == 0:
-                flag.metadata["datasource"].append(
+            if len(flag.get_datasources(config.datasource, config.flag_id)) == 0:
+                flag.add_metadata(
                     MetadataBuilder()
                     .ref_id(config.flag_id)
                     .datasource_name(config.datasource)

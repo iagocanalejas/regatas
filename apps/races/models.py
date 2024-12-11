@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
@@ -18,6 +18,7 @@ from djutils.models import CreationStampModel
 from djutils.validators import JSONSchemaValidator
 from pyutils.shortcuts import all_or_none
 from pyutils.strings import int_to_roman, whitespaces_clean
+from rscraping.data.models import Datasource
 from rscraping.data.normalization import lemmatize
 
 logger = logging.getLogger(__name__)
@@ -64,6 +65,18 @@ class Flag(CreationStampModel):
         if not self.pk:
             self.tokens = lemmatize(self.name)
         super().save(*args, **kwargs)
+
+    def get_datasources(self, datasource: Datasource, ref_id: str) -> list[dict[str, Any]]:
+        datasource_str = datasource.value.lower()
+        datasources = self.metadata["datasource"]
+        return [d for d in datasources if d["datasource_name"] == datasource_str and str(d["ref_id"]) == str(ref_id)]
+
+    def add_metadata(self, new: dict[str, Any]) -> "Flag":
+        datasource = Datasource(new["datasource_name"])
+        assert self.get_datasources(datasource, new["ref_id"]) == [], "datasource already exists"
+
+        self.metadata["datasource"].append(new)
+        return self
 
     class Meta(CreationStampModel.Meta):
         db_table = "flag"
@@ -204,6 +217,19 @@ class Race(CreationStampModel):
         self.validate_associated()
         self.full_clean()
         super().save(*args, **kwargs)
+
+    def get_datasources(self, datasource: Datasource, ref_id: str) -> list[dict[str, Any]]:
+        datasource_str = datasource.value.lower()
+        datasources = self.metadata["datasource"]
+        return [d for d in datasources if d["datasource_name"] == datasource_str and str(d["ref_id"]) == str(ref_id)]
+
+    def add_metadata(self, new: dict[str, Any]) -> "Race":
+        datasource = Datasource(new["datasource_name"])
+        assert self.get_datasources(datasource, new["ref_id"]) == [], "datasource already exists"
+        assert "values" in new, "missing 'values' key in metadata"
+
+        self.metadata["datasource"].append(new)
+        return self
 
     class Meta(CreationStampModel.Meta):
         db_table = "race"

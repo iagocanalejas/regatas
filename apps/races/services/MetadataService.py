@@ -1,11 +1,9 @@
 import logging
-from typing import Any
 
 from django.db.models import QuerySet
 
-from apps.participants.models import Participant
 from apps.races.filters import RaceFilters
-from apps.races.models import Flag, Race
+from apps.races.models import Race
 from rscraping.data.models import Datasource
 
 logger = logging.getLogger(__name__)
@@ -58,16 +56,8 @@ def exists(
     ref_id: str,
     *_,
     day: int | None = None,
-    sheet_id: str | None = None,
-    sheet_name: str | None = None,
 ) -> bool:
-    metadata: dict = {"ref_id": ref_id, "datasource_name": datasource.value.lower()}
-    if datasource == Datasource.TABULAR and sheet_id:
-        metadata["values"] = {"sheet_id": sheet_id}
-    if datasource == Datasource.TABULAR and sheet_name:
-        metadata["values"]["sheet_name"] = sheet_name
-
-    filters: dict = {"metadata": [metadata]}
+    filters: dict = {"metadata": [{"ref_id": ref_id, "datasource_name": datasource.value.lower()}]}
     if day:
         filters["day"] = day
 
@@ -79,22 +69,3 @@ def exists(
         .build_query()
     )
     return queryset.exists()
-
-
-def get_datasource_from_race(race: Race, datasource: Datasource, ref_id: str) -> list[dict[str, Any]]:
-    datasources = race.metadata["datasource"]
-    matches = [d for d in datasources if d["datasource_name"] == datasource.value.lower() and d["ref_id"] == ref_id]
-    return matches
-
-
-def get_datasource_from_participant(participant: Participant, datasource: Datasource) -> list[dict[str, Any]]:
-    datasources = participant.metadata["datasource"]
-    matches = [d for d in datasources if d["datasource_name"] == datasource.value.lower()]
-    return matches
-
-
-def get_datasource_from_flag(flag: Flag, datasource: Datasource, ref_id: str) -> list[dict[str, Any]]:
-    datasources = flag.metadata["datasource"]
-    return [
-        d for d in datasources if d["datasource_name"] == datasource.value.lower() and str(d["ref_id"]) == str(ref_id)
-    ]

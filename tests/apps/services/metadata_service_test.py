@@ -13,22 +13,15 @@ from rscraping.data.models import Datasource
 class MetadataServiceTest(TestCase):
     fixtures = [os.path.join(settings.BASE_DIR, "fixtures", "test-db.yaml")]
 
-    def test_race_exists_using_sheet(self):
+    def test_race_exists(self):
         race = Race.objects.get(pk=1)
         race.gender = GENDER_ALL
         race.category = CATEGORY_ALL
         race.metadata = {
             "datasource": [
-                (
-                    MetadataBuilder()
-                    .ref_id("1")
-                    .datasource_name(Datasource.TABULAR)
-                    .values("sheet_id", "test")
-                    .values("sheet_name", "test")
-                    .build()
-                )
+                (MetadataBuilder().ref_id("1").datasource_name(Datasource.TRAINERAS).values("key", "value").build())
             ]
         }
         race.save()
 
-        self.assertTrue(MetadataService.exists(Datasource.TABULAR, "1", sheet_id="test", sheet_name="test"))
+        self.assertTrue(MetadataService.exists(Datasource.TRAINERAS, ref_id="1"))

@@ -11,7 +11,6 @@ from django.db.models import QuerySet
 from apps.actions.management.digester._digester import Digester
 from apps.participants.models import Participant
 from apps.races.models import Flag, Race
-from apps.races.services import MetadataService
 from pyutils.shortcuts import clean_dict
 from rscraping.clients import TrainerasClient
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, GENDER_ALL, GENDER_MIX
@@ -95,7 +94,7 @@ class Command(BaseCommand):
                     logger.error("no mix participants found")
                     continue
 
-                ds = MetadataService.get_datasource_from_race(db_race, datasource, ref_id)
+                ds = db_race.get_datasources(datasource, ref_id)
                 assert len(ds) == 1, "more than one datasource found"
 
                 ds = ds[0]
@@ -118,7 +117,7 @@ class Command(BaseCommand):
                     match.gender = GENDER_MIX
                     match.category = CATEGORY_ABSOLUT
 
-                    ds_p = MetadataService.get_datasource_from_participant(match, datasource)
+                    ds_p = match.get_datasources(datasource)
                     assert len(ds_p) == 1, "more than one datasource found"
 
                     ds_p = ds_p[0]
