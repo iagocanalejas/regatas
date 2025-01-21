@@ -35,7 +35,7 @@ def update_branch_clubs(apps, _):
 
     num_races = races.count()
     for idx, race in enumerate(races):
-        print(f"{idx+1}/{num_races} updating {race.pk}")
+        print(f"{idx + 1}/{num_races} updating {race.pk}")
         grouped_participants = groupby(
             Participant.objects.filter(race=race).select_related("club").order_by("club_id", "gender", "category"),
             key=attrgetter("club_id", "gender", "category"),

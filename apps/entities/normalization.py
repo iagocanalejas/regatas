@@ -21,17 +21,19 @@ def remove_club_sponsor(name: str) -> str:
         maybe_club, maybe_sponsor = parts[0].strip(), parts[1].strip()
 
         # check if the first part is a club
-        query = Entity.queryset_for_search().filter(
+        query = Entity.queryset_for_search(include_deleted=True).filter(
             Q(name__icontains=maybe_club) | Q(joined_names__icontains=maybe_club), type=ENTITY_CLUB
         )
         if not maybe_club or not query.exists():
             maybe_club = None
 
         # check if the second part is a club
-        query = Entity.queryset_for_search().filter(
+        query = Entity.queryset_for_search(include_deleted=True).filter(
             Q(name__icontains=maybe_sponsor) | Q(joined_names__icontains=maybe_sponsor), type=ENTITY_CLUB
         )
-        if not maybe_sponsor or not query.exists() or maybe_sponsor in _KNOWN_SPONSORS:
+        # HACK: edge case for KAIKU - IBERIA merge
+        is_sponsor = maybe_sponsor in _KNOWN_SPONSORS and maybe_sponsor != 'IBERIA' and maybe_club != 'KAIKU'
+        if not maybe_sponsor or not query.exists() or is_sponsor:
             maybe_sponsor = None
 
         if all_none(maybe_club, maybe_sponsor):

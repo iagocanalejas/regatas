@@ -16,12 +16,12 @@ from apps.actions.management.helpers.input import input_race
 from apps.actions.management.ingester import build_ingester
 from apps.entities.models import Entity
 from apps.entities.services import EntityService
+from apps.participants.services import ParticipantService
 from apps.races.models import Flag, Race, Trophy
 from apps.schemas import MetadataBuilder
 from apps.utils import build_client
 from pyutils.shortcuts import only_one_not_none
 from rscraping.clients import TabularClientConfig
-from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
@@ -335,14 +335,9 @@ def ingest_race(
         return None, Digester.Status.IGNORE
 
     participant_names = [p.participant for p in participants]
-
-    def can_be_branch(participant: str) -> bool:
-        return (is_branch_club(participant) and any(p == participant.rstrip(" B") for p in participant_names)) or (
-            is_branch_club(participant, "C") and any(p == participant.rstrip(" C") for p in participant_names)
-        )
-
     for participant in participants:
-        can_be_branch_team = new_race.league is None and can_be_branch(participant.participant)
+        can_be_branch_team = ParticipantService.can_be_branch(participant.participant, participant_names)
+        can_be_branch_team = new_race.league is None and can_be_branch_team
         new_participant, status = digester.ingest_participant(new_race, participant, can_be_branch=can_be_branch_team)
         if status == Digester.Status.NEW or status == Digester.Status.MERGED:
             new_participant, status = digester.save_participant(
