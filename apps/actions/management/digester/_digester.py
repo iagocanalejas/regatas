@@ -250,6 +250,9 @@ class Digester(DigesterProtocol):
         if is_branch_club(participant.participant, letter="C"):
             logger.info("'C' club detected")
             branch = "C"
+        if is_branch_club(participant.participant, letter="D"):
+            logger.info("'D' club detected")
+            branch = "D"
 
         logger.debug("searching participant in the database")
         db_participant = ParticipantService.get_by_race_and_filter_by(

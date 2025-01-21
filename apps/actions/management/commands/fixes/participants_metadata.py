@@ -72,7 +72,7 @@ class Command(BaseCommand):
         races = list(self.filter_races(races, Datasource.TRAINERAS))
         num_races = len(races)
         for i, (db_race, ref_id) in enumerate(races):
-            logger.info(f"processing race {i+1}/{num_races} :: {db_race.pk} - {db_race}")
+            logger.info(f"processing race {i + 1}/{num_races} :: {db_race.pk} - {db_race}")
             client, digester = self.client(db_race), self.digester(db_race)
 
             if db_race.trophy and db_race.trophy.pk == 24:
@@ -168,6 +168,8 @@ class Command(BaseCommand):
                     db_participant.branch = "B"
                 if is_branch_club(participant.participant, letter="C"):
                     db_participant.branch = "C"
+                if is_branch_club(participant.participant, letter="D"):
+                    db_participant.branch = "D"
 
                 # 6. UPDATE PENALTIES
                 if participant.penalty:
@@ -182,7 +184,7 @@ class Command(BaseCommand):
                 logger.warning(f"missing {participants=} in {db_race}")
                 for participant in participants:
                     logger.info(f"digesting new {participant=}")
-                    can_be_branch_team = db_race.league is None and self.can_be_branch(
+                    can_be_branch_team = db_race.league is None and ParticipantService.can_be_branch(
                         participant.participant,
                         [p.participant for p in participants],
                     )
@@ -223,8 +225,3 @@ class Command(BaseCommand):
             if (i + 1) % 50 == 0:
                 logger.info("sleeping longer")
                 time.sleep(60)
-
-    def can_be_branch(self, participant: str, participant_names: list[str]) -> bool:
-        return (is_branch_club(participant) and any(p == participant.rstrip(" B") for p in participant_names)) or (
-            is_branch_club(participant, "C") and any(p == participant.rstrip(" C") for p in participant_names)
-        )

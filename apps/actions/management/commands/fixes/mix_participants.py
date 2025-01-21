@@ -58,11 +58,10 @@ class Command(BaseCommand):
             pk__in=Race.objects.filter(gender=GENDER_ALL).values_list("flag_id", flat=True),
             metadata__datasource__contains=[{"datasource_name": datasource.value}],
         )
-        # TODO: remove slice
-        flags = list(self.filter_flags(flags, datasource))[4:]
+        flags = list(self.filter_flags(flags, datasource))
         num_flags = len(flags)
         for i, (flag, flag_ref) in enumerate(flags):
-            logger.info(f"processing flag {i+1}/{num_flags} :: {flag.pk} - {flag}")
+            logger.info(f"processing flag {i + 1}/{num_flags} :: {flag.pk} - {flag}")
 
             # find traineras.es MIX races
             race_refs = list(self.client.get_race_ids_by_flag(flag_ref))
@@ -77,7 +76,7 @@ class Command(BaseCommand):
             races = list(self.filter_races(races, datasource, race_refs))
             num_races = len(races)
             for j, (db_race, ref_id) in enumerate(races):
-                logger.info(f"processing race {j+1}/{num_races} :: {db_race.pk} - {db_race}")
+                logger.info(f"processing race {j + 1}/{num_races} :: {db_race.pk} - {db_race}")
                 race = self.client.get_race_by_id(ref_id)
                 # ensure parsed data is what we expect
                 if not race:
@@ -113,7 +112,6 @@ class Command(BaseCommand):
                         logger.error(f"no match found for {participant=}")
                         continue
 
-                    # TODO: should we check for no match and ingest new participant?
                     match.gender = GENDER_MIX
                     match.category = CATEGORY_ABSOLUT
 

@@ -27,6 +27,8 @@ def get_by_race_and_filter_by(
     raw_club_name: str | None = None,
 ) -> Participant | None:
     q = get_by_race(race).filter(club=club, category=category, gender=gender)
+    if branch is None:
+        q = q.filter(branch__isnull=True)
     if branch:
         q = q.filter(branch=branch)
     if q.count() > 1 and raw_club_name and race.league is None:
@@ -53,6 +55,8 @@ def is_same_participant(p1: Participant, p2: RSParticipant, club: Entity | None 
         return p1.club == p2_club and is_branch_club(p2.participant, letter="B")
     if p1.branch == "C":
         return p1.club == p2_club and is_branch_club(p2.participant, letter="C")
+    if p1.branch == "D":
+        return p1.club == p2_club and is_branch_club(p2.participant, letter="D")
     return p1.club == p2_club
 
 
@@ -237,5 +241,15 @@ def _add_branch_filters(q: QuerySet, club_name: str | None) -> QuerySet:
         return q.filter(branch="B")
     if is_branch_club(club_name, letter="C"):
         return q.filter(branch="C")
+    if is_branch_club(club_name, letter="D"):
+        return q.filter(branch="D")
 
     return q
+
+
+def can_be_branch(participant: str, participant_names: list[str]) -> bool:
+    return (
+        (is_branch_club(participant) and any(p == participant.rstrip(" B") for p in participant_names))
+        or (is_branch_club(participant, "C") and any(p == participant.rstrip(" C") for p in participant_names))
+        or (is_branch_club(participant, "D") and any(p == participant.rstrip(" D") for p in participant_names))
+    )
