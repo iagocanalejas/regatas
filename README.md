@@ -81,6 +81,7 @@ python manage.py scrape datasource \
 	[-g, --gender] \
 	[-ca, --category CATEGORY] \
 	[--check-participants] \
+	[--only-new] \
 	[--force-gender] \
 	[--force-category]
 
@@ -96,6 +97,8 @@ python manage.py scrape datasource \
 #                         category filter.
 #   --check-participants
 #                         checks if the number of participants matches.
+#   --only-new
+#                         scrape only newer races than the last one in database.
 #   --force-gender
 #                         forces the gender to match.
 #   --force-category
@@ -215,6 +218,7 @@ python manage.py dumpdata > <name>.yaml --format yaml --exclude admin.logentry -
 ## Create a fixture to use in tests
 
 ```sh
+# Comment custom soft-deletes in the models.
 python manage.py dumpdata races.race --pks=<PK> > race.json
 python manage.py dumpdata participants.participant --pks=<PK1,PK2,...> > participants.json
 jq -s '.[0] + .[1]' race.json participants.json > combined.json

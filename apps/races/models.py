@@ -53,6 +53,7 @@ class Flag(CreationStampModel):
 
     qualifies_for = models.ForeignKey(to="self", null=True, blank=True, default=None, on_delete=models.PROTECT)
 
+    last_checked = models.DateField()  # last time this flag was checked for updates in traineras.es
     metadata = JSONField(
         default=default_metadata,
         validators=[JSONSchemaValidator(schema=FLAG_METADATA_SCHEMA)],

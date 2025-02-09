@@ -90,11 +90,30 @@ class TrainerasIngester(Ingester):
             yield race
 
     @override
-    def fetch_by_flag(self, *_, flag_id: str, include_existing: bool = False, **kwargs) -> Generator[RSRace]:
+    def fetch_by_flag(
+        self,
+        *_,
+        flag_id: str,
+        include_existing: bool = False,
+        only_new: bool = False,
+        **kwargs,
+    ) -> Generator[RSRace]:
         assert isinstance(self.client, TrainerasClient)
 
-        for race_id in self.client.get_race_ids_by_flag(flag_id):
-            for race in self._retrieve_race(race_id, include_existing):
+        # when searching for new races we want to start from the most recent ones
+        race_ids = (
+            reversed(list(self.client.get_race_ids_by_flag(flag_id)))
+            if only_new
+            else self.client.get_race_ids_by_flag(flag_id)
+        )
+
+        for race_id in race_ids:
+            races = list(self._retrieve_race(race_id, include_existing))
+            if not races and only_new:
+                # if we are only looking for new races once we find an existing one we can stop
+                logger.info(f"ignoring {race_id=} as {only_new=} and the last one already exists")
+                return
+            for race in races:
                 if race:
                     logger.debug(f"found race for {race_id=}:\n\t{race}")
                     yield race
