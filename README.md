@@ -5,7 +5,7 @@
 Retrieve and process race data from a web datasource, JSON file or spreadsheet.
 
 ```sh
-python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
+python manage.py scrape datasource [RACE_ID [RACE_ID ...]] \
 	[-c, --club CLUB] \
 	[-e, --entity ENTITY] \
 	[-f, --flag FLAG] \
@@ -14,9 +14,6 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[-t, --table TABLE] \
 	[-g, --gender] \
 	[-ca, --category CATEGORY] \
-	[--sheet-id SHEET_ID] \
-	[--sheet-name SHEET_NAME] \
-	[--file-path FILE_PATH] \
 	[-i, --ignore ID [ID ...]] \
 	[-w, --last-weekend] \
 	[--force-gender] \
@@ -25,7 +22,7 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 	[-o, --output OUTPUT]
 
 # positional arguments:
-#   input_source          name of the Datasource or path to import data from.
+#   datasource            name of the Datasource to import data from.
 #   race_ids              raceIDs to find in the source and ingest.
 #
 # options:
@@ -38,12 +35,6 @@ python manage.py scrape input_source [RACE_ID [RACE_ID ...]] \
 #   -y YEAR, --year YEAR  year for which races should be imported, 'all' to import from the source beginnig.
 #   -sy START_YEAR, --start-year START_YEAR
 #                         year for which we should start processing years. Only used with year='all'.
-#   --sheet-id SHEET_ID
-#                         google-sheet ID used for TABULAR datasource.
-#   --sheet-name SHEET_NAME
-#                         google-sheet name used for TABULAR datasource.
-#   --file-path FILE_PATH
-#                         sheet file path used for TABULAR datasource.
 #   -t TABLE, --table TABLE
 #                         table of the race for multipage races.
 #   -g GENDER, --gender GENDER

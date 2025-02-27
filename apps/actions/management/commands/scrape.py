@@ -21,7 +21,6 @@ from apps.races.models import Flag, Race, Trophy
 from apps.schemas import MetadataBuilder
 from apps.utils import build_client
 from pyutils.shortcuts import only_one_not_none
-from rscraping.clients import TabularClientConfig
 from rscraping.data.constants import (
     CATEGORY_ABSOLUT,
     CATEGORY_SCHOOL,
@@ -46,7 +45,7 @@ class Command(BaseCommand):
 
     @override
     def add_arguments(self, parser):
-        parser.add_argument("input_source", type=str, help="name of the Datasource or path to import data from.")
+        parser.add_argument("datasource", type=str, help="name of the Datasource to import data from.")
         parser.add_argument("race_ids", nargs="*", help="raceIDs to find in the source and ingest.")
         parser.add_argument("-c", "--club", type=int, help="clubID for which races should be imported.")
         parser.add_argument("-e", "--entity", type=int, help="entityID for which races should be imported.")
@@ -64,11 +63,6 @@ class Command(BaseCommand):
             type=int,
             help="year for which we should start processing years. Only used with year='all'.",
         )
-
-        # for tabular data
-        parser.add_argument("--sheet-id", type=str, help="google-sheet ID used for TABULAR datasource.")
-        parser.add_argument("--sheet-name", type=str, help="google-sheet name used for TABULAR datasource.")
-        parser.add_argument("--file-path", type=str, help="sheet file path used for TABULAR datasource.")
 
         # options
         parser.add_argument("-t", "--table", type=int, help="table of the race for multipage races.")
@@ -119,14 +113,10 @@ class Command(BaseCommand):
         logger.debug(f"{options}")
         config = ScrapeConfig.from_args(**options)
 
-        source = config.datasource or config.path
-        assert isinstance(source, (Datasource, str))
-
-        client = build_client(config.datasource, config.gender, config.tabular_config, config.category)
-        ingester = build_ingester(client=client, path=config.path, ignored_races=config.ignored_races)
+        client = build_client(config.datasource, config.gender, config.category)
+        ingester = build_ingester(client=client, ignored_races=config.ignored_races)
         digester = build_digester(
             client=client,
-            path=config.path,
             force_gender=config.force_gender,
             force_category=config.force_category,
             save_old=config.save_old,
@@ -201,10 +191,7 @@ class Command(BaseCommand):
 class ScrapeConfig:
     ALL_YEARS = -1
 
-    tabular_config: TabularClientConfig
-
     datasource: Datasource | None = None
-    path: str | None = None
     race_ids: list[str] = field(default_factory=list)
     year: int | None = None
     entity: Entity | None = None
@@ -226,17 +213,12 @@ class ScrapeConfig:
     @classmethod
     def from_args(cls, **options) -> "ScrapeConfig":
         input_source, race_ids, year, club_id, entity_id, flag_id = (
-            options["input_source"],
+            options["datasource"],
             options["race_ids"],
             options["year"],
             options["club"],
             options["entity"],
             options["flag"],
-        )
-        tabular_config = TabularClientConfig(
-            sheet_id=options["sheet_id"],
-            sheet_name=options["sheet_name"],
-            file_path=options["file_path"],
         )
         category, gender, table, start_year, last_weekend = (
             options["category"],
@@ -253,11 +235,8 @@ class ScrapeConfig:
             options["output"],
         )
 
-        if os.path.isfile(input_source) or os.path.isdir(input_source):
-            datasource, path = None, input_source
-        else:
-            assert input_source and Datasource.has_value(input_source), f"invalid {input_source=}"
-            datasource, path = Datasource(input_source), None
+        assert input_source and Datasource.has_value(input_source), f"invalid {input_source=}"
+        datasource = Datasource(input_source)
 
         # fmt: off
         has_races = True if len(race_ids) > 0 else None
@@ -278,9 +257,7 @@ class ScrapeConfig:
         assert not entity_id or entity, f"invalid {entity_id=}"
 
         return cls(
-            tabular_config=tabular_config,
             datasource=datasource,
-            path=path,
             race_ids=race_ids,
             year=year,
             entity=entity,

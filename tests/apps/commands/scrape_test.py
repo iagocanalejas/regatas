@@ -14,15 +14,12 @@ class ScrapeConfigTests(TestCase):
 
     def setUp(self):
         self.valid_options = {
-            "input_source": Datasource.TRAINERAS.value,
+            "datasource": Datasource.TRAINERAS.value,
             "race_ids": [],
             "year": "2023",
             "club": None,
             "entity": None,
             "flag": None,
-            "sheet_id": "sheet_id",
-            "sheet_name": "sheet_name",
-            "file_path": "file_path",
             "category": "ABSOLUT",
             "gender": "MALE",
             "table": None,
@@ -38,14 +35,13 @@ class ScrapeConfigTests(TestCase):
     def test_valid_scrape_config_creation(self):
         config = ScrapeConfig.from_args(**self.valid_options)
         self.assertIsInstance(config, ScrapeConfig)
-        self.assertEqual(config.tabular_config.sheet_id, "sheet_id")
         self.assertEqual(config.year, 2023)
         self.assertEqual(config.category, CATEGORY_ABSOLUT)
         self.assertEqual(config.gender, GENDER_MALE)
 
     def test_invalid_datasource_raises_value_error(self):
         options = self.valid_options.copy()
-        options["input_source"] = "INVALID_SOURCE"
+        options["datasource"] = "INVALID_SOURCE"
         with self.assertRaises(AssertionError):
             ScrapeConfig.from_args(**options)
 
