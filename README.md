@@ -67,10 +67,8 @@ python manage.py scrape lgt -w --force-gender --force-category
 Recheck the already full imported flags to find new races.
 
 ```sh
-python manage.py scrape datasource \
+python manage.py recheck datasource \
 	[-f, --flag FLAG] \
-	[-g, --gender] \
-	[-ca, --category CATEGORY] \
 	[--check-participants] \
 	[--only-new] \
 	[--force-gender] \
@@ -82,10 +80,6 @@ python manage.py scrape datasource \
 # options:
 #   -f FLAG, --flag FLAG
 #                         flagID for which races should be imported.
-#   -g GENDER, --gender GENDER
-#                         gender filter.
-#   -ca CATEGORY, --category CATEGORY
-#                         category filter.
 #   --check-participants
 #                         checks if the number of participants matches.
 #   --only-new

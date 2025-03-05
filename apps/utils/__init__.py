@@ -7,5 +7,6 @@ def build_client(
     source: Datasource | None,
     gender: str = GENDER_MALE,
     category: str | None = None,
-) -> Client | None:
-    return Client(source=source, gender=gender, category=category) if source else None
+) -> Client:
+    assert source is not None, "invalid source"
+    return Client(source=source, gender=gender, category=category)
