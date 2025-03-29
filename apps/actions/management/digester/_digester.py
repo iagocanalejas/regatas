@@ -34,7 +34,7 @@ from apps.places.services import PlacesService
 from apps.races.models import Flag, Race, Trophy
 from apps.races.services import FlagService, RaceService, TrophyService
 from apps.schemas import MetadataBuilder
-from pyutils.shortcuts import clean_dict
+from pyutils.dicts import clean_dict
 from rscraping.clients import ClientProtocol
 from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL, RACE_TIME_TRIAL

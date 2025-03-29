@@ -1,2 +1,2 @@
 -r ci.txt
-django-stubs
+django-stubs==5.1.3

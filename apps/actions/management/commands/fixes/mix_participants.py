@@ -11,7 +11,7 @@ from django.db.models import QuerySet
 from apps.actions.management.digester._digester import Digester
 from apps.participants.models import Participant
 from apps.races.models import Flag, Race
-from pyutils.shortcuts import clean_dict
+from pyutils.dicts import clean_dict
 from rscraping.clients import TrainerasClient
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_SCHOOL, GENDER_ALL, GENDER_MIX
 from rscraping.data.models import Datasource

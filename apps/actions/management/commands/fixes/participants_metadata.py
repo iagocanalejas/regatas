@@ -15,7 +15,7 @@ from apps.participants.models import Participant, Penalty
 from apps.participants.services import ParticipantService
 from apps.races.models import Race
 from apps.schemas import MetadataBuilder
-from pyutils.shortcuts import clean_dict
+from pyutils.dicts import clean_dict
 from rscraping.clients import Client, TrainerasClient
 from rscraping.data.checks import is_branch_club
 from rscraping.data.constants import CATEGORY_ABSOLUT, CATEGORY_VETERAN, GENDER_FEMALE, GENDER_MALE

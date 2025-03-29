@@ -1,20 +1,20 @@
 argon2_cffi==23.1.0
 colorlog==6.9.0
-Django==5.1.6
+Django==5.1.7
 django-cors-headers==4.7.0
-django-debug-toolbar==5.0.1
+django-debug-toolbar==5.1.0
 django-extensions==3.2.3
 django-prettyjson==0.4.1
 django-stdimage==6.0.2
-djangorestframework==3.15.2
+djangorestframework==3.16.0
 djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.28.0
-environs==14.1.0
+environs==14.1.1
 gunicorn==23.0.0
 inquirer==3.4.0
 jsonschema==4.23.0
-matplotlib==3.10.0
-numpy==2.2.2
+matplotlib==3.10.1
+numpy==2.2.4
 opencv-python==4.11.0.86
 openpyxl==3.1.5
 pandas==2.2.3
