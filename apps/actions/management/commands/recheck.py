@@ -77,6 +77,7 @@ class Command(BaseCommand):
         if flag_ids is None:
             flag_ids = self._get_flag_ids(datasource=config.datasource, only_new=config.only_new)
 
+        only_new = config.only_new
         for client in self._get_clients(config):
             ingester = build_ingester(client=client)
             digester = build_digester(
@@ -85,17 +86,16 @@ class Command(BaseCommand):
                 force_category=config.force_category,
             )
 
-            races = chain(*[ingester.fetch_by_flag(flag_id=flag_id, only_new=config.only_new) for flag_id in flag_ids])
-            checked_flags = set()
+            races = chain(*[ingester.fetch_by_flag(flag_id=flag_id, only_new=only_new) for flag_id in flag_ids])
             for rs_race in races:
                 new_race = check_race(digester, rs_race, check_participants=config.check_participants)
-                if new_race and new_race.flag not in checked_flags:
+                if new_race:
                     flag = new_race.flag
                     flag.last_checked = datetime.now()
                     flag.save()
 
                     logger.info(f"updating last_checked value for {flag=}")
-                    checked_flags.add(flag)
+                    only_new = False
 
     def _get_flag_ids(self, datasource: Datasource, only_new: bool = False) -> Generator[str]:
         last_month = datetime.now().replace(month=datetime.now().month - 1)
