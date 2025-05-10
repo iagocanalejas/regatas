@@ -19,19 +19,17 @@ class ParticipantInline(ReadOnlyTabularInline):
     model = Participant
 
 
+@admin.register(Trophy)
 class TrophyAdmin(StampedModelAdmin):
     inlines = [RaceInline]
 
 
+@admin.register(Flag)
 class FlagTrophyAdmin(StampedModelAdmin):
     inlines = [RaceInline]
 
 
+@admin.register(Race)
 class RaceAdmin(StampedModelAdmin):
     inlines = [ParticipantInline]
     list_filter = ("league", RaceYearFilter)
-
-
-admin.site.register(Trophy, TrophyAdmin)
-admin.site.register(Flag, FlagTrophyAdmin)
-admin.site.register(Race, RaceAdmin)
