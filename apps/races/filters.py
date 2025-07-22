@@ -4,6 +4,7 @@ from apps.races.models import Race
 from pyutils.strings import remove_conjunctions, remove_symbols, whitespaces_clean
 
 
+# TODO: refactor this to remove the builder pattern
 class RaceFilters:
     _FILTERS_MAP = {
         "year": "date__year",
@@ -43,7 +44,7 @@ class RaceFilters:
         self.filters[self._FILTERS_MAP[key]] = value
         return self
 
-    def set_sorting(self, sort_by: str) -> "RaceFilters":
+    def set_sorting(self, sort_by: str | None) -> "RaceFilters":
         if not sort_by or sort_by.replace("-", "") not in self._SORTING_MAP.keys():
             self.sorting = self._DEFAULT_SORTING
             return self

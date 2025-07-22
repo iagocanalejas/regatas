@@ -256,6 +256,10 @@ class ScrapeConfig:
         entity = EntityService.get_entity_or_none(entity_id) if entity_id else None
         assert not entity_id or entity, f"invalid {entity_id=}"
 
+        if datasource in {Datasource.ETE}:
+            # change default if the datasource is one of the ones with only female races
+            gender = GENDER_FEMALE
+
         return cls(
             datasource=datasource,
             race_ids=race_ids,
