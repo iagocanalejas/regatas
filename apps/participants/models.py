@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
@@ -94,7 +94,7 @@ class Participant(models.Model):
         datasources = self.metadata["datasource"]
         return [d for d in datasources if d["datasource_name"] == datasource_str]
 
-    def add_metadata(self, new: dict[str, Any]) -> "Participant":
+    def add_metadata(self, new: dict[str, Any]) -> Self:
         datasource = Datasource(new["datasource_name"])
         assert self.get_datasources(datasource) == [], "datasource already exists"
 

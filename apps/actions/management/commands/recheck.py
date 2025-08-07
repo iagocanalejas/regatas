@@ -5,7 +5,7 @@ from collections.abc import Generator
 from dataclasses import dataclass
 from datetime import datetime
 from itertools import chain
-from typing import override
+from typing import Self, override
 
 from django.core.management import BaseCommand
 from django.db.models import Exists, OuterRef, Q
@@ -134,7 +134,7 @@ class RecheckConfig:
     force_category: bool = False
 
     @classmethod
-    def from_args(cls, **options) -> "RecheckConfig":
+    def from_args(cls, **options) -> Self:
         datasource, flag_id, check_participants, only_new, force_gender, force_category = (
             options["datasource"],
             options["flag"],

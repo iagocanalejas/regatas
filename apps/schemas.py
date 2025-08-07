@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Self
 
 from django.core.exceptions import ValidationError
 
@@ -108,23 +108,23 @@ class MetadataBuilder:
     def __init__(self):
         self._metadata = {"date": datetime.now().date().isoformat()}
 
-    def ref_id(self, value: str | int) -> "MetadataBuilder":
+    def ref_id(self, value: str | int) -> Self:
         self._metadata["ref_id"] = str(value)
         return self
 
-    def datasource_name(self, datasource: Datasource) -> "MetadataBuilder":
+    def datasource_name(self, datasource: Datasource) -> Self:
         self._metadata["datasource_name"] = datasource.value
         return self
 
-    def data(self, d: dict[str, Any]) -> "MetadataBuilder":
+    def data(self, d: dict[str, Any]) -> Self:
         self._metadata["data"] = d
         return self
 
-    def values(self, key: str, value: str) -> "MetadataBuilder":
+    def values(self, key: str, value: str) -> Self:
         if "values" not in self._metadata:
             self._metadata["values"] = {}
         if key in self._metadata["values"]:
-            logger.warning(f'replacing {key=}:{self._metadata["values"][key]} with {value=}')
+            logger.warning(f"replacing {key=}:{self._metadata['values'][key]} with {value=}")
         self._metadata["values"][key] = value
         return self
 

@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
@@ -73,7 +73,7 @@ class Flag(CreationStampModel):
         datasources = self.metadata["datasource"]
         return [d for d in datasources if d["datasource_name"] == datasource_str and str(d["ref_id"]) == str(ref_id)]
 
-    def add_metadata(self, new: dict[str, Any]) -> "Flag":
+    def add_metadata(self, new: dict[str, Any]) -> Self:
         datasource = Datasource(new["datasource_name"])
         assert self.get_datasources(datasource, new["ref_id"]) == [], "datasource already exists"
 
@@ -225,7 +225,7 @@ class Race(CreationStampModel):
         datasources = self.metadata["datasource"]
         return [d for d in datasources if d["datasource_name"] == datasource_str and str(d["ref_id"]) == str(ref_id)]
 
-    def add_metadata(self, new: dict[str, Any]) -> "Race":
+    def add_metadata(self, new: dict[str, Any]) -> Self:
         datasource = Datasource(new["datasource_name"])
         assert self.get_datasources(datasource, new["ref_id"]) == [], "datasource already exists"
         assert "values" in new, "missing 'values' key in metadata"

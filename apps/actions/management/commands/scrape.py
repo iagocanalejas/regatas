@@ -7,7 +7,7 @@ from collections.abc import Generator
 from dataclasses import dataclass, field
 from datetime import datetime
 from itertools import chain
-from typing import override
+from typing import Self, override
 
 from django.core.management import BaseCommand
 
@@ -211,7 +211,7 @@ class ScrapeConfig:
     output_path: str | None = None
 
     @classmethod
-    def from_args(cls, **options) -> "ScrapeConfig":
+    def from_args(cls, **options) -> Self:
         input_source, race_ids, year, club_id, entity_id, flag_id = (
             options["datasource"],
             options["race_ids"],

@@ -2,7 +2,7 @@
 
 import logging
 from dataclasses import dataclass, field
-from typing import override
+from typing import Self, override
 
 from django.core.management import BaseCommand
 
@@ -106,7 +106,7 @@ class PlotConfig:
     output_path: str | None = None
 
     @classmethod
-    def from_args(cls, **options) -> "PlotConfig":
+    def from_args(cls, **options) -> Self:
         index, club_id, league_id, flag_id, plot_type, gender, category = (
             options["index"],
             options["club"],

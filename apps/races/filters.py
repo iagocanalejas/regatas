@@ -1,3 +1,5 @@
+from typing import Self
+
 from django.db.models import Q, QuerySet
 
 from apps.races.models import Race
@@ -29,22 +31,22 @@ class RaceFilters:
         self.filters = {}
         self.queryset = queryset
 
-    def set_keywords(self, keywords: str | None) -> "RaceFilters":
+    def set_keywords(self, keywords: str | None) -> Self:
         if keywords:
             self.keywords = whitespaces_clean(remove_conjunctions(remove_symbols(keywords)))
         return self
 
-    def set_filters(self, filters: dict) -> "RaceFilters":
+    def set_filters(self, filters: dict) -> Self:
         self.filters = {
             self._FILTERS_MAP[key]: value for key, value in filters.items() if key in self._FILTERS_MAP.keys()
         }
         return self
 
-    def add_filter(self, key: str, value: str) -> "RaceFilters":
+    def add_filter(self, key: str, value: str) -> Self:
         self.filters[self._FILTERS_MAP[key]] = value
         return self
 
-    def set_sorting(self, sort_by: str | None) -> "RaceFilters":
+    def set_sorting(self, sort_by: str | None) -> Self:
         if not sort_by or sort_by.replace("-", "") not in self._SORTING_MAP.keys():
             self.sorting = self._DEFAULT_SORTING
             return self
