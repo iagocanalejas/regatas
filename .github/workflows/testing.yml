@@ -13,8 +13,8 @@ jobs:
 
         strategy:
             matrix:
-                python-version: ["3.12"]
-                postgres-version: ["15", "16"]
+                python-version: ["3.13", "3.14"]
+                postgres-version: ["17", "18"]
 
         services:
             postgres:
@@ -29,10 +29,10 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Setup Python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                   python-version: ${{ matrix.python-version }}
 
