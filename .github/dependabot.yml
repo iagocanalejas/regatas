@@ -2,9 +2,22 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     directory: "/config/requirements"
-    open-pull-requests-limit: 5
     schedule:
-      interval: "monthly"
+      interval: "weekly"
+      day: "sunday"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "pytest*"
+          - "ruff*"
+          - "coverage*"
+      conflict-dependencies:
+        patterns:
+          - "numpy*"
+      prod-dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5
 
   - package-ecosystem: "github-actions"
     directory: "/"
