@@ -3,13 +3,13 @@ import os.path
 import sys
 from unittest.mock import patch
 
-from django.conf import settings
-from django.test import TestCase
-
 from apps.actions.management.digester import Digester
 from apps.entities.models import Entity
 from apps.places.models import Place
 from apps.races.models import Race
+from django.conf import settings
+from django.test import TestCase
+
 from rscraping.clients import Client
 from rscraping.data.constants import (
     CATEGORY_ABSOLUT,

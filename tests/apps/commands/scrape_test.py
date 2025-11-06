@@ -1,10 +1,10 @@
 import os
 
+from apps.actions.management.commands.scrape import ScrapeConfig
+from apps.entities.models import Entity
 from django.conf import settings
 from django.test import TestCase
 
-from apps.actions.management.commands.scrape import ScrapeConfig
-from apps.entities.models import Entity
 from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_MALE
 from rscraping.data.models import Datasource
 
