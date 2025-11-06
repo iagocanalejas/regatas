@@ -23,13 +23,13 @@ def update_branch_clubs(apps, _):
             Participant.objects.filter(race_id=OuterRef("id"))
             .values("race_id")
             .annotate(distinct_count=Count("club_id", distinct=True))
-            .values("distinct_count")
+            .values("distinct_count")[:1]
         ),
         total_participant_count=Subquery(
             Participant.objects.filter(race_id=OuterRef("id"))
             .values("race_id")
             .annotate(total_count=Count("id"))
-            .values("total_count")
+            .values("total_count")[:1]
         ),
     ).filter(~Q(distinct_club_count=F("total_participant_count")))
 

@@ -1,11 +1,11 @@
 import os
 
-from django.conf import settings
-from django.test import TestCase
-
 from apps.actions.management.commands.recheck import check_race
 from apps.actions.management.digester import build_digester
 from apps.utils import build_client
+from django.conf import settings
+from django.test import TestCase
+
 from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_FEMALE, GENDER_MALE, RACE_CONVENTIONAL, RACE_TRAINERA
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
