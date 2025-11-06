@@ -1,11 +1,10 @@
 import os.path
 
-from django.conf import settings
-from django.test import TestCase
-
 from apps.entities.models import Entity
 from apps.entities.normalization import normalize_club_name
 from apps.entities.services import EntityService
+from django.conf import settings
+from django.test import TestCase
 
 
 class EntityServiceTest(TestCase):

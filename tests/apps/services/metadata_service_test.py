@@ -1,11 +1,11 @@
 import os.path
 
-from django.conf import settings
-from django.test import TestCase
-
 from apps.races.models import Race
 from apps.races.services import MetadataService
 from apps.schemas import MetadataBuilder
+from django.conf import settings
+from django.test import TestCase
+
 from rscraping.data.constants import CATEGORY_ALL, GENDER_ALL
 from rscraping.data.models import Datasource
 
