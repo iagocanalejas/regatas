@@ -1,10 +1,9 @@
 import os.path
 
-from django.conf import settings
-from django.test import TestCase
-
 from apps.races.models import Flag, Trophy
 from apps.races.services import FlagService, TrophyService
+from django.conf import settings
+from django.test import TestCase
 
 
 class CompetitionServiceTest(TestCase):

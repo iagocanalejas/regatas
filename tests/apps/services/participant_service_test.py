@@ -1,13 +1,13 @@
 import os.path
 from datetime import datetime
 
-from django.conf import settings
-from django.test import TestCase
-
 from apps.entities.models import Entity
 from apps.participants.models import Participant
 from apps.participants.services import ParticipantService
 from apps.races.models import Race
+from django.conf import settings
+from django.test import TestCase
+
 from rscraping.data.constants import CATEGORY_ABSOLUT, GENDER_MALE, RACE_CONVENTIONAL, RACE_TRAINERA
 from rscraping.data.models import Participant as RSParticipant
 from rscraping.data.models import Race as RSRace

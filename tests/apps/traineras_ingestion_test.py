@@ -1,11 +1,11 @@
 import os.path
 from unittest.mock import patch
 
+from apps.actions.management.ingester import TrainerasIngester, build_ingester
+from apps.utils import build_client
 from django.conf import settings
 from django.test import TestCase
 
-from apps.actions.management.ingester import TrainerasIngester, build_ingester
-from apps.utils import build_client
 from rscraping.data.models import Datasource, dataclass
 
 
