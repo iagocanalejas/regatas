@@ -1,6 +1,6 @@
 argon2_cffi==25.1.0
 colorlog==6.10.1
-Django==5.2.9
+Django==6.0
 django-cors-headers==4.9.0
 django-extensions==4.1
 django-prettyjson==0.4.1
