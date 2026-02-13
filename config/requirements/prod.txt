@@ -9,13 +9,13 @@ djangorestframework==3.16.1
 djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.29.0
 environs==14.5.0
-gunicorn==23.0.0
+gunicorn==25.1.0
 inquirer==3.4.1
 jsonschema==4.26.0
 numpy==2.2.6
-opencv-python==4.12.0.88
+opencv-python==4.13.0.92
 openpyxl==3.1.5
-pandas==2.3.3
+pandas==3.0.0
 Pillow==12.1.1
 psycopg2-binary==2.9.11
 pytesseract==0.3.13
@@ -24,5 +24,5 @@ pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.3
 requests==2.32.5
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
-setuptools==80.9.0
+setuptools==82.0.0
 simplemma==1.1.2
