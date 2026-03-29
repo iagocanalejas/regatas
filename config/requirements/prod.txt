@@ -5,11 +5,11 @@ django-cors-headers==4.9.0
 django-extensions==4.1
 django-prettyjson==0.4.1
 django-stdimage==6.0.2
-djangorestframework==3.16.1
+djangorestframework==3.17.1
 djutils @ git+https://github.com/iagocanalejas/djutils.git@master
 drf-spectacular==0.29.0
 environs==14.6.0
-gunicorn==25.1.0
+gunicorn==25.3.0
 inquirer==3.4.1
 jsonschema==4.26.0
 numpy==2.4.2
@@ -22,7 +22,7 @@ pytesseract==0.3.13
 python-memcached==1.62
 pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.3
-requests==2.32.5
+requests==2.33.0
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
-setuptools==82.0.0
+setuptools==82.0.1
 simplemma==1.1.2
