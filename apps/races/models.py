@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, Self
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError, models
-from django.db.models import JSONField
+from django.db.models import JSONField, Q
 
 from apps.schemas import FLAG_METADATA_SCHEMA, RACE_METADATA_SCHEMA, default_metadata
 from apps.utils.choices import (
@@ -239,6 +239,10 @@ class Race(CreationStampModel):
         unique_together = [
             ["trophy", "league", "trophy_edition", "modality", "day"],
             ["flag", "league", "flag_edition", "modality", "day"],
-            ["league", "date"],
+        ]
+        constraints = [
+            models.UniqueConstraint(  # ensure only one race per league and date when they are not marked as 'same_as'
+                fields=["league", "date"], name="unique_race_league_date", condition=Q(same_as__isnull=True)
+            ),
         ]
         ordering = ["date", "league"]

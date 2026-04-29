@@ -64,6 +64,7 @@ FLAG_METADATA_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "ref_id": {"type": "string"},
+                    "ref_name": {"type": "string"},
                     "datasource_name": {"type": "string"},
                     "values": {"type": "object", "additionalProperties": {"type": "string"}},
                 },
