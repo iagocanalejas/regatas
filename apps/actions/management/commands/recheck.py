@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import logging
+import time
 from collections.abc import Generator
 from dataclasses import dataclass
 from datetime import datetime
-from itertools import chain
 from typing import Self, override
 
 from django.core.management import BaseCommand
@@ -16,14 +16,9 @@ from apps.actions.management.ingester import build_ingester
 from apps.races.models import Flag, Race
 from apps.races.services import MetadataService
 from apps.utils import build_client
-from rscraping.clients import Client
 from rscraping.data.constants import (
-    CATEGORY_ABSOLUT,
-    CATEGORY_SCHOOL,
-    CATEGORY_VETERAN,
-    GENDER_FEMALE,
-    GENDER_MALE,
-    GENDER_MIX,
+    CATEGORY_ALL,
+    GENDER_ALL,
 )
 from rscraping.data.models import Datasource
 from rscraping.data.models import Race as RSRace
@@ -68,41 +63,47 @@ class Command(BaseCommand):
             help="forces the category to match.",
         )
 
+    # TODO: handle multiday races
     @override
     def handle(self, *_, **options):
         logger.debug(f"{options}")
         config = RecheckConfig.from_args(**options)
+
+        client = build_client(config.datasource, gender=GENDER_ALL, category=CATEGORY_ALL)
+        ingester = build_ingester(client)
+        digester = build_digester(client, force_gender=config.force_gender, force_category=config.force_category)
 
         flag_ids = [config.flag_id] if config.flag_id else None
         if flag_ids is None:
             flag_ids = self._get_flag_ids(datasource=config.datasource, only_new=config.only_new)
 
         only_new = config.only_new
-        for client in self._get_clients(config):
-            ingester = build_ingester(client=client)
-            digester = build_digester(
-                client=client,
-                force_gender=config.force_gender,
-                force_category=config.force_category,
-            )
+        for flag_id in flag_ids:
+            if flag_id in ["315"]:
+                # things like the Teresa Herrera
+                logger.warning(f"skipping {flag_id=}")
+                continue
+            time.sleep(5)
 
-            races = chain(*[ingester.fetch_by_flag(flag_id=flag_id, only_new=only_new) for flag_id in flag_ids])
-            for rs_race in races:
-                new_race = check_race(digester, rs_race, check_participants=config.check_participants)
-                if new_race:
-                    flag = new_race.flag
-                    flag.last_checked = datetime.now()
-                    flag.save()
+            logger.info(f"checking ref_id={flag_id}")
+            datasource = {"datasource_name": config.datasource.value, "ref_id": flag_id}
+            flag = Flag.objects.get(metadata__datasource__contains=[datasource])
 
-                    logger.info(f"updating last_checked value for {flag=}")
-                    only_new = False
+            for rs_race in ingester.fetch_by_flag(flag_id=flag_id, only_new=only_new):
+                check_race(digester, rs_race, check_participants=config.check_participants)
+
+            logger.info(f"updating last_checked value for {flag=}")
+            flag.last_checked = datetime.now()
+            flag.save()
+
+        logger.warning("Manually check TERESA HERRERA")
 
     def _get_flag_ids(self, datasource: Datasource, only_new: bool = False) -> Generator[str]:
         last_month = datetime.now().replace(month=datetime.now().month - 1)
         flags = Flag.objects.filter(
             Q(last_checked__lte=last_month) | Q(last_checked__isnull=True),
             metadata__datasource__contains=[{"datasource_name": datasource.value}],
-        )
+        ).order_by("pk")
         if only_new:
             flags = flags.filter(~Exists(Race.objects.filter(flag=OuterRef("pk"), date__year=datetime.now().year)))
 
@@ -110,17 +111,6 @@ class Command(BaseCommand):
             for value in flag.metadata["datasource"]:
                 if value["datasource_name"] == datasource.value:
                     yield value["ref_id"]
-
-    def _get_clients(self, config: "RecheckConfig") -> Generator[Client]:
-        yield build_client(config.datasource, gender=GENDER_MALE, category=CATEGORY_ABSOLUT)
-        yield build_client(config.datasource, gender=GENDER_FEMALE, category=CATEGORY_ABSOLUT)
-        yield build_client(config.datasource, gender=GENDER_MIX, category=CATEGORY_ABSOLUT)
-        yield build_client(config.datasource, gender=GENDER_MALE, category=CATEGORY_VETERAN)
-        yield build_client(config.datasource, gender=GENDER_FEMALE, category=CATEGORY_VETERAN)
-        yield build_client(config.datasource, gender=GENDER_MIX, category=CATEGORY_VETERAN)
-        yield build_client(config.datasource, gender=GENDER_MALE, category=CATEGORY_SCHOOL)
-        yield build_client(config.datasource, gender=GENDER_FEMALE, category=CATEGORY_SCHOOL)
-        yield build_client(config.datasource, gender=GENDER_MIX, category=CATEGORY_SCHOOL)
 
 
 @dataclass
