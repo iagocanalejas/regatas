@@ -11,12 +11,17 @@ updates:
           - "pytest*"
           - "ruff*"
           - "coverage*"
+          - "mypy*"
+          - "types-*"
       conflict-dependencies:
         patterns:
           - "numpy*"
       prod-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "types-*"
+        update-types: ["version-update:semver-patch"]
     open-pull-requests-limit: 5
 
   - package-ecosystem: "github-actions"
