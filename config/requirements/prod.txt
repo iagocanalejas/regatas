@@ -22,7 +22,7 @@ pytesseract==0.3.13
 python-memcached==1.62
 pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.3
-requests==2.34.0
+requests==2.34.2
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
 setuptools==82.0.1
 simplemma==1.1.2
