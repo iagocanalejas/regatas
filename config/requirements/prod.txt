@@ -1,6 +1,6 @@
 argon2_cffi==25.1.0
 colorlog==6.10.1
-Django==6.0.5
+Django==6.0.6
 django-cors-headers==4.9.0
 django-extensions==4.1
 django-prettyjson==0.4.1
@@ -15,14 +15,14 @@ jsonschema==4.26.0
 numpy==2.4.4
 opencv-python==4.13.0.92
 openpyxl==3.1.5
-pandas==3.0.3
+pandas==3.0.4
 Pillow==12.2.0
 psycopg2-binary==2.9.12
 pytesseract==0.3.13
 python-memcached==1.62
 pyutils @ git+https://github.com/iagocanalejas/pyutils.git@master
 PyYAML==6.0.3
-requests==2.34.0
+requests==2.34.2
 rscraping @ git+https://github.com/iagocanalejas/rscraping.git@master
 setuptools==82.0.1
-simplemma==1.1.2
+simplemma==1.2.0
