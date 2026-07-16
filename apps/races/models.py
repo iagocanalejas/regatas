@@ -171,6 +171,7 @@ class Race(CreationStampModel):
         to="entities.Entity",
         on_delete=models.PROTECT,
     )
+    has_weird_speeds = models.BooleanField(default=False)
     metadata = JSONField(
         default=default_metadata,
         validators=[JSONSchemaValidator(schema=RACE_METADATA_SCHEMA)],
